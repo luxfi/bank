@@ -1,0 +1,41 @@
+{
+  "version": 2,
+  "name": "cdax-api",
+  "builds": [
+    {
+      "src": "apps/api/src/main.ts",
+      "use": "@vercel/node",
+      "config": {
+        "distDir": "dist/apps/api"
+      }
+    },
+    {
+      "src": "apps/password-rotate-job/src/main.ts",
+      "use": "@vercel/node",
+      "config": {
+        "distDir": "dist/apps/password-rotate-job"
+      }
+    },
+    {
+      "src": "apps/migrations/src/index.ts",
+      "use": "@vercel/node",
+      "config": {
+        "distDir": "dist/apps/migrations"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/dist/apps/api/main.js"
+    },
+    {
+      "src": "/password-rotate-job/(.*)",
+      "dest": "/dist/apps/password-rotate-job/main.js"
+    },
+    {
+      "src": "/migrations/(.*)",
+      "dest": "/dist/apps/migrations/index.js"
+    }
+  ]
+}
