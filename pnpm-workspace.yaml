@@ -1,6 +1,6 @@
 packages:
-  - 'api/*'
-  - 'app/*'
-  - 'fx/*'
-  - 'site/*'
-  - 'ui/*'
+  - 'api'
+  - 'app'
+  - 'fx'
+  - 'site'
+  - 'ui'
