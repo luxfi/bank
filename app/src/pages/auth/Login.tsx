@@ -68,7 +68,7 @@ export default function Login() {
     }, [authError]);
 
     const onSubmit = useCallback(
-        async (values) => {
+        async (values: any) => {
             if (!captcha) {
                 setCaptchaErrorMessage(
                     "Please complete the reCAPTCHA to proceed."

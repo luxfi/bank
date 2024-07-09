@@ -129,7 +129,7 @@ export default function RequestRegistration() {
                                     }}
                                 />
 
-                                {Error ? <ErrorText>{Error}</ErrorText> : null}
+                                {requestError ? <ErrorText>{requestError}</ErrorText> : null}
 
                                 <ButtonContainer>
                                     <Button
