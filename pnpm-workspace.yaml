@@ -1,6 +1,6 @@
 packages:
+  - 'admin'
   - 'api'
   - 'app'
-  - 'fx'
   - 'site'
   - 'ui'

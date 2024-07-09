@@ -327,7 +327,8 @@ export const entityTypes: Map<string, string> = new Map(
   })
 );
 
-export const newClientSchema: Yup.Schema = Yup.object({
+
+export const newClientSchema: Yup.SchemaOf<{ accountType: string; firstName: string; lastName: string }> = Yup.object({
   accountType: Yup.string().required().oneOf(Array.from(entityTypes.keys())),
   firstName: Yup.string().required('Please enter the First name'),
   lastName: Yup.string().required('Please enter the Last name'),

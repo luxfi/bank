@@ -170,7 +170,10 @@ export default function PersonalDetailsEdit() {
               <Button
                 roundness="rounded"
                 text="Save Changes"
-                onClick={formik.handleSubmit}
+                onClick={(event)=> {
+                  event.preventDefault()
+                  formik.handleSubmit()
+                }}
               />
             </Row>
           </FormContainer>

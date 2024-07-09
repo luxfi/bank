@@ -19,7 +19,7 @@ import * as yup from 'yup';
 import { EditUserForm } from '../styles';
 import { userRoles } from '../types';
 
-export const userFormSchema: yup.Schema = yup.object({
+export const userFormSchema: yup.SchemaOf<any> = yup.object({
   email: yup
     .string()
     .required('Email is required')

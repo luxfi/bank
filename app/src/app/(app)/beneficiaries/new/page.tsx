@@ -1,14 +1,15 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import { Link, useNavigate, useRouter } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link'; // Correct import from 'next/link'
 
 import { useAppDispatch } from '@admin/app/hooks';
 import Button from '@admin/components/Button';
 import InputField from '@admin/components/InputField';
 import Layout from '@admin/components/Layout';
 import { submitRegistrationRequest } from '@admin/features/requestRegistration/RequestRegistrationSlice';
-import { Form, Formik } from 'formik';
+import { Form, Formik, useFormik } from 'formik';
 import styled from 'styled-components';
 import * as yup from 'yup';
 
@@ -19,8 +20,47 @@ export interface IRequestRegistrationForm {
   mobileNumber: string;
 }
 
+export interface IFormParams {
+  address: string;
+  postCode: string;
+  addressLine2: string;
+  firstName: string;
+  lastName: string;
+  companyName: string;
+  bankAccountCountry: string;
+  city: string;
+  state: string;
+  country: string;
+  currency: string;
+  entityType: string;
+  accountNumber: string;
+  bicSwift: string;
+  sortCode: string;
+  iban: string;
+}
+
+const data: Partial<IFormParams> = {}; // Example data
+const validationForm = yup.object().shape({
+  address: yup.string().required('Address is required'),
+  postCode: yup.string().required('Post code is required'),
+  addressLine2: yup.string(),
+  firstName: yup.string().required('First name is required'),
+  lastName: yup.string().required('Last name is required'),
+  companyName: yup.string(),
+  bankAccountCountry: yup.string().required('Bank account country is required'),
+  city: yup.string().required('City is required'),
+  state: yup.string().required('State is required'),
+  country: yup.string().required('Country is required'),
+  currency: yup.string().required('Currency is required'),
+  entityType: yup.string().required('Entity type is required'),
+  accountNumber: yup.string().required('Account number is required'),
+  bicSwift: yup.string().required('BIC/SWIFT is required'),
+  sortCode: yup.string().required('Sort code is required'),
+  iban: yup.string().required('IBAN is required'),
+});
+
 export default function RequestRegistration() {
-  const navigate = useNavigate();
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
   const [requestError, setRequestError] = useState('');
@@ -63,7 +103,7 @@ export default function RequestRegistration() {
           setRequestError('Error sending information, please try again later');
           return;
         }
-        navigate('/registration/success');
+        router.push('/registration/success');
       });
   }, []);
 
@@ -87,7 +127,7 @@ export default function RequestRegistration() {
       iban: data?.iban || '',
     },
     onSubmit: (v) => {
-      handleSubmit(v);
+      formik.handleSubmit(v as any);
     },
     validationSchema: validationForm,
     validateOnChange: true,
@@ -164,7 +204,7 @@ export default function RequestRegistration() {
                 </ButtonContainer>
                 <SignInContainer>
                   <span>Already using CDAX?</span>
-                  <Link to="/">Sign in</Link>
+                  <Link href="/">Sign in</Link>
                 </SignInContainer>
                 <Row
                   style={{
