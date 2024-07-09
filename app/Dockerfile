@@ -1,41 +1,26 @@
-FROM node:16.14.0 as build
+FROM node:18-alpine as builder
 
-# Set the working directory
-ARG ENV
+WORKDIR /app-cdax
 
-# Install Chromium
-RUN apt-get update && apt-get install -y chromium
+COPY package.json package-lock.json .npmrc ./
 
-# Set the working directory
-WORKDIR /app
+RUN npm ci
 
-# Copy the package.json and package-lock.json files
-COPY package*.json ./
-
-# Install dependencies
-RUN npm install
-
-# Copy the source code into the container
 COPY . .
 
-# Set the environment variables
-COPY .env .env
-
-# Build the React app
 RUN npm run build
 
-# Step 2: Serve the React application using Nginx
-FROM nginx:alpine
+FROM node:18-alpine as runner
 
-# Copy the built React app from the previous stage
-COPY --from=build /app/build /usr/share/nginx/html
+WORKDIR /app-cdax
 
-# Custom Nginx
-COPY ./deploy/nginx.conf /etc/nginx/nginx.conf
+COPY --from=builder /app-cdax/package.json .
+COPY --from=builder /app-cdax/package-lock.json .
+COPY --from=builder /app-cdax/next.config.js ./
+COPY --from=builder /app-cdax/public ./public
+COPY --from=builder /app-cdax/.next/standalone ./
+COPY --from=builder /app-cdax/.next/static ./.next/static
 
-EXPOSE 80
+EXPOSE 3000
 
-# Start Nginx
-CMD ["nginx", "-g", "daemon off;"]
-
-
+ENTRYPOINT ["npm", "start"]

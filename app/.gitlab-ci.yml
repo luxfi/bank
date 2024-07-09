@@ -1,0 +1,30 @@
+# CI Template for nodejs projects v0
+variables:
+  APP_NAME: ${CI_PROJECT_NAME}
+  NAMESPACE: "forex"
+  CD_REPO: "cdaxfx/DevOps/argocd/forex/frontend"
+
+# Stages
+stages:
+  # - test
+  - security
+  - build
+  - deploy
+  - release
+
+include:
+  - project: 'cdaxfx/DevOps/ci-templates/commons'
+    ref: v1.0.1
+    file:
+      - '/forex-defs.yaml'
+      - '/release.yaml'
+  - project: 'cdaxfx/DevOps/ci-templates/docker-build'
+    ref: v1.0.0
+    file:
+      - '/kaniko.yaml'
+  - project: 'cdaxfx/DevOps/ci-templates/deploy'
+    ref: v1.0.0
+    file:
+      - '/deploy-trigger.yaml'
+      # - '/sonar-scanner.yaml'
+      - '/cloudfront-invalidation.yaml'
