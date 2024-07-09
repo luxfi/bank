@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  # localstack:
+  #   container_name: '${LOCALSTACK_DOCKER_NAME-localstack_main}'
+  #   image: localstack/localstack
+  #   ports:
+  #     - '127.0.0.1:4566:4566' # LocalStack Gateway
+  #     - '127.0.0.1:4510-4559:4510-4559' # external services port range
+  #   environment:
+  #     - DEBUG=${DEBUG-}
+  #     - DOCKER_HOST=unix:///var/run/docker.sock
+  #     - AWS_DEFAULT_REGION=us-east-1
+  #     - AWS_ACCESS_KEY_ID=test
+  #     - AWS_SECRET_ACCESS_KEY=test
+  #     - LS_LOG=WARN
+  #     - HOSTNAME=localstack
+  #     - HOSTNAME_EXTERNAL=localstack
+  #   volumes:
+  #     - '${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack'
+  #     - '/var/run/docker.sock:/var/run/docker.sock'
+  # api:
+  #   build:
+  #     context: .
+  #   ports:
+  #     - '3000:3000'
+  #   depends_on:
+  #     - mysql
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - ./dist/apps/api:/usr/src/apps/api
+  #   command: npx nodemon apps/api/main
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: root
+    ports:
+      - '3306:3306'
+    expose:
+      # Opens port 3306 on the container
+      - '3306'
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:

@@ -1,0 +1,59 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "ES2021",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "forceConsistentCasingInFileNames": false,
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@tools/models": [
+        "libs/tools/models/src"
+      ],
+      "@tools/models/*": [
+        "libs/tools/models/src/*"
+      ],
+      "@tools/misc": [
+        "libs/tools/misc/src"
+      ],
+      "@tools/misc/*": [
+        "libs/tools/misc/src/*"
+      ],
+      "@ports/currency-cloud": [
+        "libs/ports/currency-cloud/src"
+      ],
+      "@ports/currency-cloud/*": [
+        "libs/ports/currency-cloud/src/*"
+      ],
+      "@ports/ifx": [
+        "libs/ports/ifx/src"
+      ],
+      "@ports/ifx/*": [
+        "libs/ports/ifx/src/*"
+      ],
+      "@ports/email": [
+        "libs/ports/email/src"
+      ],
+      "@ports/email/*": [
+        "libs/ports/email/src/*"
+      ],
+      "@domain/use-cases": [
+        "libs/domain/use-cases/src"
+      ],
+      "@domain/use-cases/*": [
+        "libs/domain/use-cases/src/*"
+      ]
+    }
+  }
+}

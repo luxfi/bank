@@ -1,0 +1,23 @@
+# CI Template for GitLab CI/CD 01ss
+# Stages
+stages:
+  - test
+  - security
+  - build
+  - deploy
+  - release
+
+include:
+  - project: 'cdaxfx/DevOps/ci-templates/commons'
+    ref: v1.0.1
+    file:
+      - '/forex-defs.yaml'
+      - '/release.yaml'
+  - project: 'cdaxfx/DevOps/ci-templates/docker-build'
+    ref: v1.0.0
+    file:
+      - '/kaniko-monorepo.yaml'
+  - project: 'cdaxfx/DevOps/ci-templates/deploy'
+    ref: v1.0.0
+    file:
+      - '/deploy-trigger.yaml'

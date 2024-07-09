@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>CDAX - E-mail Template</title>
+  </head>
+
+  <body style="margin: 0; padding: 0; background: #ffffff">
+    <div style="max-width: 600px; margin: 0 auto; background: #ffffff">
+      <table
+        style="
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 100% !important;
+          font-size: 16px;
+        "
+      >
+        <tr>
+          <td
+            style="padding: 48px; background: #23559a; width: 100% !important"
+          >
+            <img
+              src="cid:logo"
+              style="width: 113px; height: 38px"
+              alt="CDAXForex"
+            />
+          </td>
+        </tr>
+
+        <tr>
+          <td
+            style="
+              padding: 0px 10px 10px 10px;
+              font-size: 20px;
+              line-height: 18px;
+            "
+          >
+            <table
+              style="
+                font-family: arial, sans-serif;
+                border-collapse: collapse;
+                width: 100% !important;
+                font-size: 16px;
+              "
+            >
+              <tr>
+                <td valign="top" width="100%" style="padding: 50px 50px 20px">
+                  <p style="font-size: 16px; color: #233141">
+                    <strong> Registration Request </strong>
+                  </p>
+                  <p style="color: #0f244da3">Request sent at <%= sendAt %>.</p>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" width="100%" style="padding: 0px 50px">
+                  <div
+                    style="
+                      padding: 4px 18px;
+                      background: #f5f8ff;
+                      border-radius: 12px;
+                    "
+                  >
+                    <p style="font-size: 16px; color: #233141">
+                      <strong>First Name: </strong>
+                      <%= firstName %>
+                    </p>
+                    <p style="font-size: 16px; color: #233141">
+                      <strong>Last Name: </strong>
+                      <%= lastName %>
+                    </p>
+                    <p style="font-size: 16px; color: #233141">
+                      <strong>Email: </strong>
+                      <%= email %>
+                    </p>
+                    <p style="font-size: 16px; color: #233141">
+                      <strong>Phone Number: </strong>
+                      <%= phoneNumber %>
+                    </p>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>
