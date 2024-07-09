@@ -19,15 +19,7 @@ import { useNotification } from '@/context/Notification';
 import useUrlSearchParams from '@/hooks/useUrlParams';
 import { useAuth } from '@/store/useAuth';
 import { useClients } from '@/store/useClient';
-import {
-  Button,
-  Column,
-  Icon,
-  Input,
-  Row,
-  Text,
-  useTheme,
-} from '@cdaxfx/ui';
+import { Button, Column, Icon, Input, Row, Text, useTheme } from '@cdaxfx/ui';
 
 import { filterClientsTable } from './helpers';
 import {

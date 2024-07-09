@@ -10,14 +10,7 @@ import { convertMapInOptionList } from '@/utils/lib';
 
 import { CountriesList } from '@/lib/constants';
 
-import {
-  Button,
-  Column,
-  Icon,
-  Row,
-  Text,
-  useTheme,
-} from '@cdaxfx/ui';
+import { Button, Column, Icon, Row, Text, useTheme } from '@cdaxfx/ui';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 

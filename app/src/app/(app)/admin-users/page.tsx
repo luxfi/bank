@@ -13,13 +13,7 @@ import { useNotification } from '@/context/Notification';
 
 import { useUsers } from '@/store/useUsers';
 import { IUsersResponse } from '@/store/useUsers/types';
-import {
-  Button,
-  Input,
-  Row,
-  Text,
-  useTheme,
-} from '@cdaxfx/ui';
+import { Button, Input, Row, Text, useTheme } from '@cdaxfx/ui';
 import _ from 'underscore';
 
 import { IUsersFilters } from '../users/types';

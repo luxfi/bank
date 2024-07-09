@@ -1,6 +1,6 @@
 import { faAsterisk } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ReactTooltip from "react-tooltip";
+import ReactTooltip from 'react-tooltip';
 
 import styled from "styled-components";
 

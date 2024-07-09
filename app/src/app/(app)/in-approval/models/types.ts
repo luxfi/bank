@@ -1,4 +1,4 @@
-import { statusMap } from "../helpers";
+import { statusMap } from '../helpers';
 
 export interface ITransaction {
   id: string;

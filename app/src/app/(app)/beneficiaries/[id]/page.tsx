@@ -15,14 +15,7 @@ import { currencyNameDictionary } from '@/models/countries';
 import { useNotification } from '@/context/Notification';
 
 import { useAuth } from '@/store/useAuth';
-import {
-  Button,
-  Column,
-  Icon,
-  Row,
-  Text,
-  useTheme,
-} from '@cdaxfx/ui';
+import { Button, Column, Icon, Row, Text, useTheme } from '@cdaxfx/ui';
 
 import { deleteBeneficiary, getBeneficiaryDetails } from '@/api/beneficiaries';
 

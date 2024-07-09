@@ -3,13 +3,7 @@ import { useEffect, useState } from 'react';
 import CountUp from 'react-countup';
 
 import { useDashboard } from '@/store/useDashboard';
-import {
-  Column,
-  Icon,
-  Row,
-  Text,
-  useTheme,
-} from '@cdaxfx/ui';
+import { Column, Icon, Row, Text, useTheme } from '@cdaxfx/ui';
 
 import { CardStatus } from '../components/CardStatus';
 import { AddClientButton } from './styles';

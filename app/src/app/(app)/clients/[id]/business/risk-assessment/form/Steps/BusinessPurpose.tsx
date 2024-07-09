@@ -10,13 +10,7 @@ import {
   useContextBusinessRiskAssessment,
 } from '@/context/businessRiskAssessment';
 
-import {
-  Button,
-  Column,
-  Row,
-  Text,
-  useTheme,
-} from '@cdaxfx/ui';
+import { Button, Column, Row, Text, useTheme } from '@cdaxfx/ui';
 
 import { yesNoOptions } from '../../types';
 

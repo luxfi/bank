@@ -65,8 +65,9 @@ export function Complete() {
         }
         subtitle={`Great, the payment of ${formatCurrency(
           Number(paymentCompleted?.out.amount)
-        )} ${paymentCompleted?.out.currency} to ${paymentCompleted?.payment
-          .beneficiary?.name} was successfully ${
+        )} ${paymentCompleted?.out.currency} to ${
+          paymentCompleted?.payment.beneficiary?.name
+        } was successfully ${
           paymentCompleted?.isPendingApproval
             ? 'submitted for approval'
             : 'created'

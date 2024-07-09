@@ -12,14 +12,7 @@ import { countriesToSelect } from '@/models/countries';
 
 import { useAuth } from '@/store/useAuth';
 import { useUsers } from '@/store/useUsers';
-import {
-  Button,
-  Column,
-  Icon,
-  Row,
-  Text,
-  useTheme,
-} from '@cdaxfx/ui';
+import { Button, Column, Icon, Row, Text, useTheme } from '@cdaxfx/ui';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 

@@ -21,14 +21,7 @@ import { getBadgeStatusValues } from '@/utils/valueMaps';
 import { APP_PATHS } from '@/app/paths';
 import { useAuth } from '@/store/useAuth';
 import { useTransactions } from '@/store/useTransactions';
-import {
-  Button,
-  Column,
-  Icon,
-  Row,
-  Text,
-  useTheme,
-} from '@cdaxfx/ui';
+import { Button, Column, Icon, Row, Text, useTheme } from '@cdaxfx/ui';
 import { Modal } from 'antd';
 
 import { Container, ContentContainer, DisclaimerContainer } from './styles';

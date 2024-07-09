@@ -18,14 +18,7 @@ import { formatCurrency } from '@/utils/lib';
 
 import { useAuth } from '@/store/useAuth';
 import { useWallet } from '@/store/useWallet';
-import {
-  Button,
-  Card,
-  Column,
-  Row,
-  Text,
-  useTheme,
-} from '@cdaxfx/ui';
+import { Button, Card, Column, Row, Text, useTheme } from '@cdaxfx/ui';
 
 import Transactions from '../../transactions/page';
 import { LabelBackButton } from '../add/styles';

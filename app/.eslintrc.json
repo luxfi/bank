@@ -12,32 +12,25 @@
     }
   },
   "parser": "@typescript-eslint/parser",
-  "plugins": [
-    "react",
-    "react-hooks",
-    "@typescript-eslint",
-    "import-helpers"
-  ],
+  "plugins": ["react", "react-hooks", "@typescript-eslint", "import-helpers"],
   "rules": {
     "prettier/prettier": [
-      "warn",
+      "off",
       {
         "endOfLine": "auto"
       }
-    ],        
+    ],
     "react-hooks/rules-of-hooks": "error",
-    "react-hooks/exhaustive-deps": "warn",
+    "react-hooks/exhaustive-deps": "off",
     "react/prop-types": "off",
     "react/react-in-jsx-scope": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
-    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/naming-convention": [
-      "warn",
+      "off",
       {
         "selector": "interface",
-        "format": [
-          "PascalCase"
-        ],
+        "format": ["PascalCase"],
         "custom": {
           "regex": "^I[A-Z]",
           "match": true
@@ -45,26 +38,28 @@
       }
     ],
     "import-helpers/order-imports": [
-      "warn",
+      "off",
       {
-          "newlinesBetween": "always",
-          "groups": [
-              ["/^react/", "/^next/"],
-              "/^@/components/",
-              "/^@/pages/",
-              "/^@/models/",
-              "/^@/context/",
-              "/^@/services/",
-              "/^@/utils/",
-              "/^@/lib/",
-              "module",
-              "/^@shared/",              
-              "/^@/api/",
-              "/^@/styles/",
-              ["parent", "sibling", "index"]
-          ],
-          "alphabetize": { "order": "asc", "ignoreCase": true }
+        "newlinesBetween": "always",
+        "groups": [
+          ["/^react/", "/^next/"],
+          "/^@/components/",
+          "/^@/pages/",
+          "/^@/models/",
+          "/^@/context/",
+          "/^@/services/",
+          "/^@/utils/",
+          "/^@/lib/",
+          "module",
+          "/^@shared/",
+          "/^@/api/",
+          "/^@/styles/",
+          ["parent", "sibling", "index"]
+        ],
+        "alphabetize": { "order": "asc", "ignoreCase": true }
       }
-    ]
+    ],
+    "@typescript-eslint/no-unused-vars": "off",
+    "next/next/no-img-element": "off"
   }
 }

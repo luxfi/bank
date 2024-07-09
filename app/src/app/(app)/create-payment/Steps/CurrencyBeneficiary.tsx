@@ -14,13 +14,7 @@ import { useNotification } from '@/context/Notification';
 import { formatCurrency } from '@/utils/lib';
 
 import useUrlSearchParams from '@/hooks/useUrlParams';
-import {
-  Button,
-  Column,
-  Row,
-  Text,
-  useTheme,
-} from '@cdaxfx/ui';
+import { Button, Column, Row, Text, useTheme } from '@cdaxfx/ui';
 
 import { getBeneficiariesRecentPaid } from '@/api/beneficiaries';
 

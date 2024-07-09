@@ -4,24 +4,17 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useMemo, useState } from 'react';
 
 import Input from '@/components/Input';
+import { Loading } from '@/components/Loading';
 
 import { useMessages } from '@/context/Messages';
 
 import { useAuth } from '@/store/useAuth';
 import { useManageAccount } from '@/store/useManageAccount';
-import {
-  Button,
-  Column,
-  Icon,
-  Row,
-  Text,
-  useTheme,
-} from '@cdaxfx/ui';
+import { Button, Column, Icon, Row, Text, useTheme } from '@cdaxfx/ui';
 import { useFormik } from 'formik';
 
 import { IPersonDetailsEdit, validationForm } from '../types';
 import { Container, FormContainer } from './styles';
-import { Loading } from '@/components/Loading';
 
 export default function PersonalDetailsEdit() {
   const { theme } = useTheme();

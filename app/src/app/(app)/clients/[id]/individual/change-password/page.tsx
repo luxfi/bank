@@ -12,13 +12,7 @@ import { useMessages } from '@/context/Messages';
 
 import { GrayCard } from '@/app/(app)/users/styles';
 import { useClients } from '@/store/useClient';
-import {
-  Button,
-  Icon,
-  Row,
-  Text,
-  useTheme,
-} from '@cdaxfx/ui';
+import { Button, Icon, Row, Text, useTheme } from '@cdaxfx/ui';
 import { useFormik } from 'formik';
 
 import { validationSchema } from './type';

@@ -1,11 +1,4 @@
-import {
-  Column,
-  Icon,
-  Row,
-  TIconVariants,
-  Text,
-  useTheme,
-} from '@cdaxfx/ui';
+import { Column, Icon, Row, TIconVariants, Text, useTheme } from '@cdaxfx/ui';
 
 import { Container } from './styles';
 

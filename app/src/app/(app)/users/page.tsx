@@ -23,14 +23,7 @@ import { useFilterSelect } from '@/store/useFilterSelect';
 import { IFilterSelect } from '@/store/useFilterSelect/types';
 import { useUsers } from '@/store/useUsers';
 import { IUsersResponse } from '@/store/useUsers/types';
-import {
-  Button,
-  Column,
-  Icon,
-  Row,
-  Text,
-  useTheme,
-} from '@cdaxfx/ui';
+import { Button, Column, Icon, Row, Text, useTheme } from '@cdaxfx/ui';
 import { Modal } from 'antd';
 import _ from 'underscore';
 

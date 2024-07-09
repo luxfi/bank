@@ -3,13 +3,7 @@ import { ITransactionDetails, TRoutingCode } from '@/models/payment';
 import { formatCurrency, formatDateAndTime } from '@/utils/lib';
 import { getBadgeStatusValues } from '@/utils/valueMaps';
 
-import {
-  Column,
-  Icon,
-  Row,
-  Text,
-  useTheme,
-} from '@cdaxfx/ui';
+import { Column, Icon, Row, Text, useTheme } from '@cdaxfx/ui';
 
 import { Badge } from '../Badge';
 import { DetailsCardTemplate } from '../DetailsCardTemplate';

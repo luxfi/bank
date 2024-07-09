@@ -15,14 +15,7 @@ import { APP_PATHS } from '@/app/paths';
 import { useAuth } from '@/store/useAuth';
 import { useTransactions } from '@/store/useTransactions';
 import { MenuOutlined } from '@ant-design/icons';
-import {
-  Column,
-  IIconProps,
-  Icon,
-  Row,
-  Text,
-  useTheme,
-} from '@cdaxfx/ui';
+import { Column, IIconProps, Icon, Row, Text, useTheme } from '@cdaxfx/ui';
 
 import {
   ContentContainer,

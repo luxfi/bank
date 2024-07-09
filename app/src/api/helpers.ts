@@ -26,4 +26,3 @@ const apiCall = (endpoint: string, options: RequestInit) => {
 };
 export { apiCall as fetch };
 // eslint-disable-next-line prettier/prettier
-

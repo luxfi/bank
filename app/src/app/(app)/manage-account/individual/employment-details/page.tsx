@@ -5,13 +5,14 @@ import { useMemo } from 'react';
 
 import { LabelAndValue } from '@/components/LabelAndValue';
 
+import { UserRole } from '@/models/auth';
+
 import { useAuth } from '@/store/useAuth';
 import { Button, Column, useTheme } from '@cdaxfx/ui';
 
 import DataChangeApproval from '../../../clients/[id]/components/DataChangeApproval';
 import { HeaderDetails } from '../../components/Header';
 import { IEmployment } from './types';
-import { UserRole } from '@/models/auth';
 
 export default function EmploymentDetails() {
   const route = useRouter();

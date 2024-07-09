@@ -5,13 +5,7 @@ import { ITransactionDetails } from '@/models/payment';
 import { formatCurrency } from '@/utils/lib';
 import { getBadgeStatusValues } from '@/utils/valueMaps';
 
-import {
-  Column,
-  Icon,
-  Row,
-  Text,
-  useTheme,
-} from '@cdaxfx/ui';
+import { Column, Icon, Row, Text, useTheme } from '@cdaxfx/ui';
 import dayjs from 'dayjs';
 
 import { CardBody, CardHeader, CardSection, Container } from './styles';

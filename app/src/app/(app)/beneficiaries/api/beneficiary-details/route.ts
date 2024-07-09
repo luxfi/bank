@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+
 import { getBeneficiaryDetails } from '@/api/beneficiaries';
 
 export const dynamic = 'force-dynamic';

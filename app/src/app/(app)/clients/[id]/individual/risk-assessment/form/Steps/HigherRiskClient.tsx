@@ -14,14 +14,7 @@ import {
 import { useNotification } from '@/context/Notification';
 
 import { useDocuments } from '@/store/useDocuments';
-import {
-  Button,
-  Column,
-  Icon,
-  Row,
-  Text,
-  useTheme,
-} from '@cdaxfx/ui';
+import { Button, Column, Icon, Row, Text, useTheme } from '@cdaxfx/ui';
 
 import { yesNoOptions } from '../../types';
 

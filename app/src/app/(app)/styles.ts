@@ -12,8 +12,6 @@ export const Layout = styled.div`
     'HEADER HEADER'
     'SIDEBAR MAIN';
   height: 100vh;
-
-  
 `;
 
 export const Main = styled.div`

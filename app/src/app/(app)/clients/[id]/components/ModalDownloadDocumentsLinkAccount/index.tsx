@@ -5,13 +5,7 @@ import { useNotification } from '@/context/Notification';
 import { useClients } from '@/store/useClient';
 import { IDocument } from '@/store/useClient/types';
 import { useDocuments } from '@/store/useDocuments';
-import {
-  Button,
-  Column,
-  Row,
-  Text,
-  useTheme,
-} from '@cdaxfx/ui';
+import { Button, Column, Row, Text, useTheme } from '@cdaxfx/ui';
 import { Modal, Spin } from 'antd';
 
 interface IProps {

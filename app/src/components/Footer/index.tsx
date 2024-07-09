@@ -39,7 +39,7 @@ export default function Footer() {
         </LeftColumn>
 
         <CenterColumn>
-          <span>          
+          <span>
             Licensed by the Isle of Man Financial Services Authority.
             <br />
             <br />
@@ -59,7 +59,9 @@ export default function Footer() {
           <div>
             <Link href={Constants.PRIVACY_POLICY_URL}>Privacy Policy</Link>
             <span> | </span>
-            <Link href={Constants.TERMS_OF_SERVICE_URL}>Terms & Conditions</Link>
+            <Link href={Constants.TERMS_OF_SERVICE_URL}>
+              Terms & Conditions
+            </Link>
           </div>
         </RightColumn>
 

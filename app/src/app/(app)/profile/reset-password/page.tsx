@@ -1,15 +1,20 @@
 'use client';
 
-import { Container, Content, ContainerInputs } from './styles';
 import { BackButton } from '@/components/BackButton';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
-import { defaultTheme } from '@/styles/themes/default';
-import { FormikConfig, useFormik } from 'formik';
-import { IResetPasswordData } from '../models/types';
-import { resetPasswordSchema } from '../models/reset-password-schema';
-import { resetPassword as ApiResetPassword } from '@/api/user';
+
 import { useNotification } from '@/context/Notification';
+
+import { FormikConfig, useFormik } from 'formik';
+
+import { resetPassword as ApiResetPassword } from '@/api/user';
+
+import { defaultTheme } from '@/styles/themes/default';
+
+import { resetPasswordSchema } from '../models/reset-password-schema';
+import { IResetPasswordData } from '../models/types';
+import { Container, Content, ContainerInputs } from './styles';
 
 export default function ResetPassword() {
   const { onShowNotification } = useNotification();

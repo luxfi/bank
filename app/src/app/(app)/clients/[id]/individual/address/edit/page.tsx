@@ -11,13 +11,7 @@ import { useMessages } from '@/context/Messages';
 import { countriesOptions } from '@/utils/lib';
 
 import { useClients } from '@/store/useClient';
-import {
-  Button,
-  Icon,
-  Row,
-  Text,
-  useTheme,
-} from '@cdaxfx/ui';
+import { Button, Icon, Row, Text, useTheme } from '@cdaxfx/ui';
 import { useFormik } from 'formik';
 
 import { IAddress, validationForm } from '../types';

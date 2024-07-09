@@ -13,14 +13,7 @@ import { countriesOptions } from '@/utils/lib';
 
 import { useAuth } from '@/store/useAuth';
 import { useManageAccount } from '@/store/useManageAccount';
-import {
-  Button,
-  Column,
-  Icon,
-  Row,
-  Text,
-  useTheme,
-} from '@cdaxfx/ui';
+import { Button, Column, Icon, Row, Text, useTheme } from '@cdaxfx/ui';
 import { useFormik } from 'formik';
 
 import { IAddress, validationForm } from '../types';

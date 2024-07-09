@@ -9,19 +9,14 @@ import { ModalCheckCodeImpersonate } from '@/components/ModaCodeImpersonate';
 import Table from '@/components/Table';
 import { Tooltip } from '@/components/Tooltip';
 
+import { UserRole } from '@/models/auth';
 import { ITransactionV2 } from '@/models/transactions';
 
 import { useNotification } from '@/context/Notification';
 
 import { useAuth } from '@/store/useAuth';
 import { useClients } from '@/store/useClient';
-import {
-  Column,
-  Icon,
-  Row,
-  Text,
-  useTheme,
-} from '@cdaxfx/ui';
+import { Column, Icon, Row, Text, useTheme } from '@cdaxfx/ui';
 
 import { getTransactions } from '@/api/transactions';
 
@@ -30,7 +25,6 @@ import { OverviewDashboardCards } from './components/OverviewCardsDashboard';
 import { ActionButton } from './styles';
 import { SuperAdminCards } from './SuperAdminCards';
 import { clientsColumns, transactionsColumns } from './types';
-import { UserRole } from '@/models/auth';
 
 export default function Dashboard() {
   const router = useRouter();

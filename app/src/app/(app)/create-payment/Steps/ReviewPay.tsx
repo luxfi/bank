@@ -4,6 +4,7 @@ import ModalResult from '@/components/ModalResult';
 
 import { EStep, useCreatePayment } from '@/context/CreatePayment';
 
+import { useTransactions } from '@/store/useTransactions';
 import { LoadingOutlined } from '@ant-design/icons';
 import { Button } from '@cdaxfx/ui';
 
@@ -11,7 +12,6 @@ import { defaultTheme } from '@/styles/themes/default';
 
 import { ActionContainer, ContentContainer, WrapperButton } from '../styles';
 import { PaymentCard } from './Components/CardPayment';
-import { useTransactions } from '@/store/useTransactions';
 
 export function ReviewPay() {
   const { setApprovalCount } = useTransactions();

@@ -6,10 +6,11 @@ import { TUserStatus } from '@/models/users';
 
 import { getUserStatusBadgeValues } from '@/utils/valueMaps';
 
+import { CountriesList } from '@/lib/constants';
+
 import { Column, Row, Text, useTheme } from '@cdaxfx/ui';
 
 import { userRolesDictionary } from '../types';
-import { CountriesList } from '@/lib/constants';
 
 interface IUserDetailsProps {
   name: string;

@@ -3,13 +3,7 @@ import { ITransactionDetails } from '@/models/payment';
 import { formatCurrency, formatDateAndTime } from '@/utils/lib';
 import { getBadgeStatusValues } from '@/utils/valueMaps';
 
-import {
-  Column,
-  Icon,
-  Row,
-  Text,
-  useTheme,
-} from '@cdaxfx/ui';
+import { Column, Icon, Row, Text, useTheme } from '@cdaxfx/ui';
 
 import { Badge } from '../Badge';
 import { DetailsCardTemplate } from '../DetailsCardTemplate';
@@ -90,10 +84,11 @@ export const ConversionCard = ({ data }: IConversionCardProps) => {
               </Text>
               <Text variant="body_md_regular">
                 {data.conversion?.exchangeRateDate
-                  ? `${formatDateAndTime(data.conversion?.exchangeRateDate)
-                      ?.date} - ${formatDateAndTime(
-                      data.conversion?.exchangeRateDate
-                    )?.time}`
+                  ? `${
+                      formatDateAndTime(data.conversion?.exchangeRateDate)?.date
+                    } - ${
+                      formatDateAndTime(data.conversion?.exchangeRateDate)?.time
+                    }`
                   : '-'}
               </Text>
             </Column>
@@ -115,8 +110,9 @@ export const ConversionCard = ({ data }: IConversionCardProps) => {
               </Text>
               <Text variant="body_md_regular">
                 {data.createDate
-                  ? `${formatDateAndTime(data.createDate)
-                      ?.date} - ${formatDateAndTime(data.createDate)?.time}`
+                  ? `${
+                      formatDateAndTime(data.createDate)?.date
+                    } - ${formatDateAndTime(data.createDate)?.time}`
                   : '-'}
               </Text>
             </Column>
@@ -127,8 +123,9 @@ export const ConversionCard = ({ data }: IConversionCardProps) => {
               </Text>
               <Text variant="body_md_regular">
                 {data.settlementDate
-                  ? `${formatDateAndTime(data.settlementDate)
-                      ?.date} - ${formatDateAndTime(data.settlementDate)?.time}`
+                  ? `${
+                      formatDateAndTime(data.settlementDate)?.date
+                    } - ${formatDateAndTime(data.settlementDate)?.time}`
                   : '-'}
               </Text>
             </Column>
@@ -139,10 +136,11 @@ export const ConversionCard = ({ data }: IConversionCardProps) => {
               </Text>
               <Text variant="body_md_regular">
                 {data.conversion?.conversionDate
-                  ? `${formatDateAndTime(data.conversion?.conversionDate)
-                      ?.date} - ${formatDateAndTime(
-                      data.conversion?.conversionDate
-                    )?.time}`
+                  ? `${
+                      formatDateAndTime(data.conversion?.conversionDate)?.date
+                    } - ${
+                      formatDateAndTime(data.conversion?.conversionDate)?.time
+                    }`
                   : '-'}
               </Text>
             </Column>

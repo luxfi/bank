@@ -3,12 +3,12 @@
 import { useMemo } from 'react';
 import Flag from 'react-world-flags';
 
+import Input from '@/components/Input';
+
 import { formatCurrency } from '@/utils/lib';
 
 import { useCurrenciesAndCountries } from '@/store/useCurrenciesAndCountries';
 import { Select, Space } from 'antd';
-
-import Input from '@/components/Input';
 
 import {
   Container,

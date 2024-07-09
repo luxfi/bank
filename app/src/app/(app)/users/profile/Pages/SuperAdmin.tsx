@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
 
 import { LabelAndValue } from '@/components/LabelAndValue';
 import { UserAvatar } from '@/components/UserAvatar';
@@ -8,9 +9,9 @@ import { UserAvatar } from '@/components/UserAvatar';
 import { useAuth } from '@/store/useAuth';
 import { Button, Row, Text } from '@cdaxfx/ui';
 
-import { Container, GrayCard } from '../../styles';
 import { IGetCurrentUserV2Response, getCurrentUserV2 } from '@/api/user';
-import { useCallback, useEffect, useState } from 'react';
+
+import { Container, GrayCard } from '../../styles';
 
 export function SuperAdmin() {
   const router = useRouter();

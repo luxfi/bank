@@ -1,12 +1,5 @@
 import { IDocument } from '@/store/useClient/types';
-import {
-  Button,
-  Column,
-  Icon,
-  Row,
-  Text,
-  useTheme,
-} from '@cdaxfx/ui';
+import { Button, Column, Icon, Row, Text, useTheme } from '@cdaxfx/ui';
 import { Spin } from 'antd';
 import styled from 'styled-components';
 

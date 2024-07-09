@@ -6,6 +6,8 @@ import Flag from 'react-world-flags';
 import { useCreatePayment } from '@/context/CreatePayment';
 import { useNotification } from '@/context/Notification';
 
+import { formatCurrency } from '@/utils/lib';
+
 import { useWallet } from '@/store/useWallet';
 import { IWallet } from '@/store/useWallet/types';
 import { Select as SelectStyled } from 'antd';
@@ -21,7 +23,6 @@ import {
   LabelSubtitle,
   TextContainer,
 } from './styles';
-import { formatCurrency } from '@/utils/lib';
 
 interface IProps {
   label: string;

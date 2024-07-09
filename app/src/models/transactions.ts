@@ -24,7 +24,6 @@ export interface ITransactionV2 {
   approvalStatusChangedAt: string;
   cdaxFee?: string;
   spread?: string;
-
 }
 
 export type TTransactionStatus =

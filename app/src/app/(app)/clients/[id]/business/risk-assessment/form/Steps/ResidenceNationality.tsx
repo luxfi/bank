@@ -14,13 +14,7 @@ import {
 
 import { countriesOptions } from '@/utils/lib';
 
-import {
-  Button,
-  Column,
-  Row,
-  Text,
-  useTheme,
-} from '@cdaxfx/ui';
+import { Button, Column, Row, Text, useTheme } from '@cdaxfx/ui';
 
 import { riskLevelOptions, yesNoOptions } from '../../types';
 
