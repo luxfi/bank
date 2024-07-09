@@ -1,0 +1,50 @@
+{
+  "private": true,
+  "name": "@cdaxfx/web",
+  "version": "0.1.0",
+  "engines": {
+    "pnpm": ">=9"
+  },
+  "scripts": {
+    "clean:nm": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +",
+    "clean:nxt": "find . -name '.next' -type d -prune -exec rm -rf '{}' +",
+    "clean:all": "pnpm clean:nm && pnpm clean:nxt && rm pnpm-lock.yaml"
+
+  },
+  "devDependencies": {
+    "@types/jquery": "^3.5.30",
+    "webpack-watch-files-plugin": "^1.2.1"
+  },
+  "//": "re 'supports-color': https://stackoverflow.com/questions/76591038/module-not-found-esm-packages-supports-color-need-to-be-imported-use-import",
+  "pnpm": {
+    "overrides": {
+      "react": "^18.3.1",
+      "react-dom": "^18.3.1",
+      "@types/react": "^18.3.2",
+      "@types/react-dom": "^18.3.0",
+      "supports-color": "8.1.1",
+      "@hanzo/brand": "0.1.16",
+      "@luxfi/data": "1.0.6",
+      "@hanzo/auth": "2.4.12",
+      "@hanzo/commerce": "7.1.5",
+      "@hanzo/ui": "3.8.21",
+      "react-hook-form": "7.51.4"
+    },
+    "allowedDeprecatedVersions": {
+      "request": "*"
+    }
+  },
+  "dependencies": {
+    "@mailchimp/mailchimp_transactional": "^1.0.59",
+    "@types/mailchimp__mailchimp_transactional": "^1.0.10",
+    "@types/nodemailer": "^6.4.15",
+    "gsap": "^3.12.5",
+    "jquery": "^3.7.1",
+    "mailchimp_transactional": "0.0.1-security",
+    "nodemailer": "^6.9.14"
+  },
+  "resolutions": {
+    "@types/react": "^17.0.2",
+    "@types/react-dom": "^17.0.2"
+  }
+}
