@@ -1,0 +1,100 @@
+@import "~antd/dist/antd.css";
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;700;800&display=swap");
+
+body {
+  margin: 0;
+  font-family: "Open Sans", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  line-height: 1.5;
+  background-color: #00569e;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+a {
+  text-decoration: none;
+  color: #00569e;
+}
+
+a:hover,
+a:active {
+  color: #f49c0e;
+}
+.carousel .slide iframe {
+  width: 100% !important;
+  margin: 0 !important;
+  transform: scale(1.07) translateX(3%) !important;
+  padding: 5px !important;
+}
+#rc-anchor-alert,
+.rc-anchor-alert {
+  opacity: 0 !important;
+  color: #ffffff !important;
+}
+.sendCode:hover {
+  color: #00569f !important;
+}
+input[type="date"]:before {
+  content: attr(placeholder) !important;
+  color: #aaa;
+  margin-right: 0.5em;
+}
+input[type="date"]:focus:before,
+input[type="date"]:valid:before {
+  content: "" !important;
+}
+
+div.pagination {
+  margin-top: 20px;
+}
+ul.pagination > li {
+  padding: 5px;
+  border: 1px solid grey;
+}
+ul.pagination {
+  list-style-type: none;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.dropdown-item.selected {
+  background-color: #0d6efd;
+  color: #fff;
+}
+.dropdown-item {
+  padding: 5px;
+  cursor: pointer;
+  opacity: 1 !important;
+  background-color: white;
+}
+
+.dropdown-menu {
+  z-index: 100;
+  max-height: 280px !important;
+  background-color: white;
+}
+
+.react-datepicker {
+  top: -120px !important;
+}
+.datepicker {
+  width: 100%;
+  /* height: 40px; */
+  padding: 15px;
+  border: 1px #ddd solid;
+}
+.ant-card-meta-title,
+.ant-card-head-title {
+  white-space: pre-line !important;
+}
+
+.ant-form-item-label > label {
+  height: auto;
+  vertical-align: middle;
+}
+.grecaptcha-badge { visibility: hidden; }
