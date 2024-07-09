@@ -12,7 +12,7 @@
   "dependencies": {
     "@ant-design/cssinjs": "^1.18.0-alpha.5",
     "@ant-design/static-style-extract": "^1.0.2",
-    "@cdaxfx/ui": "^0.0.37",
+    "@cdaxfx/ui": "^0.0.38",
     "antd": "^5.11.5",
     "dayjs": "^1.11.10",
     "dayjs-plugin-utc": "^0.1.2",
