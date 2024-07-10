@@ -574,6 +574,15 @@ importers:
 
   site:
     dependencies:
+      '@ant-design/cssinjs':
+        specifier: ^1.21.0
+        version: 1.21.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@ant-design/icons':
+        specifier: ^5.3.7
+        version: 5.3.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@emotion/is-prop-valid':
+        specifier: ^1.2.2
+        version: 1.2.2
       '@tryghost/content-api':
         specifier: ^1.11.20
         version: 1.11.21

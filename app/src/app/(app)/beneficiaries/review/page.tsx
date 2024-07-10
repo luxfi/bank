@@ -7,7 +7,7 @@ import Flag from 'react-world-flags';
 import { BackButton } from '@/components/BackButton';
 import ModalResult from '@/components/ModalResult';
 
-import { ERoutingCodesNames } from '@/models/beneficiarie';
+import { ERoutingCodesNames } from '@/models/beneficiaries';
 import { currencyNameDictionary } from '@/models/countries';
 
 import { useNotification } from '@/context/Notification';

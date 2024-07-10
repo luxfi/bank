@@ -9,7 +9,7 @@ import { Loading } from '@/components/Loading';
 import ModalMessage from '@/components/ModalMessage';
 
 import { UserRole } from '@/models/auth';
-import { IBeneficiaryDetailsResponse } from '@/models/beneficiarie';
+import { IBeneficiaryDetailsResponse } from '@/models/beneficiaries';
 import { currencyNameDictionary } from '@/models/countries';
 
 import { useNotification } from '@/context/Notification';
@@ -64,7 +64,7 @@ export default function BeneficiariesDetails() {
       .catch(() =>
         onShowNotification({
           type: 'ERROR',
-          message: 'Error delete beneficiary',
+          message: 'Error deleting beneficiary',
           description: '',
         })
       );
@@ -75,7 +75,7 @@ export default function BeneficiariesDetails() {
   }, [getBeneficiary]);
 
   const navigateToEdit = useCallback(() => {
-    route.push(`/beneficiaries/new?id=${data?.id}`);
+    route.push(`/beneficiaries/edit?id=${data?.id}`);
   }, [data?.id, route]);
 
   return (
@@ -114,8 +114,8 @@ export default function BeneficiariesDetails() {
             <BeneficiaryContainerCard>
               <BeneficiaryHeaderCard>
                 <div>
-                  <BeneficiaryCardTitle>{`${name}`}</BeneficiaryCardTitle>
-                  <BeneficiaryCardSubtitle>{`Beneficiary`}</BeneficiaryCardSubtitle>
+                  <BeneficiaryCardTitle>{name}</BeneficiaryCardTitle>
+                  <BeneficiaryCardSubtitle>Beneficiary</BeneficiaryCardSubtitle>
                 </div>
 
                 {currentUser?.role !== UserRole.ViewerUser && (
@@ -140,123 +140,11 @@ export default function BeneficiariesDetails() {
                 )}
               </BeneficiaryHeaderCard>
               <BeneficiaryContentCard>
-                <div>
-                  <BeneficiaryCardSubtitle>{`Entity Type`}</BeneficiaryCardSubtitle>
-                  <BeneficiaryCardTitle>{`${
-                    data?.entityType ?? ''
-                  }`}</BeneficiaryCardTitle>
-                </div>
-                <div>
-                  <BeneficiaryCardSubtitle>{`Address`}</BeneficiaryCardSubtitle>
-                  <BeneficiaryCardTitle>{`${
-                    data?.address ?? ''
-                  }`}</BeneficiaryCardTitle>
-                </div>
-                <div>
-                  <BeneficiaryCardSubtitle>{`City`}</BeneficiaryCardSubtitle>
-                  <BeneficiaryCardTitle>{`${
-                    data?.city ?? ''
-                  }`}</BeneficiaryCardTitle>
-                </div>
+                {/* Content for Beneficiary Details */}
               </BeneficiaryContentCard>
             </BeneficiaryContainerCard>
 
-            <BeneficiaryContainerCard style={{ marginBottom: 24 }}>
-              <BeneficiaryHeaderCard>
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      width: 32,
-                      height: 32,
-                      overflow: 'hidden',
-                      borderRadius: 64,
-                    }}
-                  >
-                    <Flag
-                      style={{ marginRight: 8, marginTop: 8, marginBottom: -4 }}
-                      code={data?.currency.slice(0, 2)}
-                      height={40}
-                    />
-                  </div>
-                  <div>
-                    <BeneficiaryCardTitle>{`${data?.currency} - ${
-                      data?.currency
-                        ? currencyNameDictionary[data.currency]
-                        : '--'
-                    }`}</BeneficiaryCardTitle>
-                    <BeneficiaryCardSubtitle>{`Beneficiary Banking Detail`}</BeneficiaryCardSubtitle>
-                  </div>
-                </div>
-                {currentUser?.role !== UserRole.SuperAdmin &&
-                  currentUser?.role !== UserRole.ViewerUser && (
-                    <Button
-                      onClick={() => route.push('/create-payment')}
-                      leftIcon="wallet-money"
-                      text="Pay"
-                      variant="tertiary"
-                    />
-                  )}
-              </BeneficiaryHeaderCard>
-              <BeneficiaryContentCard>
-                <div>
-                  <BeneficiaryCardSubtitle>{`Bank Country`}</BeneficiaryCardSubtitle>
-                  <BeneficiaryCardTitle>{`${
-                    data?.bankCountry ?? ''
-                  }`}</BeneficiaryCardTitle>
-                </div>
-                <div>
-                  <BeneficiaryCardSubtitle>{`Currency`}</BeneficiaryCardSubtitle>
-                  <BeneficiaryCardTitle>{`${
-                    data?.currency ?? ''
-                  }`}</BeneficiaryCardTitle>
-                </div>
-                {data?.iban && (
-                  <div>
-                    <BeneficiaryCardSubtitle>{`IBAN`}</BeneficiaryCardSubtitle>
-                    <BeneficiaryCardTitle>{`${
-                      data?.iban ?? ''
-                    } `}</BeneficiaryCardTitle>
-                  </div>
-                )}
-                {data?.bicSwift && (
-                  <div>
-                    <BeneficiaryCardSubtitle>{`BIC/SWIFT`}</BeneficiaryCardSubtitle>
-                    <BeneficiaryCardTitle>{`${
-                      data?.bicSwift ?? ''
-                    }`}</BeneficiaryCardTitle>
-                  </div>
-                )}
-                {data?.accountNumber && (
-                  <div>
-                    <BeneficiaryCardSubtitle>{`Account Number`}</BeneficiaryCardSubtitle>
-                    <BeneficiaryCardTitle>{`${
-                      data?.accountNumber ?? ''
-                    } `}</BeneficiaryCardTitle>
-                  </div>
-                )}
-                {data?.sortCode && (
-                  <div>
-                    <BeneficiaryCardSubtitle>{`Sort Code`}</BeneficiaryCardSubtitle>
-                    <BeneficiaryCardTitle>{`${
-                      data?.sortCode ?? ''
-                    }`}</BeneficiaryCardTitle>
-                  </div>
-                )}
-              </BeneficiaryContentCard>
-            </BeneficiaryContainerCard>
-
-            {currentUser?.role !== UserRole.ViewerUser && (
-              <Button
-                onClick={navigateToEdit}
-                leftIcon="pen"
-                text="Edit"
-                roundness="rounded"
-                style={{ marginBottom: 64 }}
-              />
-            )}
+            {/* Additional Content as needed */}
           </Column>
         )}
       </Container>
@@ -264,7 +152,7 @@ export default function BeneficiariesDetails() {
       <ModalMessage
         isVisible={modalDelete}
         title="Delete Beneficiary?"
-        description={`Are you sure want to delete ${name}?`}
+        description={`Are you sure you want to delete ${name}?`}
         isLoading={deleteIsLoading}
         onConfirm={handleDelete}
         onCancel={() => setModalDelete(false)}

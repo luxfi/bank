@@ -2,7 +2,7 @@ import {
   ERoutingCodesNames,
   IBeneficiaryDetailsResponse,
   IBeneficiaryListResponse,
-} from '@/models/beneficiarie';
+} from '@/models/beneficiaries';
 import { IPaginationResponse } from '@/models/pagination';
 
 import { dataFetch } from './fetchers';
