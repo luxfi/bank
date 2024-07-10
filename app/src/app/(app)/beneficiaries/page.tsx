@@ -1,19 +1,18 @@
-'use client'
+'use client';
 
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
 
 import { ButtonWithIcon } from '@/components/ButtonWithIcon';
 import { Drawer } from '@/components/Drawer';
 import { FilterTagsGroup } from '@/components/FilterTagsGroup';
-import ModalMessage from '@/components/ModalMessage'; // Changed to default import
+import ModalMessage from '@/components/ModalMessage';
 import ModalResult from '@/components/ModalResult';
 import Select from '@/components/Select';
-import Table from '@/components/Table'; // Assuming Table is a default export
+import Table from '@/components/Table';
 
 import { UserRole } from '@/models/auth';
-import { IBeneficiaryListResponse } from '@/models/beneficiaries'; // Assuming the file is named 'beneficiary' not 'beneficiaries'
+import { IBeneficiaryListResponse } from '@/models/beneficiaries';
 
 import { useNotification } from '@/context/Notification';
 
@@ -81,7 +80,7 @@ export default function Beneficiaries() {
         type: 'success',
         message: `The beneficiary ${name} has been approved.`
       });
-      await fetchBeneficiaries();
+      await getBeneficiaries();
     } catch (error) {
       onShowNotification({
         type: 'error',
@@ -145,11 +144,9 @@ export default function Beneficiaries() {
             <TitleFilters>Filters</TitleFilters>
           </TitleFiltersContainer>
           <FiltersContent>
-            {/* Additional filter components */}
           </FiltersContent>
         </DrawerContainer>
       </Drawer>
-      {/* Modals and other components */}
     </Container>
   );
 }
