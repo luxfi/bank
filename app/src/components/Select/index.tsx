@@ -17,14 +17,14 @@ import { Container, Label, StyledSelect } from './styles';
 interface IProps {
   label: string | JSX.Element;
   containerStyle?: CSSProperties;
-  defaultValue?: string;
+  defaultValue?: string | string[];
   placeholder?: string;
   error?: string;
-  value?: string;
+  value?: string | string[];
   disabled?: boolean;
   mode?: 'multiple' | 'tags';
   options?: Array<DefaultOptionType>;
-  onChange(value: string): void;
+  onChange(value: string | string[]): void;
   password?: boolean;
   helper?: string;
   warning?: string;
@@ -52,38 +52,28 @@ export default function Select({
 }: IProps) {
   const { theme } = useTheme();
   const handleChange = useCallback(
-    (value: string | Array<string>) => {
-      if (mode === 'multiple' && Array.isArray(value)) {
-        if (value.length === 0) return onChange('');
-
-        return onChange(value?.[0]);
-      }
-
-      onChange(value as string);
+    (value: string | string[]) => {
+      onChange(value);
     },
-    [onChange, mode]
+    [onChange]
   );
 
-  const getValue = useMemo((): string | Array<string> | undefined => {
-    if (mode === 'multiple' && value) {
-      return [value];
+  const getValue = useMemo((): string | string[] | undefined => {
+    if (mode === 'multiple' && typeof value !== 'undefined') {
+      return Array.isArray(value) ? value : [value];
     }
-
-    if (!value) {
-      return undefined;
-    }
-
     return value;
   }, [value, mode]);
 
   const getOptions = useCallback(
     (menu: ReactElement<any, string | JSXElementConstructor<any>>) => {
-      if (isLoading)
+      if (isLoading) {
         return (
           <Column width="100%" height="200px" align="center" justify="center">
             <Spin />
           </Column>
         );
+      }
       return menu;
     },
     [isLoading]
@@ -138,8 +128,8 @@ export default function Select({
             error
               ? theme.textColor.feedback['icon-negative'].value
               : warning
-                ? theme.textColor.feedback['icon-warning'].value
-                : theme.textColor.layout.secondary.value
+              ? theme.textColor.feedback['icon-warning'].value
+              : theme.textColor.layout.secondary.value
           }
         >
           {error || warning || helper}
