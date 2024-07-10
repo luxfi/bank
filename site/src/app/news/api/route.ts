@@ -11,8 +11,12 @@ export async function GET(request: Request) {
     tag: searchParams.get("tag") ?? undefined,
   });
 
-  return Response.json({
+  return new Response(JSON.stringify({
     posts: response.posts,
     pagination: response.pagination,
+  }), {
+    headers: {
+      'Content-Type': 'application/json'
+    }
   });
 }
