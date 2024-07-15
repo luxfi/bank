@@ -4,11 +4,11 @@ import { useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link'; // Correct import from 'next/link'
 
-import { useAppDispatch } from '@admin/app/hooks';
-import Button from '@admin/components/Button';
-import InputField from '@admin/components/InputField';
-import Layout from '@admin/components/Layout';
-import { submitRegistrationRequest } from '@admin/features/requestRegistration/RequestRegistrationSlice';
+import { useAppDispatch } from '@legacy/app/hooks';
+import Button from '@legacy/components/Button';
+import InputField from '@legacy/components/InputField';
+import Layout from '@legacy/components/Layout';
+import { submitRegistrationRequest } from '@legacy/features/requestRegistration/RequestRegistrationSlice';
 import { Form, Formik, useFormik } from 'formik';
 import styled from 'styled-components';
 import * as yup from 'yup';
