@@ -1,33 +1,23 @@
-export type TState = {
-  currencieCountries: Array<ICurrenciesAndCountries>;
-  countries: Array<ICurrenciesAndCountries>;
-
-  allCurrencies: Array<ICurrenciesResponse>;
-  balances: Array<ICurrenciesResponse>;
-};
-
-export type TActions = {
-  getCurrenciesCountries(): Promise<void>;
-  getCountries(): Promise<void>;
-  setAllCurrencies(): Promise<void>;
-  setBalances(): Promise<void>;
-};
-
-export interface ICurrenciesAndCountries {
-  code: string;
+export interface Country {
+  id: string;
   name: string;
 }
 
-export interface ICurrenciesResponse {
-  currency: string;
+export interface CurrencyCountry {
+  id: string;
   name: string;
-  amount?: number;
 }
 
-export const PATHS = {
-  COUNTRIES: `/api/v2/misc/countries`,
-  CURRENCIES_COUNTRIES: `/api/v2/misc/currencies`,
+export interface TState {
+  countries: Country[];
+  currenciesCountries: CurrencyCountry[]; // Ensure this is included
+  allCurrencies: any[];
+  balances: any[];
+}
 
-  CURRENCIES: `/api/v2/wallets/currencies`,
-  BALANCES: '/api/v2/wallets/balances',
-};
+export interface TActions {
+  getCountries: () => Promise<void>;
+  getCurrenciesCountries: () => Promise<void>;
+  setAllCurrencies: () => Promise<void>;
+  setBalances: () => Promise<void>;
+}

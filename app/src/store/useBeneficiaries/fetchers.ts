@@ -1,4 +1,4 @@
-import { IBeneficiaryListResponse } from '@/models/beneficiarie';
+import { IBeneficiaryListResponse } from '@/models/beneficiaries';
 import { IPaginationResponse } from '@/models/pagination';
 
 import { IBeneficiariesFilters } from '@/app/(app)/beneficiaries/type';
