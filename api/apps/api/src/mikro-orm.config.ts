@@ -58,9 +58,9 @@ const config: Partial<MikroORMOptions<IDatabaseDriver<Connection>>> = {
   clientUrl: process.env.DATABASE_URL,
   driverOptions: {
     connection: {
-      ssl: {
-        ca: fs.readFileSync('./rds-us-east-1-bundle.pem'),
-      },
+      // ssl: {
+      //   ca: fs.readFileSync('./rds-us-east-1-bundle.pem'),
+      // },
     },
   },
   allowGlobalContext: true,

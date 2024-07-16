@@ -3,19 +3,19 @@ import { Migration } from '@mikro-orm/migrations';
 export class Migration20221005145500 extends Migration {
 
   async up(): Promise<void> {
-    this.addSql('alter table `account` drop index `account_risk_assessment_uuid_index`;');
-    this.addSql('alter table `account` drop `risk_assessment_uuid`;');
+    // this.addSql('alter table `account` drop index `account_risk_assessment_uuid_index`;');
+    // this.addSql('alter table `account` drop `risk_assessment_uuid`;');
 
     this.addSql('alter table `director` modify `uuid` varchar(36) not null;');
 
-    this.addSql('alter table `broker` add constraint `broker_account_uuid_foreign` foreign key (`account_uuid`) references `account` (`uuid`) on update cascade on delete set null;');
+    // this.addSql('alter table `broker` add constraint `broker_account_uuid_foreign` foreign key (`account_uuid`) references `account` (`uuid`) on update cascade on delete set null;');
 
     this.addSql('alter table `shareholder` modify `uuid` int unsigned not null auto_increment;');
 
-    this.addSql('alter table `contact` drop index `contact_risk_assessment_uuid_unique`;');
-    this.addSql('alter table `contact` drop index `contact_risk_assessment_uuid_index`;');
-    this.addSql('alter table `contact` drop `risk_assessment_uuid`;');
-    this.addSql('alter table `contact` add constraint `contact_account_uuid_foreign` foreign key (`account_uuid`) references `account` (`uuid`) on update cascade on delete set null;');
+    // this.addSql('alter table `contact` drop index `contact_risk_assessment_uuid_unique`;');
+    // this.addSql('alter table `contact` drop index `contact_risk_assessment_uuid_index`;');
+    // this.addSql('alter table `contact` drop `risk_assessment_uuid`;');
+    // this.addSql('alter table `contact` add constraint `contact_account_uuid_foreign` foreign key (`account_uuid`) references `account` (`uuid`) on update cascade on delete set null;');
   }
 
   async down(): Promise<void> {

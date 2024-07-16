@@ -51,9 +51,9 @@ export class Migration20220927135918 extends Migration {
     this.addSql(
       'alter table `contact` drop index `contact_invitation_uuid_index`;',
     );
-    this.addSql(
-      'alter table `contact` add constraint `contact_account_uuid_foreign` foreign key (`account_uuid`) references `account` (`uuid`) on update cascade on delete set null;',
-    );
+    // this.addSql(
+    //   'alter table `contact` add constraint `contact_account_uuid_foreign` foreign key (`account_uuid`) references `account` (`uuid`) on update cascade on delete set null;',
+    // );
 
     this.addSql(
       'alter table `user_document` drop index `user_document_document_uuid_index`;',
