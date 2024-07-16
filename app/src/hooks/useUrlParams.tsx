@@ -80,14 +80,11 @@ const useUrlSearchParams = <T extends object>({
       if (value) paramsObject[key] = value;
     });
 
-    setParamsObj(paramsObject as T);
-
     return paramsObject as T;
   }, [baseParams]);
 
   return {
-    //isFiltered: !!searchParams.toString().length,
-    isFiltered: isFiltered,
+    isFiltered,
     urlParams: paramsObj || updatedUrlParams,
     applyUrlParams,
     setUrlSearchParam,

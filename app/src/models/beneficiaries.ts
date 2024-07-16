@@ -49,3 +49,7 @@ export interface IBeneficiaryListResponse {
   status: 'approved' | 'pending';
   account: string;
 }
+
+export interface IBeneficiariesResponse { // Add this interface
+  beneficiaries: IBeneficiaryListResponse[];
+}

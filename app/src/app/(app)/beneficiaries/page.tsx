@@ -12,7 +12,7 @@ import Select from '@/components/Select';
 import Table from '@/components/Table';
 
 import { UserRole } from '@/models/auth';
-import { IBeneficiaryListResponse } from '@/models/beneficiaries';
+import { IBeneficiaryListResponse, IBeneficiariesResponse } from '@/models/beneficiaries';
 
 import { useNotification } from '@/context/Notification';
 
@@ -55,7 +55,7 @@ export default function Beneficiaries() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
-  const [dataSource, setDataSource] = useState([]);
+  const [dataSource, setDataSource] = useState<IBeneficiaryListResponse[]>([]);
   const [pagination, setPagination] = useState({ total: 0, limit: 10, page: 1 });
   const [sorting, setSorting] = useState({ orderBy: '', order: undefined });
 
@@ -63,8 +63,8 @@ export default function Beneficiaries() {
     const fetchBeneficiaries = async () => {
       setIsLoading(true);
       try {
-        const response = await getBeneficiaries({ ...urlParams, page: pagination.page, limit: pagination.limit, orderBy: sorting.orderBy, order: sorting.order });
-        setDataSource(response);
+        const response: IBeneficiariesResponse = await getBeneficiaries({ ...urlParams, page: pagination.page, limit: pagination.limit, orderBy: sorting.orderBy, order: sorting.order });
+        setDataSource(response.beneficiaries); // Assuming response has a 'beneficiaries' field that is an array of IBeneficiaryListResponse
       } finally {
         setIsLoading(false);
       }
@@ -72,27 +72,27 @@ export default function Beneficiaries() {
     fetchBeneficiaries();
   }, [pagination.page, sorting.orderBy, sorting.order, urlParams, getBeneficiaries]);
 
-  const handleApprove = useCallback(async (id, name) => {
+  const handleApprove = useCallback(async (id: string, name: string) => {
     setIsLoading(true);
     try {
       await approveBeneficiary(id);
       onShowNotification({
         type: 'success',
-        message: `The beneficiary ${name} has been approved.`
+        message: `The beneficiary ${name} has been approved.`,
       });
       await getBeneficiaries();
     } catch (error) {
       onShowNotification({
         type: 'error',
         message: 'Approval failed',
-        description: error.message
+        description: (error as Error).message,
       });
     } finally {
       setIsLoading(false);
     }
   }, [getBeneficiaries, onShowNotification]);
 
-  const actionsColumn = (data) => (
+  const actionsColumn = (data: IBeneficiaryListResponse) => (
     <Row gap="xxs">
       <ButtonWithIcon
         label="Pay"
@@ -130,7 +130,7 @@ export default function Beneficiaries() {
           actionsContainer={actionsColumn}
           rowKey={(r) => r.id}
           pagination={{
-            onChangePage: (page) => setPagination(prev => ({ ...prev, page })),
+            onChangePage: (page) => setPagination((prev) => ({ ...prev, page })),
             totalPage: pagination.total,
             currentPage: pagination.page,
             currentPageSize: pagination.limit,

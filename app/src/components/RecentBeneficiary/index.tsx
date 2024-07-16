@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 
-import { IBeneficiaryListResponse } from '@/models/beneficiarie';
+import { IBeneficiaryListResponse } from '@/models/beneficiaries';
 
 import { Container, ContainerRounded, Text, Title } from './styles';
 
