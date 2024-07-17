@@ -1,0 +1,29 @@
+{
+  "name": "@cdaxfx/ports-currency-cloud",
+  "version": "1.0.2",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [
+    "typescript",
+    "npm",
+    "nestjs",
+    "cdaxfx",
+    "package"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@cdaxfx/tools-misc": "^1.0.2",
+    "@cdaxfx/tools-models": "^1.0.2",
+    "@nestjs/common": "^10.3.10"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.11",
+    "typescript": "^5.5.3"
+  }
+}
