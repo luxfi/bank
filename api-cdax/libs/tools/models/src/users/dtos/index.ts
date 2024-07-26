@@ -1,5 +1,6 @@
 export * from './admin-client.dto';
 export * from './admin-create-user.dto';
+export * from './admin-create-super-user.dto';
 export * from './admin-invitation.dto';
 export * from './admin-reset-password.dto';
 export * from './bank-metadata.dto';
@@ -17,6 +18,7 @@ export * from './request-access.dto';
 export * from './reset-password.dto';
 export * from './risk-assessment.dto';
 export * from './select-users.dto';
+export * from './select-users-by-client.dto';
 export * from './shareholder.dto';
 export * from './user-documents.dto';
 export * from './user-metadata.dto';

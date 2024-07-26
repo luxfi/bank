@@ -16,6 +16,8 @@ import { CreateBeneficiaryRequest } from './requests/beneficiary.request';
 import { CurrencyCloudErrorResponse, CurrencyCloudError } from './utils/error.response';
 
 export * from './types';
+export * from './requests/beneficiary.request';
+export * from './responses/conversion.response';
 
 export class PaymentProviderCurrencyCloud extends CoreRequester {
   constructor() {
@@ -29,7 +31,7 @@ export class PaymentProviderCurrencyCloud extends CoreRequester {
   async updateBeneficiary(id: string, beneficiary: any, contactId: string | null, user: User): Promise<string | undefined> {
     if (contactId)
       beneficiary.onBehalfOf = contactId;
-    
+
     try {
       const response = await this.postRequest(
         `beneficiaries/${id}`,
@@ -41,7 +43,7 @@ export class PaymentProviderCurrencyCloud extends CoreRequester {
 
       if (response.status === 200)
         return response.data.id;
-    } 
+    }
     catch (err) {
       throw new CurrencyCloudErrorResponse(err as AxiosError<CurrencyCloudError>);
     }
@@ -64,7 +66,7 @@ export class PaymentProviderCurrencyCloud extends CoreRequester {
 
       if (result.status === 200)
         return result.data;
-    } 
+    }
     catch (err) {
       throw new CurrencyCloudErrorResponse(err as AxiosError<CurrencyCloudError>);
     }
@@ -81,7 +83,7 @@ export class PaymentProviderCurrencyCloud extends CoreRequester {
 
       if (result.status === 200)
         return result.data;
-    } 
+    }
     catch (err) {
       throw new CurrencyCloudErrorResponse(err as AxiosError<CurrencyCloudError>);
     }
@@ -115,7 +117,7 @@ export class PaymentProviderCurrencyCloud extends CoreRequester {
       }
 
       return result;
-    } 
+    }
     catch (err) {
       throw new CurrencyCloudErrorResponse(err as AxiosError<CurrencyCloudError>);
     }
@@ -129,7 +131,7 @@ export class PaymentProviderCurrencyCloud extends CoreRequester {
         user,
         params
       );
-    } 
+    }
     catch (err) {
       throw new CurrencyCloudErrorResponse(err as AxiosError<CurrencyCloudError>);
     }
@@ -138,7 +140,7 @@ export class PaymentProviderCurrencyCloud extends CoreRequester {
   async getTransaction(id: string, user: User): Promise<Transaction> {
     try {
       return await this.getRequest<Transaction>(`transactions/${id}`, {}, user);
-    } 
+    }
     catch (err) {
       throw new CurrencyCloudErrorResponse(err as AxiosError<CurrencyCloudError>);
     }
@@ -152,7 +154,7 @@ export class PaymentProviderCurrencyCloud extends CoreRequester {
         user,
         params
       );
-    } 
+    }
     catch (err) {
       throw new CurrencyCloudErrorResponse(err as AxiosError<CurrencyCloudError>);
     }
@@ -168,7 +170,7 @@ export class PaymentProviderCurrencyCloud extends CoreRequester {
           conversion_pair,
         }
       );
-    } 
+    }
     catch (err) {
       throw new CurrencyCloudErrorResponse(err as AxiosError<CurrencyCloudError>);
     }
@@ -191,7 +193,7 @@ export class PaymentProviderCurrencyCloud extends CoreRequester {
         user,
         params
       );
-    } 
+    }
     catch (err) {
       throw new CurrencyCloudErrorResponse(err as AxiosError<CurrencyCloudError>);
     }
@@ -218,7 +220,7 @@ export class PaymentProviderCurrencyCloud extends CoreRequester {
       if (response.status === 200) {
         return response.data;
       }
-    } 
+    }
     catch (err) {
       throw new CurrencyCloudErrorResponse(err as AxiosError<CurrencyCloudError>);
     }
@@ -230,7 +232,7 @@ export class PaymentProviderCurrencyCloud extends CoreRequester {
       delete data.account_id;
       if (!data.purpose_code || data.purpose_code == '-1')
         delete data.purpose_code;
-      
+
       const response = await this.postRequest(
         'payments/create',
         { ...data, unique_request_id: transactionId },
@@ -240,7 +242,7 @@ export class PaymentProviderCurrencyCloud extends CoreRequester {
 
       if (response.status === 200)
         return response.data;
-    } 
+    }
     catch (err) {
       throw new CurrencyCloudErrorResponse(err as AxiosError<CurrencyCloudError>);
     }
@@ -261,7 +263,7 @@ export class PaymentProviderCurrencyCloud extends CoreRequester {
           }))
         };
       }
-    } 
+    }
     catch (err) {
       throw new CurrencyCloudErrorResponse(err as AxiosError<CurrencyCloudError>);
     }
@@ -271,7 +273,7 @@ export class PaymentProviderCurrencyCloud extends CoreRequester {
     try {
       const response = await this.getRequest(`balances/${currency}`, {}, user);
       return response;
-    } 
+    }
     catch (err) {
       throw new CurrencyCloudErrorResponse(err as AxiosError<CurrencyCloudError>);
     }
