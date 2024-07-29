@@ -6,7 +6,7 @@ import { CreatePaymentsResponse } from './types/payments.response.type';
 import { MailerService } from '@cdaxfx/ports-email';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import PendingPaymentEmail from '../../currency-cloud/emails/pending-payment';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 
 export class CreatePaymentIFXUseCase extends CreatePaymentUseCase {
     constructor(

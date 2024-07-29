@@ -7,7 +7,7 @@ import { ApprovePaymentResponse } from './types/approve-payment.response.type';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import ApprovePaymentEmail from '../../currency-cloud/emails/approve-payment';
 import { MailerService } from '@cdaxfx/ports-email';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 
 export class ApprovePaymentCCUseCase extends ApprovePaymentUseCase {
     constructor(

@@ -11,7 +11,7 @@ import { UserRole, ManagerRoles, UserRoles, MemberRoles, TransactionStatusApprov
 import { TransactionsService } from '../transactions/services/transactions.service';
 import { convertData } from './model/transaction-dto.transformer';
 import { TransactionDescriptionDto } from './model/currency-cloud-transaction.dto';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 
 @ApiTags('CurrencyCloud')
 @ApiBearerAuth()

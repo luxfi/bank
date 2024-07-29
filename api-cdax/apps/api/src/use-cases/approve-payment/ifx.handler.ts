@@ -7,7 +7,7 @@ import { Transaction, TransactionsRepository, TransactionStatus, TransactionStat
 import { ApprovePaymentUseCase } from './abstract.handler';
 import { ApprovePaymentRequest } from './types/approve-payment.request.type';
 import { ApprovePaymentResponse } from './types/approve-payment.response.type';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 
 export class ApprovePaymentIFXUseCase extends ApprovePaymentUseCase {
     constructor(

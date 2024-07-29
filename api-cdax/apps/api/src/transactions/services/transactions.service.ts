@@ -1,6 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Transaction, TransactionsRepository, TransactionStatusApproval, User, TransactionAction, TransactionStatusMap, TransactionStatus, UserRole, CurrencyCloudConversion } from '@cdaxfx/tools-models';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 import { FilterTransactions } from '../model/filter-transactions.request.dto';
 
 @Injectable()

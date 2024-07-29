@@ -4,7 +4,7 @@ import { ETransactionStatus, ETransactionType } from '@cdaxfx/ports-ifx';
 import { GetTransactionsUseCase } from './abstract.handler';
 import { ListTransactionsRequest } from './types/transactions.request.type';
 import { GetTransactionsResponse, PaginationsResponse } from './types/transactions.response.type';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()

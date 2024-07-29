@@ -6,7 +6,7 @@ import { RiskAssessmentDto } from '../dtos';
 import { RiskAssessmentRepository } from '../repository';
 import { Account } from './account.entity';
 import { Document } from '../../documents-manager';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 
 @Entity({ repository: () => RiskAssessmentRepository })
 export class RiskAssessment extends BaseEntity {

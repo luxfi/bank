@@ -1,5 +1,5 @@
 import { AttachmentJSON } from '@sendgrid/helpers/classes/attachment';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import BaseEmail from '../../model/base-email';

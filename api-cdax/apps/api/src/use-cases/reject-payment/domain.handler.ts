@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { MailerService } from '@cdaxfx/ports-email';
 import RejectPaymentEmail from '../../currency-cloud/emails/reject-payment';
 import { Transaction, TransactionStatusApproval, TransactionsRepository, User } from '@cdaxfx/tools-models';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 import { RejectPaymentRequest } from './types/reject-payment.request.type';
 import { RejectPaymentResponse } from './types/reject-payment.response.type';
 

@@ -3,7 +3,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { PaymentProviderIFX } from '@cdaxfx/ports-ifx';
 import { TransactionStatus, TransactionStatusMap, TransactionsRepository, UsersRepository } from '@cdaxfx/tools-models';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 
 @Injectable()
 export class TransactionsCron {

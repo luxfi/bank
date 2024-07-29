@@ -2,7 +2,7 @@ import { ECurrencyCode } from '@cdaxfx/tools-misc';
 import { TransactionStatusResumed } from '@cdaxfx/tools-models';
 import { Transform } from 'class-transformer';
 import { IsEnum, IsOptional } from 'class-validator';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 
 enum EDateField {
     SETTLEMENT_AT = 'settlementAt',

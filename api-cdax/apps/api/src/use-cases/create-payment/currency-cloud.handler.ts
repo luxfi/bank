@@ -3,7 +3,7 @@ import { PaymentProviderCurrencyCloud } from '@cdaxfx/ports-currency-cloud';
 import { MailerService } from '@cdaxfx/ports-email';
 import PendingPaymentEmail from '../../currency-cloud/emails/pending-payment';
 import { BeneficiariesRepository, MemberRoles, Transaction, TransactionStatusApproval, TransactionsRepository, User, UsersRepository, TransactionStatus } from '@cdaxfx/tools-models';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 import { Request } from 'express';
 import { CreatePaymentUseCase } from './abstract.handler';
 import { CreatePaymentsRequest } from './types/payments.request.type';

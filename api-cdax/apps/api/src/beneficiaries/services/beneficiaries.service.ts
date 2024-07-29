@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, Inject, forwardRef, Logger } from '@ne
 import { BankMetadata, BankMetadataDto, BeneficiariesRepository, Beneficiary, CreateBeneficiaryDto, Currencies, User } from '@cdaxfx/tools-models';
 import { FilterBeneficiariesAccountDTO, FilterBeneficiariesDTO } from '@cdaxfx/tools-models';
 import axios from 'axios';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 import { CurrencyCloudService } from '../../currency-cloud/currency-cloud.service';
 import { MailerService } from '../../mailer/mailer.service';
 import { SwiftCodeService } from '../../swift-code/swift-code.service';

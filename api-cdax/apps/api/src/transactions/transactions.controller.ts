@@ -5,7 +5,7 @@ import { BeneficiariesRepository, ManagerRoles, TransactionStatus, TransactionSt
 import { Roles } from '../auth/roles.decorator';
 import { FilterTransactionsDTO } from './model/filter-transactions.request.dto';
 import { TransactionsService } from './services/transactions.service';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 
 @ApiTags('Transactions')
 @ApiBearerAuth()

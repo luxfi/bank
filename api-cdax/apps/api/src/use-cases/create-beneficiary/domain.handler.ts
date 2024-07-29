@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { MailerService } from '@cdaxfx/ports-email';
 import { isSwift } from '@cdaxfx/tools-misc';
 import { Account, BeneficiariesRepository, Beneficiary, User } from '@cdaxfx/tools-models';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 import { EEntityType, ReversedERoutingCodesNames, RoutingCodes } from '@cdaxfx/ports-ifx';
 import { CreateBeneficiaryRequest } from './types/beneficiary.request.type';
 import { BeneficiaryResponse } from './types/beneficiary.response.type';

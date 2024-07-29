@@ -1,6 +1,6 @@
 import { Transaction, TransactionStatusApproval } from '@cdaxfx/tools-models';
 
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 
 export function convertData(transaction: Transaction) {
     return {

@@ -16,7 +16,7 @@ import PendingPaymentEmail from './emails/pending-payment';
 import ApprovePaymentEmail from './emails/approve-payment';
 import RejectPaymentEmail from './emails/reject-payment';
 import { MailerService } from '../mailer/mailer.service';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 import { getConfigCurrencyCloud } from '@cdaxfx/tools-misc';
 
 @Injectable()
