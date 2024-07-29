@@ -4717,6 +4717,16 @@
           "length": 255,
           "mappedType": "string"
         },
+        "account": {
+          "name": "account",
+          "type": "varchar(36)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 36,
+          "mappedType": "string"
+        },
         "balance_id": {
           "name": "balance_id",
           "type": "varchar(255)",
@@ -4935,6 +4945,16 @@
           "primary": false,
           "nullable": true,
           "length": 255,
+          "mappedType": "string"
+        },
+        "beneficiary": {
+          "name": "beneficiary",
+          "type": "varchar(36)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 36,
           "mappedType": "string"
         },
         "cdax_beneficiary_id": {
@@ -5271,14 +5291,24 @@
           "length": 255,
           "mappedType": "string"
         },
-        "creator_uuid": {
-          "name": "creator_uuid",
+        "creator": {
+          "name": "creator",
           "type": "varchar(36)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": true,
           "length": 36,
+          "mappedType": "string"
+        },
+        "creator_uuid": {
+          "name": "creator_uuid",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 255,
           "mappedType": "string"
         },
         "client_uuid": {
@@ -5289,6 +5319,16 @@
           "primary": false,
           "nullable": true,
           "length": 255,
+          "mappedType": "string"
+        },
+        "client": {
+          "name": "client",
+          "type": "varchar(36)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 36,
           "mappedType": "string"
         },
         "approver_uuid": {
@@ -5310,6 +5350,16 @@
           "nullable": true,
           "length": 255,
           "mappedType": "string"
+        },
+        "approver": {
+          "name": "approver",
+          "type": "varchar(36)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 36,
+          "mappedType": "string"
         }
       },
       "name": "transaction",
@@ -5328,10 +5378,62 @@
       ],
       "checks": [],
       "foreignKeys": {
-        "transaction_creator_uuid_foreign": {
-          "constraintName": "transaction_creator_uuid_foreign",
+        "transaction_account_foreign": {
+          "constraintName": "transaction_account_foreign",
           "columnNames": [
-            "creator_uuid"
+            "account"
+          ],
+          "localTableName": "public.transaction",
+          "referencedColumnNames": [
+            "uuid"
+          ],
+          "referencedTableName": "public.account",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "transaction_beneficiary_foreign": {
+          "constraintName": "transaction_beneficiary_foreign",
+          "columnNames": [
+            "beneficiary"
+          ],
+          "localTableName": "public.transaction",
+          "referencedColumnNames": [
+            "uuid"
+          ],
+          "referencedTableName": "public.beneficiary",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "transaction_creator_foreign": {
+          "constraintName": "transaction_creator_foreign",
+          "columnNames": [
+            "creator"
+          ],
+          "localTableName": "public.transaction",
+          "referencedColumnNames": [
+            "uuid"
+          ],
+          "referencedTableName": "public.user",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "transaction_client_foreign": {
+          "constraintName": "transaction_client_foreign",
+          "columnNames": [
+            "client"
+          ],
+          "localTableName": "public.transaction",
+          "referencedColumnNames": [
+            "uuid"
+          ],
+          "referencedTableName": "public.client",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "transaction_approver_foreign": {
+          "constraintName": "transaction_approver_foreign",
+          "columnNames": [
+            "approver"
           ],
           "localTableName": "public.transaction",
           "referencedColumnNames": [
