@@ -1,4 +1,4 @@
-import { Cascade, Collection, Entity, EntityRepositoryType, ManyToMany, OneToMany, OneToOne, Property, serialize } from '@mikro-orm/core';
+import { Cascade, Collection, Entity, EntityRepositoryType, ManyToMany, ManyToOne, OneToMany, OneToOne, Property, serialize } from '@mikro-orm/core';
 import { BadRequestException } from '@nestjs/common';
 import { compareHash, generateCodeAndHash, generateHash } from '@cdaxfx/tools-misc';
 import { Client } from '../../clients';
@@ -32,7 +32,7 @@ export class User extends BaseEntity {
   @Property({ nullable: true })
   profileImage: string;
 
-  @Property({ default: 0 })
+  @Property({ default: false })
   hasAcceptedTerms: boolean;
 
   @Property({ nullable: true })
@@ -86,8 +86,12 @@ export class User extends BaseEntity {
   @Property({ persist: false })
   personatedBy: string;
 
+  // @Exclude()
+  // @Property({ type: Client, nullable: true, persist: false })
+  // private currentClient: Client | null;
+
   @Exclude()
-  @Property({ type: Client, nullable: true, persist: false })
+  @ManyToOne(() => Client, {nullable: true, eager: false})
   private currentClient: Client | null;
 
   @Expose({ name: 'metadata' })

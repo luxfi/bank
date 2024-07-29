@@ -78,7 +78,7 @@ export class Beneficiary extends BaseEntity {
   @Property({ nullable: true })
   openPaydId?: string;
 
-  @Property({ nullable: true, default: 0 })
+  @Property({ nullable: true, default: false })
   isApproved?: boolean;
 
   @Property({ nullable: true })

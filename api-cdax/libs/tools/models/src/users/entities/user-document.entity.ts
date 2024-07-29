@@ -9,7 +9,7 @@ import { User } from './user.entity';
 
 @Entity()
 export class UserDocument extends BaseEntity {
-  @Property({ default: 0 })
+  @Property({ default: false })
   isApproved: boolean;
 
   @Property({ nullable: true })

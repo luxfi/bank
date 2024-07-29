@@ -11,7 +11,7 @@ import { BeneficiariesModule } from './beneficiaries/beneficiaries.module';
 import { ClientsModule } from './clients/clients.module';
 import { CurrencyCloudModule } from './currency-cloud/currency-cloud.module';
 import { DocumentsManagerModule } from './documents-manager/documents-manager.module';
-import MikroOrmConfig from './mikro-orm.config';
+import MikroOrmConfig from '../mikro-orm.config';
 import { UsersModule } from './users/users.module';
 import { WebhooksModule } from './webhooks/webhooks.module';
 import { MailContactModule } from './mail-contact/mail-contact.module';

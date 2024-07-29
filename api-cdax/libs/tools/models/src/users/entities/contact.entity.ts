@@ -28,7 +28,7 @@ export class Contact extends BaseEntity {
   @Property({ nullable: true })
   mobileNumber?: string;
 
-  @Property({ default: 0 })
+  @Property({ default: false })
   isApproved: boolean;
 
   @Property({ nullable: true })
@@ -37,7 +37,7 @@ export class Contact extends BaseEntity {
   @Property({ nullable: true })
   expectedValueOfTurnover: string;
 
-  @Property({ default: 0 })
+  @Property({ default: false })
   isSubAccount: boolean;
 
   @Property({ nullable: true })

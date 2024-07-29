@@ -1,4 +1,4 @@
-import { Cascade, Collection, Entity, EntityRepositoryType, Enum, OneToMany, OneToOne, Property } from '@mikro-orm/core';
+import { Cascade, Collection, Entity, EntityRepositoryType, Enum, ManyToOne, OneToMany, OneToOne, Property } from '@mikro-orm/core';
 import { Exclude, Type } from 'class-transformer';
 import { BaseEntity } from '../../base';
 import { Beneficiary } from '../../beneficiaries';
@@ -89,10 +89,13 @@ export class Account extends BaseEntity {
   @OneToOne({ nullable: true, owner: true, cascade: [Cascade.ALL] })
   fee: Fee;
 
-  @Property({ nullable: true, default: 0 })
+  @Property({ nullable: true, default: false })
   isApproved: boolean;
 
-  @Property({ type: User, nullable: true, persist: false })
+  //  @Property({ type: User, nullable: true, persist: false })
+  //   users: User[]; 
+
+  @ManyToOne(() => User, {nullable: true, eager: false})
   users: User[];
 
   @Exclude()
@@ -134,7 +137,7 @@ export class Account extends BaseEntity {
 
     if (!this.individualMetadata)
       this.individualMetadata = new IndividualMetadata();
-    
+
     await this.individualMetadata.updateFromDto(data, exclude);
   }
 
@@ -144,7 +147,7 @@ export class Account extends BaseEntity {
 
     if (!this.businessMetadata)
       this.businessMetadata = new BusinessMetadata();
-    
+
     await this.businessMetadata.updateFromDto(data);
   }
 

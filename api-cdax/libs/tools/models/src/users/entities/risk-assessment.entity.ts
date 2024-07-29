@@ -172,8 +172,8 @@ export class RiskAssessment extends BaseEntity {
   @Property({ nullable: true })
   riskRatingAssessmentNotesReRationaleToJustify: string;
 
-  @Property({ nullable: true })
-  raAttachDocumentUuid: string;
+  // @Property({ nullable: true })
+  // raAttachDocumentUuid: string;
 
   @OneToOne({ entity: () => Document, nullable: true })
   raAttachDocument: Document;
@@ -255,7 +255,7 @@ export class RiskAssessment extends BaseEntity {
     this.completeNotesRationaleToJustify = data.completeNotesRationaleToJustify;
     this.jurisdictionIsCompanyOwnershipDirectors = data.jurisdictionIsCompanyOwnershipDirectors;
     this.riskRatingAssessmentNotesReRationaleToJustify = data.riskRatingAssessmentNotesReRationaleToJustify;
-    this.raAttachDocumentUuid = data.raAttachDocumentUuid;
+    // this.raAttachDocumentUuid = data.raAttachDocumentUuid;
     this.completeWhereApplicableNameOfDirector = data.completeWhereApplicableNameOfDirector;
     this.businessPurposeIfYesWhoItRegulatedBy = data.businessPurposeIfYesWhoItRegulatedBy;
     this.residenceNationalityResidenceOfBeneficial = data.residenceNationalityResidenceOfBeneficial;

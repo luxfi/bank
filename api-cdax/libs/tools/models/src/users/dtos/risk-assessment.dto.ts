@@ -242,9 +242,9 @@ export class RiskAssessmentDto {
   @IsOptional()
   riskRatingAssessmentNotesReRationaleToJustify: string;
 
-  @ApiProperty()
-  @IsOptional()
-  raAttachDocumentUuid: string;
+  // @ApiProperty()
+  // @IsOptional()
+  // raAttachDocumentUuid: string;
 
   @ApiProperty()
   @IsOptional()

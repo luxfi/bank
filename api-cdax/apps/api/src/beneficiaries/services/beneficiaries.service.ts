@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Inject, forwardRef, Logger } from '@nestjs/common';
 import { BankMetadata, BankMetadataDto, BeneficiariesRepository, Beneficiary, CreateBeneficiaryDto, Currencies, User } from '@cdaxfx/tools-models';
 import { FilterBeneficiariesAccountDTO, FilterBeneficiariesDTO } from '@cdaxfx/tools-models';
 import axios from 'axios';
@@ -21,9 +21,12 @@ export class BeneficiariesService {
 
     constructor(
         private readonly beneficiariesRepository: BeneficiariesRepository,
+        @Inject(forwardRef(() => CurrencyCloudService))
         private readonly currencyCloudService: CurrencyCloudService,
         // private readonly openPaydService: OpenPaydService,
+        @Inject(forwardRef(() => SwiftCodeService))
         private readonly swiftCodeService: SwiftCodeService,
+        @Inject(forwardRef(() => MailerService))
         private readonly mailer: MailerService
     ) { }
 

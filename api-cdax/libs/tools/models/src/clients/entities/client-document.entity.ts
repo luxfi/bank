@@ -8,7 +8,7 @@ import { DocumentType } from '../../users/enums';
 
 @Entity({ repository: () => ClientDocumentsRepository })
 export class ClientDocument extends BaseEntity {
-  @Property({ default: 0 })
+  @Property({ default: false })
   isApproved: boolean;
 
   @Property({ type: String })

@@ -17,7 +17,7 @@ export class Client extends BaseEntity {
   users = new Array<User>();
 
   @Exclude()
-  @Property({ default: 0, persist: false })
+  @Property({ default: false, persist: false })
   isSubAccount: boolean;
 
   @Exclude()

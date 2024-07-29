@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import Twilio from 'twilio';
+import { Twilio } from 'twilio';
 
 @Injectable()
 export class TwoFaVerificationService {
@@ -11,7 +11,7 @@ export class TwoFaVerificationService {
     private readonly logger = new Logger(TwoFaVerificationService.name);
 
     constructor() {
-        this.client = Twilio(this.accountSid, this.authToken);
+        this.client = new Twilio(this.accountSid, this.authToken);
     }
 
     async sendVerification(to: string, channel: 'sms' | 'email'): Promise<boolean> {

@@ -17,8 +17,8 @@ import {
     CLIENTS_REGISTERED_ENTITIES,
     MAIL_CONTACT_REGISTERED_ENTITIES
 } from '@cdaxfx/tools-models';
-import { MobileVerificationEntity } from './auth/model/mobile-verification.entity';
-import { Session } from './sessions/model/session.entity';
+import { MobileVerificationEntity } from './src/auth/model/mobile-verification.entity';
+import { Session } from './src/sessions/model/session.entity';
 
 export default defineConfig({
     logger: console.log.bind(console),

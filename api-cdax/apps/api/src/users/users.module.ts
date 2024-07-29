@@ -1,5 +1,5 @@
 import { forwardRef, Module } from '@nestjs/common';
-import { MikroOrmRegisteredForBeneficiaries, MikroOrmRegisteredForClientsMetadataTemp, MikroOrmRegisteredForDocumentsManager, MikroOrmRegisteredForUser, MikroOrmRegisteredForUserClients, MikroOrmRegisteredForClients } from '@cdaxfx/tools-models';
+import { MikroOrmRegisteredForBeneficiaries, MikroOrmRegisteredForClientsMetadataTemp, MikroOrmRegisteredForDocumentsManager, MikroOrmRegisteredForUser, MikroOrmRegisteredForUserClients, MikroOrmRegisteredForClients, UserDocumentsRepository } from '@cdaxfx/tools-models';
 import { AuthModule } from '../auth/auth.module';
 import { BeneficiariesModule } from '../beneficiaries/beneficiaries.module';
 import { ClientsService } from '../clients/clients.service';
@@ -33,9 +33,10 @@ import { UsersService } from './users.service';
         UsersService,
         RegistrationService,
         InvitationsService,
-        ClientsService
+        ClientsService,
+        UserDocumentsRepository
     ],
-    exports: [UsersService, RegistrationService, InvitationsService],
+    exports: [UsersService, RegistrationService, InvitationsService, UserDocumentsRepository],
     controllers: [UsersController, UsersV2Controller, InvitationsController]
 })
 export class UsersModule { }
