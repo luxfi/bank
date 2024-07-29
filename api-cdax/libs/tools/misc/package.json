@@ -1,6 +1,6 @@
 {
   "name": "@cdaxfx/tools-misc",
-  "version": "1.0.20",
+  "version": "1.0.23",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [

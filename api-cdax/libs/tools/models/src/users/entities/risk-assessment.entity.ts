@@ -172,8 +172,9 @@ export class RiskAssessment extends BaseEntity {
   @Property({ nullable: true })
   riskRatingAssessmentNotesReRationaleToJustify: string;
 
-  // @Property({ nullable: true })
-  // raAttachDocumentUuid: string;
+  /*chris
+  @Property({ nullable: true })
+  raAttachDocumentUuid: string;*/
 
   @OneToOne({ entity: () => Document, nullable: true })
   raAttachDocument: Document;

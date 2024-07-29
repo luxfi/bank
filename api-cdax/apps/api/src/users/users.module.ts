@@ -34,9 +34,9 @@ import { UsersService } from './users.service';
         RegistrationService,
         InvitationsService,
         ClientsService,
-        UserDocumentsRepository
+        UserDocumentsRepository //chris
     ],
-    exports: [UsersService, RegistrationService, InvitationsService, UserDocumentsRepository],
+    exports: [UsersService, RegistrationService, InvitationsService, UserDocumentsRepository], //chris
     controllers: [UsersController, UsersV2Controller, InvitationsController]
 })
 export class UsersModule { }

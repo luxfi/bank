@@ -11,7 +11,7 @@ export class Transaction extends BaseEntity {
   @Property()
   account_id: string;
 
-  @ManyToOne({entity: () => Account, nullable: true, joinColumn: 'account_id', referenceColumnName: 'uuid'})
+  @ManyToOne({entity: () => Account, nullable: true, /*chris joinColumn: 'account_id', referenceColumnName: 'uuid',*/ persist: false})
   account: Account;
 
   @Property({ nullable: true })
@@ -80,7 +80,7 @@ export class Transaction extends BaseEntity {
   @Property({ nullable: true })
   core_rate: string;
 
-  @ManyToOne({entity: () => Beneficiary, nullable: true, joinColumns: ['cdax_beneficiary_id']})
+  @ManyToOne({entity: () => Beneficiary, nullable: true, joinColumns: ['cdax_beneficiary_id'], persist: false})
   beneficiary: Beneficiary;
 
   @Property({ nullable: true })
@@ -186,13 +186,13 @@ export class Transaction extends BaseEntity {
   @ManyToOne({ entity: () => User, nullable: true })
   creator: User;
 
-  @Property({ nullable: true })
+  @Property({ nullable: true, persist: false })
   creator_uuid: string;
 
   @Property({ nullable: true })
   client_uuid: string;
 
-  @ManyToOne({ entity: () => Client, nullable: true })
+  @ManyToOne({ entity: () => Client, nullable: true, persist: false })
   client: Client;
 
   @Property({ nullable: true })
@@ -201,7 +201,7 @@ export class Transaction extends BaseEntity {
   @Property({ nullable: true })
   impersonator_uuid: string;
 
-  @ManyToOne({ entity: () => User, nullable: true })
+  @ManyToOne({ entity: () => User, nullable: true, persist: false })
   approver: User;
 
   [EntityRepositoryType]: TransactionsRepository;

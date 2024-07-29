@@ -1,6 +1,6 @@
 {
   "name": "@cdaxfx/ports-currency-cloud",
-  "version": "1.0.20",
+  "version": "1.0.23",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -18,8 +18,8 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@cdaxfx/tools-misc": "^1.0.20",
-    "@cdaxfx/tools-models": "^1.0.20",
+    "@cdaxfx/tools-misc": "^1.0.23",
+    "@cdaxfx/tools-models": "^1.0.23",
     "@nestjs/common": "^10.3.10"
   },
   "devDependencies": {

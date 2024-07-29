@@ -12,7 +12,7 @@ export class TransactionsRepository extends EntityRepository<Transaction> {
     const result = new Transaction();
 
     result.action = data.action;
-    result.account_id = data.account_id;
+    // result.account_id = data.account_id;
     result.balance_id = data.balance_id;
     result.amount = data.amount;
     result.destination_balance_id = data.destination_balance_id;
@@ -41,7 +41,7 @@ export class TransactionsRepository extends EntityRepository<Transaction> {
     result.status_approval = data.status_approval;
     result.client_uuid = data.client_uuid;
     result.gateway_id = data.gateway_id;
-    result.cdax_beneficiary_id = data.cdax_beneficiary_id;
+    // result.cdax_beneficiary_id = data.cdax_beneficiary_id;
     result.gateway_completed_at = data.gateway_completed_at;
     result.conversion_date = data.conversion_date;
     result.settlement_date = data.settlement_date;
@@ -73,7 +73,7 @@ export class TransactionsRepository extends EntityRepository<Transaction> {
             .createQueryBuilder(Beneficiary, 'b')
             .where({
               uuid: {
-                $in: _ids.map(({ cdax_beneficiary_id }) => cdax_beneficiary_id),
+                $in: _ids.map(({ cdax_beneficiary_id }) => cdax_beneficiary_id)
               },
               isApproved: true,
               deletedAt: null

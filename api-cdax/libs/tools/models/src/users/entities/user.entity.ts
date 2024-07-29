@@ -86,10 +86,11 @@ export class User extends BaseEntity {
   @Property({ persist: false })
   personatedBy: string;
 
-  // @Exclude()
-  // @Property({ type: Client, nullable: true, persist: false })
-  // private currentClient: Client | null;
+  /*chris @Exclude()
+  @Property({ type: Client, nullable: true, persist: false })
+  private currentClient: Client | null;*/
 
+  //chris
   @Exclude()
   @ManyToOne(() => Client, {nullable: true, eager: false})
   private currentClient: Client | null;

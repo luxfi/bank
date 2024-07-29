@@ -21,12 +21,12 @@ export class BeneficiariesService {
 
     constructor(
         private readonly beneficiariesRepository: BeneficiariesRepository,
-        @Inject(forwardRef(() => CurrencyCloudService))
+        @Inject(forwardRef(() => CurrencyCloudService)) //chris
         private readonly currencyCloudService: CurrencyCloudService,
         // private readonly openPaydService: OpenPaydService,
-        @Inject(forwardRef(() => SwiftCodeService))
+        @Inject(forwardRef(() => SwiftCodeService)) //chris
         private readonly swiftCodeService: SwiftCodeService,
-        @Inject(forwardRef(() => MailerService))
+        @Inject(forwardRef(() => MailerService)) //chris
         private readonly mailer: MailerService
     ) { }
 

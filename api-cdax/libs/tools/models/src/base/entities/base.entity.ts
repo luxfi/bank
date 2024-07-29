@@ -8,9 +8,11 @@ export abstract class BaseEntity {
   @Property({ defaultRaw: 'current_timestamp' })
   createdAt: Date = new Date();
 
-  // @Property({ defaultRaw: 'current_timestamp on update current_timestamp' })
-  // updatedAt: Date = new Date();
+  /*chris
+  @Property({ defaultRaw: 'current_timestamp on update current_timestamp' })
+  updatedAt: Date = new Date();*/
 
+  //chris
   @Property({ defaultRaw: 'current_timestamp' })
   updatedAt: Date = new Date();
 
