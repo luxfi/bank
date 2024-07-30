@@ -12,11 +12,29 @@ import RequireAuth from "../../../features/auth/RequireAuth";
 import { AdminRoles, UserRole } from "../../../features/auth/user-role.enum";
 import { ButtonsRow } from "../../dashboard/components/ButtonsRow";
 import { ErrorText } from "../../dashboard/components/ErrorText";
-import { FlexibleForm, FlexibleFormField } from "../../dashboard/components/FlexibleForm";
+import { FlexibleForm, FlexibleFormField, FlexibleFormSelectField } from "../../dashboard/components/FlexibleForm";
 import { FormRow } from "../../dashboard/components/FormRow";
 import { HalfWidth } from "../../dashboard/components/HalfWidth";
 import { PageTitle } from "../../dashboard/components/PageTitle";
 import AdminDashboardLayout from "../components/AdminDashboardLayout";
+import { countries } from "../../../features/registration/model/countries";
+import styled from "styled-components";
+import PhoneInput from 'react-phone-number-input';
+import InputFieldsSharedStyles from "../../../components/styles/input-fields-shared-styles";
+
+const PhoneNumberInput = styled(PhoneInput)`
+    .PhoneInputInput {
+        ${InputFieldsSharedStyles}// margin-bottom: 30px;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    }
+    margin-bottom: 20px;
+`;
+
+const Label = styled.label`
+    color: ${(props) => props.theme.colors.fg};
+    padding: 3px 10px;
+    font-size: 0.8em;
+    font-weight: bold;
+`;
 
 export default function AdminUsersForm() {
     const navigate = useNavigate();
@@ -62,53 +80,88 @@ export default function AdminUsersForm() {
                                 });  
                             }}
                         >
-                            <FlexibleForm>
-                                <FlexibleFormField
-                                    labeltext="First name"
-                                    name="firstname"
-                                    placeholder="John"
-                                />
+                            {({ values, setFieldValue, errors, touched }) => (
+                                <FlexibleForm>
+                                    <FlexibleFormField
+                                        labeltext="First name"
+                                        name="firstname"
+                                        placeholder="John"
+                                    />
 
-                                <FlexibleFormField
-                                    labeltext="Last name"
-                                    name="lastname"
-                                    placeholder="Smith"
-                                />
+                                    <FlexibleFormField
+                                        labeltext="Last name"
+                                        name="lastname"
+                                        placeholder="Smith"
+                                    />
 
-                                <FlexibleFormField
-                                    labeltext="E-mail"
-                                    name="email"
-                                    placeholder="email@example.com"
-                                />
+                                    <FlexibleFormField
+                                        labeltext="E-mail"
+                                        name="email"
+                                        placeholder="email@example.com"
+                                    />
 
-                                <FlexibleFormField
-                                    helpText={uuid !== 'new' ? 'Leave empty to keep the password unchanged.' : undefined}
-                                    type="password"
-                                    labeltext="Password"
-                                    name="password"
-                                    placeholder="Password"
-                                />
+                                    <FlexibleFormField
+                                        helpText={uuid !== 'new' ? 'Leave empty to keep the password unchanged.' : undefined}
+                                        type="password"
+                                        labeltext="Password"
+                                        name="password"
+                                        placeholder="Password"
+                                    />
 
-                                <FlexibleFormField
-                                    type="password"
-                                    labeltext="Confirm password"
-                                    name="confirmPassword"
-                                    placeholder="Password"
-                                />
+                                    <FlexibleFormField
+                                        type="password"
+                                        labeltext="Confirm password"
+                                        name="confirmPassword"
+                                        placeholder="Password"
+                                    />
+                                    <FlexibleFormSelectField
+                                        labeltext="Country"
+                                        name="country"
+                                        placeholder=""
+                                        options={countries}
+                                        style={{ width: "100%" }}
+                                    />
 
-                                <ButtonsRow>
-                                    <Button type="button" danger onClick={() => navigate('/admin/admins')}>
-                                        Cancel
-                                    </Button>
-                                    <Button type="submit" secondary>{uuid !== 'new' ? 'Update' : 'Create'} Admin</Button>
-                                </ButtonsRow>
+                                    <FormRow>
+                                        <HalfWidth>
+                                            <Label>Mobile Number</Label>
+                                            <PhoneNumberInput
+                                                international
+                                                defaultCountry={"IM"}
+                                                value={values.mobileNumber}
+                                                onChange={(value: string) =>
+                                                    setFieldValue(
+                                                        "mobileNumber",
+                                                        value,
+                                                        true
+                                                    )
+                                                }
+                                                labeltext="Enter your phone number"
+                                                placeholder="+12345678901"
+                                            />
+                                        </HalfWidth>
+                                    </FormRow>
+                                    {touched.mobileNumber &&
+                                    errors.mobileNumber ? (
+                                        <ErrorText>
+                                            {errors.mobileNumber}
+                                        </ErrorText>
+                                    ) : null}
 
-                                {
-                                    error
-                                        ? <ErrorText>{error}</ErrorText>
-                                        : null
-                                }
-                            </FlexibleForm>
+                                    <ButtonsRow>
+                                        <Button type="button" danger onClick={() => navigate('/admin/admins')}>
+                                            Cancel
+                                        </Button>
+                                        <Button type="submit" secondary>{uuid !== 'new' ? 'Update' : 'Create'} Admin</Button>
+                                    </ButtonsRow>
+
+                                    {
+                                        error
+                                            ? <ErrorText>{error}</ErrorText>
+                                            : null
+                                    }
+                                </FlexibleForm>
+                            )}
                         </Formik>
                     </>
             }
