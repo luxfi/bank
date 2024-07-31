@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+
 import {
   getBalancesAPI,
   getCountriesAPI,
@@ -9,22 +10,24 @@ import { TActions, TState } from './types';
 
 export const useCurrenciesAndCountries = create<TState & TActions>((set) => ({
   countries: [],
-  currenciesCountries: [], // Ensure this is defined correctly
+  currencieCountries: [],
   allCurrencies: [],
   balances: [],
 
   getCountries: async () => {
-    const response = await getCountriesAPI();
-    set({ countries: response });
+    const response = await getCurrenciesCountriesAPI();
+    set({ currencieCountries: response });
   },
   getCurrenciesCountries: async () => {
-    const response = await getCurrenciesCountriesAPI();
-    set({ currenciesCountries: response });
+    const response = await getCountriesAPI();
+    set({ countries: response });
   },
 
   setAllCurrencies: async () => {
     const response = await Promise.all([getCurrenciesAPI(), getBalancesAPI()]);
+
     const [currencies, balances] = response;
+
     if (Array.isArray(balances) && Array.isArray(currencies)) {
       set({ allCurrencies: [...balances, ...currencies] });
     }
