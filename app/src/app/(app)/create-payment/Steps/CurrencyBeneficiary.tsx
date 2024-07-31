@@ -5,7 +5,7 @@ import RecentBeneficiary from '@/components/RecentBeneficiary';
 import Select from '@/components/Select';
 import SelectBalances from '@/components/SelectBalancesCountry';
 
-import { IBeneficiaryListResponse } from '@/models/beneficiarie';
+import { IBeneficiaryListResponse } from '@/models/beneficiaries';
 
 import { EStep, useCreatePayment } from '@/context/CreatePayment';
 import { useMessages } from '@/context/Messages';
