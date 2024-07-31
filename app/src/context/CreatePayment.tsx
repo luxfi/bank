@@ -13,7 +13,7 @@ import { ICurrenciesResponse } from '@/models/balance-response';
 import {
   IBeneficiaryDetailsResponse,
   IBeneficiaryListResponse,
-} from '@/models/beneficiarie';
+} from '@/models/beneficiaries';
 import { ICreatePaymentRequest, ITransactionDetails } from '@/models/payment';
 
 import { API_PATHS } from '@/app/(app)/create-payment/types';

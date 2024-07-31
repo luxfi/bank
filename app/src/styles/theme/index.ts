@@ -922,6 +922,10 @@ export interface ILightTheme {
         value: '#00569e';
         type: 'color';
       };
+      'primary-inverse': {
+        value: '#00569e';
+        type: 'color';
+      };
     };
     interactive: {
       default: {
@@ -2176,6 +2180,10 @@ export interface IDarkTheme {
         type: 'color';
       };
       emphasized: {
+        value: '#f59d0f';
+        type: 'color';
+      };
+      'primary-inverse': {
         value: '#f59d0f';
         type: 'color';
       };
@@ -3438,6 +3446,10 @@ export const lightTheme: ILightTheme = {
         value: '#00569e',
         type: 'color',
       },
+      'primary-inverse': {
+        value: '#00569e',
+        type: 'color',
+      },
     },
     interactive: {
       default: {
@@ -4692,6 +4704,10 @@ export const darkTheme: IDarkTheme = {
         type: 'color',
       },
       emphasized: {
+        value: '#f59d0f',
+        type: 'color',
+      },
+      'primary-inverse': {
         value: '#f59d0f',
         type: 'color',
       },

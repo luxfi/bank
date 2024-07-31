@@ -166,10 +166,14 @@ export default function Users() {
 
   const handleSetFilters = (
     type: keyof IUsersFilters,
-    value?: string,
+    value?: string | string[],
     fetch?: boolean
   ): void => {
-    setUrlSearchParam(type, value);
+    let newValue = value;
+    if (typeof newValue !== 'string') {
+      newValue = (value as string[]).join("");
+    }
+    setUrlSearchParam(type, newValue);
     const updatedFilters = {
       ...urlParams,
       [type]: value,

@@ -82,8 +82,8 @@ export const HeaderClientsDetails = () => {
             label="Country"
             value={
               accountType === 'Individual'
-                ? (client as any).country || '--'
-                : (client as any).countryOfRegistration || '--'
+                ? (client as any)?.country || '--'
+                : (client as any)?.countryOfRegistration || '--'
             }
             valueStyle={{ fontSize: 20, fontWeight: 400 }}
           />

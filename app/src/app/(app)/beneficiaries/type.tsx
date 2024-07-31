@@ -2,7 +2,7 @@ import { Badge } from '@/components/Badge';
 import { ITableProps } from '@/components/Table';
 
 import { UserRole } from '@/models/auth';
-import { IBeneficiaryListResponse } from '@/models/beneficiarie';
+import { IBeneficiaryListResponse } from '@/models/beneficiaries';
 
 import { Column, Text } from '@cdaxfx/ui';
 

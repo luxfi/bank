@@ -102,6 +102,12 @@ const Navbar = () => {
   const { currentUser, setSignOut } = useAuth();
 
   const [showNavbar, setShowNavbar] = useState<boolean>(true);
+  const [host, setHost] = useState<string>('');
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    setHost(window.location.host);
+  }, [setHost]);
 
   useLayoutEffect(() => {
     if (typeof window === 'undefined') return;
@@ -130,8 +136,8 @@ const Navbar = () => {
     return (
       <Tooltip title={!isOpen ? item.label : undefined} placement="right">
         <Item
-          $active={`${window.location.host}${path}`.includes(
-            `${window.location.host}${item.path}`
+          $active={`${host}${path}`.includes(
+            `${host}${item.path}`
           )}
           $show={showNavbar}
           $expanded={isOpen}
