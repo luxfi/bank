@@ -7,8 +7,6 @@ import NotificationProvider from '@/providers/NotificationProvider';
 import ServerProviders from '@/providers/ServerProviders';
 import StyledProviders from '@/providers/StylesProvider';
 
-import { Html, Head, Main } from 'next/document';
-
 const myFont = localFont({
   variable: '--ds-icons',
   src: '../../public/fonts/ds-icons.ttf',
