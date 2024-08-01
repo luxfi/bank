@@ -175,7 +175,7 @@ export default function SignIn() {
                         hl="en"
                         onChange={(e: any) => setCaptcha(e)}
                         sitekey={String(
-                          process.env.NEXT_PUBLIC_RECAPTCHA_SECRET_KEY
+                          process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY
                         )}
                       />
                     </div>
