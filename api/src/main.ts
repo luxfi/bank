@@ -55,7 +55,7 @@ async function bootstrap() {
 
   // enable CORS
   const origin =
-    /(localhost:[0-9]{2,4}|cdaxforex\.com|cdaxforex\.com:[0-9]{2,4}|www.recaptcha.net|([a-zA-Z0-9-]+\.)*tokenology\.com)$/i;
+    /(localhost:[0-9]{2,4}|cdax\.app|cdax\.cloud|cdax\.forex|cdaxforex\.com|cdaxforex\.com:[0-9]{2,4}|www.recaptcha.net|([a-zA-Z0-9-]+\.)*tokenology\.com)$/i;
 
   app.enableCors({
     origin,
