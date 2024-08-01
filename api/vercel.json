@@ -13,31 +13,39 @@
   "routes": [
     {
       "src": "/favicon-16x16.png",
-      "dest": "dist/favicon-16x16.png"
+      "dest": "/dist/favicon-16x16.png"
     },
     {
       "src": "/favicon-32x32.png",
-      "dest": "dist/favicon-32x32.png"
+      "dest": "/dist/favicon-32x32.png"
     },
     {
       "src": "/swagger-ui-bundle.js",
-      "dest": "dist/swagger-ui-bundle.js"
+      "dest": "/dist/swagger-ui-bundle.js"
     },
     {
       "src": "/swagger-ui-standalone-preset.js",
-      "dest": "dist/swagger-ui-standalone-preset.js"
+      "dest": "/dist/swagger-ui-standalone-preset.js"
     },
     {
       "src": "/swagger-ui.css",
-      "dest": "dist/swagger-ui.css"
+      "dest": "/dist/swagger-ui.css"
     },
     {
       "src": "/templates/(.*)",
-      "dest": "dist/templates/$1"
+      "dest": "/dist/templates/$1"
+    },
+    {
+      "src": "^/$",
+      "dest": "/dist/main.js"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "/dist/main.js"
     },
     {
       "src": "/(.*)",
-      "dest": "dist/main.js"
+      "dest": "/dist/$1"
     }
   ]
 }
