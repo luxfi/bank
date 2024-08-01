@@ -1,17 +1,27 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Twilio } from 'twilio';
+import * as Twilio from 'twilio';
 
 @Injectable()
 export class TwoFaVerificationService {
-    private client;
-    private serviceSid = String(process.env.TWILIO_SERVICE_SID);
-    private accountSid = String(process.env.TWILIO_ACCOUNT_SID);
-    private authToken = String(process.env.TWILIO_AUTH_TOKEN);
+    private client: Twilio.Twilio;
+    private readonly serviceSid = String(process.env.TWILIO_SERVICE_SID);
+    private readonly accountSid = String(process.env.TWILIO_ACCOUNT_SID);
+    private readonly authToken = String(process.env.TWILIO_AUTH_TOKEN);
 
     private readonly logger = new Logger(TwoFaVerificationService.name);
 
     constructor() {
-        this.client = new Twilio(this.accountSid, this.authToken);
+        // Log environment variables for debugging
+        console.log('Account SID:', this.accountSid);
+        console.log('Auth Token:', this.authToken);
+        console.log('Service SID:', this.serviceSid);
+
+        if (!this.accountSid.startsWith('AC') || !this.authToken || !this.serviceSid) {
+            this.logger.error('Invalid Twilio credentials');
+            throw new Error('Invalid Twilio credentials');
+        }
+
+        this.client = Twilio(this.accountSid, this.authToken);
     }
 
     async sendVerification(to: string, channel: 'sms' | 'email'): Promise<boolean> {
@@ -24,9 +34,9 @@ export class TwoFaVerificationService {
                 });
 
             return verification.status === 'pending';
-        } 
+        }
         catch (error) {
-            this.logger.error(`failed send otp to: ${to}`, error);
+            this.logger.error(`Failed to send OTP to: ${to}`, error);
         }
         return false;
     }
@@ -41,9 +51,9 @@ export class TwoFaVerificationService {
                 });
 
             return verification.status === 'approved';
-        } 
+        }
         catch (error) {
-            this.logger.error(`failed send otp to: ${to}`, error);
+            this.logger.error(`Failed to check OTP for: ${to}`, error);
         }
         return false;
     }
