@@ -11,7 +11,7 @@ interface MetadataEmailContext {
     emailTo: string;
 }
 
-const logoImage = readFileSync(join(__dirname, 'templates/emails/registration/request-access/logo.png')).toString('base64');
+const logoImage = readFileSync(join(__dirname, '../../templates/emails/registration/request-access/logo.png')).toString('base64');
 
 export default class MetadataRejectEmail extends BaseEmail<MetadataEmailContext> {
     constructor(context: MetadataEmailContext) {

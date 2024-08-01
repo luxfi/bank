@@ -10,7 +10,7 @@ interface MetadataEmailContext {
     approvalLink: string;
 }
 
-const logoImage = readFileSync(join(__dirname, 'templates/emails/registration/request-access/logo.png')).toString('base64');
+const logoImage = readFileSync(join(__dirname, '../../templates/emails/registration/request-access/logo.png')).toString('base64');
 
 export default class MetadataUpdateEmail extends BaseEmail<MetadataEmailContext> {
     constructor(context: MetadataEmailContext) {
