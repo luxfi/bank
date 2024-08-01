@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import * as Twilio from 'twilio';
+import Twilio from 'twilio';
 
 @Injectable()
 export class TwoFaVerificationService {
@@ -21,7 +21,7 @@ export class TwoFaVerificationService {
             throw new Error('Invalid Twilio credentials');
         }
 
-        this.client = Twilio(this.accountSid, this.authToken);
+        this.client = new Twilio(this.accountSid, this.authToken); // Correct instantiation of Twilio client
     }
 
     async sendVerification(to: string, channel: 'sms' | 'email'): Promise<boolean> {
@@ -34,11 +34,10 @@ export class TwoFaVerificationService {
                 });
 
             return verification.status === 'pending';
-        }
-        catch (error) {
+        } catch (error) {
             this.logger.error(`Failed to send OTP to: ${to}`, error);
+            return false;
         }
-        return false;
     }
 
     async checkVerification(to: string, code: string): Promise<boolean> {
@@ -51,10 +50,9 @@ export class TwoFaVerificationService {
                 });
 
             return verification.status === 'approved';
-        }
-        catch (error) {
+        } catch (error) {
             this.logger.error(`Failed to check OTP for: ${to}`, error);
+            return false;
         }
-        return false;
     }
 }
