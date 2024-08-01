@@ -12,18 +12,18 @@ import * as Tracing from '@sentry/tracing';
 import { json, urlencoded } from 'express';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
+import { Request, Response, NextFunction } from 'express';
 
 function buildSwagger(app) {
-  // set up swagger
+  // Set up Swagger
   const config = new DocumentBuilder()
     .addBearerAuth()
-    .setTitle('CDAXForex API')
+    .setTitle('CDAX API')
     .setDescription('')
-    .setVersion('0.0.1')
+    .setVersion('1.0.0')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-
   SwaggerModule.setup('docs', app, document);
 }
 
@@ -34,6 +34,7 @@ async function bootstrap() {
   const expressApp = app.getHttpAdapter().getInstance();
   expressApp.use(Sentry.Handlers.requestHandler());
   expressApp.use(Sentry.Handlers.tracingHandler());
+
   Sentry.init({
     dsn: process.env.SENTRY_DSN,
     integrations: [
@@ -45,36 +46,50 @@ async function bootstrap() {
     ],
   });
 
-  const rawBodyBuffer = (req, res, buf) => {
-    if (buf && buf.length)
+  const rawBodyBuffer = (req: Request, res: Response, buf: Buffer) => {
+    if (buf && buf.length) {
       req.rawBody = buf.toString('utf8');
+    }
   };
 
   app.use(bodyParser.urlencoded({ verify: rawBodyBuffer, extended: true, limit: '50mb' }));
   app.use(bodyParser.json({ verify: rawBodyBuffer, limit: '50mb' }));
 
-  // enable CORS
-  app.enableCors({
-    //origin: /(localhost:[0-9]{2,4}|cdax\.app|cdax\.cloud|cdax\.forex|cdaxforex\.com|cdaxforex\.com:[0-9]{2,4}|www.recaptcha.net|([a-zA-Z0-9-]+\.)*tokenology\.com)$/i;
-    origin: '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    credentials: true
+  // Handle OPTIONS requests
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    if (req.method === 'OPTIONS') {
+      res.header('Access-Control-Allow-Origin', '*');
+      res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS');
+      res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+      res.header('Access-Control-Allow-Credentials', 'true');
+      res.sendStatus(204);
+    } else {
+      next();
+    }
   });
 
-  // enable cookie support
+  // Enable CORS
+  app.enableCors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+  });
+
+  // Enable cookie support
   app.use(cookieParser());
 
-  //increase payload limit
+  // Increase payload limit
   app.use(json({ limit: '50mb' }));
   app.use(urlencoded({ extended: true, limit: '50mb' }));
   app.use(helmet());
 
-  // set global prefix
+  // Set global prefix
   app.setGlobalPrefix('api');
 
   app.enableVersioning({
     type: VersioningType.URI,
-    defaultVersion: '1'
+    defaultVersion: '1',
   });
 
   buildSwagger(app);
@@ -82,9 +97,15 @@ async function bootstrap() {
   app.use(
     Sentry.Handlers.errorHandler({
       shouldHandleError: (error) => true,
-    })
+    }),
   );
+
+  // Add a simple root endpoint
+  app.getHttpAdapter().get('/', (req, res) => {
+    res.json({ status: 'ok' });
+  });
 
   await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
+
