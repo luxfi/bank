@@ -54,11 +54,10 @@ async function bootstrap() {
   app.use(bodyParser.json({ verify: rawBodyBuffer, limit: '50mb' }));
 
   // enable CORS
-  const origin =
-    /(localhost:[0-9]{2,4}|cdax\.app|cdax\.cloud|cdax\.forex|cdaxforex\.com|cdaxforex\.com:[0-9]{2,4}|www.recaptcha.net|([a-zA-Z0-9-]+\.)*tokenology\.com)$/i;
-
   app.enableCors({
-    origin,
+    //origin: /(localhost:[0-9]{2,4}|cdax\.app|cdax\.cloud|cdax\.forex|cdaxforex\.com|cdaxforex\.com:[0-9]{2,4}|www.recaptcha.net|([a-zA-Z0-9-]+\.)*tokenology\.com)$/i;
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true
   });
 
