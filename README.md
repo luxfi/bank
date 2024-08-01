@@ -1,4 +1,4 @@
-# web
+# platform
 
 ## Dev: run locally
 
