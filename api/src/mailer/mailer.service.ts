@@ -54,7 +54,7 @@ export class MailerService {
     }
 
     private async renderTemplate(template: string, context: any) {
-        const rendered = await renderFile<string>(join(__dirname, '../../templates/', template + '.ejs'), context);
+        const rendered = await renderFile<string>(join(__dirname, '../templates/', template + '.ejs'), context);
         return rendered;
     }
 }
