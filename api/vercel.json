@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "name": "cdax-api",
+  "builds": [
+    {
+      "src": "api/package.json",
+      "use": "@vercel/node",
+      "config": {
+        "installCommand": "pnpm install",
+        "buildCommand": "pnpm build"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/dist/$1"
+    }
+  ]
+}
