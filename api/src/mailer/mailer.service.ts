@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import * as SG from '@sendgrid/mail';
+import * as SendGrid from '@sendgrid/mail';
 import { join } from 'path';
 import { renderFile } from 'ejs';
 import BaseEmail from '../model/base-email';
@@ -12,11 +12,18 @@ export class MailerService {
     readonly logger = new Logger(MailerService.name);
 
     constructor() {
-        SG.setApiKey(String(process.env.SENDGRID_KEY));
+        const apiKey = String(process.env.SENDGRID_KEY);
+
+        if (!apiKey) {
+            this.logger.error('SENDGRID_KEY is not defined');
+            throw new Error('SENDGRID_KEY is not defined');
+        }
+
+        SendGrid.setApiKey(apiKey); // Correct instantiation of SendGrid client
     }
 
     async send<T extends Record<string, any>>(email: BaseEmail<T>): Promise<void> {
-        const sendGridEmail: SG.MailDataRequired = {
+        const sendGridEmail: SendGrid.MailDataRequired = {
             from: email.from,
             to: email.to,
             html: await this.renderTemplate(email.template, email.context),
@@ -26,18 +33,19 @@ export class MailerService {
 
         if (email.cc)
             sendGridEmail.cc = email.cc;
-        
+
         if (email.bcc)
             sendGridEmail.bcc = email.bcc;
-        
-        try {
-            if (NODE_ENV === 'development' && !DEBUG_EMAILS.includes(email.to) && !email.to.includes('cdaxforex+'))
-                return;
 
-            await SG.send(sendGridEmail);
+        try {
+            if (NODE_ENV === 'development' && !DEBUG_EMAILS.includes(email.to) && !email.to.includes('cdaxforex+')) {
+                return;
+            }
+
+            await SendGrid.send(sendGridEmail);
 
             this.logger.log(`Email sent to ${email.to} from ${email.from} with subject ${email.subject}`);
-        } 
+        }
         catch (err) {
             this.logger.debug((err as any).response);
             this.logger.error((err as Error).message, (err as Error).stack);
