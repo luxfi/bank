@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "name": "cdax-platform",
+  "builds": [
+    {
+      "src": "api/**/*.ts",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/dist/main.js"
+    }
+  ]
+}
