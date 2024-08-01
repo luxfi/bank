@@ -1,7 +1,0 @@
-{
-  "name": "@ports/ifx",
-  "version": "1.0.0",
-  "dependencies": {
-    "@tools/misc": "*"
-  }
-}

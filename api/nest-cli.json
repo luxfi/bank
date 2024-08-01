@@ -1,7 +1,9 @@
 {
+  "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "apps/api/src",
+  "sourceRoot": "src",
   "compilerOptions": {
+    "deleteOutDir": true,
     "assets": [
       {
         "include": "templates/**/*.ejs",
@@ -21,86 +23,7 @@
       }
     ],
     "webpack": true,
-    "tsConfigPath": "apps/api/tsconfig.app.json"
+    "webpackConfigPath": "./webpack.config.js"
   },
-  "monorepo": true,
-  "root": "apps/api",
-  "projects": {
-    "api": {
-      "type": "application",
-      "root": "apps/api",
-      "entryFile": "main",
-      "sourceRoot": "apps/api/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/api/tsconfig.app.json",
-        "webpackConfigPath": "apps/api/webpack.config.js",
-        "plugins": [
-          {
-            "name": "@nestjs/swagger",
-            "options": {
-              "classValidatorShim": true,
-              "introspectComments": true,
-              "dtoFileNameSuffix": ["response.dto.ts", "request.dto.ts"]
-            }
-          }
-        ]
-      }
-    },
-    "password-rotate-job": {
-      "type": "application",
-      "root": "apps/password-rotate-job",
-      "entryFile": "main",
-      "sourceRoot": "apps/password-rotate-job/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/password-rotate-job/tsconfig.app.json",
-        "webpackConfigPath": "apps/password-rotate-job/webpack.config.js"
-      }
-    },
-    "migrations": {
-      "type": "application",
-      "root": "apps/migrations",
-      "entryFile": "index",
-      "sourceRoot": "apps/migrations/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/migrations/tsconfig.app.json",
-        "webpackConfigPath": "apps/migrations/webpack.config.js"
-      }
-    },
-    "tools/models": {
-      "type": "library",
-      "root": "libs/tools/models",
-      "entryFile": "index",
-      "sourceRoot": "libs/tools/models/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/tools/models/tsconfig.lib.json"
-      }
-    },
-    "tools/misc": {
-      "type": "library",
-      "root": "libs/tools/misc",
-      "entryFile": "index",
-      "sourceRoot": "libs/tools/misc/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/tools/misc/tsconfig.lib.json"
-      }
-    },
-    "ports/currency-cloud": {
-      "type": "library",
-      "root": "libs/ports/currency-cloud",
-      "entryFile": "index",
-      "sourceRoot": "libs/ports/currency-cloud/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/ports/currency-cloud/tsconfig.lib.json"
-      }
-    },
-    "ports/ifx": {
-      "type": "library",
-      "root": "libs/ports/ifx",
-      "entryFile": "index",
-      "sourceRoot": "libs/ports/ifx/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/ports/ifx/tsconfig.lib.json"
-      }
-    }
-  }
+  "root": "./"
 }
