@@ -20,6 +20,7 @@ import { UsersV2Module } from './bank/users/users.module';
 import { RequestLoggingMiddleware } from '@cdaxfx/tools-misc';
 import { MorganInterceptor, MorganModule } from 'nest-morgan';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ConfigModule } from '@nestjs/config'; // Import ConfigModule
 
 const apiModules = [
     AuthModule,
@@ -37,6 +38,9 @@ const apiModules = [
 
 @Module({
     imports: [
+        ConfigModule.forRoot({ // Configure ConfigModule globally
+            isGlobal: true,
+        }),
         ScheduleModule.forRoot(),
         MorganModule,
         MikroOrmModule.forRoot(MikroOrmConfig),
