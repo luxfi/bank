@@ -9,7 +9,7 @@ const GoogleReCaptchaProviders = ({
 }) => {
   return (
     <GoogleReCaptchaProvider
-      reCaptchaKey={String(process.env.NEXT_PUBLIC_RECAPTCHA_SECRET_KEY)}
+      reCaptchaKey={String(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY)}
     >
       {children}
     </GoogleReCaptchaProvider>
