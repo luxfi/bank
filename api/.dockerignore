@@ -1,4 +1,0 @@
-node_modules
-deploy
-.env
-.gitlab-ci.yml

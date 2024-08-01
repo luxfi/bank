@@ -3,6 +3,9 @@
 node_modules
 .env
 
+#lock
+package-lock.json
+
 # Logs
 logs
 *.log
@@ -39,3 +42,4 @@ lerna-debug.log*
 .env
 .env.*
 !.env.dist
+.vercel

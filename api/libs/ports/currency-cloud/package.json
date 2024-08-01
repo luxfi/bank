@@ -1,7 +1,0 @@
-{
-  "name": "@ports/currency-cloud",
-  "version": "1.0.0",
-  "dependencies": {
-    "@tools/misc": "*"
-  }
-}
