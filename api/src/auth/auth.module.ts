@@ -1,4 +1,5 @@
 import { GetLoggedUserUseCase } from '../use-cases';
+import { ConfigModule } from '@nestjs/config';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { Module, forwardRef } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
@@ -42,6 +43,7 @@ import { RolesGuard } from './roles.guard';
         GetLoggedUserUseCase
     ],
     imports: [
+        ConfigModule,
         MikroOrmRegisteredForUserClients(),
         MikroOrmRegisteredForUser(),
         SessionsModule,
