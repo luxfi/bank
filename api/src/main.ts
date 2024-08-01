@@ -105,7 +105,13 @@ async function bootstrap() {
     res.json({ status: 'ok' });
   });
 
-  await app.listen(process.env.PORT || 3000);
+  const port = process.env.PORT || 3000;
+  if (process.env.NODE_ENV === 'production') {
+    await app.listen(port, '0.0.0.0');
+  } else {
+    await app.listen(port);
+  }
+}
 }
 bootstrap();
 
