@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import * as SendGrid from '@sendgrid/mail';
+import * as sgMail from '@sendgrid/mail';
 import { join } from 'path';
 import { renderFile } from 'ejs';
 import BaseEmail from '../model/base-email';
@@ -12,18 +12,18 @@ export class MailerService {
     readonly logger = new Logger(MailerService.name);
 
     constructor() {
-        const apiKey = String(process.env.SENDGRID_KEY);
+        const apiKey = process.env.SENDGRID_KEY;
 
         if (!apiKey) {
             this.logger.error('SENDGRID_KEY is not defined');
             throw new Error('SENDGRID_KEY is not defined');
         }
 
-        SendGrid.setApiKey(apiKey); // Correct instantiation of SendGrid client
+        sgMail.setApiKey(apiKey); // Correct instantiation of SendGrid client
     }
 
     async send<T extends Record<string, any>>(email: BaseEmail<T>): Promise<void> {
-        const sendGridEmail: SendGrid.MailDataRequired = {
+        const sendGridEmail: sgMail.MailDataRequired = {
             from: email.from,
             to: email.to,
             html: await this.renderTemplate(email.template, email.context),
@@ -42,7 +42,7 @@ export class MailerService {
                 return;
             }
 
-            await SendGrid.send(sendGridEmail);
+            await sgMail.send(sendGridEmail);
 
             this.logger.log(`Email sent to ${email.to} from ${email.from} with subject ${email.subject}`);
         }
