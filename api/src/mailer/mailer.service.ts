@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import * as sgMail from '@sendgrid/mail';
+import sgMail from '@sendgrid/mail';
 import { join } from 'path';
 import { renderFile } from 'ejs';
 import BaseEmail from '../model/base-email';
