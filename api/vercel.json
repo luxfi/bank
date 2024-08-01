@@ -6,12 +6,17 @@
       "src": "package.json",
       "use": "@vercel/node",
       "config": {
+        "outputDirectory": "dist",
         "installCommand": "pnpm install",
-        "buildCommand": "pnpm build"
+        "buildCommand": "pnpm run build"
       }
     }
   ],
   "routes": [
+    {
+      "src": "/",
+      "dest": "/dist/main.js"
+    },
     {
       "src": "/(.*)",
       "dest": "/dist/main.js"
