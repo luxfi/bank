@@ -9,7 +9,7 @@ interface NotificationEmailContext {
     createdAt: string;
 }
 
-const logoImage = readFileSync(join(__dirname, 'templates/emails/operations/webhooks/logo.png')).toString('base64');
+const logoImage = readFileSync(join(__dirname, '../../templates/emails/operations/webhooks/logo.png')).toString('base64');
 
 export default class NotificationEmail extends BaseEmail<NotificationEmailContext> {
     constructor(to, context: NotificationEmailContext) {

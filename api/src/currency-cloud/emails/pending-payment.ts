@@ -13,7 +13,7 @@ interface PendingPaymentEmailContext {
     url?: string;
 }
 
-const logoImage = readFileSync(join(__dirname, 'templates/emails/operations/transactions/logo.png')).toString('base64');
+const logoImage = readFileSync(join(__dirname, '../../templates/emails/operations/transactions/logo.png')).toString('base64');
 
 export default class PendingPaymentEmail extends BaseEmail<PendingPaymentEmailContext> {
     constructor(context: PendingPaymentEmailContext) {

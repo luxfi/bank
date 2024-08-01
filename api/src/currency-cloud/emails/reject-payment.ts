@@ -12,7 +12,7 @@ interface RejectPaymentEmailContext {
     createdAt: string;
 }
 
-const logoImage = readFileSync(join(__dirname, 'templates/emails/operations/transactions/logo.png')).toString('base64');
+const logoImage = readFileSync(join(__dirname, '../../templates/emails/operations/transactions/logo.png')).toString('base64');
 
 export default class RejectPaymentEmail extends BaseEmail<RejectPaymentEmailContext> {
     constructor(context: RejectPaymentEmailContext) {
