@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>CDAX - E-mail Template</title>
+  <style>
+
+  </style>
+</head>
+
+<body style="margin: 0;padding: 10px;background: #ffffff;">
+  <div style="max-width:600px; margin: 0 auto;background: #ffffff;">
+    <img src="cid:logo" alt="CDAXForex" />
+    <p>Please check the following details carefully and get in touch if you have any questions or concerns. If you did
+      not instruct this transaction or have not asked for this transaction to be set up on your behalf, please get in
+      touch immediately.</p>
+    <table style="font-family: arial, sans-serif;
+                  border-collapse: collapse;
+                  width: 100% !important;
+                  font-size: 16px;">
+
+      <% for (var i=0; i<keys.length; i++) { %>
+        <tr>
+          <td style="padding: 10px; font-weight: 700; width: 100%;">
+            <%= keys[i] %> :
+          </td>
+          <td style="padding: 10px;">
+            <% if(transactionData[keys[i]] && typeof(transactionData[keys[i]]) === 'object') { %>
+              <% if (transactionData[keys[i]]['value'] != undefined) { %>
+                <%= transactionData[keys[i]]['value'] + ' ' + transactionData[keys[i]]['currency'] %>
+              <% } else { %>
+              <ul style="list-style: none; padding: 0">
+                <% for (var j = 0; j < Object.keys(transactionData[keys[i]]).length; j++) { %>
+                  <li style="margin-left: 0px;"><%= Object.keys(transactionData[keys[i]])[j] + ':' + transactionData[keys[i]][Object.keys(transactionData[keys[i]])[j]] %></li>
+                <% } %>
+              </ul>
+              <% } %>
+            <% } else { %> <%= transactionData[keys[i]] %> <% } %>
+          </td>
+        </tr>
+        <% } %>
+    </table>
+  </div>
+</body>
+
+</html>

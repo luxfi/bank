@@ -1,0 +1,31 @@
+{
+  "name": "@cdaxfx/ports-ifx",
+  "version": "1.0.28",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "nest build"
+  },
+  "keywords": [
+    "typescript",
+    "npm",
+    "nestjs",
+    "cdaxfx",
+    "package"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@cdaxfx/ports-currency-cloud": "^1.0.28",
+    "@cdaxfx/tools-misc": "^1.0.28",
+    "@cdaxfx/tools-models": "^1.0.28",
+    "@nestjs/common": "^10.3.10"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.14.11",
+    "typescript": "^5.5.3"
+  }
+}
