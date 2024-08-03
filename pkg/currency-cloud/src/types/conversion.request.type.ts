@@ -1,5 +1,5 @@
 import { EDirection } from './direction.interface';
-import { ECurrencyCode } from '@cdaxfx/tools-misc';
+import { ECurrencyCode } from '@luxbank/misc';
 
 export interface CreateConversionRequest {
   quoteId?: string;

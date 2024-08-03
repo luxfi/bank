@@ -19,7 +19,7 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
-    "@cdaxfx/tools-models": "^1.0.31",
+    "@luxbank/models": "^1.0.31",
     "@mikro-orm/cli": "^6.3.2",
     "@mikro-orm/core": "^6.3.2",
     "@mikro-orm/knex": "^6.3.2",

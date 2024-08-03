@@ -1,6 +1,6 @@
 import { Cascade, Collection, Entity, EntityRepositoryType, ManyToMany, ManyToOne, OneToMany, OneToOne, Property, serialize } from '@mikro-orm/core';
 import { BadRequestException } from '@nestjs/common';
-import { compareHash, generateCodeAndHash, generateHash } from '@cdaxfx/tools-misc';
+import { compareHash, generateCodeAndHash, generateHash } from '@luxbank/misc';
 import { Client } from '../../clients';
 import { Exclude, Expose, Type, instanceToPlain } from 'class-transformer';
 import { BaseEntity } from '../../base';

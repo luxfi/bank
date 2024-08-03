@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ECountryCode, ECurrencyCode } from '@cdaxfx/tools-misc';
+import { ECountryCode, ECurrencyCode } from '@luxbank/misc';
 import { IsOptional } from 'class-validator';
 
 export class FilterBeneficiariesAccountDTO {

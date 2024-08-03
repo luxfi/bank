@@ -1,5 +1,5 @@
 import { Entity, EntityRepositoryType, Enum, Property } from '@mikro-orm/core';
-import { VALIDATION_LIST } from '@cdaxfx/tools-misc';
+import { VALIDATION_LIST } from '@luxbank/misc';
 import { validateOrReject } from 'class-validator';
 import { BaseEntity } from '../../base';
 import { BusinessMetadataDto } from '../dtos';

@@ -1,5 +1,5 @@
-import { EDirection } from '@cdaxfx/ports-currency-cloud';
-import { ECurrencyCode } from '@cdaxfx/tools-misc';
+import { EDirection } from '@luxbank/currency-cloud';
+import { ECurrencyCode } from '@luxbank/misc';
 
 export interface ConversionCreated {
   id: string;

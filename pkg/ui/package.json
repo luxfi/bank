@@ -1,5 +1,5 @@
 {
-  "name": "@cdaxfx/ui",
+  "name": "@luxbank/ui",
   "version": "0.0.38",
   "main": "./lib/cjs/index.js",
   "module": "./lib/esm/index.js",
@@ -20,8 +20,8 @@
     "lib",
     "!node_modules"
   ],
-  "repository": "https://github.com/cdaxfx/platform",
-  "homepage": "https://github.com/cdaxfx/platform#readme",
+  "repository": "https://github.com/luxbank/platform",
+  "homepage": "https://github.com/luxbank/platform#readme",
   "publishConfig": {
     "access": "public"
   },

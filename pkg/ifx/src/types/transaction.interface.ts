@@ -1,4 +1,4 @@
-import { ECurrencyCode } from '@cdaxfx/tools-misc';
+import { ECurrencyCode } from '@luxbank/misc';
 
 export enum EDefaultRoutingCodesNames {
   BIC_SWIFT = 'bic swift',
