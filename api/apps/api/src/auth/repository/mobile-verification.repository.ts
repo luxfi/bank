@@ -1,4 +1,4 @@
-import { EntityRepository } from '@mikro-orm/postgresql';
+import { EntityRepository } from '@mikro-orm/knex';
 import { MobileVerificationEntity } from '../model/mobile-verification.entity';
 
 export class MobileVerificationRepository extends EntityRepository<MobileVerificationEntity> {

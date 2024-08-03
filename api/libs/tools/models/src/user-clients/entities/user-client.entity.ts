@@ -10,10 +10,10 @@ export class UserClient {
   @PrimaryKey({ length: 36 })
   uuid: string = randomUUID();
 
-  @ManyToOne(() => User, { joinColumn: 'user_uuid' })
+  @ManyToOne(() => User)
   user!: User;
 
-  @ManyToOne(() => Client, { joinColumn: 'client_uuid' })
+  @ManyToOne(() => Client)
   client!: Client;
 
   @OneToOne(() => UserClientMetadata, (metadata) => metadata.userClient, {cascade: [Cascade.ALL],})

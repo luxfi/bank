@@ -1,6 +1,6 @@
 {
   "name": "@cdaxfx/ports-ifx",
-  "version": "1.0.29",
+  "version": "1.0.31",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -18,9 +18,9 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@cdaxfx/ports-currency-cloud": "^1.0.29",
-    "@cdaxfx/tools-misc": "^1.0.29",
-    "@cdaxfx/tools-models": "^1.0.29",
+    "@cdaxfx/ports-currency-cloud": "^1.0.31",
+    "@cdaxfx/tools-misc": "^1.0.31",
+    "@cdaxfx/tools-models": "^1.0.31",
     "@nestjs/common": "^10.3.10",
     "axios": "^1.7.3"
   },

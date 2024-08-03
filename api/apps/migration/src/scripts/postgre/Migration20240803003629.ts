@@ -1,6 +1,6 @@
 import { Migration } from '@mikro-orm/migrations';
 
-export class Migration20240726174845 extends Migration {
+export class Migration20240803003629 extends Migration {
 
   async up(): Promise<void> {
     this.addSql('create table "bank_metadata" ("uuid" varchar(36) not null, "created_at" timestamptz not null default current_timestamp, "updated_at" timestamptz not null default current_timestamp, "deleted_at" timestamptz null, "bank_name" varchar(255) not null, "branch" varchar(255) not null, "bank_country" varchar(255) not null, "account_holder_name" varchar(255) not null, "sort_code" varchar(255) not null, "account_number" varchar(255) not null, "iban" varchar(255) null, "bic_swift" varchar(255) null, "currency" varchar(255) null, constraint "bank_metadata_pkey" primary key ("uuid"));');
@@ -53,6 +53,8 @@ export class Migration20240726174845 extends Migration {
 
     this.addSql('create table "beneficiary" ("uuid" varchar(36) not null, "created_at" timestamptz not null default current_timestamp, "updated_at" timestamptz not null default current_timestamp, "deleted_at" timestamptz null, "firstname" varchar(255) null, "lastname" varchar(255) null, "entity_type" varchar(255) null, "currency" varchar(255) null, "payment_type" varchar(255) null, "address" varchar(255) null, "address_line2" varchar(255) null, "city" varchar(255) null, "state" varchar(255) null, "postcode" varchar(255) null, "country" varchar(255) null, "company_name" varchar(255) null, "bank_name" varchar(255) null, "branch_name" varchar(255) null, "bank_address" varchar(255) null, "bank_country" varchar(255) null, "account_number" varchar(16) null, "sort_code" varchar(18) null, "iban" varchar(255) null, "bic_swift" varchar(255) null, "comply_launch_id" varchar(255) null, "comply_launch_response" varchar(64) null, "currency_cloud_id" varchar(255) null, "open_payd_id" varchar(255) null, "is_approved" boolean null default false, "gateway_id" varchar(255) null, "account_uuid" varchar(36) null, "creator_uuid" varchar(36) null, "client_uuid" varchar(255) null, "impersonator_uuid" varchar(255) null, constraint "beneficiary_pkey" primary key ("uuid"));');
 
+    this.addSql('create table "transaction" ("uuid" varchar(36) not null, "created_at" timestamptz not null default current_timestamp, "updated_at" timestamptz not null default current_timestamp, "deleted_at" timestamptz null, "account_id" varchar(255) not null, "account" varchar(36) null, "balance_id" varchar(255) null, "destination_balance_id" varchar(255) null, "action" varchar(255) not null, "amount" varchar(255) not null, "buy_amount" varchar(255) null, "currency" varchar(255) not null, "buy_currency" varchar(255) null, "fixed_side" varchar(255) null, "transaction_id" varchar(255) null, "short_id" varchar(255) not null, "cdax_id" varchar(255) not null, "gateway" varchar(255) not null, "gateway_id" varchar(255) null, "reason" varchar(255) null, "reference" varchar(255) null, "status" varchar(255) not null, "fee_amount" varchar(255) null, "fee_currency" varchar(255) null, "gateway_fee_amount" varchar(255) null, "gateway_fee_currency" varchar(255) null, "client_rate" varchar(255) null, "core_rate" varchar(255) null, "beneficiary" varchar(36) null, "cdax_beneficiary_id" varchar(255) null, "beneficiary_id" varchar(255) null, "payment_date" varchar(255) null, "payment_type" varchar(255) null, "payment_reason" varchar(255) null, "purpose_code" varchar(255) null, "status_approval" text check ("status_approval" in (\'pending\', \'done\', \'rejected\', \'expired\')) not null, "description" varchar(255) null, "source" varchar(255) null, "destination" varchar(255) null, "sender_name" varchar(255) null, "sender_address" varchar(255) null, "sender_information" varchar(255) null, "sender_account_number" varchar(255) null, "sender_bic" varchar(255) null, "sender_iban" varchar(255) null, "sender_routing_key" varchar(255) null, "sender_routing_value" varchar(255) null, "mid_market_rate" varchar(255) null, "conversion_date" varchar(255) null, "settlement_date" varchar(255) null, "gateway_created_at" varchar(255) null, "gateway_updated_at" varchar(255) null, "gateway_completed_at" varchar(255) null, "gateway_spread_table" varchar(255) null, "partner_rate" varchar(255) null, "deposit_required" boolean null, "deposit_amount" varchar(255) null, "deposit_currency" varchar(255) null, "deposit_status" varchar(255) null, "deposit_required_at" varchar(255) null, "estimated_arrival" varchar(255) null, "transferred_at" varchar(255) null, "creator" varchar(36) null, "creator_uuid" varchar(255) null, "client_uuid" varchar(255) null, "client" varchar(36) null, "approver_uuid" varchar(255) null, "impersonator_uuid" varchar(255) null, "approver" varchar(36) null, constraint "transaction_pkey" primary key ("uuid"));');
+
     this.addSql('create table "user_clients" ("uuid" varchar(36) not null, "user_uuid" varchar(36) not null, "client_uuid" varchar(36) not null, constraint "user_clients_pkey" primary key ("uuid"));');
 
     this.addSql('create table "user_clients_metadata" ("uuid" varchar(36) not null, "user_client_uuid" varchar(36) not null, "role" varchar(255) not null default \'user:admin\', "phone_number" varchar(255) null, "who_they_are" varchar(255) null, constraint "user_clients_metadata_pkey" primary key ("uuid"));');
@@ -104,6 +106,12 @@ export class Migration20240726174845 extends Migration {
     this.addSql('alter table "beneficiary" add constraint "beneficiary_account_uuid_foreign" foreign key ("account_uuid") references "account" ("uuid") on update cascade on delete set null;');
     this.addSql('alter table "beneficiary" add constraint "beneficiary_creator_uuid_foreign" foreign key ("creator_uuid") references "user" ("uuid") on update cascade on delete set null;');
 
+    this.addSql('alter table "transaction" add constraint "transaction_account_foreign" foreign key ("account") references "account" ("uuid") on update cascade on delete set null;');
+    this.addSql('alter table "transaction" add constraint "transaction_beneficiary_foreign" foreign key ("beneficiary") references "beneficiary" ("uuid") on update cascade on delete set null;');
+    this.addSql('alter table "transaction" add constraint "transaction_creator_foreign" foreign key ("creator") references "user" ("uuid") on update cascade on delete set null;');
+    this.addSql('alter table "transaction" add constraint "transaction_client_foreign" foreign key ("client") references "client" ("uuid") on update cascade on delete set null;');
+    this.addSql('alter table "transaction" add constraint "transaction_approver_foreign" foreign key ("approver") references "user" ("uuid") on update cascade on delete set null;');
+
     this.addSql('alter table "user_clients" add constraint "user_clients_user_uuid_foreign" foreign key ("user_uuid") references "user" ("uuid") on update cascade on delete cascade;');
     this.addSql('alter table "user_clients" add constraint "user_clients_client_uuid_foreign" foreign key ("client_uuid") references "client" ("uuid") on update cascade on delete cascade;');
 
@@ -138,6 +146,10 @@ export class Migration20240726174845 extends Migration {
 
     this.addSql('alter table "beneficiary" drop constraint "beneficiary_creator_uuid_foreign";');
 
+    this.addSql('alter table "transaction" drop constraint "transaction_creator_foreign";');
+
+    this.addSql('alter table "transaction" drop constraint "transaction_approver_foreign";');
+
     this.addSql('alter table "user_clients" drop constraint "user_clients_user_uuid_foreign";');
 
     this.addSql('alter table "user_clients" drop constraint "user_clients_user_uuid_foreign";');
@@ -170,6 +182,8 @@ export class Migration20240726174845 extends Migration {
 
     this.addSql('alter table "beneficiary" drop constraint "beneficiary_account_uuid_foreign";');
 
+    this.addSql('alter table "transaction" drop constraint "transaction_account_foreign";');
+
     this.addSql('alter table "contact" drop constraint "contact_invitation_uuid_foreign";');
 
     this.addSql('alter table "account" drop constraint "account_fee_uuid_foreign";');
@@ -180,9 +194,13 @@ export class Migration20240726174845 extends Migration {
 
     this.addSql('alter table "client_document" drop constraint "client_document_client_uuid_foreign";');
 
+    this.addSql('alter table "transaction" drop constraint "transaction_client_foreign";');
+
     this.addSql('alter table "user_clients" drop constraint "user_clients_client_uuid_foreign";');
 
     this.addSql('alter table "user_clients" drop constraint "user_clients_client_uuid_foreign";');
+
+    this.addSql('alter table "transaction" drop constraint "transaction_beneficiary_foreign";');
 
     this.addSql('alter table "user_clients_metadata" drop constraint "user_clients_metadata_user_client_uuid_foreign";');
 
@@ -221,6 +239,8 @@ export class Migration20240726174845 extends Migration {
     this.addSql('drop table if exists "broker" cascade;');
 
     this.addSql('drop table if exists "beneficiary" cascade;');
+
+    this.addSql('drop table if exists "transaction" cascade;');
 
     this.addSql('drop table if exists "user_clients" cascade;');
 

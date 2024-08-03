@@ -1,4 +1,4 @@
-import { EntityRepository } from '@mikro-orm/postgresql';
+import { EntityRepository } from '@mikro-orm/knex';
 import { RiskAssessment, UserRoles } from '../../users';
 import { Client } from '../entities';
 
