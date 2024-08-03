@@ -70,7 +70,13 @@ async function bootstrap() {
 
   // Enable CORS
   app.enableCors({
-    origin: '*',
+    origin: [
+      'https://cdax.app',
+      'https://cdax.forex',
+      'https://cdax.cloud',
+      'https://cdax.ai',
+      'http://localhost:3000'
+    ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
