@@ -9,10 +9,10 @@ export class Migration20240729142902 extends Migration {
     const date = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
     const userId = v4();
-    const AdminEmail = 'Eleesha@cdaxforex.com';
-    const AdminPassword = await hash('Summer24', 8);
-    const firstname = 'Eleesha';
-    const lastname = 'Preston';
+    const AdminEmail = 'z@lux.network';
+    const AdminPassword = await hash('CDAXisALIVE!', 8);
+    const firstname = 'zach';
+    const lastname = 'kelling';
     this.addSql(
       `insert into \"user\" (uuid, created_at, updated_at, username, password, firstname, lastname) 
         values ('${userId}', '${date}', '${date}', '${AdminEmail}', '${AdminPassword}', '${firstname}', '${lastname}');`

@@ -1,5 +1,5 @@
 import { FilterQuery } from '@mikro-orm/core';
-import { EntityRepository } from '@mikro-orm/postgresql';
+import { EntityRepository } from '@mikro-orm/knex';
 import { UserClient } from '../entities';
 import { GetUsersRequest, ListUsersResponse } from '../../users';
 

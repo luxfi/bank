@@ -1,4 +1,4 @@
-import { EntityRepository } from '@mikro-orm/postgresql';
+import { EntityRepository } from '@mikro-orm/knex';
 import { Account } from '../entities';
 
 export class AccountsRepository extends EntityRepository<Account> {

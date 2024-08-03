@@ -1,4 +1,4 @@
-import { EntityRepository } from '@mikro-orm/postgresql';
+import { EntityRepository } from '@mikro-orm/knex';
 import { ClientDocument } from '../entities/client-document.entity';
 import { Client } from '../entities';
 import { Document } from '../../documents-manager';

@@ -1,4 +1,4 @@
-import { EntityRepository } from '@mikro-orm/postgresql';
+import { EntityRepository } from '@mikro-orm/knex';
 import { DocumentType } from '../enums';
 import { UserDocument, User } from '../entities';
 

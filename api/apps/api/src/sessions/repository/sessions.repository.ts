@@ -1,4 +1,4 @@
-import { EntityRepository } from '@mikro-orm/postgresql';
+import { EntityRepository } from '@mikro-orm/knex';
 import { Session } from '../model/session.entity';
 import { User } from '@cdaxfx/tools-models';
 
