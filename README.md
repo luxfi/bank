@@ -2,7 +2,7 @@
 
 ## Overview
 
-Lux Finance is the first full-stack, open-source Banking as a Service (BaaS) platform, designed to revolutionize the financial services industry. Our platform enables seamless integrations and interoperability with other regulated banks, breaking down barriers and fostering collaboration in the financial ecosystem.
+Lux Finance Platform is the first full-stack, open-source Banking as a Service (BaaS) platform, designed to revolutionize the financial services industry. Our platform enables seamless integrations and interoperability with other regulated banks, breaking down barriers and fostering collaboration in the financial ecosystem.
 
 Built with cutting-edge technology, Lux Finance provides a transparent, secure, and efficient banking solution. It is designed to meet the needs of the next generation of financial services, offering a robust set of features and capabilities that go beyond traditional banking.
 
