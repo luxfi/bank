@@ -4,8 +4,8 @@ import { Beneficiary } from '../../beneficiaries';
 import { Transaction } from '../entities/transaction.entity';
 import { QueryFlag } from '@mikro-orm/core';
 import { GetBeneficiariesPaginatedResponse, PaginationsResponse } from '../dtos/get-current-beneficiaries';
-import { ECurrencyCode } from '@cdaxfx/tools-misc';
-import { generateShortUniqId } from '@cdaxfx/tools-misc';
+import { ECurrencyCode } from '@luxbank/misc';
+import { generateShortUniqId } from '@luxbank/misc';
 
 export class TransactionsRepository extends EntityRepository<Transaction> {
   async createTransaction(data: any, creator: User): Promise<Transaction> {

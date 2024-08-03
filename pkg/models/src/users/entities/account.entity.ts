@@ -16,7 +16,7 @@ import { PendingMetaData } from './pending-metadata.entity';
 import { RiskAssessment } from './risk-assessment.entity';
 import { Shareholder } from './shareholder.entity';
 import { User } from './user.entity';
-import { EPaymentProvider } from '@cdaxfx/tools-misc';
+import { EPaymentProvider } from '@luxbank/misc';
 
 @Entity({ repository: () => AccountsRepository })
 export class Account extends BaseEntity {

@@ -1,8 +1,8 @@
 import { Logger } from '@nestjs/common';
 import { AxiosOAuthClient } from './oauth-client';
 import { AxiosRequestConfig } from 'axios';
-import { GenericAbstraction, decrypt } from '@cdaxfx/tools-misc';
-import { User } from '@cdaxfx/tools-models';
+import { GenericAbstraction, decrypt } from '@luxbank/misc';
+import { User } from '@luxbank/models';
 
 export class CoreRequester extends GenericAbstraction {
   logger = new Logger(CoreRequester.name);

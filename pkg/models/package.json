@@ -1,5 +1,5 @@
 {
-  "name": "@cdaxfx/tools-models",
+  "name": "@luxbank/models",
   "version": "1.0.31",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,12 +13,12 @@
     "typescript",
     "npm",
     "nestjs",
-    "cdaxfx",
+    "luxbank",
     "package"
   ],
   "license": "MIT",
   "dependencies": {
-    "@cdaxfx/tools-misc": "^1.0.31",
+    "@luxbank/misc": "^1.0.31",
     "@mikro-orm/nestjs": "^6.0.2",
     "@mikro-orm/core": "^6.3.2",
     "@mikro-orm/knex": "^6.3.2",

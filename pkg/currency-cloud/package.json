@@ -1,5 +1,5 @@
 {
-  "name": "@cdaxfx/ports-currency-cloud",
+  "name": "@luxbank/currency-cloud",
   "version": "1.0.31",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,13 +13,13 @@
     "typescript",
     "npm",
     "nestjs",
-    "cdaxfx",
+    "luxbank",
     "package"
   ],
   "license": "MIT",
   "dependencies": {
-    "@cdaxfx/tools-misc": "^1.0.31",
-    "@cdaxfx/tools-models": "^1.0.31",
+    "@luxbank/misc": "^1.0.31",
+    "@luxbank/models": "^1.0.31",
     "@nestjs/common": "^10.3.10",
     "axios": "^1.7.3"
   },

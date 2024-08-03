@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { ApiProperty } from '@nestjs/swagger';
-import { isInUk } from '@cdaxfx/tools-misc';
+import { isInUk } from '@luxbank/misc';
 import { IsEmail, IsEnum, IsISO31661Alpha2, IsMobilePhone, IsOptional, Matches, ValidateIf } from 'class-validator';
 import { CompanyType } from '../entities';
 import { AccountType } from '../enums';

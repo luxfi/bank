@@ -5,7 +5,7 @@ import { Wallet, WalletBalances } from './responses/wallets.response';
 import { AxiosRequestConfig } from 'axios';
 import { Beneficiary, BeneficiaryUpdate } from './requests/beneficiary.request';
 import { BeneficiaryCreated } from './responses/beneficiary.response';
-import { User } from '@cdaxfx/tools-models';
+import { User } from '@luxbank/models';
 import { Payment } from './requests/payment.request';
 import { PaymentCreated, PaymentDetail } from './responses/payment.response';
 import { Conversion } from './requests/conversion.request';

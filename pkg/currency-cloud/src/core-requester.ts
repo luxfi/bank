@@ -1,6 +1,6 @@
 import { BadRequestException, Logger } from '@nestjs/common';
-import { GenericAbstraction, propertiesToSnakeCase, getConfigCurrencyCloud } from '@cdaxfx/tools-misc';
-import { User } from '@cdaxfx/tools-models';
+import { GenericAbstraction, propertiesToSnakeCase, getConfigCurrencyCloud } from '@luxbank/misc';
+import { User } from '@luxbank/models';
 import axios, { AxiosResponse } from 'axios';
 
 interface ErrorMessage {

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { isInUk } from '@cdaxfx/tools-misc';
+import { isInUk } from '@luxbank/misc';
 import { isEmpty,  IsEnum, IsISO31661Alpha2, IsOptional, Length, Matches, MaxLength, MinLength, ValidateIf } from 'class-validator';
 import { Currencies } from '../enums';
 

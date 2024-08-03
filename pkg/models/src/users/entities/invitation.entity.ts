@@ -1,6 +1,6 @@
 import { Entity, EntityRepositoryType, ManyToOne, Property } from '@mikro-orm/core';
 import { BadRequestException } from '@nestjs/common';
-import { compareHash, generateCodeAndHash } from '@cdaxfx/tools-misc';
+import { compareHash, generateCodeAndHash } from '@luxbank/misc';
 import { BaseEntity } from '../../base';
 import { InvitationDto } from '../dtos';
 import { AdminRoles, UserRole } from '../enums';

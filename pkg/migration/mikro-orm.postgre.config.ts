@@ -14,7 +14,7 @@ import {
     USER_REGISTERED_ENTITIES,
     USER_CLIENTS_REGISTERED_ENTITIES,
     TRANSACTION_REGISTERED_ENTITIES
-} from '@cdaxfx/tools-models';
+} from '@luxbank/models';
 
 import * as dotenv from 'dotenv';
 

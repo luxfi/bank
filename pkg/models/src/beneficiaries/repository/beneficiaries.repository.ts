@@ -3,7 +3,7 @@ import { User } from '../../users';
 import { Beneficiary } from '../entities';
 import { GetBeneficiariesPaginatedResponse, GetBeneficiariesResponse, GetBeneficiariesRequest } from '../types';
 import { FilterQuery } from '@mikro-orm/core';
-import { ECountryCode, ECurrencyCode } from '@cdaxfx/tools-misc';
+import { ECountryCode, ECurrencyCode } from '@luxbank/misc';
 import { FilterBeneficiariesDTO } from '../dtos/filter-beneficiaries.request.dto';
 import { GetBeneficiariesSelectPaginatedResponse, GetBeneficiariesSelectResponse, GetBeneficiariesSelectRequest } from '../types';
 import { FilterBeneficiariesAccountDTO } from '../dtos/filter-beneficiaries-account.dto';

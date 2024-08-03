@@ -1,7 +1,7 @@
 import { Migration } from '@mikro-orm/migrations';
 import { v4 } from 'uuid';
 import { hash } from 'bcryptjs';
-import { UserRole } from '@cdaxfx/tools-models';
+import { UserRole } from '@luxbank/models';
 
 export class Migration20240729142902 extends Migration {
 

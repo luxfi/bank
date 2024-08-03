@@ -1,7 +1,7 @@
 import { CreateConversionRequest, GetPreviewRequest } from './types';
 import { Logger } from '@nestjs/common';
 import { AxiosError } from 'axios';
-import { User } from '@cdaxfx/tools-models';
+import { User } from '@luxbank/models';
 import { CoreRequester } from './core-requester';
 import { FundingAccountsRequest } from './requests/funding-accounts.request';
 import { PurposeCodeRequest } from './requests/purpose-code.request';

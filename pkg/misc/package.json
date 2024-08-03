@@ -1,5 +1,5 @@
 {
-  "name": "@cdaxfx/tools-misc",
+  "name": "@luxbank/misc",
   "version": "1.0.31",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,7 +13,7 @@
     "typescript",
     "npm",
     "nestjs",
-    "cdaxfx",
+    "luxbank",
     "package"
   ],
   "license": "MIT",
