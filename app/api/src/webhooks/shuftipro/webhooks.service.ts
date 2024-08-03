@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { MailerService } from '../../mailer/mailer.service';
 import NotificationEmail from '../emails/notification';
-import { ShuftiproDto } from '@cdaxfx/tools-models';
+import { ShuftiproDto } from '@luxbank/tools-models';
 import dayjs from 'dayjs';
 
 const EMAILS = process.env.NOTIFICATION_SHUFTIPRO?.split(',') || [];

@@ -7,7 +7,7 @@ import SelectDate from '@/components/SelectDate';
 import { EStep, useCreatePayment } from '@/context/CreatePayment';
 import { useNotification } from '@/context/Notification';
 
-import { Button } from '@cdaxfx/ui';
+import { Button } from '@luxbank/ui';
 import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';

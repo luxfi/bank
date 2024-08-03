@@ -9,7 +9,7 @@ import ModalResult from '@/components/ModalResult';
 import { useNotification } from '@/context/Notification';
 
 import { useUsers } from '@/store/useUsers';
-import { Button, Column, Row } from '@cdaxfx/ui';
+import { Button, Column, Row } from '@luxbank/ui';
 
 import { UserDetailsCard } from '../components/UserDetailsCard';
 import { UserForm } from '../components/UserForm';

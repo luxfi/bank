@@ -1,6 +1,6 @@
 import CountUp from 'react-countup';
 
-import { Icon, Row, Text } from '@cdaxfx/ui';
+import { Icon, Row, Text } from '@luxbank/ui';
 
 import { Container } from './styles';
 

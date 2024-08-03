@@ -1,8 +1,8 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { PaymentProviderCurrencyCloud } from '@cdaxfx/ports-currency-cloud';
-import { MailerService } from '@cdaxfx/ports-email';
+import { PaymentProviderCurrencyCloud } from '@luxbank/ports-currency-cloud';
+import { MailerService } from '@luxbank/ports-email';
 import PendingPaymentEmail from '../../currency-cloud/emails/pending-payment';
-import { BeneficiariesRepository, MemberRoles, Transaction, TransactionStatusApproval, TransactionsRepository, User, UsersRepository, TransactionStatus } from '@cdaxfx/tools-models';
+import { BeneficiariesRepository, MemberRoles, Transaction, TransactionStatusApproval, TransactionsRepository, User, UsersRepository, TransactionStatus } from '@luxbank/tools-models';
 import dayjs from 'dayjs';
 import { Request } from 'express';
 import { CreatePaymentUseCase } from './abstract.handler';

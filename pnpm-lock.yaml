@@ -196,19 +196,19 @@ importers:
 
   app/api:
     dependencies:
-      '@cdaxfx/ports-currency-cloud':
+      '@luxbank/ports-currency-cloud':
         specifier: ^1.0.31
         version: 1.0.31(@nestjs/core@10.3.10(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.3.10)(encoding@0.1.13)(reflect-metadata@0.2.2)(rxjs@7.8.1))(class-transformer@0.5.1)(class-validator@0.14.1)(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)
-      '@cdaxfx/ports-email':
+      '@luxbank/ports-email':
         specifier: ^1.0.31
         version: 1.0.31(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
-      '@cdaxfx/ports-ifx':
+      '@luxbank/ports-ifx':
         specifier: ^1.0.31
         version: 1.0.31(@nestjs/core@10.3.10(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.3.10)(encoding@0.1.13)(reflect-metadata@0.2.2)(rxjs@7.8.1))(class-transformer@0.5.1)(class-validator@0.14.1)(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)
-      '@cdaxfx/tools-misc':
+      '@luxbank/tools-misc':
         specifier: ^1.0.31
         version: 1.0.31(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)
-      '@cdaxfx/tools-models':
+      '@luxbank/tools-models':
         specifier: ^1.0.31
         version: 1.0.31(@nestjs/core@10.3.10(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.3.10)(encoding@0.1.13)(reflect-metadata@0.2.2)(rxjs@7.8.1))(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       '@mikro-orm/core':
@@ -425,7 +425,7 @@ importers:
       '@ant-design/static-style-extract':
         specifier: ^1.0.2
         version: 1.0.2(antd@5.19.1(date-fns@3.6.0)(luxon@3.4.4)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@cdaxfx/ui':
+      '@luxbank/ui':
         specifier: ^0.0.38
         version: 0.0.38(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.11(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       '@fortawesome/free-solid-svg-icons':
@@ -694,10 +694,10 @@ importers:
 
   pkg/currency-cloud:
     dependencies:
-      '@cdaxfx/tools-misc':
+      '@luxbank/tools-misc':
         specifier: ^1.0.31
         version: 1.0.31(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)
-      '@cdaxfx/tools-models':
+      '@luxbank/tools-models':
         specifier: ^1.0.31
         version: 1.0.31(@nestjs/core@10.3.10(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.3.10)(encoding@0.1.13)(reflect-metadata@0.2.2)(rxjs@7.8.1))(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       '@nestjs/common':
@@ -744,13 +744,13 @@ importers:
 
   pkg/ifx:
     dependencies:
-      '@cdaxfx/ports-currency-cloud':
+      '@luxbank/ports-currency-cloud':
         specifier: ^1.0.31
         version: 1.0.31(@nestjs/core@10.3.10(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.3.10)(encoding@0.1.13)(reflect-metadata@0.2.2)(rxjs@7.8.1))(class-transformer@0.5.1)(class-validator@0.14.1)(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)
-      '@cdaxfx/tools-misc':
+      '@luxbank/tools-misc':
         specifier: ^1.0.31
         version: 1.0.31(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)
-      '@cdaxfx/tools-models':
+      '@luxbank/tools-models':
         specifier: ^1.0.31
         version: 1.0.31(@nestjs/core@10.3.10(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.3.10)(encoding@0.1.13)(reflect-metadata@0.2.2)(rxjs@7.8.1))(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       '@nestjs/common':
@@ -772,7 +772,7 @@ importers:
 
   pkg/migration:
     dependencies:
-      '@cdaxfx/tools-models':
+      '@luxbank/tools-models':
         specifier: ^1.0.31
         version: 1.0.31(@nestjs/core@10.3.10(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.3.10)(encoding@0.1.13)(reflect-metadata@0.2.2)(rxjs@7.8.1))(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       '@mikro-orm/cli':
@@ -855,7 +855,7 @@ importers:
 
   pkg/models:
     dependencies:
-      '@cdaxfx/tools-misc':
+      '@luxbank/tools-misc':
         specifier: ^1.0.31
         version: 1.0.31(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)
       '@mikro-orm/core':
@@ -1848,22 +1848,22 @@ packages:
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
 
-  '@cdaxfx/ports-currency-cloud@1.0.31':
+  '@luxbank/ports-currency-cloud@1.0.31':
     resolution: {integrity: sha512-NUSpnsvtt4nmouTpds5fpDvNeWEv1s/un5HTYESdIGjP4x1qmZGBeFXSkYKAw0KMdbUwuU/6OyEBwQafO/2g+A==}
 
-  '@cdaxfx/ports-email@1.0.31':
+  '@luxbank/ports-email@1.0.31':
     resolution: {integrity: sha512-d3fOjmzRMH8dujj+y2/owmxRdHh2tSCBqPcIgBl8dJ/x/4Jzy/X8F4XmbQ1Qg6nm6yUCPwt/uSkoLnbK0isHHQ==}
 
-  '@cdaxfx/ports-ifx@1.0.31':
+  '@luxbank/ports-ifx@1.0.31':
     resolution: {integrity: sha512-Zd51n5On96cTm96IdJDBsEsTJjPNZtQniv41IUfCeGQDXa5ZUB09IOR3YNORV3YWdXW8EwlFWSuGCGrJGT0KVw==}
 
-  '@cdaxfx/tools-misc@1.0.31':
+  '@luxbank/tools-misc@1.0.31':
     resolution: {integrity: sha512-sKPGqzjLob4oYT6u0KzDRzdXnssU59UUxdsYNNc1oD9im3HWEejsYx60oKyMQpxTY5ppeiSV2U7KiA8m4PdKlA==}
 
-  '@cdaxfx/tools-models@1.0.31':
+  '@luxbank/tools-models@1.0.31':
     resolution: {integrity: sha512-XgLZhn27ss8MmENMcOnfwPWbxPtzf9MnmUhIJoaoh3T8+kW5zen6Oo9waOQ0qQomiGg36T+sz0Sp4xCxitnrBA==}
 
-  '@cdaxfx/ui@0.0.38':
+  '@luxbank/ui@0.0.38':
     resolution: {integrity: sha512-voWuD4ZKavRnPLnDh8XwQmBNJr40JRhWMDCSIQ52wssNfiF3HoJLLOe5CQLBkwHfWrGldj1F6/Mv8IuBN3uMxA==}
     hasBin: true
     peerDependencies:
@@ -12400,10 +12400,10 @@ snapshots:
 
   '@bcoe/v8-coverage@0.2.3': {}
 
-  '@cdaxfx/ports-currency-cloud@1.0.31(@nestjs/core@10.3.10(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.3.10)(encoding@0.1.13)(reflect-metadata@0.2.2)(rxjs@7.8.1))(class-transformer@0.5.1)(class-validator@0.14.1)(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)':
+  '@luxbank/ports-currency-cloud@1.0.31(@nestjs/core@10.3.10(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.3.10)(encoding@0.1.13)(reflect-metadata@0.2.2)(rxjs@7.8.1))(class-transformer@0.5.1)(class-validator@0.14.1)(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)':
     dependencies:
-      '@cdaxfx/tools-misc': 1.0.31(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)
-      '@cdaxfx/tools-models': 1.0.31(@nestjs/core@10.3.10(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.3.10)(encoding@0.1.13)(reflect-metadata@0.2.2)(rxjs@7.8.1))(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@luxbank/tools-misc': 1.0.31(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)
+      '@luxbank/tools-models': 1.0.31(@nestjs/core@10.3.10(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.3.10)(encoding@0.1.13)(reflect-metadata@0.2.2)(rxjs@7.8.1))(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       '@nestjs/common': 10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       axios: 1.7.3
     transitivePeerDependencies:
@@ -12426,7 +12426,7 @@ snapshots:
       - supports-color
       - tedious
 
-  '@cdaxfx/ports-email@1.0.31(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)':
+  '@luxbank/ports-email@1.0.31(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)':
     dependencies:
       '@nestjs/common': 10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       '@sendgrid/helpers': 8.0.0
@@ -12439,11 +12439,11 @@ snapshots:
       - reflect-metadata
       - rxjs
 
-  '@cdaxfx/ports-ifx@1.0.31(@nestjs/core@10.3.10(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.3.10)(encoding@0.1.13)(reflect-metadata@0.2.2)(rxjs@7.8.1))(class-transformer@0.5.1)(class-validator@0.14.1)(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)':
+  '@luxbank/ports-ifx@1.0.31(@nestjs/core@10.3.10(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.3.10)(encoding@0.1.13)(reflect-metadata@0.2.2)(rxjs@7.8.1))(class-transformer@0.5.1)(class-validator@0.14.1)(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)':
     dependencies:
-      '@cdaxfx/ports-currency-cloud': 1.0.31(@nestjs/core@10.3.10(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.3.10)(encoding@0.1.13)(reflect-metadata@0.2.2)(rxjs@7.8.1))(class-transformer@0.5.1)(class-validator@0.14.1)(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)
-      '@cdaxfx/tools-misc': 1.0.31(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)
-      '@cdaxfx/tools-models': 1.0.31(@nestjs/core@10.3.10(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.3.10)(encoding@0.1.13)(reflect-metadata@0.2.2)(rxjs@7.8.1))(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@luxbank/ports-currency-cloud': 1.0.31(@nestjs/core@10.3.10(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.3.10)(encoding@0.1.13)(reflect-metadata@0.2.2)(rxjs@7.8.1))(class-transformer@0.5.1)(class-validator@0.14.1)(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@luxbank/tools-misc': 1.0.31(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)
+      '@luxbank/tools-models': 1.0.31(@nestjs/core@10.3.10(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.3.10)(encoding@0.1.13)(reflect-metadata@0.2.2)(rxjs@7.8.1))(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       '@nestjs/common': 10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       axios: 1.7.3
     transitivePeerDependencies:
@@ -12466,7 +12466,7 @@ snapshots:
       - supports-color
       - tedious
 
-  '@cdaxfx/tools-misc@1.0.31(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)':
+  '@luxbank/tools-misc@1.0.31(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)':
     dependencies:
       '@mikro-orm/core': 6.3.2
       '@nestjs/common': 10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
@@ -12479,9 +12479,9 @@ snapshots:
       - class-validator
       - reflect-metadata
 
-  '@cdaxfx/tools-models@1.0.31(@nestjs/core@10.3.10(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.3.10)(encoding@0.1.13)(reflect-metadata@0.2.2)(rxjs@7.8.1))(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)':
+  '@luxbank/tools-models@1.0.31(@nestjs/core@10.3.10(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.3.10)(encoding@0.1.13)(reflect-metadata@0.2.2)(rxjs@7.8.1))(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)':
     dependencies:
-      '@cdaxfx/tools-misc': 1.0.31(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)
+      '@luxbank/tools-misc': 1.0.31(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)
       '@mikro-orm/core': 6.3.2
       '@mikro-orm/knex': 6.3.2(@mikro-orm/core@6.3.2)(pg@8.12.0)(sqlite3@5.1.7)
       '@mikro-orm/nestjs': 6.0.2(@mikro-orm/core@6.3.2)(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.3.10(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.3.10)(encoding@0.1.13)(reflect-metadata@0.2.2)(rxjs@7.8.1))
@@ -12510,7 +12510,7 @@ snapshots:
       - supports-color
       - tedious
 
-  '@cdaxfx/ui@0.0.38(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.11(react-dom@18.3.1(react@18.3.1))(react@18.3.1))':
+  '@luxbank/ui@0.0.38(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.11(react-dom@18.3.1(react@18.3.1))(react@18.3.1))':
     dependencies:
       '@floating-ui/react': 0.26.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-checkbox': 1.1.1(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)

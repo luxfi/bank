@@ -11,7 +11,7 @@ import {
 } from '@/context/IndividualRiskAssessment';
 
 import { useClients } from '@/store/useClient';
-import { Button } from '@cdaxfx/ui';
+import { Button } from '@luxbank/ui';
 
 import { Complete } from './Complete';
 import { HigherRiskClient } from './HigherRiskClient';

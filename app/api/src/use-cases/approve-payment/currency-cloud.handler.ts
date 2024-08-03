@@ -1,12 +1,12 @@
-import { PaymentProviderCurrencyCloud } from '@cdaxfx/ports-currency-cloud';
-import { Transaction, TransactionStatusApproval, TransactionsRepository, User, TransactionStatus } from '@cdaxfx/tools-models';
+import { PaymentProviderCurrencyCloud } from '@luxbank/ports-currency-cloud';
+import { Transaction, TransactionStatusApproval, TransactionsRepository, User, TransactionStatus } from '@luxbank/tools-models';
 import { Request } from 'express';
 import { ApprovePaymentUseCase } from './abstract.handler';
 import { ApprovePaymentRequest } from './types/approve-payment.request.type';
 import { ApprovePaymentResponse } from './types/approve-payment.response.type';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import ApprovePaymentEmail from '../../currency-cloud/emails/approve-payment';
-import { MailerService } from '@cdaxfx/ports-email';
+import { MailerService } from '@luxbank/ports-email';
 import dayjs from 'dayjs';
 
 export class ApprovePaymentCCUseCase extends ApprovePaymentUseCase {

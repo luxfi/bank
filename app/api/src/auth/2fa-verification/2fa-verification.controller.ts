@@ -3,13 +3,13 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { RealIP } from 'nestjs-real-ip';
 import { SessionsService } from '../../sessions/sessions.service';
-import { SuccessResponse, isDemoAccount } from '@cdaxfx/tools-misc';
+import { SuccessResponse, isDemoAccount } from '@luxbank/tools-misc';
 import { AuthService } from '../auth.service';
 import { TwoFaCodeCheckDto, TwoFaCodeDto } from '../model/2fa-verification.dto';
 import { TwoFaVerificationService } from './2fa-verification.service';
 import { instanceToPlain } from 'class-transformer';
 import { UsersService } from '../../users/users.service';
-import { User } from '@cdaxfx/tools-models';
+import { User } from '@luxbank/tools-models';
 
 @ApiTags('Authentication')
 @Controller('2fa/verification')

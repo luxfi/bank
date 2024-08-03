@@ -12,7 +12,7 @@ import { ICurrencies } from '@/models/currencies';
 
 import { useWallet } from '@/store/useWallet';
 import { IWallet } from '@/store/useWallet/types';
-import { Button, Row, useTheme } from '@cdaxfx/ui';
+import { Button, Row, useTheme } from '@luxbank/ui';
 
 import {
   Container,

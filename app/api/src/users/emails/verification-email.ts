@@ -1,5 +1,5 @@
 import { AttachmentJSON } from '@sendgrid/helpers/classes/attachment';
-import { User } from '@cdaxfx/tools-models';
+import { User } from '@luxbank/tools-models';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import BaseEmail from '../../model/base-email';

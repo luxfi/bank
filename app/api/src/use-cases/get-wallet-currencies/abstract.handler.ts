@@ -1,4 +1,4 @@
-import { User } from '@cdaxfx/tools-models';
+import { User } from '@luxbank/tools-models';
 import { UseCaseHandler } from '../types/use-case-handler.interface';
 import { ViewCurrenciesResponse } from './balances.response.type';
 

@@ -1,4 +1,4 @@
-import { AccountType } from '@cdaxfx/tools-models';
+import { AccountType } from '@luxbank/tools-models';
 import { AccountStatus } from './account-status.enum';
 import { IdentificationType } from './identification-type.enum';
 

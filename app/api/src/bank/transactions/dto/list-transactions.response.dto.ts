@@ -1,4 +1,4 @@
-import { ECurrencyCode, SuccessResponseV2 } from '@cdaxfx/tools-misc';
+import { ECurrencyCode, SuccessResponseV2 } from '@luxbank/tools-misc';
 
 class PaginatedResponseDto<T> {
     data: T[];

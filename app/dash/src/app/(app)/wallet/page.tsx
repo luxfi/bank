@@ -11,7 +11,7 @@ import { UserRole } from '@/models/auth';
 import { useAuth } from '@/store/useAuth';
 import { useWallet } from '@/store/useWallet';
 import { IWallet } from '@/store/useWallet/types';
-import { Button, Input, Row, useTheme } from '@cdaxfx/ui';
+import { Button, Input, Row, useTheme } from '@luxbank/ui';
 
 import { Container, HeaderContainer, MainContent, Title } from './styles';
 import { columns } from './types';

@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 
-import { Icon } from '@cdaxfx/ui';
+import { Icon } from '@luxbank/ui';
 import styled from 'styled-components';
 
 interface IProps {

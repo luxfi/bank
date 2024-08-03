@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { MikroOrmRegisteredForFees } from '@cdaxfx/tools-models';
+import { MikroOrmRegisteredForFees } from '@luxbank/tools-models';
 import { FeesService } from './fees.service';
 
 @Module({

@@ -1,4 +1,4 @@
-import { ECountryCode, ECurrencyCode, SuccessResponseV2 } from '@cdaxfx/tools-misc';
+import { ECountryCode, ECurrencyCode, SuccessResponseV2 } from '@luxbank/tools-misc';
 
 export class BeneficiaryDetail {
     id: string;

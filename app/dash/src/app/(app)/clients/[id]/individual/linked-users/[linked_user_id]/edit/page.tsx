@@ -12,7 +12,7 @@ import { useMessages } from '@/context/Messages';
 import { useClients } from '@/store/useClient';
 import { IUpdateLinkedUserPayload } from '@/store/useClient/types';
 import { useUsers } from '@/store/useUsers';
-import { Column, Text } from '@cdaxfx/ui';
+import { Column, Text } from '@luxbank/ui';
 
 import {
   ILinkedUserForm,

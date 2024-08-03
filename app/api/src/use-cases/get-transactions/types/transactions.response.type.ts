@@ -1,4 +1,4 @@
-import { ETransactionApprovalStatus, ETransactionStatus, ETransactionType, TransactionCurrencyAmount } from '@cdaxfx/ports-ifx';
+import { ETransactionApprovalStatus, ETransactionStatus, ETransactionType, TransactionCurrencyAmount } from '@luxbank/ports-ifx';
 
 export interface PaginationsResponse {
     totalEntries: number;

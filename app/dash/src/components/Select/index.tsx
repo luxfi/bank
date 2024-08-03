@@ -8,7 +8,7 @@ import {
   useMemo,
 } from 'react';
 
-import { Column, Text, useTheme } from '@cdaxfx/ui';
+import { Column, Text, useTheme } from '@luxbank/ui';
 import { Spin } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
 

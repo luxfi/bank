@@ -1,9 +1,9 @@
 import {Body, Controller, Post, UseGuards, UsePipes, ValidationPipe} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
-import { SuccessResponse } from '@cdaxfx/tools-misc';
+import { SuccessResponse } from '@luxbank/tools-misc';
 import { MailContactService } from './mail-contact.service';
-import { ContactUsDto, NewsLetterDto } from '@cdaxfx/tools-models';
+import { ContactUsDto, NewsLetterDto } from '@luxbank/tools-models';
 import { Anonymous } from '../auth/anonymous.decorator';
 import { RecaptchaGuard } from './recaptcha.guard';
 

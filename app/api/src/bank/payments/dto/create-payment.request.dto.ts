@@ -1,5 +1,5 @@
 import { EPaymentType } from '../../transactions/dto/transaction-detail.response.dto';
-import { ECurrencyCode } from '@cdaxfx/tools-misc';
+import { ECurrencyCode } from '@luxbank/tools-misc';
 
 export class CreatePaymentRequestDto {
     accountId: string;

@@ -4,7 +4,7 @@ import { UsersService } from '../users/users.service';
 import { PayloadInterface } from './payload.interface';
 import ForgotPasswordEmail from '../users/emails/forgot-password-email';
 import { MailerService } from '../mailer/mailer.service';
-import { User, UserClientsRepository } from '@cdaxfx/tools-models';
+import { User, UserClientsRepository } from '@luxbank/tools-models';
 
 @Injectable()
 export class AuthService {

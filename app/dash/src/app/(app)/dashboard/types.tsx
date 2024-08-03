@@ -9,7 +9,7 @@ import {
   getRiskAssesmentStatusBadgeValues,
 } from '@/utils/valueMaps';
 
-import { Column, TSelectOptions, Text } from '@cdaxfx/ui';
+import { Column, TSelectOptions, Text } from '@luxbank/ui';
 
 export interface IInApprovalFilters {
   status?: TTransactionStatus;

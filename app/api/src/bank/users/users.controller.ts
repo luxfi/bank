@@ -2,8 +2,8 @@ import { GetUserDomainUseCase, GetUsersBySelectDomainUseCase, GetUsersDomainUseC
 import { Body, Controller, Get, Param, Patch, Query, Request } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
-import { GetUser, SuccessResponse, SuccessResponseV2 } from '@cdaxfx/tools-misc';
-import { AdminRoles, ManagerRoles, User, UserRoles } from '@cdaxfx/tools-models';
+import { GetUser, SuccessResponse, SuccessResponseV2 } from '@luxbank/tools-misc';
+import { AdminRoles, ManagerRoles, User, UserRoles } from '@luxbank/tools-models';
 import { Roles } from '../../auth/roles.decorator';
 import { GetRequestDto, GetUsersRequestDto, GetUsersSelectRequestDto } from './dto/get-users.request.dto';
 import { EditUserDto } from './dto/edit-user.request.dto';

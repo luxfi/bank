@@ -11,7 +11,7 @@ import ModalResult from '@/components/ModalResult';
 import { useNotification } from '@/context/Notification';
 
 import { useAuth } from '@/store/useAuth';
-import { Button, Icon, Row, Text, useTheme } from '@cdaxfx/ui';
+import { Button, Icon, Row, Text, useTheme } from '@luxbank/ui';
 import { useFormik } from 'formik';
 
 import { resetPassword } from '@/api/user';

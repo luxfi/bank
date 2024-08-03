@@ -3,7 +3,7 @@
 import StyledComponentsRegistry from '@/lib/registryStyledComponents';
 
 import { StyleProvider } from '@ant-design/cssinjs';
-import { ThemeProvider } from '@cdaxfx/ui';
+import { ThemeProvider } from '@luxbank/ui';
 import { ConfigProvider } from 'antd';
 
 import GlobalStyles from '@/styles/globalStyles';

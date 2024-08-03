@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import { Document, DocumentType, DocumentsRepository, ClientDocumentsRepository, User, S3Object, ClientDocument, Client } from '@cdaxfx/tools-models';
+import { Document, DocumentType, DocumentsRepository, ClientDocumentsRepository, User, S3Object, ClientDocument, Client } from '@luxbank/tools-models';
 import * as AWS from 'aws-sdk';
 
 @Injectable()

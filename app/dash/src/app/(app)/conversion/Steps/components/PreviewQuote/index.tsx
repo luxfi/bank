@@ -1,6 +1,6 @@
 import { Badge } from '@/components/Badge';
 
-import { Icon, useTheme } from '@cdaxfx/ui';
+import { Icon, useTheme } from '@luxbank/ui';
 
 import {
   Container,

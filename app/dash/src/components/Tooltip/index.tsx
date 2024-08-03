@@ -1,4 +1,4 @@
-import { useTheme } from '@cdaxfx/ui';
+import { useTheme } from '@luxbank/ui';
 import { Tooltip as AntTooltip } from 'antd';
 import { TooltipPlacement } from 'antd/es/tooltip';
 

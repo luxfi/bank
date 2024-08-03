@@ -15,7 +15,7 @@ import { useNotification } from '@/context/Notification';
 
 import { useAuth } from '@/store/useAuth';
 import { useUsers } from '@/store/useUsers';
-import { Button, Column, Icon, Row, Text } from '@cdaxfx/ui';
+import { Button, Column, Icon, Row, Text } from '@luxbank/ui';
 import { Modal } from 'antd';
 
 import { UserDetailsCard } from '../components/UserDetailsCard';

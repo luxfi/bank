@@ -1,7 +1,7 @@
 import { Injectable, NotAcceptableException } from '@nestjs/common';
-import { ECountryCode, ECurrencyCode } from '@cdaxfx/tools-misc';
-import { BusinessMetadata, IndividualMetadata, TransactionStatusLabel, TransactionsRepository } from '@cdaxfx/tools-models';
-import { EPaymentType, ERoutingCodesNames } from '@cdaxfx/ports-ifx';
+import { ECountryCode, ECurrencyCode } from '@luxbank/tools-misc';
+import { BusinessMetadata, IndividualMetadata, TransactionStatusLabel, TransactionsRepository } from '@luxbank/tools-models';
+import { EPaymentType, ERoutingCodesNames } from '@luxbank/ports-ifx';
 import { GetTransactionUseCase } from './abstract.handler';
 import { GetTransactionResponse } from './types/transaction.response.type';
 

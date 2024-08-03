@@ -7,7 +7,7 @@ import { LabelAndValue } from '@/components/LabelAndValue';
 import { UserAvatar } from '@/components/UserAvatar';
 
 import { useAuth } from '@/store/useAuth';
-import { Button, Row, Text } from '@cdaxfx/ui';
+import { Button, Row, Text } from '@luxbank/ui';
 
 import { IGetCurrentUserV2Response, getCurrentUserV2 } from '@/api/user';
 

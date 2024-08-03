@@ -3,7 +3,7 @@ import { IColumnProps } from '@/components/Table';
 
 import { userRolesDictionary } from '@/app/(app)/users/types';
 import { ILinkedUser } from '@/store/useClient/types';
-import { Column, Text } from '@cdaxfx/ui';
+import { Column, Text } from '@luxbank/ui';
 
 export const columns: IColumnProps<ILinkedUser>[] = [
   {

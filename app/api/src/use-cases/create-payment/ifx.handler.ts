@@ -1,9 +1,9 @@
-import { PaymentProviderIFX } from '@cdaxfx/ports-ifx';
+import { PaymentProviderIFX } from '@luxbank/ports-ifx';
 import { CreatePaymentUseCase } from './abstract.handler';
-import { BeneficiariesRepository, MemberRoles, Transaction, TransactionsRepository, TransactionStatus, TransactionStatusApproval, User, UsersRepository } from '@cdaxfx/tools-models';
+import { BeneficiariesRepository, MemberRoles, Transaction, TransactionsRepository, TransactionStatus, TransactionStatusApproval, User, UsersRepository } from '@luxbank/tools-models';
 import { CreatePaymentsRequest } from './types/payments.request.type';
 import { CreatePaymentsResponse } from './types/payments.response.type';
-import { MailerService } from '@cdaxfx/ports-email';
+import { MailerService } from '@luxbank/ports-email';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import PendingPaymentEmail from '../../currency-cloud/emails/pending-payment';
 import dayjs from 'dayjs';

@@ -1,4 +1,4 @@
-import { ECurrencyCode } from '@cdaxfx/tools-misc';
+import { ECurrencyCode } from '@luxbank/tools-misc';
 
 export enum EPaymentType {
     PRIORITY = 'priority',

@@ -20,8 +20,8 @@
     "lib",
     "!node_modules"
   ],
-  "repository": "https://github.com/luxbank/platform",
-  "homepage": "https://github.com/luxbank/platform#readme",
+  "repository": "https://github.com/luxfi/bank",
+  "homepage": "https://github.com/luxfi/bank#readme",
   "publishConfig": {
     "access": "public"
   },

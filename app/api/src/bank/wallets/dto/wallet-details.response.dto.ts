@@ -1,4 +1,4 @@
-import { ECountryCode, PaginationDefault } from '@cdaxfx/tools-misc';
+import { ECountryCode, PaginationDefault } from '@luxbank/tools-misc';
 
 export enum ERoutingCodesNames {
     SORT_CODE = 'sort code',

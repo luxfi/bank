@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { AccountType, AdminCreateUserDto, AdminResetPasswordDto, AdminRoles, Contact, CreateAccountDto, CurrencyCloudDataDto, LinkedUserDto, IfxLinkDataDto, 
         User, UserDocument, UserDocumentsRepository, UserMetadataDto, UserRole, UserRoles, UsersRepository, UserMetadataRejectDto, SelectUsersByClientDto,
-        AdminCreateSuperUserDto } from '@cdaxfx/tools-models';
+        AdminCreateSuperUserDto } from '@luxbank/tools-models';
 import { BeneficiaryManager } from '../beneficiaries/model/beneficiary.manager';
 import { BeneficiariesService } from '../beneficiaries/services/beneficiaries.service';
 import { MailerService } from '../mailer/mailer.service';
-import { encrypt, EPaymentProvider, SUPER_CLIENT } from '@cdaxfx/tools-misc';
+import { encrypt, EPaymentProvider, SUPER_CLIENT } from '@luxbank/tools-misc';
 import AccountEmail from '../users/emails/account-email';
 import { RegistrationService } from '../users/registration/registration.service';
 import UserInvitationRole from '../users/emails/user-invitation';

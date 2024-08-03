@@ -1,5 +1,5 @@
-import { IIconProps, Icon, Text, useTheme } from '@cdaxfx/ui';
-import { TTextVariants } from '@cdaxfx/ui/lib/esm/components/Text/types';
+import { IIconProps, Icon, Text, useTheme } from '@luxbank/ui';
+import { TTextVariants } from '@luxbank/ui/lib/esm/components/Text/types';
 
 import { Container, getColors } from './styles';
 

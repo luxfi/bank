@@ -12,7 +12,7 @@ import { useMessages } from '@/context/Messages';
 import { formattedDate } from '@/utils/lib';
 
 import { useClients } from '@/store/useClient';
-import { Button, Column, Icon, Row, Text, useTheme } from '@cdaxfx/ui';
+import { Button, Column, Icon, Row, Text, useTheme } from '@luxbank/ui';
 
 import DataChangeApproval from '../../components/DataChangeApproval';
 import { HeaderClientsDetails } from '../../components/Header';

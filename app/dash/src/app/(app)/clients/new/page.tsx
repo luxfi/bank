@@ -19,7 +19,7 @@ import { CountriesList } from '@/lib/constants';
 
 import { useUsers } from '@/store/useUsers';
 import { LoadingOutlined } from '@ant-design/icons';
-import { Button } from '@cdaxfx/ui';
+import { Button } from '@luxbank/ui';
 import { useFormik } from 'formik';
 
 import { newClient } from '@/api/clients';

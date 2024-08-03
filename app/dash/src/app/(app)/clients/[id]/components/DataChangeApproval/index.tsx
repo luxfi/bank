@@ -14,7 +14,7 @@ import { useAuth } from '@/store/useAuth';
 import { useClients } from '@/store/useClient';
 import { IGetApprovalMetadataResponse } from '@/store/useClient/types';
 import { LoadingOutlined } from '@ant-design/icons';
-import { Button, Card, Row, Text, useTheme } from '@cdaxfx/ui';
+import { Button, Card, Row, Text, useTheme } from '@luxbank/ui';
 import { Modal } from 'antd';
 
 import { defaultTheme } from '@/styles/themes/default';

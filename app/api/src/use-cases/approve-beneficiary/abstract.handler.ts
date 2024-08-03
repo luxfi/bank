@@ -1,4 +1,4 @@
-import { User } from '@cdaxfx/tools-models';
+import { User } from '@luxbank/tools-models';
 import { UseCaseHandler } from '../types/use-case-handler.interface';
 import { ApproveBeneficiaryRequest } from './types/beneficiary.request.type';
 import { ApproveBeneficiaryResponse } from './types/beneficiary.response.type';

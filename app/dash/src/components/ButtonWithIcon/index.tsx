@@ -1,4 +1,4 @@
-import { IIconProps, Icon, Text } from '@cdaxfx/ui';
+import { IIconProps, Icon, Text } from '@luxbank/ui';
 import styled from 'styled-components';
 
 interface IProps {

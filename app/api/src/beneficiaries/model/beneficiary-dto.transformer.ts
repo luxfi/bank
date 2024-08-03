@@ -1,5 +1,5 @@
-import { isInUk, isSwift } from '@cdaxfx/tools-misc';
-import { AccountType, Beneficiary, CreateBeneficiaryDto } from '@cdaxfx/tools-models';
+import { isInUk, isSwift } from '@luxbank/tools-misc';
+import { AccountType, Beneficiary, CreateBeneficiaryDto } from '@luxbank/tools-models';
 import { CreateCurrencyCloudBeneficiaryDto } from '../../currency-cloud/model/create-currency-cloud-beneficiary.dto';
 import { RoutingCodeType, getRoutingCodeByCountry } from '../../currency-cloud/model/routing-code-type.enum';
 

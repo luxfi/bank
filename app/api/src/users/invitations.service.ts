@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { generatePassword } from '@cdaxfx/tools-misc';
-import { AccountType, Contact, Invitation, InvitationDto, InvitationsRepository, InviteUserRolesDto, RequestAccess, RequestAccessDto, RequestAccessRepository, User, UsersRepository } from '@cdaxfx/tools-models';
+import { generatePassword } from '@luxbank/tools-misc';
+import { AccountType, Contact, Invitation, InvitationDto, InvitationsRepository, InviteUserRolesDto, RequestAccess, RequestAccessDto, RequestAccessRepository, User, UsersRepository } from '@luxbank/tools-models';
 import { MailerService } from '../mailer/mailer.service';
 import AdminInvitationEmail from './emails/admin-invitation-email';
 import { EmailTypes } from './emails/email-types';

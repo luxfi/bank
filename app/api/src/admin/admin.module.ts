@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { MikroOrmRegisteredForUserClients, MikroOrmRegisteredForUser, MikroOrmRegisteredForClients } from '@cdaxfx/tools-models';
+import { MikroOrmRegisteredForUserClients, MikroOrmRegisteredForUser, MikroOrmRegisteredForClients } from '@luxbank/tools-models';
 import { BeneficiariesModule } from '../beneficiaries/beneficiaries.module';
 import { MailerModule } from '../mailer/mailer.module';
 import { OpenPaydModule } from '../openpayd/open-payd.module';

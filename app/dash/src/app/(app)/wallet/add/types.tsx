@@ -3,7 +3,7 @@ import Flag from 'react-world-flags';
 import { ITableProps } from '@/components/Table';
 
 import { IWallet } from '@/store/useWallet/types';
-import { Row } from '@cdaxfx/ui';
+import { Row } from '@luxbank/ui';
 
 import { FlagContainer, TitleCurrency } from '../styles';
 

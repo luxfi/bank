@@ -1,6 +1,6 @@
 import { IBadge } from '@/components/Badge';
 
-import { IIconProps } from '@cdaxfx/ui';
+import { IIconProps } from '@luxbank/ui';
 
 interface IStatusBadge {
   label: string;

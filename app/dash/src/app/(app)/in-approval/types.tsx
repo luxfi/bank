@@ -6,7 +6,7 @@ import { ITransactionV2, TTransactionStatus } from '@/models/transactions';
 import { formatCurrency, formatDateAndTime } from '@/utils/lib';
 import { getBadgeStatusInApprovalValues } from '@/utils/valueMaps';
 
-import { Column, TSelectOptions, Text } from '@cdaxfx/ui';
+import { Column, TSelectOptions, Text } from '@luxbank/ui';
 
 export interface IInApprovalFilters {
   statusApproval?: TTransactionStatus;

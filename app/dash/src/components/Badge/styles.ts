@@ -1,4 +1,4 @@
-import { ITheme } from '@cdaxfx/ui';
+import { ITheme } from '@luxbank/ui';
 import styled from 'styled-components';
 
 import { IBadge } from '.';

@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { Tooltip } from '@/components/Tooltip';
 
 import { useAuth } from '@/store/useAuth';
-import { Text } from '@cdaxfx/ui';
+import { Text } from '@luxbank/ui';
 
 import { AvatarPlaceholder, Container } from './styles';
 

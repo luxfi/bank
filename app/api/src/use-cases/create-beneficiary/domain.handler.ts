@@ -1,9 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { MailerService } from '@cdaxfx/ports-email';
-import { isSwift } from '@cdaxfx/tools-misc';
-import { Account, BeneficiariesRepository, Beneficiary, User } from '@cdaxfx/tools-models';
+import { MailerService } from '@luxbank/ports-email';
+import { isSwift } from '@luxbank/tools-misc';
+import { Account, BeneficiariesRepository, Beneficiary, User } from '@luxbank/tools-models';
 import dayjs from 'dayjs';
-import { EEntityType, ReversedERoutingCodesNames, RoutingCodes } from '@cdaxfx/ports-ifx';
+import { EEntityType, ReversedERoutingCodesNames, RoutingCodes } from '@luxbank/ports-ifx';
 import { CreateBeneficiaryRequest } from './types/beneficiary.request.type';
 import { BeneficiaryResponse } from './types/beneficiary.response.type';
 import BeneficiaryCreatedEmail from '../../beneficiaries/emails/beneficiary-email';

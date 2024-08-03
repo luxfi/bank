@@ -1,6 +1,6 @@
-import { PaymentProviderIFX } from '@cdaxfx/ports-ifx';
+import { PaymentProviderIFX } from '@luxbank/ports-ifx';
 import { GetPreviewUseCase } from './abstract.handler';
-import { GetPreviewResponse, GetPreviewRequest, EDirection } from '@cdaxfx/ports-currency-cloud';
+import { GetPreviewResponse, GetPreviewRequest, EDirection } from '@luxbank/ports-currency-cloud';
 import { NotAcceptableException } from '@nestjs/common';
 
 export class GetPreviewIFXUseCase extends GetPreviewUseCase {

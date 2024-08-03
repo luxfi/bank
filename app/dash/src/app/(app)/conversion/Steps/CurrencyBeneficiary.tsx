@@ -16,7 +16,7 @@ import useDebounce from '@/hooks/useDebounce';
 import useUrlSearchParams from '@/hooks/useUrlParams';
 import { useConversions } from '@/store/useConversions';
 import { IConversionPreviewResponse } from '@/store/useConversions/types';
-import { Button } from '@cdaxfx/ui';
+import { Button } from '@luxbank/ui';
 import { useFormik } from 'formik';
 import _ from 'underscore';
 

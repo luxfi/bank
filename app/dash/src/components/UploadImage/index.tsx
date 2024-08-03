@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { useCallback, useState } from 'react';
 
-import { Icon, Text, useTheme } from '@cdaxfx/ui';
+import { Icon, Text, useTheme } from '@luxbank/ui';
 
 import { ModalUpload } from '../ModalUpload';
 import { Container, ImageContainer, IconPhotoContainer } from './styles';

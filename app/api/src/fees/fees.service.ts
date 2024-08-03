@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Account, Fee, FeesRepository, User } from '@cdaxfx/tools-models';
+import { Account, Fee, FeesRepository, User } from '@luxbank/tools-models';
 import { feesTable } from '../openpayd/feesTable';
 
 @Injectable()

@@ -1,8 +1,8 @@
 import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Put, Query, Request, ValidationPipe } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
-import { SuccessResponse, SuccessResponseV2 } from '@cdaxfx/tools-misc';
-import { AdminRoles, UserRole, Client, CreateClientDto, UpdateClientDto } from '@cdaxfx/tools-models';
+import { SuccessResponse, SuccessResponseV2 } from '@luxbank/tools-misc';
+import { AdminRoles, UserRole, Client, CreateClientDto, UpdateClientDto } from '@luxbank/tools-models';
 import { Roles } from '../auth/roles.decorator';
 import { SkipAccountSetup } from '../auth/skip-account-setup.decorator';
 import { ClientsService } from './clients.service';

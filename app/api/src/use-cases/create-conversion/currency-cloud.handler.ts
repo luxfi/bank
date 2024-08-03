@@ -1,5 +1,5 @@
-import { PaymentProviderCurrencyCloud, ConversionTypeResponse, CreateConversionRequest, CreateConversionResponse } from '@cdaxfx/ports-currency-cloud';
-import { TransactionAction, TransactionStatusApproval, TransactionsRepository, User } from '@cdaxfx/tools-models';
+import { PaymentProviderCurrencyCloud, ConversionTypeResponse, CreateConversionRequest, CreateConversionResponse } from '@luxbank/ports-currency-cloud';
+import { TransactionAction, TransactionStatusApproval, TransactionsRepository, User } from '@luxbank/tools-models';
 import { Request } from 'express';
 import { CreateConversionUseCase } from './abstract.handler';
 

@@ -3,7 +3,7 @@ import { MailerModule } from '../mailer/mailer.module';
 import { MailContactController } from './mail-contact.controller';
 import { MailContactService } from './mail-contact.service';
 import { RecaptchaGuard } from './recaptcha.guard';
-import { MikroOrmRegisteredForMailContact } from '@cdaxfx/tools-models';
+import { MikroOrmRegisteredForMailContact } from '@luxbank/tools-models';
 
 @Module({
     imports: [MikroOrmRegisteredForMailContact(), MailerModule],

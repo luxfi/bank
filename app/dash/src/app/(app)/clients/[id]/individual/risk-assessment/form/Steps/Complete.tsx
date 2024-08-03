@@ -7,7 +7,7 @@ import SelectDate from '@/components/SelectDate';
 import { useContextIndividualRiskAssessment } from '@/context/IndividualRiskAssessment';
 import { useMessages } from '@/context/Messages';
 
-import { Button, Column, Row, Text } from '@cdaxfx/ui';
+import { Button, Column, Row, Text } from '@luxbank/ui';
 
 export function Complete() {
   const router = useRouter();

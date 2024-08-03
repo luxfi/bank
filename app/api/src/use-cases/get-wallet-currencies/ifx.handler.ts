@@ -1,6 +1,6 @@
-import { PaymentProviderIFX } from '@cdaxfx/ports-ifx';
+import { PaymentProviderIFX } from '@luxbank/ports-ifx';
 import { GetWalletCurrenciesUseCase } from './abstract.handler';
-import { IFXCurrencies } from '@cdaxfx/tools-models';
+import { IFXCurrencies } from '@luxbank/tools-models';
 import { ViewCurrenciesResponse } from './balances.response.type';
 
 export class GetWalletCurrenciesIFXUseCase extends GetWalletCurrenciesUseCase {

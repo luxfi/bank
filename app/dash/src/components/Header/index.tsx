@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { ICurrentUser, UserRole } from '@/models/auth';
 
 import { useAuth } from '@/store/useAuth';
-import { Icon, Row, Text, useTheme, Button as ButtonDS } from '@cdaxfx/ui/';
+import { Icon, Row, Text, useTheme, Button as ButtonDS } from '@luxbank/ui/';
 import { Avatar } from 'antd';
 
 import { defaultTheme } from '@/styles/themes/default';

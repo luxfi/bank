@@ -12,7 +12,7 @@ import loadingTable from '@/animations/loadingTable.json';
 import { useClients } from '@/store/useClient';
 import { EnumClientDocumentType } from '@/store/useDocuments/types';
 import { useUsers } from '@/store/useUsers';
-import { Column, Text } from '@cdaxfx/ui';
+import { Column, Text } from '@luxbank/ui';
 
 import {
   ButtonMenu,

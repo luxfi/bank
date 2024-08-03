@@ -1,10 +1,10 @@
 import { GetLoggedUserUseCase } from '../../../use-cases';
 import { FactoryProvider, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
-import { PaymentProviderCurrencyCloud } from '@cdaxfx/ports-currency-cloud';
-import { PaymentProviderIFX } from '@cdaxfx/ports-ifx';
-import { EPaymentProvider } from '@cdaxfx/tools-misc';
-import { UserRole } from '@cdaxfx/tools-models';
+import { PaymentProviderCurrencyCloud } from '@luxbank/ports-currency-cloud';
+import { PaymentProviderIFX } from '@luxbank/ports-ifx';
+import { EPaymentProvider } from '@luxbank/tools-misc';
+import { UserRole } from '@luxbank/tools-models';
 import { PayloadInterface } from '../../../auth/payload.interface';
 import { Request } from 'express';
 import { decode } from 'jsonwebtoken';

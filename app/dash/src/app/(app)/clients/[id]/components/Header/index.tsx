@@ -6,7 +6,7 @@ import { Divider } from '@/components/Divider';
 import { LabelAndValue } from '@/components/LabelAndValue';
 
 import { useClients } from '@/store/useClient';
-import { Button, Column, Icon, Row, useTheme } from '@cdaxfx/ui';
+import { Button, Column, Icon, Row, useTheme } from '@luxbank/ui';
 import dayjs from 'dayjs';
 
 export const HeaderClientsDetails = () => {

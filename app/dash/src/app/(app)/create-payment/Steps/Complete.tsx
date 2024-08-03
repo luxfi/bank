@@ -9,7 +9,7 @@ import { useCreatePayment } from '@/context/CreatePayment';
 
 import { formatCurrency } from '@/utils/lib';
 
-import { Button } from '@cdaxfx/ui';
+import { Button } from '@luxbank/ui';
 
 import { ActionContainer, ContentContainer, WrapperButton } from '../styles';
 import { PaymentCard } from './Components/CardPayment';

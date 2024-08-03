@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { MailerService } from '@cdaxfx/ports-email';
+import { MailerService } from '@luxbank/ports-email';
 import RejectPaymentEmail from '../../currency-cloud/emails/reject-payment';
-import { Transaction, TransactionStatusApproval, TransactionsRepository, User } from '@cdaxfx/tools-models';
+import { Transaction, TransactionStatusApproval, TransactionsRepository, User } from '@luxbank/tools-models';
 import dayjs from 'dayjs';
 import { RejectPaymentRequest } from './types/reject-payment.request.type';
 import { RejectPaymentResponse } from './types/reject-payment.response.type';

@@ -5,7 +5,7 @@ import { ITableProps } from '@/components/Table';
 import { formatCurrency } from '@/utils/lib';
 
 import { IWallet } from '@/store/useWallet/types';
-import { Row, Text } from '@cdaxfx/ui';
+import { Row, Text } from '@luxbank/ui';
 
 import { FlagContainer, TitleCurrency } from './styles';
 

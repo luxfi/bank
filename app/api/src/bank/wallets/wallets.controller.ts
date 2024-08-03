@@ -1,8 +1,8 @@
 import { GetWalletBalancesUseCase, GetWalletDetailUseCase, GetWalletCurrenciesUseCase, GetWalletBalanceDetailUseCase } from '../../use-cases';
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { GetUser, SuccessResponseV2 } from '@cdaxfx/tools-misc';
-import { ManagerRoles, User, UserRole } from '@cdaxfx/tools-models';
+import { GetUser, SuccessResponseV2 } from '@luxbank/tools-misc';
+import { ManagerRoles, User, UserRole } from '@luxbank/tools-models';
 import { ViewBalancesRequestDto } from './dto/view-balances.request.dto';
 import { ViewBalancesResponseDto } from './dto/view-balances.response.dto';
 import { ViewDetailsRequestDto } from './dto/wallet-details.request.dto';

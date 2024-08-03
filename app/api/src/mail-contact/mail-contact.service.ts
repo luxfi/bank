@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { MailerService } from '../mailer/mailer.service';
 import ContactUsEmail from './emails/contact-us';
-import { ContactUsDto, NewsLetterDto, NewsLetter, NewsLetterRepository } from '@cdaxfx/tools-models';
+import { ContactUsDto, NewsLetterDto, NewsLetter, NewsLetterRepository } from '@luxbank/tools-models';
 import dayjs from 'dayjs';
 
 const backoffice = process.env.BACKOFFICE_EMAIL;

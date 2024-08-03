@@ -1,9 +1,9 @@
-import { PaymentProviderIFX } from '@cdaxfx/ports-ifx';
-import { TransactionAction, TransactionsRepository, TransactionStatus, TransactionStatusApproval, User } from '@cdaxfx/tools-models';
-import { CreateConversionRequest, CreateConversionResponse } from '@cdaxfx/ports-currency-cloud';
+import { PaymentProviderIFX } from '@luxbank/ports-ifx';
+import { TransactionAction, TransactionsRepository, TransactionStatus, TransactionStatusApproval, User } from '@luxbank/tools-models';
+import { CreateConversionRequest, CreateConversionResponse } from '@luxbank/ports-currency-cloud';
 import { CreateConversionUseCase } from './abstract.handler';
 import { BadRequestException } from '@nestjs/common';
-import { EPaymentProvider } from '@cdaxfx/tools-misc';
+import { EPaymentProvider } from '@luxbank/tools-misc';
 
 export class CreateConversionIFXUseCase extends CreateConversionUseCase {
     constructor(

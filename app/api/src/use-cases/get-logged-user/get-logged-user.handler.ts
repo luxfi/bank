@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Client, UsersRepository } from '@cdaxfx/tools-models';
+import { Client, UsersRepository } from '@luxbank/tools-models';
 import { PayloadInterface } from '../../auth/payload.interface';
 import { UseCaseHandler } from '../types/use-case-handler.interface';
 

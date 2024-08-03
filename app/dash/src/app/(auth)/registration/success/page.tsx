@@ -2,7 +2,7 @@
 import Lottie from 'react-lottie';
 
 import checkAnimation from '@/animations/check.json';
-import { Column, Text } from '@cdaxfx/ui';
+import { Column, Text } from '@luxbank/ui';
 
 import { Container } from '../styles';
 

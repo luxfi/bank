@@ -8,7 +8,7 @@ import Input from '@/components/Input';
 import { useMessages } from '@/context/Messages';
 
 import { useClients } from '@/store/useClient';
-import { Button, Row, Text } from '@cdaxfx/ui';
+import { Button, Row, Text } from '@luxbank/ui';
 import { useFormik } from 'formik';
 
 import { IAddress } from '../types';

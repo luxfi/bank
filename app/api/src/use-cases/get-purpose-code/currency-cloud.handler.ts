@@ -1,5 +1,5 @@
-import { PaymentProviderCurrencyCloud } from '@cdaxfx/ports-currency-cloud';
-import { User } from '@cdaxfx/tools-models';
+import { PaymentProviderCurrencyCloud } from '@luxbank/ports-currency-cloud';
+import { User } from '@luxbank/tools-models';
 import { GetPurposeCodesUseCase } from './abstract.handler';
 import { PurposeCodeRequest } from './types/purpose-code.request.type';
 import { PurposeCodeResponse } from './types/purpose-code.response.type';

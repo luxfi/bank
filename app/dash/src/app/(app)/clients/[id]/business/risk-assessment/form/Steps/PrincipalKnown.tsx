@@ -11,7 +11,7 @@ import {
   useContextBusinessRiskAssessment,
 } from '@/context/businessRiskAssessment';
 
-import { Button, Column, Row } from '@cdaxfx/ui';
+import { Button, Column, Row } from '@luxbank/ui';
 
 import { howLongYearsOptions, yesNoOptions } from '../../types';
 

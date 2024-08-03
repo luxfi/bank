@@ -11,7 +11,7 @@ import { formatCurrency, formattedDate } from '@/utils/lib';
 import animationLoading from '@/animations/stepConvert.json';
 import { useConversions } from '@/store/useConversions';
 import { IConversionPreviewResponse } from '@/store/useConversions/types';
-import { Button, Icon, useTheme } from '@cdaxfx/ui';
+import { Button, Icon, useTheme } from '@luxbank/ui';
 
 import {
   ActionContainer,

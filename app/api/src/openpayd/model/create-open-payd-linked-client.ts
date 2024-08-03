@@ -1,4 +1,4 @@
-import { CompanyType } from '@cdaxfx/tools-models';
+import { CompanyType } from '@luxbank/tools-models';
 import { LinkedClientIdentificationType } from './identification-type.enum';
 import { LinkedClientType } from './linked-client-type.enum';
 

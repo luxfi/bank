@@ -11,13 +11,13 @@ import { CreateCurrencyCloudContactDto } from './model/create-currency-cloud-con
 import { CreateCurrencyCloudConversionDto } from './model/create-currency-cloud-conversion';
 import { CreateCurrencyBeneficiary, CreateCurrencyQuote, CreateCurrencyTopUp, CreateValidatePayment } from './model/create-currency-quote.dto';
 import { propertiesToSnakeCase } from './utils/object-transformers';
-import { BankMetadata, BusinessMetadata, CurrencyCloudCurrencies, IndividualMetadata, User } from '@cdaxfx/tools-models';
+import { BankMetadata, BusinessMetadata, CurrencyCloudCurrencies, IndividualMetadata, User } from '@luxbank/tools-models';
 import PendingPaymentEmail from './emails/pending-payment';
 import ApprovePaymentEmail from './emails/approve-payment';
 import RejectPaymentEmail from './emails/reject-payment';
 import { MailerService } from '../mailer/mailer.service';
 import dayjs from 'dayjs';
-import { getConfigCurrencyCloud } from '@cdaxfx/tools-misc';
+import { getConfigCurrencyCloud } from '@luxbank/tools-misc';
 
 @Injectable()
 export class CurrencyCloudService implements CurrencyCloudInterface {

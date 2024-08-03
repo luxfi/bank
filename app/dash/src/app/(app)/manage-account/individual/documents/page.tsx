@@ -15,7 +15,7 @@ import { useAuth } from '@/store/useAuth';
 import { IDocument } from '@/store/useClient/types';
 import { useDocuments } from '@/store/useDocuments';
 import { EnumClientDocumentType } from '@/store/useDocuments/types';
-import { Column, Text, useTheme } from '@cdaxfx/ui';
+import { Column, Text, useTheme } from '@luxbank/ui';
 
 import { HeaderDetails } from '../../components/Header';
 

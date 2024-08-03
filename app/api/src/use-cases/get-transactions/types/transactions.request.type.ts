@@ -1,5 +1,5 @@
-import { EDateField } from '@cdaxfx/ports-ifx';
-import { ECurrencyCode } from '@cdaxfx/tools-misc';
+import { EDateField } from '@luxbank/ports-ifx';
+import { ECurrencyCode } from '@luxbank/tools-misc';
 
 export class ListTransactionsRequest {
     status?: string;

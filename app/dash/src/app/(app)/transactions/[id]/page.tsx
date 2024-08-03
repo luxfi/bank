@@ -14,7 +14,7 @@ import { useNotification } from '@/context/Notification';
 
 import { useAuth } from '@/store/useAuth';
 import { useTransactions } from '@/store/useTransactions';
-import { Button, Column } from '@cdaxfx/ui';
+import { Button, Column } from '@luxbank/ui';
 
 export default function TransactionDetails() {
   const { id } = useParams();

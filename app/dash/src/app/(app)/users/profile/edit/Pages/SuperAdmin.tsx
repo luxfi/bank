@@ -10,7 +10,7 @@ import ModalResult from '@/components/ModalResult';
 
 import { useNotification } from '@/context/Notification';
 
-import { Button, Row, Text } from '@cdaxfx/ui';
+import { Button, Row, Text } from '@luxbank/ui';
 import { useFormik } from 'formik';
 
 import {

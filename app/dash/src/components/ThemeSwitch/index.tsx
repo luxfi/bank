@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useState } from 'react';
 
-import { Icon, useTheme } from '@cdaxfx/ui';
+import { Icon, useTheme } from '@luxbank/ui';
 import { Switch } from 'antd';
 import styled from 'styled-components';
 

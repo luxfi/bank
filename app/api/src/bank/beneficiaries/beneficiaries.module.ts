@@ -3,8 +3,8 @@ import { Module } from '@nestjs/common';
 import { ArchiveBeneficiaryDomainUseCase, CreateBeneficiaryCCUseCase, CreateBeneficiaryIFXUseCase, CreateBeneficiaryUseCase, DisapproveBeneficiaryDomainUseCase, 
         GetLoggedUserUseCase, CreateBeneficiaryDomainUseCase, GetBeneficiariesDomainUseCase, GetBeneficiaryDetailDomainUseCase, GetCurrentBeneficiaryDomainUseCase,
         UpdateBeneficiaryDomainUseCase, ApproveBeneficiaryDomainUseCase } from '../../use-cases';
-import { MailerService } from '@cdaxfx/ports-email';
-import { BeneficiariesRepository, MikroOrmRegisteredForBeneficiaries, MikroOrmRegisteredForTransaction, MikroOrmRegisteredForUser } from '@cdaxfx/tools-models';
+import { MailerService } from '@luxbank/ports-email';
+import { BeneficiariesRepository, MikroOrmRegisteredForBeneficiaries, MikroOrmRegisteredForTransaction, MikroOrmRegisteredForUser } from '@luxbank/tools-models';
 import { SwiftCodeModule } from '../../swift-code/swift-code.module';
 import { SwiftCodeService } from '../../swift-code/swift-code.service';
 import { paymentAdapter } from '../shared/providers/payment-adapter.provider';

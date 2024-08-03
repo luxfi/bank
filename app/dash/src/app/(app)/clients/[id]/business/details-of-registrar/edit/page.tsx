@@ -12,7 +12,7 @@ import { convertMapInOptionList } from '@/utils/lib';
 
 import { whoTheyAreOptions } from '@/app/(app)/clients/types';
 import { useClients } from '@/store/useClient';
-import { Button, Row, Text } from '@cdaxfx/ui';
+import { Button, Row, Text } from '@luxbank/ui';
 import { useFormik } from 'formik';
 
 import { Container, FormContainer } from './styles';

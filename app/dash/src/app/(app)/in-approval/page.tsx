@@ -19,7 +19,7 @@ import useUrlSearchParams from '@/hooks/useUrlParams';
 import { useFilterSelect } from '@/store/useFilterSelect';
 import { useTransactions } from '@/store/useTransactions';
 import { ITransactionsResponse } from '@/store/useTransactions/types';
-import { Button, Column, Input, Row, Text } from '@cdaxfx/ui';
+import { Button, Column, Input, Row, Text } from '@luxbank/ui';
 import dayjs from 'dayjs';
 import _ from 'underscore';
 

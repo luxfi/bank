@@ -2,8 +2,8 @@ import {ApproveBeneficiaryDomainUseCase, ArchiveBeneficiaryDomainUseCase, Disapp
         GetBeneficiariesDomainUseCase, GetBeneficiaryDetailDomainUseCase, GetCurrentBeneficiaryDomainUseCase, UpdateBeneficiaryDomainUseCase } from '../../use-cases';
 import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { GetUser, SuccessResponseV2, UseErrorHandler } from '@cdaxfx/tools-misc';
-import { ManagerRoles, User, UserRole } from '@cdaxfx/tools-models';
+import { GetUser, SuccessResponseV2, UseErrorHandler } from '@luxbank/tools-misc';
+import { ManagerRoles, User, UserRole } from '@luxbank/tools-models';
 import { Roles } from '../../auth/roles.decorator';
 import { CreateBeneficiaryDto, GetBeneficiariesDto, GetBeneficiariesSelectDto, UpdateBeneficiaryDto } from './dto/beneficiary.request.dto';
 import { ApproveAndDisapproveBeneficiaryResponseDto, BeneficiaryUpdateResponse, GetBeneficiariesPaginatedResponse, GetBeneficiariesSelectPaginatedResponse,

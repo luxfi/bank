@@ -5,7 +5,7 @@ import { useMemo } from 'react';
 import { LabelAndValue } from '@/components/LabelAndValue';
 
 import { useAuth } from '@/store/useAuth';
-import { Column, useTheme } from '@cdaxfx/ui';
+import { Column, useTheme } from '@luxbank/ui';
 
 import { HeaderDetails } from '../../components/Header';
 import { IExpectedActivity } from './types';

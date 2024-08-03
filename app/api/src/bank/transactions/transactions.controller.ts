@@ -1,8 +1,8 @@
 import { GetTotalTransactionsDomainUseCase, GetTransactionDomainUseCase, GetTransactionsDomainUseCase } from '../../use-cases';
 import { Controller, Get, Param, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiBearerAuth, ApiNotFoundResponse, ApiTags } from '@nestjs/swagger';
-import { GetUser, SuccessResponseV2 } from '@cdaxfx/tools-misc';
-import { User, UserRole, UserRoles } from '@cdaxfx/tools-models';
+import { GetUser, SuccessResponseV2 } from '@luxbank/tools-misc';
+import { User, UserRole, UserRoles } from '@luxbank/tools-models';
 import { Roles } from '../../auth/roles.decorator';
 import { GetTransactionTotalResponseDto } from './dto/get-transaction-total.response.dto';
 import { ListTransactionsRequestDto } from './dto/list-transactions.request.dto';

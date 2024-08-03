@@ -1,4 +1,4 @@
-import { Column, Text, useTheme } from '@cdaxfx/ui';
+import { Column, Text, useTheme } from '@luxbank/ui';
 import { Radio, RadioChangeEvent } from 'antd';
 
 import { Label } from './styles';

@@ -16,7 +16,7 @@ import {
     CLIENTS_METADATA_TEMP_ENTITIES,
     CLIENTS_REGISTERED_ENTITIES,
     MAIL_CONTACT_REGISTERED_ENTITIES
-} from '@cdaxfx/tools-models';
+} from '@luxbank/tools-models';
 import { MobileVerificationEntity } from './src/auth/model/mobile-verification.entity';
 import { Session } from './src/sessions/model/session.entity';
 

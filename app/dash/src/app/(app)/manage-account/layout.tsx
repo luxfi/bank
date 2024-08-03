@@ -6,7 +6,7 @@ import Lottie from 'react-lottie';
 
 import loadingTable from '@/animations/loadingTable.json';
 import { useAuth } from '@/store/useAuth';
-import { Column, Text } from '@cdaxfx/ui';
+import { Column, Text } from '@luxbank/ui';
 
 import { ButtonMenu, Container, Content, Details, Menu } from './styles';
 

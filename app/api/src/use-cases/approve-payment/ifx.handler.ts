@@ -1,9 +1,9 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { MailerService } from '@cdaxfx/ports-email';
+import { MailerService } from '@luxbank/ports-email';
 import ApprovePaymentEmail from '../../currency-cloud/emails/approve-payment';
-import { PaymentProviderIFX } from '@cdaxfx/ports-ifx';
-import { ECountryCode, ECurrencyCode } from '@cdaxfx/tools-misc';
-import { Transaction, TransactionsRepository, TransactionStatus, TransactionStatusApproval, User } from '@cdaxfx/tools-models';
+import { PaymentProviderIFX } from '@luxbank/ports-ifx';
+import { ECountryCode, ECurrencyCode } from '@luxbank/tools-misc';
+import { Transaction, TransactionsRepository, TransactionStatus, TransactionStatusApproval, User } from '@luxbank/tools-models';
 import { ApprovePaymentUseCase } from './abstract.handler';
 import { ApprovePaymentRequest } from './types/approve-payment.request.type';
 import { ApprovePaymentResponse } from './types/approve-payment.response.type';

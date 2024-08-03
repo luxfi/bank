@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
 
-import { Button, Column, Icon, Text, useTheme } from '@cdaxfx/ui';
+import { Button, Column, Icon, Text, useTheme } from '@luxbank/ui';
 import { Modal } from 'antd';
 
 import {

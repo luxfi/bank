@@ -1,4 +1,4 @@
-import { Icon, TIconVariants } from '@cdaxfx/ui';
+import { Icon, TIconVariants } from '@luxbank/ui';
 
 import { Button, Container, Label } from './styles';
 

@@ -1,8 +1,8 @@
 import { CreateConversionUseCase, GetPreviewUseCase } from '../../use-cases';
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { GetUser } from '@cdaxfx/tools-misc';
-import { ManagerRoles, User, UserRole, UserRoles } from '@cdaxfx/tools-models';
+import { GetUser } from '@luxbank/tools-misc';
+import { ManagerRoles, User, UserRole, UserRoles } from '@luxbank/tools-models';
 import { Roles } from '../../auth/roles.decorator';
 import { CreateConversionRequestDto } from './dto/create-conversion.request.dto';
 import { CreateConversionResponseDto } from './dto/create-conversion.response.dto';

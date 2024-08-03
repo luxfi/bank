@@ -16,7 +16,7 @@ import { useNotification } from '@/context/Notification';
 
 import { useAuth } from '@/store/useAuth';
 import { useClients } from '@/store/useClient';
-import { Column, Icon, Row, Text, useTheme } from '@cdaxfx/ui';
+import { Column, Icon, Row, Text, useTheme } from '@luxbank/ui';
 
 import { getTransactions } from '@/api/transactions';
 

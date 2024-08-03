@@ -23,7 +23,7 @@ import { IBeneficiariesResponse } from '@/store/useBeneficiaries/types';
 import { useCurrenciesAndCountries } from '@/store/useCurrenciesAndCountries';
 import { useFilterSelect } from '@/store/useFilterSelect';
 import { IFilterSelect } from '@/store/useFilterSelect/types';
-import { Button, Column, Row, useTheme } from '@cdaxfx/ui';
+import { Button, Column, Row, useTheme } from '@luxbank/ui';
 import { DefaultOptionType } from 'antd/es/select';
 import _ from 'underscore';
 

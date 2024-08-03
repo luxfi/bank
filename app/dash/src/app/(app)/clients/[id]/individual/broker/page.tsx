@@ -9,7 +9,7 @@ import { useMessages } from '@/context/Messages';
 
 import { useClients } from '@/store/useClient';
 import { IBroker } from '@/store/useClient/types';
-import { Button, Column, Row, Text, useTheme } from '@cdaxfx/ui';
+import { Button, Column, Row, Text, useTheme } from '@luxbank/ui';
 
 import { HeaderClientsDetails } from '../../components/Header';
 

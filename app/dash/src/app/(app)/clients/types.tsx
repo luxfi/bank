@@ -5,7 +5,7 @@ import { getRiskAssesmentStatusBadgeValues } from '@/utils/valueMaps';
 
 import { CountriesList } from '@/lib/constants';
 
-import { Text, useTheme } from '@cdaxfx/ui';
+import { Text, useTheme } from '@luxbank/ui';
 import dayjs from 'dayjs';
 import * as Yup from 'yup';
 

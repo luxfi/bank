@@ -1,9 +1,9 @@
-import { PaymentProviderCurrencyCloud } from '@cdaxfx/ports-currency-cloud';
+import { PaymentProviderCurrencyCloud } from '@luxbank/ports-currency-cloud';
 import { Request } from 'express';
 import { GetWalletBalanceDetailUseCase } from './abstract.handler';
-import { CurrenciesName, User } from '@cdaxfx/tools-models';
+import { CurrenciesName, User } from '@luxbank/tools-models';
 import { ViewBalancesResponse } from '../../use-cases';
-import { ECurrencyCode } from '@cdaxfx/tools-misc';
+import { ECurrencyCode } from '@luxbank/tools-misc';
 
 export class GetWalletBalanceDetailCCUseCase extends GetWalletBalanceDetailUseCase {
     constructor(

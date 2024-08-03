@@ -1,5 +1,5 @@
-import { User } from '@cdaxfx/tools-models';
-import { GetPreviewRequest, GetPreviewResponse } from '@cdaxfx/ports-currency-cloud';
+import { User } from '@luxbank/tools-models';
+import { GetPreviewRequest, GetPreviewResponse } from '@luxbank/ports-currency-cloud';
 import { UseCaseHandler } from '../types/use-case-handler.interface';
 
 export abstract class GetPreviewUseCase extends UseCaseHandler {

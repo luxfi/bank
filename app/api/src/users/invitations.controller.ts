@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Param, Post, Request, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
-import { SuccessResponse } from '@cdaxfx/tools-misc';
-import { InvitationDto, RequestAccessDto, UserRole, ManagerRoles, InviteUserRolesDto } from '@cdaxfx/tools-models';
+import { SuccessResponse } from '@luxbank/tools-misc';
+import { InvitationDto, RequestAccessDto, UserRole, ManagerRoles, InviteUserRolesDto } from '@luxbank/tools-models';
 import { Anonymous } from '../auth/anonymous.decorator';
 import { Roles } from '../auth/roles.decorator';
 import { InvitationsService } from './invitations.service';

@@ -1,4 +1,4 @@
-import { User } from '@cdaxfx/tools-models';
+import { User } from '@luxbank/tools-models';
 import { CreateCurrencyCloudAccountDto } from './model/create-currency-cloud-account.dto';
 import { CreateCurrencyCloudBeneficiaryDto } from './model/create-currency-cloud-beneficiary.dto';
 import { CreateCurrencyCloudContactDto } from './model/create-currency-cloud-contact.dto';

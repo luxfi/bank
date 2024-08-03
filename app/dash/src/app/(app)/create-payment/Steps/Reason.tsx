@@ -6,7 +6,7 @@ import { EStep, useCreatePayment } from '@/context/CreatePayment';
 import { useNotification } from '@/context/Notification';
 
 import { LoadingOutlined } from '@ant-design/icons';
-import { Button } from '@cdaxfx/ui';
+import { Button } from '@luxbank/ui';
 
 import { defaultTheme } from '@/styles/themes/default';
 

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useNotification } from '@/context/Notification';
 
 import { useAuth } from '@/store/useAuth';
-import { Button, Column, Row, Text, useTheme } from '@cdaxfx/ui';
+import { Button, Column, Row, Text, useTheme } from '@luxbank/ui';
 import { Modal, Spin } from 'antd';
 import Cookies from 'js-cookie';
 

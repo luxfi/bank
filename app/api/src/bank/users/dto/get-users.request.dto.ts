@@ -1,4 +1,4 @@
-import { UserRole } from '@cdaxfx/tools-models';
+import { UserRole } from '@luxbank/tools-models';
 import { IsOptional, IsUUID, MinLength } from 'class-validator';
 
 export enum Status {

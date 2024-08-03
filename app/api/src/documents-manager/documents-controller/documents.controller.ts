@@ -2,9 +2,9 @@ import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Reques
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { SkipAccountSetup } from '../../auth/skip-account-setup.decorator';
-import { SuccessResponse } from '@cdaxfx/tools-misc';
+import { SuccessResponse } from '@luxbank/tools-misc';
 import { DocumentsManagerService } from '../documents-manager.service';
-import { AdminRoles, ClientsRepository, DocumentsRepository } from '@cdaxfx/tools-models';
+import { AdminRoles, ClientsRepository, DocumentsRepository } from '@luxbank/tools-models';
 import { Roles } from '../../auth/roles.decorator';
 import { AddClientDocumentDto } from '../dtos/add-client-documents.dto';
 import { RemoveClientDocumentDto } from '../dtos/remove-client-documents.dto';

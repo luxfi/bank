@@ -1,5 +1,5 @@
-import { EDirection } from '@cdaxfx/ports-currency-cloud';
-import { ECurrencyCode } from '@cdaxfx/tools-misc';
+import { EDirection } from '@luxbank/ports-currency-cloud';
+import { ECurrencyCode } from '@luxbank/tools-misc';
 
 export class PreviewConversionResponseDto {
     rate: string;

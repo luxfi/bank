@@ -2,9 +2,9 @@ import { BadRequestException, Body, Controller, Delete, Get, NotFoundException, 
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles } from '../auth/roles.decorator';
 import { SwiftCodeService } from '../swift-code/swift-code.service';
-import { SuccessResponse } from '@cdaxfx/tools-misc';
+import { SuccessResponse } from '@luxbank/tools-misc';
 import { BeneficiariesService } from './services/beneficiaries.service';
-import { CreateBeneficiaryDto, UserRole, ManagerRoles, FilterBeneficiariesDTO, FilterBeneficiariesAccountDTO } from '@cdaxfx/tools-models';
+import { CreateBeneficiaryDto, UserRole, ManagerRoles, FilterBeneficiariesDTO, FilterBeneficiariesAccountDTO } from '@luxbank/tools-models';
 import { ClientsService } from '../clients/clients.service';
 
 @ApiTags('Beneficiaries')

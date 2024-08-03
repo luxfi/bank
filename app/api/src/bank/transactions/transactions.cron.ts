@@ -1,8 +1,8 @@
 import { EntityManager } from '@mikro-orm/core';
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import { PaymentProviderIFX } from '@cdaxfx/ports-ifx';
-import { TransactionStatus, TransactionStatusMap, TransactionsRepository, UsersRepository } from '@cdaxfx/tools-models';
+import { PaymentProviderIFX } from '@luxbank/ports-ifx';
+import { TransactionStatus, TransactionStatusMap, TransactionsRepository, UsersRepository } from '@luxbank/tools-models';
 import dayjs from 'dayjs';
 
 @Injectable()

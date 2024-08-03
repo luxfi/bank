@@ -2,8 +2,8 @@ import { Controller, Get } from '@nestjs/common';
 import { ListCountriesResponseDto } from './dto/list-countries.response.dto';
 import { ListCurrenciesResponseDto } from './dto/list-currencies.response.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { COUNTRY_NAME, ECurrencyCode } from '@cdaxfx/tools-misc';
-import { CurrenciesName } from '@cdaxfx/tools-models';
+import { COUNTRY_NAME, ECurrencyCode } from '@luxbank/tools-misc';
+import { CurrenciesName } from '@luxbank/tools-models';
 
 @ApiTags('Misc')
 @ApiBearerAuth()
