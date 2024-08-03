@@ -7,9 +7,8 @@ Lux Finance is the first full-stack, open-source BaaS platform, enabling seamles
 ## Key Features
 
 ### Regulatory Compliance
-
-	•	Class 8 Money Transmission License: CDAX Limited is licensed in the Isle of Man, ensuring full regulatory compliance and operational security.
-	•	Transparency: Our open-source approach promotes transparency and trust, essential for building the financial services of the future.
+- Class 8 Money Transmission License: CDAX Limited is licensed in the Isle of Man, ensuring full regulatory compliance and operational security.
+- Transparency: Our open-source approach promotes transparency and trust, essential for building the financial services of the future.
 
 ### Integrations
 
