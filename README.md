@@ -14,23 +14,22 @@ Lux Finance is the first full-stack, open-source BaaS platform, enabling seamles
 
 Lux Finance seamlessly integrates with various financial and technology services, including but not limited to:
 
-	•	Currencycloud: Streamline cross-border payments and currency exchange with Currencycloud integration.
-	•	Payment Gateways: Support for multiple payment gateways to ensure smooth transactions.
-	•	KYC/AML Providers: Integration with leading Know Your Customer (KYC) and Anti-Money Laundering (AML) providers to ensure compliance and security.
-	•	Blockchain Networks: Native support for blockchain networks to facilitate digital asset management and transactions.
+- Currencycloud: Streamline cross-border payments and currency exchange with Currencycloud integration.
+- Payment Gateways: Support for multiple payment gateways to ensure smooth transactions.
+- KYC/AML Providers: Integration with leading Know Your Customer (KYC) and Anti-Money Laundering (AML) providers to ensure compliance and security.
+- Blockchain Networks: Native support for blockchain networks to facilitate digital asset management and transactions.
 
 ### Open Source
 
-	•	Full Stack Solution: From front-end interfaces to back-end infrastructure, Lux Finance offers a complete banking solution.
-	•	Community Driven: Our platform is built and maintained by a vibrant community of developers, ensuring continuous improvement and innovation.
-	•	Customizable: Easily extend and customize the platform to meet specific business needs.
+- Full Stack Solution: From front-end interfaces to back-end infrastructure, Lux Finance offers a complete banking solution.
+- Community Driven: Our platform is built and maintained by a vibrant community of developers, ensuring continuous improvement and innovation.
+- Customizable: Easily extend and customize the platform to meet specific business needs.
 
 ### Security and Reliability
 
-	•	MPC Operations: Multi-party computation (MPC) for enhanced security and decentralized key management.
-	•	Decentralized Block Confirmations: Secure and reliable transaction confirmations leveraging blockchain technology.
-	•	API-Driven: Robust APIs for seamless integration and interoperability with other systems and services.
-
+- MPC Operations: Multi-party computation (MPC) for enhanced security and decentralized key management.
+- Decentralized Block Confirmations: Secure and reliable transaction confirmations leveraging blockchain technology.
+- API-Driven: Robust APIs for seamless integration and interoperability with other systems and services.
 
 ## Dev: run locally
 
