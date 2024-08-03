@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { GetLoggedUserUseCase, GetUserDomainUseCase, GetUsersBySelectDomainUseCase, GetUsersDomainUseCase, UpdateUserDomainUseCase } from '../../use-cases';
-import { MikroOrmRegisteredForUser, MikroOrmRegisteredForUserClients } from '@cdaxfx/tools-models';
+import { MikroOrmRegisteredForUser, MikroOrmRegisteredForUserClients } from '@luxbank/tools-models';
 import { UsersController } from './users.controller';
 
 @Module({

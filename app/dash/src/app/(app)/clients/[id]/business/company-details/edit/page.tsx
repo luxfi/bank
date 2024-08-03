@@ -14,7 +14,7 @@ import { convertMapInOptionList } from '@/utils/lib';
 import { CountriesList } from '@/lib/constants';
 
 import { useClients } from '@/store/useClient';
-import { Button, Row, Text } from '@cdaxfx/ui';
+import { Button, Row, Text } from '@luxbank/ui';
 import { useFormik } from 'formik';
 
 import { IForm, companyType } from '../types';

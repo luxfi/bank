@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useMemo, useState } from 'react';
 
-import { Text } from '@cdaxfx/ui';
+import { Text } from '@luxbank/ui';
 import dayjs from 'dayjs';
 import styled from 'styled-components';
 

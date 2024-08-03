@@ -1,4 +1,4 @@
-import { User, UserClientsRepository, UserRole, UsersRepository, GetUsersRequest, ListUsersResponse } from '@cdaxfx/tools-models';
+import { User, UserClientsRepository, UserRole, UsersRepository, GetUsersRequest, ListUsersResponse } from '@luxbank/tools-models';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()

@@ -2,7 +2,7 @@
 
 import CountUp from 'react-countup';
 
-import { Column, Row, Text, useTheme } from '@cdaxfx/ui';
+import { Column, Row, Text, useTheme } from '@luxbank/ui';
 
 import { Flag } from '../Flag';
 import { Container, TextWithEllipsis } from './styles';

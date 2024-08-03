@@ -1,4 +1,4 @@
-import { User, UserRole, UsersRepository } from '@cdaxfx/tools-models';
+import { User, UserRole, UsersRepository } from '@luxbank/tools-models';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { GetUserRequest } from './types/get-user.request.type';
 import { UserResponse } from './types/get-user.response.type';

@@ -4,14 +4,14 @@ import { Throttle } from '@nestjs/throttler';
 import { Response } from 'express';
 import { RealIP } from 'nestjs-real-ip';
 import { SessionsService } from '../sessions/sessions.service';
-import { generatePassword, SuccessResponse, isDemoAccount } from '@cdaxfx/tools-misc';
+import { generatePassword, SuccessResponse, isDemoAccount } from '@luxbank/tools-misc';
 import { TwoFaVerificationService } from './2fa-verification/2fa-verification.service';
 import { Anonymous } from './anonymous.decorator';
 import { AuthService } from './auth.service';
 import { ForgotDto, LoginDto } from './model/login.dto';
 import { RecaptchaGuard } from './recaptcha.guard';
 import { Roles } from './roles.decorator';
-import { UserRole } from '@cdaxfx/tools-models';
+import { UserRole } from '@luxbank/tools-models';
 import { ImpersonateDto } from './model/impersonate.dto';
 
 @ApiTags('Authentication')

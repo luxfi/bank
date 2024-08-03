@@ -1,6 +1,6 @@
 'use client';
 
-import { Row, Text, useTheme } from '@cdaxfx/ui';
+import { Row, Text, useTheme } from '@luxbank/ui';
 
 import { Container, Divider } from './styles';
 

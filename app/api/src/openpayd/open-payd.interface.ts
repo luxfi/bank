@@ -1,4 +1,4 @@
-import { User } from '@cdaxfx/tools-models';
+import { User } from '@luxbank/tools-models';
 import { CreateOpenPaydAccountDto } from './model/create-open-payd-account.dto';
 import { CreateOpenPaydBeneficiaryDto } from './model/create-open-payd-beneficiary.dto';
 import { CreateOpenPaydLinkedClientDto } from './model/create-open-payd-linked-client';

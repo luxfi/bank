@@ -9,7 +9,7 @@ import { useMessages } from '@/context/Messages';
 import { useNotification } from '@/context/Notification';
 
 import { useClients } from '@/store/useClient';
-import { Button, Column, Text, useTheme } from '@cdaxfx/ui';
+import { Button, Column, Text, useTheme } from '@luxbank/ui';
 import { Modal, Spin } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
 

@@ -1,7 +1,7 @@
 import Lottie from 'react-lottie';
 
 import loadingTable from '@/animations/loadingTable.json';
-import { Column, Text } from '@cdaxfx/ui';
+import { Column, Text } from '@luxbank/ui';
 
 const animationOptions = {
   loop: true,

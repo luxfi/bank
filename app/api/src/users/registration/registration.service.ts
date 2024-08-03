@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import { snakeToWords } from '@cdaxfx/tools-misc';
+import { snakeToWords } from '@luxbank/tools-misc';
 import { Account, AccountType, BankMetadataDto, BusinessMetadata, BusinessMetadataDto, ClientMetadataTemp, CreateAccountDto, IndividualMetadata, MetadataTemp, PaymentType, 
-    ResetPasswordDto, User, UserClientsRepository, UserDocument, UserDocumentsDto, UserDocumentsRepository, UserMetadataDto, UserMetadataRejectDto, UserRole, Client } from '@cdaxfx/tools-models';
+    ResetPasswordDto, User, UserClientsRepository, UserDocument, UserDocumentsDto, UserDocumentsRepository, UserMetadataDto, UserMetadataRejectDto, UserRole, Client } from '@luxbank/tools-models';
 import { ClientsService } from '../../clients/clients.service';
 import { DocumentsManagerService } from '../../documents-manager/documents-manager.service';
 import { MailerService } from '../../mailer/mailer.service';

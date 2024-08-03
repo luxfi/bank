@@ -1,8 +1,8 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { PaymentProviderCurrencyCloud, CreateBeneficiaryRequest } from '@cdaxfx/ports-currency-cloud';
-import { MailerService } from '@cdaxfx/ports-email';
-import { isInUk, isSwift } from '@cdaxfx/tools-misc';
-import { AccountType, BeneficiariesRepository, Beneficiary } from '@cdaxfx/tools-models';
+import { PaymentProviderCurrencyCloud, CreateBeneficiaryRequest } from '@luxbank/ports-currency-cloud';
+import { MailerService } from '@luxbank/ports-email';
+import { isInUk, isSwift } from '@luxbank/tools-misc';
+import { AccountType, BeneficiariesRepository, Beneficiary } from '@luxbank/tools-models';
 import { RoutingCodeType, getRoutingCodeByCountry } from '../../currency-cloud/model/routing-code-type.enum';
 import { Request } from 'express';
 import { CreateBeneficiaryUseCase } from './abstract.handler';

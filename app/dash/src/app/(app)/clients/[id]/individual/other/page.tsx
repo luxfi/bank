@@ -6,7 +6,7 @@ import { useMemo } from 'react';
 import { LabelAndValue } from '@/components/LabelAndValue';
 
 import { useClients } from '@/store/useClient';
-import { Button, Column, useTheme } from '@cdaxfx/ui';
+import { Button, Column, useTheme } from '@luxbank/ui';
 
 import { HeaderClientsDetails } from '../../components/Header';
 import { IOther } from './types';

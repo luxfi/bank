@@ -1,4 +1,4 @@
-import { Column, Icon, Row, Text, useTheme } from '@cdaxfx/ui';
+import { Column, Icon, Row, Text, useTheme } from '@luxbank/ui';
 
 import { Container } from './styles';
 

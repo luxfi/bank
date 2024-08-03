@@ -17,7 +17,7 @@ import { WebhooksModule } from './webhooks/webhooks.module';
 import { MailContactModule } from './mail-contact/mail-contact.module';
 import { BankModule } from './bank/bank.module';
 import { UsersV2Module } from './bank/users/users.module';
-import { RequestLoggingMiddleware } from '@cdaxfx/tools-misc';
+import { RequestLoggingMiddleware } from '@luxbank/tools-misc';
 import { MorganInterceptor, MorganModule } from 'nest-morgan';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ConfigModule } from '@nestjs/config'; // Import ConfigModule

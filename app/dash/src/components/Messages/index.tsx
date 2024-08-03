@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { useMemo } from 'react';
 
-import { Button, Column, Icon, Row, TIconVariants } from '@cdaxfx/ui';
+import { Button, Column, Icon, Row, TIconVariants } from '@luxbank/ui';
 import { Modal } from 'antd';
 
 import {

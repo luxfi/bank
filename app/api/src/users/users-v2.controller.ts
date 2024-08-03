@@ -2,8 +2,8 @@ import { BadRequestException, Body, Controller, Get, NotFoundException, Param, P
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
-import { SuccessResponse } from '@cdaxfx/tools-misc';
-import { ManagerRoles, SelectUsersDto, UserV2Dto } from '@cdaxfx/tools-models';
+import { SuccessResponse } from '@luxbank/tools-misc';
+import { ManagerRoles, SelectUsersDto, UserV2Dto } from '@luxbank/tools-models';
 import { Roles } from '../auth/roles.decorator';
 import { DocumentsManagerService } from '../documents-manager/documents-manager.service';
 import { UsersService } from './users.service';

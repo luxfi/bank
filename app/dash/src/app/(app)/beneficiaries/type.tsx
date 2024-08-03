@@ -4,7 +4,7 @@ import { ITableProps } from '@/components/Table';
 import { UserRole } from '@/models/auth';
 import { IBeneficiaryListResponse } from '@/models/beneficiaries';
 
-import { Column, Text } from '@cdaxfx/ui';
+import { Column, Text } from '@luxbank/ui';
 
 export interface IBeneficiariesFilters {
   client?: string;

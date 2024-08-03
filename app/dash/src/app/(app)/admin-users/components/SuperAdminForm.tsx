@@ -5,7 +5,7 @@ import Select from '@/components/Select';
 import { IUserDetails } from '@/models/users';
 import { convertMapInOptionList } from '@/utils/lib';
 import { CountriesList } from '@/lib/constants';
-import { Button, Column, Icon, Row, Text, useTheme } from '@cdaxfx/ui';
+import { Button, Column, Icon, Row, Text, useTheme } from '@luxbank/ui';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 

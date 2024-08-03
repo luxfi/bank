@@ -1,8 +1,8 @@
 import { ApprovePaymentUseCase, CreatePaymentUseCase, GetPurposeCodesUseCase, RejectPaymentDomainUseCase } from '../../use-cases';
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { GetUser, SuccessResponseV2 } from '@cdaxfx/tools-misc';
-import { ManagerRoles, User, UserRole } from '@cdaxfx/tools-models';
+import { GetUser, SuccessResponseV2 } from '@luxbank/tools-misc';
+import { ManagerRoles, User, UserRole } from '@luxbank/tools-models';
 import { Roles } from '../../auth/roles.decorator';
 import { CreatePaymentRequestDto } from './dto/create-payment.request.dto';
 import { CreatePaymentResponseDto } from './dto/create-payment.response.dto';

@@ -1,5 +1,5 @@
-import { PaymentProviderIFX, IfxEntityType } from '@cdaxfx/ports-ifx';
-import { AccountType, BeneficiariesRepository, User } from '@cdaxfx/tools-models';
+import { PaymentProviderIFX, IfxEntityType } from '@luxbank/ports-ifx';
+import { AccountType, BeneficiariesRepository, User } from '@luxbank/tools-models';
 import { CreateBeneficiaryUseCase } from './abstract.handler';
 import { BeneficiaryResponse } from './types/beneficiary.response.type';
 import { NotFoundException } from '@nestjs/common';

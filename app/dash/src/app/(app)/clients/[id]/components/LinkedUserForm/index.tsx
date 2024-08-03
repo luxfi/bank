@@ -16,7 +16,7 @@ import { countriesOptions } from '@/utils/lib';
 import { userRoles } from '@/app/(app)/users/types';
 import { useClients } from '@/store/useClient';
 import { useUsers } from '@/store/useUsers';
-import { Button, Row } from '@cdaxfx/ui';
+import { Button, Row } from '@luxbank/ui';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 

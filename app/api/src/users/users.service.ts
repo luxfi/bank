@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { VALIDATION_LIST } from '@cdaxfx/tools-misc';
-import { AdminCreateUserDto, PendingMetadataDto, User, UserMetadataDto, Client, UserRole, UserRoles, UsersRepository, UserV2Dto } from '@cdaxfx/tools-models';
+import { VALIDATION_LIST } from '@luxbank/tools-misc';
+import { AdminCreateUserDto, PendingMetadataDto, User, UserMetadataDto, Client, UserRole, UserRoles, UsersRepository, UserV2Dto } from '@luxbank/tools-models';
 import { authenticator } from 'otplib';
 import { toDataURL } from 'qrcode';
 

@@ -10,7 +10,7 @@ import { UserRole } from '@/models/auth';
 import { useAuth } from '@/store/useAuth';
 import { useWallet } from '@/store/useWallet';
 import { IWallet } from '@/store/useWallet/types';
-import { Icon, Row } from '@cdaxfx/ui';
+import { Icon, Row } from '@luxbank/ui';
 
 import { ArrowButton, CurrenciesContainer } from './styles';
 

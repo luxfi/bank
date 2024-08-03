@@ -10,7 +10,7 @@ import {
   useContextIndividualRiskAssessment,
 } from '@/context/IndividualRiskAssessment';
 
-import { Button, Column, Row, Text, useTheme } from '@cdaxfx/ui';
+import { Button, Column, Row, Text, useTheme } from '@luxbank/ui';
 
 import { yesNoOptions } from '../../types';
 

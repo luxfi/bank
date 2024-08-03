@@ -1,6 +1,6 @@
 import { LabelAndValue } from '@/components/LabelAndValue';
 
-import { Button, Column, useTheme } from '@cdaxfx/ui';
+import { Button, Column, useTheme } from '@luxbank/ui';
 
 interface IProps {
   addressLine1: string;

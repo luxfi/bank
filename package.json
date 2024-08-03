@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@cdaxfx/platform",
+  "name": "@luxbank/platform",
   "version": "0.1.0",
   "engines": {
     "pnpm": ">=9"

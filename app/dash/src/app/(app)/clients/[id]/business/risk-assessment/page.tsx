@@ -5,7 +5,7 @@ import { LabelAndValue } from '@/components/LabelAndValue';
 import { useClients } from '@/store/useClient';
 import { IDocument } from '@/store/useClient/types';
 import { useDocuments } from '@/store/useDocuments';
-import { Column, Text, useTheme } from '@cdaxfx/ui';
+import { Column, Text, useTheme } from '@luxbank/ui';
 import dayjs from 'dayjs';
 
 import { HeaderClientsDetails } from '../../components/Header';

@@ -2,7 +2,7 @@ import { AttachmentJSON } from '@sendgrid/helpers/classes/attachment';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import BaseEmail from '../../model/base-email';
-import { Invitation } from '@cdaxfx/tools-models';
+import { Invitation } from '@luxbank/tools-models';
 
 const heroImage = readFileSync(join(__dirname, '../../templates/emails/registration/welcome/hero.gif')).toString('base64');
 const helpCenterImage = readFileSync(join(__dirname, '../../templates/emails/registration/welcome/help-centre-btn.gif')).toString('base64');

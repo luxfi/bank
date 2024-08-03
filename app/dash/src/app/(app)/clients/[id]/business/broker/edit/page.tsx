@@ -11,7 +11,7 @@ import { onlyNumber } from '@/utils/lib';
 
 import { useClients } from '@/store/useClient';
 import { IBroker } from '@/store/useClient/types';
-import { Button, Row, Text } from '@cdaxfx/ui';
+import { Button, Row, Text } from '@luxbank/ui';
 import { useFormik } from 'formik';
 
 import { Container, FormContainer } from './styles';

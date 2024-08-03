@@ -13,7 +13,7 @@ import { useMessages } from '@/context/Messages';
 import { countriesOptions, formattedDate } from '@/utils/lib';
 
 import { useClients } from '@/store/useClient';
-import { Button, Column, Icon, Row, Text, useTheme } from '@cdaxfx/ui';
+import { Button, Column, Icon, Row, Text, useTheme } from '@luxbank/ui';
 import { DefaultOptionType } from 'antd/es/select';
 import { useFormik } from 'formik';
 

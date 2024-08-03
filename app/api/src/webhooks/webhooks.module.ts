@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MailerModule } from '../mailer/mailer.module';
-import { MikroOrmRegisteredForTransaction, MikroOrmRegisteredForClients } from '@cdaxfx/tools-models';
+import { MikroOrmRegisteredForTransaction, MikroOrmRegisteredForClients } from '@luxbank/tools-models';
 import { WebhooksShuftiproController } from './shuftipro/webhooks.controller';
 import { WebhooksCurrencyCloudController } from './currency-cloud/webhooks.controller';
 import { WebhooksShuftiproService } from './shuftipro/webhooks.service';

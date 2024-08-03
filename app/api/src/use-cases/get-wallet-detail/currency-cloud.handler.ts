@@ -1,11 +1,11 @@
-import { PaymentProviderCurrencyCloud } from '@cdaxfx/ports-currency-cloud';
-import { COUNTRY_NAME, ECountryCode, ECurrencyCode } from '@cdaxfx/tools-misc';
-import { User } from '@cdaxfx/tools-models';
+import { PaymentProviderCurrencyCloud } from '@luxbank/ports-currency-cloud';
+import { COUNTRY_NAME, ECountryCode, ECurrencyCode } from '@luxbank/tools-misc';
+import { User } from '@luxbank/tools-models';
 import { Request } from 'express';
 import { GetWalletDetailUseCase } from './abstract.handler';
 import { ViewDetailRequest } from './types/detail.request.type';
 import { ViewDetailResponse, ViewPaginatedDetailResponse } from './types/detail.response.type';
-import { ERoutingCodesNames } from '@cdaxfx/ports-ifx';
+import { ERoutingCodesNames } from '@luxbank/ports-ifx';
 
 export class GetWalletDetailCCUseCase extends GetWalletDetailUseCase {
     constructor(

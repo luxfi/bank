@@ -9,7 +9,7 @@ import ModalMessage from '@/components/ModalMessage';
 import { useMessages } from '@/context/Messages';
 
 import { useClients } from '@/store/useClient';
-import { Button, Column, Row, Text, useTheme } from '@cdaxfx/ui';
+import { Button, Column, Row, Text, useTheme } from '@luxbank/ui';
 import dayjs from 'dayjs';
 
 import { HeaderClientsDetails } from '../../components/Header';

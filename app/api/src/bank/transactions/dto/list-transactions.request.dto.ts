@@ -1,5 +1,5 @@
-import { ECurrencyCode } from '@cdaxfx/tools-misc';
-import { TransactionStatusResumed } from '@cdaxfx/tools-models';
+import { ECurrencyCode } from '@luxbank/tools-misc';
+import { TransactionStatusResumed } from '@luxbank/tools-models';
 import { Transform } from 'class-transformer';
 import { IsEnum, IsOptional } from 'class-validator';
 import dayjs from 'dayjs';

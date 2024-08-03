@@ -5,7 +5,7 @@ import { IUser } from '@/models/users';
 
 import { getUserStatusBadgeValues } from '@/utils/valueMaps';
 
-import { Column, Text } from '@cdaxfx/ui';
+import { Column, Text } from '@luxbank/ui';
 
 export interface IInviteSuperAdminPayload {
   firstname: string;

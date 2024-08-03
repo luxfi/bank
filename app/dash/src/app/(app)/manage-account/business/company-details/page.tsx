@@ -9,7 +9,7 @@ import { formattedDate } from '@/utils/lib';
 import { CompanyType } from '@/lib/constants';
 
 import { useAuth } from '@/store/useAuth';
-import { Column, useTheme } from '@cdaxfx/ui';
+import { Column, useTheme } from '@luxbank/ui';
 
 import { HeaderDetails } from '../../components/Header';
 import { ICompanyDetails } from './types';

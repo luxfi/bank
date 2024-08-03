@@ -1,8 +1,8 @@
 import { BadRequestException, Body, Controller, Get, NotFoundException, Param, Post, Request, UnauthorizedException, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
-import { GetUser, SuccessResponse } from '@cdaxfx/tools-misc';
-import { AdminCreateUserDto, AdminInvitationDto, CreateAccountDto, ResetPasswordDto, User, UserDocumentsDto, UsersRepository, VerifyEmailDto } from '@cdaxfx/tools-models';
+import { GetUser, SuccessResponse } from '@luxbank/tools-misc';
+import { AdminCreateUserDto, AdminInvitationDto, CreateAccountDto, ResetPasswordDto, User, UserDocumentsDto, UsersRepository, VerifyEmailDto } from '@luxbank/tools-models';
 import { RealIP } from 'nestjs-real-ip';
 import { Anonymous } from '../auth/anonymous.decorator';
 import { AuthService } from '../auth/auth.service';

@@ -1,4 +1,4 @@
-import { PaymentProviderIFX, ERoutingCodesNames } from '@cdaxfx/ports-ifx'
+import { PaymentProviderIFX, ERoutingCodesNames } from '@luxbank/ports-ifx'
 import { GetWalletDetailUseCase } from './abstract.handler';
 import { ViewDetailResponse, ViewPaginatedDetailResponse } from './types/detail.response.type';
 import { ViewDetailRequest } from './types/detail.request.type';

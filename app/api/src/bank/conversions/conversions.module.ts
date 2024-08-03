@@ -3,7 +3,7 @@ import { GetLoggedUserUseCase, CreateConversionCCUseCase, CreateConversionIFXUse
 import { Module } from '@nestjs/common';
 import { paymentAdapter } from '../shared/providers/payment-adapter.provider';
 import { ConversionsController } from './conversions.controller';
-import { MikroOrmRegisteredForTransaction, MikroOrmRegisteredForUser, TransactionsRepository } from '@cdaxfx/tools-models';
+import { MikroOrmRegisteredForTransaction, MikroOrmRegisteredForUser, TransactionsRepository } from '@luxbank/tools-models';
 
 @Module({
     imports: [MikroOrmRegisteredForUser(), MikroOrmRegisteredForTransaction()],

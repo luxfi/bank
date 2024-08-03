@@ -7,7 +7,7 @@ import { LabelAndValue } from '@/components/LabelAndValue';
 import { UserRole } from '@/models/auth';
 
 import { useAuth } from '@/store/useAuth';
-import { Button, Column, useTheme } from '@cdaxfx/ui';
+import { Button, Column, useTheme } from '@luxbank/ui';
 
 import DataChangeApproval from '../../../clients/[id]/components/DataChangeApproval';
 import { HeaderDetails } from '../../components/Header';

@@ -5,7 +5,7 @@ import Lottie from 'react-lottie';
 import { IPaginationResponse } from '@/models/pagination';
 
 import loadingTable from '@/animations/loadingTable.json';
-import { Column, Icon, Text } from '@cdaxfx/ui';
+import { Column, Icon, Text } from '@luxbank/ui';
 import { Table as TableAntd } from 'antd';
 import { AnyObject } from 'antd/es/_util/type';
 import { ColumnsType } from 'antd/es/table';

@@ -1,6 +1,6 @@
 import { Type, applyDecorators } from '@nestjs/common';
 import { ApiExtraModels, getSchemaPath } from '@nestjs/swagger';
-import { SuccessResponseV2 } from '@cdaxfx/tools-misc';
+import { SuccessResponseV2 } from '@luxbank/tools-misc';
 
 export const ApiOkResponsePaginated = <DataDto extends Type<any>>(
     dataDto: DataDto

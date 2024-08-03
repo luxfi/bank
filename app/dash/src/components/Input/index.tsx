@@ -2,7 +2,7 @@
 
 import { CSSProperties } from 'react';
 
-import { Text, useTheme } from '@cdaxfx/ui';
+import { Text, useTheme } from '@luxbank/ui';
 import { Input as InputStyled } from 'antd';
 
 import {

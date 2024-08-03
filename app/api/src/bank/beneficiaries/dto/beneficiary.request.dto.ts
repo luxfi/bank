@@ -1,5 +1,5 @@
-import { EEntityType, RoutingCodes } from '@cdaxfx/ports-ifx';
-import { ECountryCode, ECurrencyCode } from '@cdaxfx/tools-misc';
+import { EEntityType, RoutingCodes } from '@luxbank/ports-ifx';
+import { ECountryCode, ECurrencyCode } from '@luxbank/tools-misc';
 import { IsOptional, MinLength } from 'class-validator';
 
 export class GetBeneficiaryByIdDto {

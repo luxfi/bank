@@ -5,7 +5,7 @@ import { Module, forwardRef } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { MikroOrmRegisteredForUser, MikroOrmRegisteredForUserClients } from '@cdaxfx/tools-models';
+import { MikroOrmRegisteredForUser, MikroOrmRegisteredForUserClients } from '@luxbank/tools-models';
 import { MailerModule } from '../mailer/mailer.module';
 import { SessionsModule } from '../sessions/sessions.module';
 import { UsersModule } from '../users/users.module';

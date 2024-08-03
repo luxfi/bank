@@ -6,7 +6,7 @@ import Steps, { IStepItems } from '@/components/Step';
 
 import { EStep, useCreatePayment } from '@/context/CreatePayment';
 
-import { Button, Row, Text } from '@cdaxfx/ui';
+import { Button, Row, Text } from '@luxbank/ui';
 
 import { Amount } from '../Steps/Amount';
 import CurrencyAmount from '../Steps/CurrencyBeneficiary';

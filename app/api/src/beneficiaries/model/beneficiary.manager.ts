@@ -1,6 +1,6 @@
 import { BadRequestException } from '@nestjs/common';
-import { isSwift } from '@cdaxfx/tools-misc';
-import { Account, AccountType, Beneficiary, CreateBeneficiaryDto, Currencies, User } from '@cdaxfx/tools-models';
+import { isSwift } from '@luxbank/tools-misc';
+import { Account, AccountType, Beneficiary, CreateBeneficiaryDto, Currencies, User } from '@luxbank/tools-models';
 
 export class BeneficiaryManager {
     static createFromCreateDto(dto: CreateBeneficiaryDto, creator: User | null): Beneficiary {

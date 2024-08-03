@@ -1,7 +1,7 @@
 'use client';
 
 import Beneficiaries from '@/app/(app)/beneficiaries/page';
-import { Row } from '@cdaxfx/ui';
+import { Row } from '@luxbank/ui';
 
 import { HeaderClientsDetails } from '../../components/Header';
 

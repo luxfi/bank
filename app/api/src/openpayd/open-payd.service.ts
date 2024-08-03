@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import { OpenPaydCurrencies, User } from '@cdaxfx/tools-models';
+import { OpenPaydCurrencies, User } from '@luxbank/tools-models';
 import axios from 'axios';
 import { BeneficiariesService } from '../beneficiaries/services/beneficiaries.service';
 import { FeesService } from '../fees/fees.service';

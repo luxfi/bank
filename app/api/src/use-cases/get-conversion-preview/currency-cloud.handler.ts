@@ -1,6 +1,6 @@
-import { PaymentProviderCurrencyCloud, EDirection, GetPreviewRequest, GetPreviewResponse } from '@cdaxfx/ports-currency-cloud';
-import { ECurrencyCode } from '@cdaxfx/tools-misc';
-import { User } from '@cdaxfx/tools-models';
+import { PaymentProviderCurrencyCloud, EDirection, GetPreviewRequest, GetPreviewResponse } from '@luxbank/ports-currency-cloud';
+import { ECurrencyCode } from '@luxbank/tools-misc';
+import { User } from '@luxbank/tools-models';
 import { Request } from 'express';
 import { GetPreviewUseCase } from './abstract.handler';
 

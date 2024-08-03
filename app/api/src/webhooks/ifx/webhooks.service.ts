@@ -1,6 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { generateShortUniqId } from '@cdaxfx/tools-misc';
-import { ClientsRepository, Transaction, TransactionAction, TransactionStatusApproval, TransactionsRepository } from '@cdaxfx/tools-models';
+import { generateShortUniqId } from '@luxbank/tools-misc';
+import { ClientsRepository, Transaction, TransactionAction, TransactionStatusApproval, TransactionsRepository } from '@luxbank/tools-models';
 
 export enum TransactionType {
     Test = 'test_notification',

@@ -7,7 +7,7 @@ import { LabelAndValue } from '@/components/LabelAndValue';
 import { getRiskAssesmentStatusBadgeValues } from '@/utils/valueMaps';
 
 import { useAuth } from '@/store/useAuth';
-import { Column, Row, Text } from '@cdaxfx/ui';
+import { Column, Row, Text } from '@luxbank/ui';
 import dayjs from 'dayjs';
 
 export const HeaderDetails = () => {

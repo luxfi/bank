@@ -1,5 +1,5 @@
-import { EEntityType, RoutingCodes } from '@cdaxfx/ports-ifx';
-import { ECurrencyCode } from '@cdaxfx/tools-misc';
+import { EEntityType, RoutingCodes } from '@luxbank/ports-ifx';
+import { ECurrencyCode } from '@luxbank/tools-misc';
 
 export interface CreateBeneficiaryRequest {
     firstName: string;

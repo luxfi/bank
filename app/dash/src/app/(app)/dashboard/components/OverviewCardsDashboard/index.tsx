@@ -6,7 +6,7 @@ import { UserRole } from '@/models/auth';
 import { useAuth } from '@/store/useAuth';
 import { useDashboard } from '@/store/useDashboard';
 import { IUserDashboardInfo } from '@/store/useDashboard/types';
-import { Column, Row, Text, useTheme } from '@cdaxfx/ui';
+import { Column, Row, Text, useTheme } from '@luxbank/ui';
 import dayjs from 'dayjs';
 
 import { CardStatus } from '../CardStatus';

@@ -17,7 +17,7 @@ import { convertMapInOptionList } from '@/utils/lib';
 
 import { CountriesList } from '@/lib/constants';
 
-import { Button, Icon, useTheme } from '@cdaxfx/ui';
+import { Button, Icon, useTheme } from '@luxbank/ui';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 

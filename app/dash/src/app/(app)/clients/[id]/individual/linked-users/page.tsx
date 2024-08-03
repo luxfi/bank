@@ -9,7 +9,7 @@ import { useMessages } from '@/context/Messages';
 
 import { useClients } from '@/store/useClient';
 import { ILinkedUser } from '@/store/useClient/types';
-import { Button, Column, Icon, Row, Text, useTheme } from '@cdaxfx/ui';
+import { Button, Column, Icon, Row, Text, useTheme } from '@luxbank/ui';
 
 import { HeaderClientsDetails } from '../../components/Header';
 import { ActionGridButton } from './styles';

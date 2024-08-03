@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 
 import { useClients } from '@/store/useClient';
-import { Column } from '@cdaxfx/ui';
+import { Column } from '@luxbank/ui';
 
 import DataChangeApproval from '../../components/DataChangeApproval';
 import { HeaderClientsDetails } from '../../components/Header';

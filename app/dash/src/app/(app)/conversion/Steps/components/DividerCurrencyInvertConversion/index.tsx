@@ -3,7 +3,7 @@
 import Lottie from 'react-lottie';
 
 import animationLoading from '@/animations/stepConvert.json';
-import { Icon, useTheme } from '@cdaxfx/ui';
+import { Icon, useTheme } from '@luxbank/ui';
 
 import { Container, ContainerIcon, Line } from './styles';
 

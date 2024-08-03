@@ -1,4 +1,4 @@
-import { IDarkTheme, ILightTheme, ITheme } from '@cdaxfx/ui';
+import { IDarkTheme, ILightTheme, ITheme } from '@luxbank/ui';
 import 'styled-components';
 
 declare module 'styled-components' {

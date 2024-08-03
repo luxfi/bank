@@ -1,7 +1,7 @@
 import { Controller, Get, NotFoundException, Param, Query, Request } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { SuccessResponse } from '@cdaxfx/tools-misc';
-import { BeneficiariesRepository, ManagerRoles, TransactionStatus, TransactionStatusLabel, UserRole, UserRoles } from '@cdaxfx/tools-models';
+import { SuccessResponse } from '@luxbank/tools-misc';
+import { BeneficiariesRepository, ManagerRoles, TransactionStatus, TransactionStatusLabel, UserRole, UserRoles } from '@luxbank/tools-models';
 import { Roles } from '../auth/roles.decorator';
 import { FilterTransactionsDTO } from './model/filter-transactions.request.dto';
 import { TransactionsService } from './services/transactions.service';

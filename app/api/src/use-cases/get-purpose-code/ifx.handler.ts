@@ -1,5 +1,5 @@
-import { PaymentProviderIFX } from '@cdaxfx/ports-ifx';
-import { User } from '@cdaxfx/tools-models';
+import { PaymentProviderIFX } from '@luxbank/ports-ifx';
+import { User } from '@luxbank/tools-models';
 import { GetPurposeCodesUseCase } from './abstract.handler';
 import { PurposeCodeRequest } from './types/purpose-code.request.type';
 import { PurposeCodeResponse } from './types/purpose-code.response.type';

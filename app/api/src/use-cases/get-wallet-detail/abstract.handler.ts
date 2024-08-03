@@ -1,4 +1,4 @@
-import { User } from '@cdaxfx/tools-models';
+import { User } from '@luxbank/tools-models';
 import { UseCaseHandler } from '../types/use-case-handler.interface';
 import { ViewPaginatedDetailResponse } from './types/detail.response.type';
 import { ViewDetailRequest } from './types/detail.request.type';

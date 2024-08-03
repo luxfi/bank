@@ -1,4 +1,4 @@
-import { BeneficiariesRepository, User } from '@cdaxfx/tools-models';
+import { BeneficiariesRepository, User } from '@luxbank/tools-models';
 import { ArchiveBeneficiaryResponse } from './types/beneficiary.response.type';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 

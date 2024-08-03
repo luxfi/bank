@@ -1,4 +1,4 @@
-import { Contact, User, UserClient, UserClientMetadata, UserClientsRepository, UserRole, UsersRepository } from '@cdaxfx/tools-models';
+import { Contact, User, UserClient, UserClientMetadata, UserClientsRepository, UserRole, UsersRepository } from '@luxbank/tools-models';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateUserRequest } from './types/update-user.request.type';
 import { UserUpdateResponse } from './types/update-user.response.type';

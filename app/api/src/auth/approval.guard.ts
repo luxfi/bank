@@ -2,7 +2,7 @@ import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { SKIP_ACCOUNT_SETUP_KEY } from './skip-account-setup.decorator';
-import { User } from '@cdaxfx/tools-models';
+import { User } from '@luxbank/tools-models';
 
 @Injectable()
 export class ApprovalGuard implements CanActivate {

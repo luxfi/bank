@@ -12,7 +12,7 @@ import {
 } from '@/context/businessRiskAssessment';
 
 import { useClients } from '@/store/useClient';
-import { Button, Column, Text, useTheme } from '@cdaxfx/ui';
+import { Button, Column, Text, useTheme } from '@luxbank/ui';
 
 import { AreasOfOperations } from './AreasOfOperations';
 import { BeneficialOwners } from './BeneficialOwners';

@@ -1,6 +1,6 @@
-import { User } from '@cdaxfx/tools-models';
+import { User } from '@luxbank/tools-models';
 import { UseCaseHandler } from '../types/use-case-handler.interface';
-import { CreateConversionRequest, CreateConversionResponse } from '@cdaxfx/ports-currency-cloud';
+import { CreateConversionRequest, CreateConversionResponse } from '@luxbank/ports-currency-cloud';
 
 export abstract class CreateConversionUseCase extends UseCaseHandler {
     gateway: string;

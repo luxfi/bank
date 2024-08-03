@@ -3,10 +3,10 @@ import axios, { AxiosResponse } from 'axios';
 import { createCurrencyCloudBeneficiaryDto } from '../beneficiaries/model/beneficiary-dto.transformer';
 import { CurrencyCloudService } from '../currency-cloud/currency-cloud.service';
 import { CreateCurrencyCloudBeneficiaryDto } from '../currency-cloud/model/create-currency-cloud-beneficiary.dto';
-import { isInUk } from '@cdaxfx/tools-misc';
+import { isInUk } from '@luxbank/tools-misc';
 import { IbanResponseDto } from './model/iban-response.dto';
 import { SwiftResponseDto } from './model/swift-response.dto';
-import { Beneficiary, CreateBeneficiaryDto, User } from '@cdaxfx/tools-models';
+import { Beneficiary, CreateBeneficiaryDto, User } from '@luxbank/tools-models';
 
 @Injectable()
 export class SwiftCodeService {

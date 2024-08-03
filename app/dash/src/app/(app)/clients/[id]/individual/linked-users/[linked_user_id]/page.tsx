@@ -10,7 +10,7 @@ import { IUserDetails } from '@/models/users';
 import { UserDetailsCard } from '@/app/(app)/users/components/UserDetailsCard';
 import { useClients } from '@/store/useClient';
 import { useUsers } from '@/store/useUsers';
-import { Button, Column, Text } from '@cdaxfx/ui';
+import { Button, Column, Text } from '@luxbank/ui';
 
 export default function LinkedUserDetails() {
   const router = useRouter();

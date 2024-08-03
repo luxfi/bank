@@ -11,7 +11,7 @@ import {
   useContextIndividualRiskAssessment,
 } from '@/context/IndividualRiskAssessment';
 
-import { Button, Column, Row, Text } from '@cdaxfx/ui';
+import { Button, Column, Row, Text } from '@luxbank/ui';
 
 import { riskLevelOptions } from '../../types';
 

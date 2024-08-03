@@ -1,12 +1,12 @@
-import { AccountType, BeneficiariesRepository, Beneficiary, User } from '@cdaxfx/tools-models';
+import { AccountType, BeneficiariesRepository, Beneficiary, User } from '@luxbank/tools-models';
 import { ApproveBeneficiaryRequest } from './types/beneficiary.request.type';
 import { ApproveBeneficiaryResponse } from './types/beneficiary.response.type';
 import { SwiftCodeService } from '../../swift-code/swift-code.service';
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { isInUk, isSwift } from '@cdaxfx/tools-misc';
-import { PaymentProviderIFX, IfxEntityType } from '@cdaxfx/ports-ifx';
-import { PaymentProviderCurrencyCloud } from '@cdaxfx/ports-currency-cloud';
-import { MailerService } from '@cdaxfx/ports-email';
+import { isInUk, isSwift } from '@luxbank/tools-misc';
+import { PaymentProviderIFX, IfxEntityType } from '@luxbank/ports-ifx';
+import { PaymentProviderCurrencyCloud } from '@luxbank/ports-currency-cloud';
+import { MailerService } from '@luxbank/ports-email';
 import BeneficiaryEmail from '../../users/emails/beneficiary-email';
 
 export enum RoutingCodeType {

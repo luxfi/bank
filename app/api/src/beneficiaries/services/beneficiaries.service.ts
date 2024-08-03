@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, Inject, forwardRef, Logger } from '@nestjs/common';
-import { BankMetadata, BankMetadataDto, BeneficiariesRepository, Beneficiary, CreateBeneficiaryDto, Currencies, User } from '@cdaxfx/tools-models';
-import { FilterBeneficiariesAccountDTO, FilterBeneficiariesDTO } from '@cdaxfx/tools-models';
+import { BankMetadata, BankMetadataDto, BeneficiariesRepository, Beneficiary, CreateBeneficiaryDto, Currencies, User } from '@luxbank/tools-models';
+import { FilterBeneficiariesAccountDTO, FilterBeneficiariesDTO } from '@luxbank/tools-models';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import { CurrencyCloudService } from '../../currency-cloud/currency-cloud.service';

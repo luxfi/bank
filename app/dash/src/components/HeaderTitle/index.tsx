@@ -1,6 +1,6 @@
 import { useRouter } from 'next/navigation';
 
-import { Icon, Row, Text } from '@cdaxfx/ui';
+import { Icon, Row, Text } from '@luxbank/ui';
 import styled from 'styled-components';
 
 export function HeaderTitle({ title }: { title: string }) {

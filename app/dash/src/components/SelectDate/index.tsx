@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Icon, Text, useTheme } from '@cdaxfx/ui';
+import { Icon, Text, useTheme } from '@luxbank/ui';
 import { DatePicker, DatePickerProps } from 'antd';
 import days from 'dayjs';
 

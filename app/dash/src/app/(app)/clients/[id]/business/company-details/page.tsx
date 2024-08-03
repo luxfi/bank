@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { LabelAndValue } from '@/components/LabelAndValue';
 
 import { useClients } from '@/store/useClient';
-import { Button, Column, useTheme } from '@cdaxfx/ui';
+import { Button, Column, useTheme } from '@luxbank/ui';
 
 import { HeaderClientsDetails } from '../../components/Header';
 import { companyType } from './types';

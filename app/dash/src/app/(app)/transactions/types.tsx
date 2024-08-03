@@ -10,7 +10,7 @@ import {
 } from '@/utils/lib';
 import { getBadgeStatusValues } from '@/utils/valueMaps';
 
-import { Column, TSelectOptions, Text } from '@cdaxfx/ui';
+import { Column, TSelectOptions, Text } from '@luxbank/ui';
 
 export interface IColumnsCheckGroup {
   label: string;

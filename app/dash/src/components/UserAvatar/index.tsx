@@ -1,5 +1,5 @@
 import { userRolesDictionary } from '@/app/(app)/users/types';
-import { Column, Row, Text, useTheme } from '@cdaxfx/ui';
+import { Column, Row, Text, useTheme } from '@luxbank/ui';
 import styled from 'styled-components';
 
 import { Divider } from '../Divider';

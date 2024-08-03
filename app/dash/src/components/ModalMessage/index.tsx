@@ -1,5 +1,5 @@
 import { LoadingOutlined } from '@ant-design/icons';
-import { Button, Icon, Row, Text } from '@cdaxfx/ui';
+import { Button, Icon, Row, Text } from '@luxbank/ui';
 import { Modal } from 'antd';
 
 import { defaultTheme } from '@/styles/themes/default';

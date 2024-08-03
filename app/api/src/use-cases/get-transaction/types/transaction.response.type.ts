@@ -1,5 +1,5 @@
-import { EEntityType, EPaymentType, ERoutingCodesNames, TransactionCurrencyAmount } from '@cdaxfx/ports-ifx';
-import { ECountryCode } from '@cdaxfx/tools-misc';
+import { EEntityType, EPaymentType, ERoutingCodesNames, TransactionCurrencyAmount } from '@luxbank/ports-ifx';
+import { ECountryCode } from '@luxbank/tools-misc';
 
 export interface RoutingCodes {
     name: ERoutingCodesNames;

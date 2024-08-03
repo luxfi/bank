@@ -12,7 +12,7 @@ import { useMessages } from '@/context/Messages';
 import { countriesOptions } from '@/utils/lib';
 
 import { useClients } from '@/store/useClient';
-import { Button, Row, Text } from '@cdaxfx/ui';
+import { Button, Row, Text } from '@luxbank/ui';
 import { useFormik } from 'formik';
 
 import { IBankAccount, validationForm } from '../types';

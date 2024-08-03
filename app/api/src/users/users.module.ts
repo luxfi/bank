@@ -1,5 +1,5 @@
 import { forwardRef, Module } from '@nestjs/common';
-import { MikroOrmRegisteredForBeneficiaries, MikroOrmRegisteredForClientsMetadataTemp, MikroOrmRegisteredForDocumentsManager, MikroOrmRegisteredForUser, MikroOrmRegisteredForUserClients, MikroOrmRegisteredForClients, UserDocumentsRepository } from '@cdaxfx/tools-models';
+import { MikroOrmRegisteredForBeneficiaries, MikroOrmRegisteredForClientsMetadataTemp, MikroOrmRegisteredForDocumentsManager, MikroOrmRegisteredForUser, MikroOrmRegisteredForUserClients, MikroOrmRegisteredForClients, UserDocumentsRepository } from '@luxbank/tools-models';
 import { AuthModule } from '../auth/auth.module';
 import { BeneficiariesModule } from '../beneficiaries/beneficiaries.module';
 import { ClientsService } from '../clients/clients.service';

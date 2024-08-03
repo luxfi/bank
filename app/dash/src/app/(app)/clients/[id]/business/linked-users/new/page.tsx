@@ -8,7 +8,7 @@ import { useMessages } from '@/context/Messages';
 
 import { useClients } from '@/store/useClient';
 import { ILinkUserPayload } from '@/store/useClient/types';
-import { Column, Text } from '@cdaxfx/ui';
+import { Column, Text } from '@luxbank/ui';
 
 import {
   ILinkedUserForm,

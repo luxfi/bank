@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { ECurrencyCode } from '@cdaxfx/tools-misc';
-import { BeneficiariesRepository, User } from '@cdaxfx/tools-models';
+import { ECurrencyCode } from '@luxbank/tools-misc';
+import { BeneficiariesRepository, User } from '@luxbank/tools-models';
 import { GetBeneficiaryDetailRequest } from './types/beneficiary.request.type';
 import { GetBeneficiaryDetailResponse } from './types/beneficiary.response.type';
 

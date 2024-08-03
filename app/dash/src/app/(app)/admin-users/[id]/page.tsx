@@ -12,7 +12,7 @@ import { IUserDetails } from '@/models/users';
 import { useNotification } from '@/context/Notification';
 
 import { useUsers } from '@/store/useUsers';
-import { Button, Column, Icon, Row, Text } from '@cdaxfx/ui';
+import { Button, Column, Icon, Row, Text } from '@luxbank/ui';
 import { Modal } from 'antd';
 
 import { UserDetailsCard } from '../../users/components/UserDetailsCard';

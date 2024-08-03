@@ -6,7 +6,7 @@ import { Tooltip } from '@/components/Tooltip';
 import { useNotification } from '@/context/Notification';
 
 import { useAuth } from '@/store/useAuth';
-import { Icon, Text } from '@cdaxfx/ui';
+import { Icon, Text } from '@luxbank/ui';
 
 import ModalResult from '../ModalResult';
 import Select from '../Select';

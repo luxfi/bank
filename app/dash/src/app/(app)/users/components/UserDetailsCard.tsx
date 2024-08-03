@@ -8,7 +8,7 @@ import { getUserStatusBadgeValues } from '@/utils/valueMaps';
 
 import { CountriesList } from '@/lib/constants';
 
-import { Column, Row, Text, useTheme } from '@cdaxfx/ui';
+import { Column, Row, Text, useTheme } from '@luxbank/ui';
 
 import { userRolesDictionary } from '../types';
 

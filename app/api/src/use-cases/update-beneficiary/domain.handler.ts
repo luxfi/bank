@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { AccountType, BeneficiariesRepository, Beneficiary, User, UserRole } from '@cdaxfx/tools-models';
+import { AccountType, BeneficiariesRepository, Beneficiary, User, UserRole } from '@luxbank/tools-models';
 import { SwiftCodeService } from '../../swift-code/swift-code.service';
-import { EEntityType, ReversedERoutingCodesNames, RoutingCodes, PaymentProviderIFX } from '@cdaxfx/ports-ifx';
+import { EEntityType, ReversedERoutingCodesNames, RoutingCodes, PaymentProviderIFX } from '@luxbank/ports-ifx';
 import { UpdateBeneficiaryRequest } from './types/beneficiary.request.type';
 import { BeneficiaryResponse } from './types/beneficiary.response.type';
-import { isInUk, isSwift } from '@cdaxfx/tools-misc';
-import { PaymentProviderCurrencyCloud } from '@cdaxfx/ports-currency-cloud';
+import { isInUk, isSwift } from '@luxbank/tools-misc';
+import { PaymentProviderCurrencyCloud } from '@luxbank/ports-currency-cloud';
 import { RoutingCodeType, getRoutingCodeByCountry } from '../../currency-cloud/model/routing-code-type.enum';
 
 @Injectable()

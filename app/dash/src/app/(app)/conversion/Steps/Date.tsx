@@ -5,7 +5,7 @@ import SelectDate from '@/components/SelectDate';
 
 import { EStepConversion, useContextConversion } from '@/context/Conversions';
 
-import { Button, Row, Text } from '@cdaxfx/ui';
+import { Button, Row, Text } from '@luxbank/ui';
 import { default as dayjs, default as days } from 'dayjs';
 import { useFormik } from 'formik';
 

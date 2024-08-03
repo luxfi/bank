@@ -1,4 +1,4 @@
-import { EBalanceOperation, ECurrencyCode } from '@cdaxfx/tools-misc';
+import { EBalanceOperation, ECurrencyCode } from '@luxbank/tools-misc';
 
 export class ViewBalancesRequestDto {
     forOperation: EBalanceOperation;

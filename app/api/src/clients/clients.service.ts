@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { RiskAssessmentDto, User, UserClient, UserClientMetadata, UserClientsRepository, UserRole, Client, ClientSelectPaginatedResponse, ClientsRepository } from '@cdaxfx/tools-models';
+import { RiskAssessmentDto, User, UserClient, UserClientMetadata, UserClientsRepository, UserRole, Client, ClientSelectPaginatedResponse, ClientsRepository } from '@luxbank/tools-models';
 import { AuthService } from '../auth/auth.service';
 import { ClientSelectRiskPaginatedResponse } from './types/get-risk-clients.response.dto';
 import { GetRiskClientsRequestPaginated } from './types/get-risk-clients.request.dto';

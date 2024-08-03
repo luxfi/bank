@@ -1,4 +1,4 @@
-import { Transaction, TransactionStatusApproval } from '@cdaxfx/tools-models';
+import { Transaction, TransactionStatusApproval } from '@luxbank/tools-models';
 
 import dayjs from 'dayjs';
 

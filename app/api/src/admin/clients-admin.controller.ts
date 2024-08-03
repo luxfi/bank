@@ -1,10 +1,10 @@
 import { BadRequestException, Body, Controller, Delete, Get, NotFoundException, Param, Post, Query, Request, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
-import { AxiosOAuthClient } from '@cdaxfx/ports-ifx';
-import { GetUser, SuccessResponse } from '@cdaxfx/tools-misc';
+import { AxiosOAuthClient } from '@luxbank/ports-ifx';
+import { GetUser, SuccessResponse } from '@luxbank/tools-misc';
 import { AdminClientDto, AdminCreateUserDto, AdminResetPasswordDto, AdminRoles, CurrencyCloudDataDto, IfxLinkDataDto, ManagerRoles,
-        RiskAssessmentDto, User, UserMetadataDto, UserMetadataRejectDto, UserRole } from '@cdaxfx/tools-models';
+        RiskAssessmentDto, User, UserMetadataDto, UserMetadataRejectDto, UserRole } from '@luxbank/tools-models';
 import { RealIP } from 'nestjs-real-ip';
 import { UsersAdminService } from '../admin/users-admin.service';
 import { Roles } from '../auth/roles.decorator';

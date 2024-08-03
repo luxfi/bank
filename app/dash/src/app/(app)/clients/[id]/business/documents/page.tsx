@@ -11,7 +11,7 @@ import { useClients } from '@/store/useClient';
 import { IDocument } from '@/store/useClient/types';
 import { useDocuments } from '@/store/useDocuments';
 import { EnumClientDocumentType } from '@/store/useDocuments/types';
-import { Button, Column, Row, Text } from '@cdaxfx/ui';
+import { Button, Column, Row, Text } from '@luxbank/ui';
 
 import { ClientDocumentCard } from '../../../../../../components/ClientDocumentCard';
 import { HeaderClientsDetails } from '../../components/Header';

@@ -1,4 +1,4 @@
-import { Icon } from '@cdaxfx/ui';
+import { Icon } from '@luxbank/ui';
 
 import {
   Container,

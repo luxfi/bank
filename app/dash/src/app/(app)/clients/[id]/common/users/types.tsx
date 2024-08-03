@@ -3,7 +3,7 @@ import { Badge } from '@/components/Badge';
 import { getUserStatusBadgeValues } from '@/utils/valueMaps';
 
 import { userRolesDictionary } from '@/app/(app)/users/types';
-import { Column, Text } from '@cdaxfx/ui';
+import { Column, Text } from '@luxbank/ui';
 
 export const userColumns = [
   {

@@ -1,6 +1,6 @@
-import { PaymentProviderIFX } from '@cdaxfx/ports-ifx';
+import { PaymentProviderIFX } from '@luxbank/ports-ifx';
 import { GetWalletBalanceDetailUseCase } from './abstract.handler';
-import { CurrenciesNameIfx, IFXCurrencies } from '@cdaxfx/tools-models';
+import { CurrenciesNameIfx, IFXCurrencies } from '@luxbank/tools-models';
 import { ViewBalancesResponse } from '../../use-cases';
 import { NotFoundException } from '@nestjs/common';
 

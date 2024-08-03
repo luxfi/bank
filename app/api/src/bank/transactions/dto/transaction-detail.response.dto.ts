@@ -1,6 +1,6 @@
 import { RoutingCodes } from '../../wallets/dto/wallet-details.response.dto';
-import { ECountryCode } from '@cdaxfx/tools-misc';
-import { TransactionCurrencyAmount } from '@cdaxfx/ports-ifx';
+import { ECountryCode } from '@luxbank/tools-misc';
+import { TransactionCurrencyAmount } from '@luxbank/ports-ifx';
 
 export enum EPaymentType {
     PRIORITY = 'priority',

@@ -13,7 +13,7 @@ import { useMessages } from '@/context/Messages';
 import { countriesOptions } from '@/utils/lib';
 
 import { useClients } from '@/store/useClient';
-import { Button, Column, Row, Text } from '@cdaxfx/ui';
+import { Button, Column, Row, Text } from '@luxbank/ui';
 import dayjs from 'dayjs';
 import { useFormik } from 'formik';
 

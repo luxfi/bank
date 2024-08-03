@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { SessionsRepository } from './repository/sessions.repository';
 import { Session } from './model/session.entity';
-import { User } from '@cdaxfx/tools-models';
+import { User } from '@luxbank/tools-models';
 
 @Injectable()
 export class SessionsService {

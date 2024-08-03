@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import BaseEmail from '../../model/base-email';
-import { RequestAccessDto } from '@cdaxfx/tools-models';
+import { RequestAccessDto } from '@luxbank/tools-models';
 
 const logoImage = readFileSync(join(__dirname, '../../templates/emails/registration/request-access/logo.png')).toString('base64');
 

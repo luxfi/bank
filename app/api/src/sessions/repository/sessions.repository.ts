@@ -1,6 +1,6 @@
 import { EntityRepository } from '@mikro-orm/knex';
 import { Session } from '../model/session.entity';
-import { User } from '@cdaxfx/tools-models';
+import { User } from '@luxbank/tools-models';
 
 export class SessionsRepository extends EntityRepository<Session> {
     async createSession(data: any, user?: User | undefined): Promise<Session> {

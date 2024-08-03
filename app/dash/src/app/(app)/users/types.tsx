@@ -5,7 +5,7 @@ import { IUser, TUserStatus } from '@/models/users';
 
 import { getUserStatusBadgeValues } from '@/utils/valueMaps';
 
-import { Column, TSelectOptions, Text } from '@cdaxfx/ui';
+import { Column, TSelectOptions, Text } from '@luxbank/ui';
 
 export const userRolesDictionary: Record<string, string> = {
   'user:admin': 'Admin',

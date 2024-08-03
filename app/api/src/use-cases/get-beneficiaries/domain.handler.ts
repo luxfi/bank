@@ -1,4 +1,4 @@
-import { BeneficiariesRepository, User, GetBeneficiariesRequest, GetBeneficiariesPaginatedResponse } from '@cdaxfx/tools-models';
+import { BeneficiariesRepository, User, GetBeneficiariesRequest, GetBeneficiariesPaginatedResponse } from '@luxbank/tools-models';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()

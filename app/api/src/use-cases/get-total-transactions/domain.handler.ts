@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { TransactionsRepository, User } from '@cdaxfx/tools-models';
+import { TransactionsRepository, User } from '@luxbank/tools-models';
 import { GetTotalTransactionsUseCase } from './abstract.handler';
 
 @Injectable()

@@ -2,7 +2,7 @@ import { GetLoggedUserUseCase, GetWalletBalancesUseCase, GetWalletbalancesCCUseC
         GetWalletCurrenciesCCUseCase, GetWalletCurrenciesIFXUseCase, GetWalletDetailCCUseCase, GetWalletDetailIFXUseCase, GetWalletDetailUseCase,
         GetWalletBalanceDetailCCUseCase, GetWalletBalanceDetailIFXUseCase, GetWalletBalanceDetailUseCase } from '../../use-cases';
 import { Module } from '@nestjs/common';
-import { MikroOrmRegisteredForUser } from '@cdaxfx/tools-models';
+import { MikroOrmRegisteredForUser } from '@luxbank/tools-models';
 import { paymentAdapter } from '../shared/providers/payment-adapter.provider';
 import { WalletsController } from './wallets.controller';
 

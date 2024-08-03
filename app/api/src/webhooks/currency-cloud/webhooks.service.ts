@@ -1,7 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CurrencyCloudDTO, TransactionAction, TransactionsRepository, Transaction, ClientsRepository, TransactionStatusApproval, TransactionStatusLabel,
-        TransactionStatusMap, TransactionStatus } from '@cdaxfx/tools-models';
-import { generateShortUniqId } from '@cdaxfx/tools-misc';
+        TransactionStatusMap, TransactionStatus } from '@luxbank/tools-models';
+import { generateShortUniqId } from '@luxbank/tools-misc';
 
 @Injectable()
 export class WebhooksCurrencyCloudService {

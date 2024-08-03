@@ -33,7 +33,7 @@ import {
   Select,
   Text,
   useTheme,
-} from '@cdaxfx/ui';
+} from '@luxbank/ui';
 import dayjs from 'dayjs';
 import _ from 'underscore';
 

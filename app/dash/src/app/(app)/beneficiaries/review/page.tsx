@@ -12,7 +12,7 @@ import { currencyNameDictionary } from '@/models/countries';
 
 import { useNotification } from '@/context/Notification';
 
-import { Button, Row } from '@cdaxfx/ui';
+import { Button, Row } from '@luxbank/ui';
 
 import { createBeneficiary } from '@/api/beneficiaries';
 

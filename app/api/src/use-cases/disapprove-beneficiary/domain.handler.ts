@@ -1,9 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { PaymentProviderCurrencyCloud } from '@cdaxfx/ports-currency-cloud';
-import { MailerService } from '@cdaxfx/ports-email';
+import { PaymentProviderCurrencyCloud } from '@luxbank/ports-currency-cloud';
+import { MailerService } from '@luxbank/ports-email';
 import BeneficiaryEmail from '../../users/emails/beneficiary-email';
-import { PaymentProviderIFX } from '@cdaxfx/ports-ifx';
-import { BeneficiariesRepository, Beneficiary, User } from '@cdaxfx/tools-models';
+import { PaymentProviderIFX } from '@luxbank/ports-ifx';
+import { BeneficiariesRepository, Beneficiary, User } from '@luxbank/tools-models';
 import { DisapproveBeneficiaryRequest } from './types/beneficiary.request.type';
 import { DisapproveBeneficiaryResponse } from './types/beneficiary.response.type';
 

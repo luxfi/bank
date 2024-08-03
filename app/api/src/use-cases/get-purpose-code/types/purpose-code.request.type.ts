@@ -1,4 +1,4 @@
-import { ECountryCode, ECurrencyCode } from '@cdaxfx/tools-misc';
+import { ECountryCode, ECurrencyCode } from '@luxbank/tools-misc';
 
 export interface PurposeCodeRequest {
     bankCountryCode: ECountryCode;

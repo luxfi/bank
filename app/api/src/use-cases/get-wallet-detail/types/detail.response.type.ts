@@ -1,5 +1,5 @@
-import { RoutingCodes } from '@cdaxfx/ports-ifx';
-import { ECountryCode } from '@cdaxfx/tools-misc';
+import { RoutingCodes } from '@luxbank/ports-ifx';
+import { ECountryCode } from '@luxbank/tools-misc';
 import { PaginationsResponse } from '../../get-transactions';
 
 export interface ViewDetailResponse {

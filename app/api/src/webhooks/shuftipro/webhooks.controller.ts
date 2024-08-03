@@ -1,9 +1,9 @@
 import { Body, Controller, Post, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
-import { SuccessResponse } from '@cdaxfx/tools-misc';
+import { SuccessResponse } from '@luxbank/tools-misc';
 import { WebhooksShuftiproService } from './webhooks.service';
-import { ShuftiproDto, ShuftiproEvent } from '@cdaxfx/tools-models';
+import { ShuftiproDto, ShuftiproEvent } from '@luxbank/tools-models';
 import { Anonymous } from '../../auth/anonymous.decorator';
 
 @ApiTags('Webhooks')

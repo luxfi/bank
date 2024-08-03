@@ -1,9 +1,9 @@
 import { Body, Controller, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
-import { SuccessResponse } from '@cdaxfx/tools-misc';
+import { SuccessResponse } from '@luxbank/tools-misc';
 import { WebhooksCurrencyCloudService } from './webhooks.service';
-import { TransactionType } from '@cdaxfx/tools-models';
+import { TransactionType } from '@luxbank/tools-models';
 import { Anonymous } from '../../auth/anonymous.decorator';
 import { HmacGuard } from './hmac.guard';
 
