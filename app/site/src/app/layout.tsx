@@ -48,7 +48,7 @@ export default function RootLayout({
           property="og:description"
           content="With CDAX, we have removed the complexities, inefficiencies and expenses of traditional cross-border payments with our platform."
         />
-        <meta property="og:url" content="https://www.cdaxforex.com/" />
+        <meta property="og:url" content="https://cdax.forex/" />
         <meta property="og:type" content="website" />
         <meta name="robots" content="index, follow" />
 
