@@ -87,7 +87,7 @@ export default function About() {
       <Row justify="center" align="center" gap="lg">
         <Text
           variant="interactive_md_link"
-          href="https://www.cdaxforex.com/privacy-policy"
+          href="https://cdax.forex/privacy-policy"
           color={theme.textColor.interactive.default.value}
         >
           Privacy Policy
@@ -95,7 +95,7 @@ export default function About() {
         <Divider />
         <Text
           variant="interactive_md_link"
-          href="https://www.cdaxforex.com/terms-and-conditions"
+          href="https://cdax.forex/terms-and-conditions"
           color={theme.textColor.interactive.default.value}
         >
           Terms & Conditions

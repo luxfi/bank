@@ -121,7 +121,7 @@ export default function Login() {
             <Container>
                 <FormContainer>
                     <BackButtonContainer>
-                        <Link to={"https://www.cdaxforex.com/"}>
+                        <Link to={"https://cdax.forex/"}>
                             <ArrowLeftOutlined />
                         </Link>
                     </BackButtonContainer>
