@@ -9,6 +9,9 @@
   "scripts": {
     "build": "nest build"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "keywords": [
     "typescript",
     "npm",

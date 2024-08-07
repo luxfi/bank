@@ -1,6 +1,6 @@
 {
   "name": "@luxbank/email",
-  "version": "1.0.31",
+  "version": "1.0.32",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -8,6 +8,9 @@
   ],
   "scripts": {
     "build": "nest build"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "keywords": [
     "typescript",
