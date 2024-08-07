@@ -16,6 +16,9 @@
     "luxbank",
     "package"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "license": "MIT",
   "dependencies": {
     "@luxbank/currency-cloud": "^1.0.31",

@@ -16,6 +16,9 @@
     "luxbank",
     "package"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "license": "MIT",
   "dependencies": {
     "@luxbank/misc": "^1.0.31",
