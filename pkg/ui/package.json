@@ -1,6 +1,6 @@
 {
   "name": "@luxbank/ui",
-  "version": "0.0.38",
+  "version": "0.0.39",
   "main": "./lib/cjs/index.js",
   "module": "./lib/esm/index.js",
   "types": "./lib/esm/index.d.ts",

@@ -13,7 +13,7 @@
     "@ant-design/cssinjs": "^1.21.0",
     "@ant-design/icons": "^5.3.7",
     "@ant-design/static-style-extract": "^1.0.2",
-    "@luxbank/ui": "^0.0.38",
+    "@luxbank/ui": "^0.0.39",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@reduxjs/toolkit": "^2.2.6",

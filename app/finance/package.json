@@ -1,0 +1,41 @@
+{
+  "name": "@luxbank/finance",
+  "version": "0.0.2",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "prod": "next start",
+    "cn": "rm -rf ./.next",
+    "clean": "rm -rf ./.next && rm -rf node_modules",
+    "tc": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@luxfi/ui": "*",
+    "@hanzo/auth": "*",
+    "@hanzo/commerce": "*",
+    "@hanzo/ui": "*",
+    "@next/mdx": "14.1.0",
+    "@types/node": "^20.12.12",
+    "lucide-react": "^0.344.0",
+    "next": "14.2.3",
+    "next-themes": "^0.2.1",
+    "postcss-selector-parser": "^6.0.13",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@mdx-js/loader": "^3.0.0",
+    "@mdx-js/react": "^3.0.0",
+    "@svgr/webpack": "^8.1.0",
+    "@types/mdx": "^2.0.9",
+    "@types/node": "^20.11.24",
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.24",
+    "postcss-import": "^15.1.0",
+    "tailwindcss": "^3.4.2",
+    "typescript": "^5.4.5"
+  }
+}
