@@ -16,7 +16,7 @@ export const LineText: FC<LineTextProps> = (props) => {
       {
         direction === "left" && <img src={"assets/images/left.png"} alt="direct" />
       }
-      <p className={`text-white ${textMaxWidth} text-${direction} text-[20px] leading-6`}>{text}</p>
+      <p className={`text-white ${textMaxWidth} text-${direction} text-base xl:text-[20px] leading-6`}>{text}</p>
       {
         direction === "right" && <img src={"assets/images/right.png"} alt="direct" />
       }
