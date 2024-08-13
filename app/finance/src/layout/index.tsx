@@ -3,6 +3,7 @@
 import { IndustryTab } from "@/components/IndustryTab";
 import { LineText, type LineTextProps } from "@/components/LineText"
 import { TextCard, type TextCardProps } from "@/components/TextCard";
+import useWindowSize from "@/hooks/useWindowSize";
 import { Button } from "@hanzo/ui/primitives";
 import { useState } from "react";
 
@@ -42,7 +43,7 @@ const textCardData: TextCardProps[] = [
     title: "Personalized support",
     subTitle: "Talk to Real People",
     detail: "Build genuine relationships with our dedicated account managers, who offer real, chatbot-free support in 15+ languages.",
-    className: "ml-[196px]"
+    className: "mg-0 lg:ml-[196px]"
   },
   {
     title: "SAFEGUARDING",
@@ -62,9 +63,17 @@ const textCardData: TextCardProps[] = [
 ]
 
 const industryTabList = ["Who We're Built For", "Export/Import", "Manufaturing", "Marketing"];
+const industryTabDetail = [
+  "Lux Finance works with everyone from funded startups to large enterprises, but we're especially popular with companies that have an international presence.",
+  "Simplify export/import transactions with our multicurrency accounts, enabling local payments and receipts in over 190 countries.",
+  "Hundreds of manufacturing businesses trust Lux Finance because our account managers understand their industry.",
+  "Perfect for marketing companies, Lux Finance's debit cards let your team run campaigns with uncapped budgets and granular control."
+]
 
 export const HomeLayout = () => {
   const [industryTabIndex, setIndustryTabIndex] = useState(0);
+
+  const screenSize = useWindowSize();
 
   const onSelectTab = (value: number) => {
     setIndustryTabIndex(value);
@@ -76,24 +85,24 @@ export const HomeLayout = () => {
       <div className="relative flex flex-col justify-center items-center pb-[100px] overflow-hidden">
         <div className="flex justify-center items-center flex-col max-w-[910px] mt-[134px] z-2">
           <h3 className="uppercase text-base text-white-65">Crypto</h3>
-          <h1 className="uppercase text-[40px] leading-[48px] text-white text-center font-bold mt-[18px] font-heading">
+          <h1 className="uppercase text-xl lg:text-[40px] leading-normal lg:leading-[48px] text-white text-center font-bold mt-[18px] font-heading">
             Send and receive moeny globally with the speed of blockchain
           </h1>
           <h3 className="text-base text-white-65 text-center mt-[18px] max-w-[609px]">Gone are the days of clunky international transactions and tangled currency woes. We make navigating the global marketplace smooth and secure.</h3>
-          <Button className="mt-[38px] py-2 px-4">Setup your account in minutes</Button>
+          <Button className="mt-[38px] py-2 px-4 text-[14px]">Setup your account in minutes</Button>
         </div>
-        <div className="absolute left-[-130px] top-10 rotate-[13deg]">
-          <img src="assets/images/diamond.png" alt="left-diamond" width={341.85} />
+        <div className="absolute left-[-50px] lg:left-[-130px] top-10 rotate-[13deg]">
+          <img src="assets/images/diamond.png" alt="left-diamond" className="w-[152px] lg:w-[342px]" />
         </div>
-        <div className="absolute right-[-60px] top-[200px] rotate-[-13deg]">
-          <img src="assets/images/diamond.png" alt="right-diamond" width={341.85} />
+        <div className="absolute right-[-20px] lg:right-[-60px] top-[350px] lg:top-[200px] rotate-[-13deg]">
+          <img src="assets/images/diamond.png" alt="right-diamond" className="w-[152px] lg:w-[342px]" />
         </div>
       </div>
 
       {/* Section 2 */}
       <div className="relative w-full flex flex-col justify-center items-center mt-[84px]">
         <div className="max-w-[724px] mb-[68px]">
-          <h1 className="uppercase text-[32px] leading-[auto] text-white text-center font-bold font-heading">
+          <h1 className="uppercase text-2xl lg:text-[32px] leading-[auto] text-white text-center font-bold font-heading">
             Manage multiple currencies in one place.
           </h1>
           <p className="text-base leading-[22px] text-white-65 text-center mt-[18px]">
@@ -102,21 +111,34 @@ export const HomeLayout = () => {
         </div>
         <div className="relative w-full flex flex-col justify-center items-center">
           {
-            lineTextData.map((data) => <LineText {...data} />)
+            screenSize === "lg" ?
+              <img src="assets/images/diamond-1.png" alt="diamond-1" />
+              :
+              <img src="assets/images/diamond-2.png" alt="diamond-2" />
           }
-          <img src="assets/images/diamond-1.png" alt="diamond-1" />
+          {
+            screenSize === "lg" ? lineTextData.map((data) => <LineText {...data} />) :
+              <div className="max-w-[calc(100vw-200px)] mt-[57px]">
+                <ul className="text-lg leading-[22px] text-white list-disc">
+                  <li className="mb-[18px]">Mass Payments Made Easy Bulk upload simplifies sending funds.</li>
+                  <li className="mb-[18px]">Named accounts with dedicated details for easy deposits.</li>
+                  <li className="mb-[18px]">Competitive FX Rates</li>
+                  <li>Real-time reports track your activity</li>
+                </ul>
+              </div>
+          }
         </div>
       </div>
 
       {/* Section 3 */}
-      <div className="w-full flex flex-col justify-center items-center mt-[30px]">
-        <h1 className="uppercase text-[32px] leading-[auto] text-white text-center font-bold font-heading">
+      <div className="w-full flex flex-col justify-center items-center mt-20 lg:mt-[30px]">
+        <h1 className="uppercase text-2xl lg:text-[32px] leading-[auto] text-white text-center font-bold font-heading">
           Physical and virtual card
         </h1>
         <p className="text-base text-white-85 leading-[22px] max-w-[700px] text-center mt-[18px]">
           Forget waiting for weeks. Get your virtual card in seconds and start spending your crypto like cash.
         </p>
-        <div className="flex flex-row justify-center items-center gap-[138px] mt-[119px]">
+        <div className="flex flex-col lg:flex-row justify-center items-center gap-[138px] mt-[119px]">
           <img src="assets/images/black_card.png" alt="black card" />
           <div className="flex flex-col gap-[42px]">
             <div>
@@ -152,13 +174,13 @@ export const HomeLayout = () => {
 
       {/* Section 4 */}
       <div className="w-full flex flex-col justify-center items-center mt-[120px]">
-        <h1 className="uppercase text-[32px] leading-[auto] text-white text-center font-bold font-heading">
+        <h1 className="uppercase text-2xl lg:text-[32px] leading-[auto] text-white text-center font-bold font-heading">
           Unleash Your Crypto. Spend It Anywhere
         </h1>
         <p className="text-base text-white-85 leading-[22px] text-center mt-[18px]">
           Take control of your finances on the go. Manage and track transactions from your phone or desktop with ease
         </p>
-        <div className="flex flex-row w-full gap-[37px] mt-[96px] overflow-x-scroll overflow-y-hidden no-scroll">
+        <div className="flex justify-center items-center lg:justify-normal lg:items-center flex-col lg:flex-row w-full gap-[37px] mt-[96px] overflow-x-auto lg:overflow-x-scroll overflow-y-auto lg:overflow-y-hidden no-scroll">
           {
             textCardData.map((data) => <TextCard {...data} />)
           }
@@ -166,7 +188,7 @@ export const HomeLayout = () => {
       </div>
 
       {/* Section 5 */}
-      <div className="w-full flex flex-col justify-center items-center mt-[120px]">
+      <div className="hidden w-full lg:flex flex-col justify-center items-center mt-[120px]">
         <h1 className="uppercase text-[32px] leading-[auto] text-white text-center font-bold font-heading">
           How it works
         </h1>
@@ -216,14 +238,15 @@ export const HomeLayout = () => {
       {/* Section 6 */}
       <div className="w-full flex flex-col justify-center items-center mt-[120px] relative">
         <div className="z-2 flex flex-col justify-center items-center">
-          <h1 className="uppercase text-[32px] leading-[auto] text-white text-center font-bold font-heading">
+          <h1 className="uppercase text-2xl lg:text-[32px] leading-[auto] text-white text-center font-bold font-heading">
             Why We’re Better
           </h1>
-          <p className="text-base text-white-85 leading-[22px] text-center mt-[18px] max-w-[700px]">
+          <p className="text-base text-white-85 leading-[22px] text-center mt-[18px] max-w-[calc(100vw-40px)] lg:max-w-[700px]">
             Lux Finance is renowned as a trusted leader in the financial industry, dedicated to long-term partnerships with enterprise clients, funded startups, and sovereign wealth offices.
           </p>
-          <div className="flex flex-row gap-[34px] justify-center items-center mt-[153px]">
-            <div className="w-[370px] h-[210px] bg-[#0D0D0D] rounded-[10px] px-4 pt-5 overflow-hidden">
+          <img src="assets/images/better_bg.png" alt="better_bg" className="w-full h-auto block lg:hidden" />
+          <div className="flex flex-col lg:flex-row gap-[34px] justify-center items-center mt-[33px] lg:mt-[153px]">
+            <div className="w-[calc(100vw-60px)] lg:w-[370px] h-[210px] bg-[#0D0D0D] rounded-[10px] px-4 pt-5 overflow-hidden">
               <p className="text-[#CCCDDC] text-base leading-[22px]">
                 Multicurrency Accounts
               </p>
@@ -234,7 +257,7 @@ export const HomeLayout = () => {
                 Simplify transactions across currencies, reduce operational costs, and focus on growth.
               </p>
             </div>
-            <div className="w-[439px] h-[210px] bg-[#0D0D0D] rounded-[10px] px-4 pt-5 overflow-hidden">
+            <div className="w-[calc(100vw-60px)] lg:w-[439px] h-[210px] bg-[#0D0D0D] rounded-[10px] px-4 pt-5 overflow-hidden">
               <p className="text-[#CCCDDC] text-base leading-[22px]">
                 Foreign Exchange
               </p>
@@ -247,7 +270,7 @@ export const HomeLayout = () => {
             </div>
           </div>
         </div>
-        <div className="absolute left-0 bottom-0 w-full flex flex-col justify-center items-center">
+        <div className="hidden absolute left-0 bottom-0 w-full lg:flex flex-col justify-center items-center">
           <img src="assets/images/better_bg.png" alt="better_bg" className="w-[1440px] h-[526px]" />
         </div>
       </div>
@@ -255,13 +278,16 @@ export const HomeLayout = () => {
       {/* Section 7 */}
       <div className="w-full flex flex-col justify-center items-center mt-[120px] relative">
         <div className="z-2 flex flex-col justify-center items-center relative">
-          <h1 className="uppercase text-[32px] leading-[auto] text-white text-center font-bold font-heading">
+          <h1 className="uppercase text-2xl lg:text-[32px] leading-[auto] text-white text-center font-bold font-heading">
             Web3 Integration
           </h1>
           <p className="text-base text-white-85 leading-[22px] text-center mt-[18px]">
             Most Efficient On/Off Ramps and Exchange Rates for Blockchain Assets
           </p>
-          <div className="bg-[#0D0D0D] rounded-[10px] px-4 py-5 overflow-hidden w-[350px] absolute left-[calc(50%-600px)] top-[200px]">
+          <div className="w-full flex flex-col justify-center items-center">
+            <img src="assets/images/web3_bg.png" alt="web3_bg" className="w-full lg:w-[822px] h-auto lg:h-[588px]" />
+          </div>
+          <div className="bg-[#0D0D0D] rounded-[10px] px-4 py-5 overflow-hidden w-[calc(100vw-60px)] lg:w-[350px] relative lg:absolute lg:left-[calc(50%-500px)] xl:left-[calc(50%-600px)] lg:top-[200px]">
             <p className="text-[#CCCDDC] text-base leading-[22px]">
               Effortless Onboarding: Lux Network makes entering the world of Web3 smooth.
             </p>
@@ -269,7 +295,7 @@ export const HomeLayout = () => {
               Best Rates & Conversions: Buy and sell crypto with ease, at top exchange rates.
             </p>
           </div>
-          <div className="bg-[#0D0D0D] rounded-[10px] px-4 py-5 overflow-hidden w-[350px] absolute left-[calc(50%+200px)] top-[150px]">
+          <div className="bg-[#0D0D0D] rounded-[10px] mt-[38px] lg:mt-0 px-4 py-5 overflow-hidden w-[calc(100vw-60px)] lg:w-[350px] relative lg:absolute lg:left-[calc(50%+100px)] xl:left-[calc(50%+200px)] lg:top-[150px]">
             <p className="text-[#CCCDDC] text-base leading-[22px]">
               Deepest Bitcoin Liquidity: Access the largest pools for smooth transactions.
             </p>
@@ -278,42 +304,50 @@ export const HomeLayout = () => {
             </p>
           </div>
         </div>
-        <div className="w-full flex flex-col justify-center items-center">
-          <img src="assets/images/web3_bg.png" alt="web3_bg" className="w-[822px] h-[588px]" />
-        </div>
       </div>
 
       {/* Section 8 */}
       <div className="w-full flex flex-col justify-center items-center mt-[120px]">
-        <h1 className="uppercase text-[32px] leading-[auto] text-white text-center font-bold font-heading">
+        <h1 className="uppercase text-2xl lg:text-[32px] leading-[auto] text-white text-center font-bold font-heading">
           Debit and credit cards
         </h1>
         <p className="text-base text-white-85 leading-[22px] text-center mt-[18px] max-w-[685px]">
           Lux Finance is renowned as a trusted leader in the financial industry, dedicated to long-term partnerships with enterprise clients, funded startups, and sovereign wealth offices.
         </p>
         <div className="w-full flex flex-col justify-center items-center mt-[74px]">
-          <img src="assets/images/card_bg.png" alt="card_bg" className="w-[662px] h-[390px]" />
+          <img src="assets/images/card_bg.png" alt="card_bg" className="w-[calc(100vw-84px)] lg:w-[662px] h-auto lg:h-[390px]" />
         </div>
         <Button className="mt-[65px] py-2 px-4">Get Lux Credit Card</Button>
       </div>
 
       {/* Section 9 */}
       <div className="w-full flex flex-col justify-center items-center mt-[120px] mb-[260px]">
-        <h1 className="uppercase text-[32px] leading-[auto] text-white text-center font-bold font-heading">
+        <h1 className="uppercase text-2xl lg:text-[32px] leading-[auto] text-white text-center font-bold font-heading">
           Industries
         </h1>
         <p className="text-base text-white-85 leading-[22px] text-center mt-[18px]">
           Industry-specific account managers understand your needs.
         </p>
         <IndustryTab list={industryTabList} selectedTabIndex={industryTabIndex} onSelectTab={onSelectTab} />
-        <div className="flex flex-row justify-center items-center gap-[78px] mt-[40px]">
+        <div className="hidden lg:flex flex-row justify-center items-center gap-[78px] mt-[40px]">
           <div className="flex items-center justify-center w-[448px] h-[400px] bg-[#0D0D0D]">
             <img src="assets/images/industry.png" alt="industry" />
           </div>
           <div>
-            <h1 className="text-[40px] text-white leading-normal">Who We're Built For</h1>
-            <p className="text-white-65 text-xl leading-normal max-w-[470px]">Lux Finance works with everyone from funded startups to large enterprises, but we're especially popular with companies that have an international presence.</p>
+            <h1 className="text-[40px] text-white leading-normal">{industryTabList[industryTabIndex]}</h1>
+            <p className="text-white-65 text-xl leading-normal max-w-[470px]">{industryTabDetail[industryTabIndex]}</p>
           </div>
+        </div>
+        <div className="flex flex-col justify-center items-center mt-[47px] gap-12">
+          <img src="assets/images/industry.png" alt="industry" />
+          {
+            industryTabList.map((tab, index) => (
+              <div key={index}>
+                <h1 className="text-[22px] lg:text-[40px] text-white leading-normal">{tab}</h1>
+                <p className="text-white-65 text-xl leading-normal max-w-[calc(100vw-80px)] mt-[34px]">{industryTabDetail[index]}</p>
+              </div>
+            ))
+          }
         </div>
       </div>
 

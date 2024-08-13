@@ -10,7 +10,7 @@ export const IndustryTab: FC<Props> = (props) => {
   const { list, selectedTabIndex, onSelectTab } = props;
 
   return (
-    <div className="flex flex-row justify-between items-center w-full max-w-[700px] mt-[74px]">
+    <div className="hidden lg:flex flex-row justify-between items-center w-full max-w-[700px] mt-[74px]">
       {list.map((item, index) =>
         <div
           key={index}
