@@ -11,8 +11,8 @@ export const TextCard: FC<TextCardProps> = (props) => {
   const { title, subTitle, detail, className } = props;
 
   return (
-    <div className={`flex-none w-[337px] h-[284px] px-[20px] py-8 flex flex-col justify-between items-start bg-[0D0D0D] border border-white-10 rounded-[14px] ${className}`}>
-      <h3 className="uppercase text-base leading-normal text-white">
+    <div className={`flex-none text-center lg:text-left w-[337px] h-[284px] px-[20px] py-8 flex flex-col justify-between items-start bg-[0D0D0D] border border-white-10 rounded-[14px] ${className}`}>
+      <h3 className="uppercase text-base leading-normal text-white w-full">
         {title}
       </h3>
       <div className="flex flex-col gap-8">
