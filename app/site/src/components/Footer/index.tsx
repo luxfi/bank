@@ -72,10 +72,11 @@ const footerNav: Record<string, FooterNavSection> = {
     ],
   },
   resources: {
-    title: "Resources",
+    title: "Developers",
     items: [
-      { label: "API Docs", href: "https://docs.lux.financial", external: true },
-      { label: "Learn", href: "/learn" },
+      { label: "Documentation", href: "https://docs.lux.financial", external: true },
+      { label: "API Reference", href: "https://docs.lux.financial/api-reference", external: true },
+      { label: "GitHub", href: "https://github.com/luxfi", external: true },
       { label: "Status", href: "https://status.lux.financial", external: true },
     ],
   },

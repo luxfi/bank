@@ -392,28 +392,28 @@ const industries = [
 ];
 
 const stats = [
-  { value: "$2B+", label: "Transaction Volume" },
   { value: "200+", label: "Countries Supported" },
   { value: "50+", label: "Blockchain Networks" },
   { value: "180+", label: "Currencies" },
+  { value: "25+", label: "Payment Rails" },
 ];
 
 const complianceFeatures = [
   {
-    title: "KYC/KYB Verification",
-    description: "Integrated identity verification with Jumio, Onfido, Persona, and 10+ providers.",
+    title: "KYC/KYB APIs",
+    description: "Pluggable identity verification layer. Integrate any provider via unified API.",
   },
   {
     title: "Sanctions Screening",
-    description: "Real-time screening against OFAC, UN, EU, UK sanctions lists with daily updates.",
+    description: "Real-time screening against OFAC, UN, EU, UK lists. Daily automated updates via GitHub Actions.",
   },
   {
     title: "Transaction Monitoring",
-    description: "AI-powered AML with Chainalysis, Elliptic, and behavioral analytics.",
+    description: "Configurable AML rules engine with behavioral analytics and risk scoring.",
   },
   {
-    title: "AI Compliance",
-    description: "Natural language compliance queries, automated SAR generation, and smart case management.",
+    title: "MCP Server",
+    description: "Model Context Protocol for AI-powered operations. Natural language banking queries.",
   },
 ];
 

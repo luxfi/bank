@@ -55,6 +55,12 @@ Note: `lux.finance` is the DeFi frontend (Alchemix UI), NOT the bank.
 - **Lux IAM**: Enterprise identity management (SAML, OIDC, OAuth 2.0)
 - **Post-Quantum Security**: CRYSTALS-Dilithium, Kyber, SPHINCS+ via Lux Node
 
+### Mobile Banking
+- **White-Label Mobile App**: iOS and Android native apps
+- **Multi-Asset Support**: Fiat, crypto, stablecoins, digital securities
+- **Security**: Biometric auth (Face ID, Touch ID), MPC signing
+- **Features**: QR payments, instant transfers, real-time alerts, 200+ countries
+
 ### AI-Powered Operations
 - **MCP Server**: Model Context Protocol for AI-powered operations
 - **ZAP Protocol**: Browser-extension to MCP communication
@@ -96,7 +102,9 @@ docker compose --profile bank up -d
 
 ### Apps (`/app/`)
 - **site** - Marketing site (Next.js 14, styled-components)
+  - **Home page** features mobile app showcase with 3 phone mockups
   - `/products/` - Product pages:
+    - `/mobile` - White-label mobile app (iOS/Android) with phone mockups
     - `/exchange` - CEX & DEX platform
     - `/defi` - DeFi infrastructure (AMM, lending, yield)
     - `/issuance` - Digital securities (stablecoins, security tokens)

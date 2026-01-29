@@ -225,9 +225,9 @@ export default function Contact() {
                 <PhoneIcon />
               </InfoIconContainer>
               <InfoContent>
-                <InfoTitle>Phone</InfoTitle>
-                <InfoValue>+1 (415) 555-0123</InfoValue>
-                <InfoDescription>Mon-Fri 9am-6pm PT</InfoDescription>
+                <InfoTitle>Support</InfoTitle>
+                <InfoValue>support@lux.financial</InfoValue>
+                <InfoDescription>Technical assistance</InfoDescription>
               </InfoContent>
             </InfoCard>
 
@@ -257,10 +257,26 @@ export default function Contact() {
 
             {/* Quick Links */}
             <QuickLinks>
-              <QuickLinksTitle>Quick links</QuickLinksTitle>
+              <QuickLinksTitle>Resources</QuickLinksTitle>
               <QuickLinksList>
                 <QuickLink href="https://docs.lux.financial" target="_blank">
                   Documentation
+                  <ArrowIcon>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M7 17L17 7M17 7H7M17 7v10" />
+                    </svg>
+                  </ArrowIcon>
+                </QuickLink>
+                <QuickLink href="https://github.com/luxfi" target="_blank">
+                  GitHub
+                  <ArrowIcon>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M7 17L17 7M17 7H7M17 7v10" />
+                    </svg>
+                  </ArrowIcon>
+                </QuickLink>
+                <QuickLink href="https://docs.lux.financial/api-reference" target="_blank">
+                  API Reference
                   <ArrowIcon>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M7 17L17 7M17 7H7M17 7v10" />
