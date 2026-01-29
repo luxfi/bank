@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import Footer from "@/components/Footer";
 import MailListForm from "@/components/MailListForm";
 import Menu from "@/components/Menu";
+import ChatWidget from "@/components/ChatWidget";
 
 import StyledProviders from "@/providers/StylesProvider";
 import styled from "styled-components";
@@ -70,6 +71,7 @@ export default function RootLayout({
           </MainContent>
           {path === "/contact" && <MailListForm />}
           <Footer />
+          <ChatWidget />
         </body>
       </StyledProviders>
     </html>

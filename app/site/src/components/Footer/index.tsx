@@ -13,7 +13,6 @@ import {
   DisclaimerText,
   Divider,
   FooterContainer,
-  LinksContainer,
   MainGrid,
   NavColumn,
   NavColumns,
@@ -57,10 +56,10 @@ const footerNav: Record<string, FooterNavSection> = {
   platform: {
     title: "Platform",
     items: [
-      { label: "White-Label Accounts", href: "/account" },
-      { label: "FX API", href: "/account" },
-      { label: "Multi-Currency", href: "/account" },
-      { label: "Online Platform", href: "/online-platform" },
+      { label: "Orchestration", href: "/products/orchestration" },
+      { label: "Wallets", href: "/products/wallets" },
+      { label: "Cross-Border", href: "/products/cross-border" },
+      { label: "Issuance", href: "/products/issuance" },
     ],
   },
   company: {
@@ -68,22 +67,24 @@ const footerNav: Record<string, FooterNavSection> = {
     items: [
       { label: "About", href: "/about" },
       { label: "News", href: "/news" },
+      { label: "Insights", href: "/insights" },
       { label: "Contact", href: "/contact" },
     ],
   },
   resources: {
     title: "Resources",
     items: [
-      { label: "API Documentation", href: "https://docs.lux.financial", external: true },
+      { label: "API Docs", href: "https://docs.lux.financial", external: true },
+      { label: "Learn", href: "/learn" },
       { label: "Status", href: "https://status.lux.financial", external: true },
-      { label: "Support", href: "/contact" },
     ],
   },
   legal: {
     title: "Legal",
     items: [
-      { label: "Privacy Policy", href: "/privacy-policy" },
-      { label: "Terms & Conditions", href: "/terms-and-conditions" },
+      { label: "Privacy", href: "/privacy-policy" },
+      { label: "Terms", href: "/terms-and-conditions" },
+      { label: "Security", href: "/security" },
     ],
   },
 };
@@ -155,16 +156,8 @@ export default function Footer() {
             <span>© 2016-{currentYear} {LUX_BRAND.name}</span>
           </Copyright>
 
-          <LinksContainer>
-            <Link href="/privacy-policy">Privacy</Link>
-            <span>•</span>
-            <Link href="/terms-and-conditions">Terms</Link>
-            <span>•</span>
-            <a href={`mailto:${jurisdiction.contact.supportEmail}`}>Support</a>
-          </LinksContainer>
-
           <SocialLinks>
-            <a href="https://x.com/luxfinancial" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)">
+            <a href="https://x.com/luxdefi" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)">
               <XIcon />
             </a>
             <a href="https://linkedin.com/company/luxfinancial" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
