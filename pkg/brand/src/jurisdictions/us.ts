@@ -143,6 +143,70 @@ export const US_TRUST: JurisdictionConfig = {
   },
 };
 
+export const US_SPONSORED: JurisdictionConfig = {
+  code: 'US_SPONSORED',
+  name: 'United States (Sponsor Bank)',
+  country: 'United States',
+  countryCode: 'US',
+  currency: 'USD',
+  currencySymbol: '$',
+
+  legalEntity: {
+    type: 'llc',
+    name: 'Lux Financial LLC',
+    tradingName: 'Lux Financial',
+    registeredAddress: defaultUSAddress,
+  },
+
+  sponsorBank: {
+    name: 'Metropolitan Commercial Bank',
+    shortName: 'MCB',
+    charterType: 'NY State Chartered',
+    fdic: true,
+    url: 'https://www.mcbankny.com',
+    address: {
+      line1: '99 Park Avenue',
+      city: 'New York',
+      state: 'NY',
+      postalCode: '10016',
+      country: 'United States',
+      countryCode: 'US',
+    },
+  },
+
+  regulators: [
+    {
+      name: 'New York State Department of Financial Services',
+      shortName: 'NYDFS',
+      url: 'https://www.dfs.ny.gov',
+    },
+    {
+      name: 'Federal Deposit Insurance Corporation',
+      shortName: 'FDIC',
+      url: 'https://www.fdic.gov',
+    },
+    {
+      name: 'Financial Crimes Enforcement Network',
+      shortName: 'FinCEN',
+      url: 'https://www.fincen.gov',
+    },
+  ],
+
+  disclaimers: {
+    general: 'Lux Financial LLC provides technology services. Banking services provided by Metropolitan Commercial Bank, Member FDIC.',
+    safeguarding: 'Funds held at Metropolitan Commercial Bank are FDIC-insured up to $250,000 per depositor.',
+    risk: 'Stablecoin and digital asset services involve risks including price volatility and regulatory uncertainty. Not FDIC insured. May lose value.',
+    complaints: 'For complaints regarding banking services, contact Metropolitan Commercial Bank. For technology services, contact Lux Financial support.',
+  },
+
+  contact: {
+    email: 'hello@lux.financial',
+    phone: '+1 (800) 555-0100',
+    supportEmail: 'support@lux.financial',
+    complianceEmail: 'compliance@lux.financial',
+  },
+};
+
 export const US_FUND: JurisdictionConfig = {
   code: 'US_FUND',
   name: 'United States (Investment Fund)',

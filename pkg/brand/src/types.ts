@@ -8,7 +8,7 @@
 // ============================================================================
 
 export type JurisdictionCode =
-  | 'US_FEDERAL' | 'US_STATE' | 'US_TRUST' | 'US_FUND'
+  | 'US_FEDERAL' | 'US_STATE' | 'US_TRUST' | 'US_FUND' | 'US_SPONSORED'
   | 'UK_FCA' | 'UK_IOM' | 'UK_GIB'
   | 'EU_GENERIC' | 'EU_IRELAND' | 'EU_MALTA' | 'EU_CYPRUS' | 'EU_LITHUANIA'
   | 'CA_FINTRAC' | 'CA_PROVINCIAL'
@@ -49,6 +49,15 @@ export interface Regulator {
   licenseType?: string;
 }
 
+export interface SponsorBank {
+  name: string;
+  shortName: string;
+  charterType: string;
+  fdic: boolean;
+  url?: string;
+  address?: Address;
+}
+
 export interface JurisdictionConfig {
   code: JurisdictionCode;
   name: string;
@@ -69,6 +78,9 @@ export interface JurisdictionConfig {
     registeredAddress: Address;
     businessAddress?: Address;
   };
+
+  // Sponsor bank (for BaaS model)
+  sponsorBank?: SponsorBank;
 
   // Regulatory details
   regulators: Regulator[];

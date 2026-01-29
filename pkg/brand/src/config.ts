@@ -146,7 +146,7 @@ export function createBrandConfig(
 
     // Available jurisdictions
     availableJurisdictions: [
-      'US_FEDERAL', 'US_STATE', 'US_TRUST',
+      'US_FEDERAL', 'US_STATE', 'US_TRUST', 'US_SPONSORED',
       'UK_FCA', 'UK_IOM',
       'EU_IRELAND', 'EU_LITHUANIA',
       'SG_MAS',

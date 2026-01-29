@@ -17,12 +17,31 @@ import {
   Row,
 } from "@/components/ImageText/styles";
 import Text from "@/components/Text";
-import UserSteps from "@/components/UserSteps";
 
 import { CheckOutlined } from "@ant-design/icons";
 
-import { collect, convert, manage } from "./lists";
 import { Card, ImgContainer, TextContainer } from "./styles";
+
+const capabilities = [
+  "Wallet and account provisioning",
+  "Fiat on/off-ramp orchestration",
+  "Cross-border payments and payout execution",
+  "Reconciliation-ready reporting",
+];
+
+const compliance = [
+  "On-chain risk monitoring",
+  "Sanctions screening",
+  "Travel Rule data exchange",
+  "Configurable policy controls",
+];
+
+const infrastructure = [
+  "Licensed custody partnerships",
+  "End-to-end audit trails",
+  "Webhook-level observability",
+  "Enterprise-grade security",
+];
 
 export default function Home() {
   const router = useRouter();
@@ -32,34 +51,26 @@ export default function Home() {
         <Card>
           <TextContainer>
             <Text variant="title">
-              Foreign currency exchange and onward payments at ultra competitive
-              rates
+              Stablecoin Infrastructure for Financial Institutions
             </Text>
             <Text variant="body" color="#516686" style={{ fontWeight: 600 }}>
-              {`We can provide fuss free and simple solutions to meet your
-            international business needs and internal treasury management
-            requirements.`}
+              {`Lux Bank is built for financial institutions—not consumers. We don't compete with your customer relationships or front-end.`}
             </Text>
             <Text variant="body" color="#516686">
-              {` Whether it’s a straightforward currency exchange or payments to
-            multiple overseas clients, international employee’s salary or
-            paying overseas suppliers we can provide the solution that meets
-            your needs.`}
+              {`Embed stablecoin rails into your operations quickly, securely, and profitably—with bank-grade controls, reporting, and settlement. Banking services provided by Metropolitan Commercial Bank, Member FDIC.`}
             </Text>
             <Text variant="body_sm" color="#516686">
-              {`Subject to jurisdiction. We reserve the right to decline any
-            application without explanation.`}
+              {`Stablecoin services are not FDIC insured. Subject to eligibility and compliance approval.`}
             </Text>
             <Link href="https://app.lux.financial/registration" target="_blank">
-              <CustomButton>Set up an account in minutes</CustomButton>
+              <CustomButton>Get Started</CustomButton>
             </Link>
           </TextContainer>
         </Card>
         <ImgContainer>
           <Image
             src="/images/laptop.png"
-            alt="Foreign currency exchange and onward payments at ultra competitive
-            rates"
+            alt="Stablecoin Infrastructure for Financial Institutions"
             width={810}
             height={750}
             style={{
@@ -69,24 +80,20 @@ export default function Home() {
           />
         </ImgContainer>
         <TextContainer $mobile>
-          {/* Show on mobile only */}
           <Text variant="title" style={{ fontSize: "4rem" }}>
-            Convert money at competitive rates according to your own
-            preferences.
+            B2B Stablecoin Rails Built for Scale
           </Text>
           <Text variant="body" color="#516686">
-            We are licensed by the Isle of Man Financial Services Authority.
+            Move USDC, USDT, and EURC globally with settlement in minutes.
           </Text>
           <Text variant="body" color="#516686">
-            We never touch your money - it’s stored in accounts held with
-            reputable banks.
+            Banking services provided by Metropolitan Commercial Bank, Member FDIC.
           </Text>
           <Text variant="body_sm" color="#516686">
-            *Subject to jurisdiction. We reserve the right to decline any
-            application without explanation.
+            *Subject to eligibility. Stablecoin services not FDIC insured.
           </Text>
           <Link href="https://app.lux.financial/registration" target="_blank">
-            <CustomButton>Set up an account in minutes</CustomButton>
+            <CustomButton>Get Started</CustomButton>
           </Link>
         </TextContainer>
       </AnimatedDiv>
@@ -94,35 +101,35 @@ export default function Home() {
       <AnimatedDiv>
         <ImageText
           image="/images/working_team.jpg"
-          altText="Lux Financial"
+          altText="Lux Bank Infrastructure"
           imgPlacement="left"
-          title="Lux Financial is a specialist online money transmission services provider based in the Isle of Man."
-          text="Specialising in international currency exchange and treasury services we are licenced by the Isle of Man Financial Services Authority as a provider of money transmission services.  We can offer a friction free online solution to help manage all your foreign currency needs in one place.  Our simple to use platform enables you to exchange currencies and make cross border payments effectively and efficiently at highly competitive rates when compared to traditional payment channels."
+          title="Infrastructure-First. White-Label Ready."
+          text="Lux Bank powers Lux.Financial so you can embed stablecoin rails into your operations. Your end users see fiat and familiar UX, while Lux Bank handles stablecoin orchestration behind the scenes. Custom branding and domain options available for platforms who want their own client-facing experience."
         />
       </AnimatedDiv>
 
       <AnimatedDiv>
         <CardContainer>
-          <Text variant="subtitle">Cost Saving</Text>
+          <Text variant="subtitle">Why Financial Institutions Choose Lux Bank</Text>
           <CardItemsContainer>
             <IconText
               icon="/images/hand_money.svg"
               iconSize={96}
-              title="No setup fee"
+              title="Go Live in 2-4 Weeks"
               width={420}
               responsive
             />
             <IconText
               icon="/images/dollar.svg"
               iconSize={96}
-              title="Cheaper than traditional banks"
+              title="Your Compliance, Our Tools"
               width={420}
               responsive
             />
             <IconText
               icon="/images/eye.svg"
               iconSize={96}
-              title="No hidden fees"
+              title="Full Audit Trail"
               width={420}
               responsive
             />
@@ -135,13 +142,13 @@ export default function Home() {
           variant="subtitle"
           style={{ marginLeft: "48px", marginTop: "48px" }}
         >
-          Standard Features
+          Platform Capabilities
         </Text>
         <FeaturesContainer>
           <Column>
             <Column style={{ marginBottom: "48px", marginTop: "32px" }}>
-              <IconText title="Collections and Payments" />
-              {collect.map((item, index) => (
+              <IconText title="Low-Code Integration" />
+              {capabilities.map((item, index) => (
                 <Row key={index}>
                   <Text variant="body" color="#516686">
                     {item}
@@ -151,8 +158,8 @@ export default function Home() {
               ))}
             </Column>
             <Column style={{ marginTop: "48px", marginBottom: "48px" }}>
-              <IconText title="Currency Conversion" />
-              {convert.map((item, index) => (
+              <IconText title="Compliance Tools" />
+              {compliance.map((item, index) => (
                 <Row key={index}>
                   <Text variant="body" color="#516686">
                     {item}
@@ -175,9 +182,9 @@ export default function Home() {
           />
         </FeaturesContainer>
         <CardContainer style={{ display: "flex", justifyContent: "center" }}>
-          <IconText title="Manage" />
+          <IconText title="Enterprise Infrastructure" />
           <Grid>
-            {manage.map((item, index) => (
+            {infrastructure.map((item, index) => (
               <Row key={index}>
                 <Text variant="body" color="#516686">
                   {item}
@@ -195,15 +202,26 @@ export default function Home() {
           imgPositionY={"-180px"}
           height="580px"
           responsiveHeight="700px"
-          title="Lux Financial for larger businesses and institutions"
-          text="Our team of experienced professionals can assist you with your foreign currency needs and treasury management solutions. Speak to us to hear how Lux Financial can work for your business"
-          buttonText="Speak to a consultant"
+          title="Supported Currencies & Corridors"
+          text="Lux Bank supports major stablecoins (USDC, USDT, EURC) with fiat settlement across key corridors. Configure supported currencies, payout destinations, corridor availability, and compliance rules per region."
+          buttonText="Contact Sales"
           onClick={() => router.push("/contact")}
         />
       </AnimatedDiv>
 
       <AnimatedDiv>
-        <UserSteps />
+        <ImageText
+          image="/images/security.jpg"
+          altText="Enterprise Security"
+          imgPlacement="right"
+          title="Enterprise-Grade Security"
+          text="Lux Bank operates with financial-grade security designed for regulated environments. Partnerships with licensed custody and fiat on/off-ramp providers, comprehensive audit logs, end-to-end traceability, and operational controls suitable for institutional risk and compliance teams."
+          checkList={[
+            "Licensed custody partnerships",
+            "24/7 monitoring and incident response",
+            "SOC 2 Type II compliant infrastructure",
+          ]}
+        />
       </AnimatedDiv>
     </>
   );

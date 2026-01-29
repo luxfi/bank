@@ -14,7 +14,7 @@ export * from './mena';
 
 import type { JurisdictionCode, JurisdictionConfig } from '../types';
 
-import { US_FEDERAL, US_STATE, US_TRUST, US_FUND } from './us';
+import { US_FEDERAL, US_STATE, US_TRUST, US_FUND, US_SPONSORED } from './us';
 import { UK_FCA, UK_IOM, UK_GIB } from './uk';
 import { EU_GENERIC, EU_IRELAND, EU_LITHUANIA, EU_MALTA, EU_CYPRUS } from './eu';
 import { SG_MAS, HK_SFC, HK_HKMA, AU_ASIC } from './apac';
@@ -30,6 +30,7 @@ export const JURISDICTIONS: Record<JurisdictionCode, JurisdictionConfig> = {
   US_STATE,
   US_TRUST,
   US_FUND,
+  US_SPONSORED,
 
   // United Kingdom & Crown Dependencies
   UK_FCA,
