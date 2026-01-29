@@ -86,20 +86,20 @@ const corridors = [
 const features = [
   {
     icon: GlobeIcon,
-    title: "150+ Countries",
-    description: "Send payments globally with local currency payout in over 150 countries.",
+    title: "200+ Countries",
+    description: "Send fiat and crypto payments to every country. All currencies supported with local payout.",
     color: "#3B82F6",
   },
   {
     icon: BoltIcon,
     title: "Instant Settlement",
-    description: "Real-time finality on stablecoin leg. Local payout within seconds to minutes.",
+    description: "Real-time settlement via blockchain. Fiat conversion and local payout in seconds.",
     color: "#22C55E",
   },
   {
     icon: BankIcon,
-    title: "Local Rails",
-    description: "Connect to local payment networks: SPEI, PIX, UPI, FAST, SEPA, and more.",
+    title: "All Payment Rails",
+    description: "SWIFT, SEPA, ACH, SPEI, PIX, UPI, FAST, and 50+ local payment networks.",
     color: "#8B5CF6",
   },
   {
@@ -115,13 +115,13 @@ export default function CrossBorder() {
     <PageContainer>
       <HeroSection>
         <HeroContent>
-          <ProductBadge $color="#3B82F6">Cross-Border Payments</ProductBadge>
+          <ProductBadge $color="#3B82F6">Global Payments</ProductBadge>
           <HeroTitle>
             Send money anywhere, instantly
           </HeroTitle>
           <HeroSubtitle>
-            Global payments powered by stablecoin rails. Instant settlement with
-            local currency payout to bank accounts in 150+ countries.
+            Fiat and crypto payments to 200+ countries. All currencies with
+            real-time settlement and local rails.
           </HeroSubtitle>
           <HeroButtons>
             <Link href="/contact">
@@ -137,11 +137,11 @@ export default function CrossBorder() {
       {/* Stats */}
       <StatsRow>
         <StatCard>
-          <StatValue $color="#3B82F6">150+</StatValue>
+          <StatValue $color="#3B82F6">200+</StatValue>
           <StatLabel>Countries</StatLabel>
         </StatCard>
         <StatCard>
-          <StatValue>30+</StatValue>
+          <StatValue>180+</StatValue>
           <StatLabel>Currencies</StatLabel>
         </StatCard>
         <StatCard>
@@ -149,8 +149,8 @@ export default function CrossBorder() {
           <StatLabel>Settlement</StatLabel>
         </StatCard>
         <StatCard>
-          <StatValue>0.1%</StatValue>
-          <StatLabel>Starting Fee</StatLabel>
+          <StatValue>50+</StatValue>
+          <StatLabel>Payment Rails</StatLabel>
         </StatCard>
       </StatsRow>
 

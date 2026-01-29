@@ -76,26 +76,26 @@ const ChartIcon = () => (
 const issuanceTypes = [
   {
     icon: CoinIcon,
-    title: "Fiat-Backed Stablecoins",
-    description: "Launch your own USD, EUR, or GBP stablecoin backed by bank reserves and audited regularly.",
+    title: "Stablecoins",
+    description: "Launch fiat-backed stablecoins (USD, EUR, GBP+) with audited reserves and multi-chain deployment.",
     color: "#F59E0B",
   },
   {
     icon: ShieldIcon,
-    title: "Compliance Framework",
-    description: "Full regulatory compliance including reserve attestations, AML/KYC, and licensing support.",
+    title: "Security Tokens",
+    description: "Issue compliant equity, debt, and fund tokens. Full STO infrastructure with cap table management.",
     color: "#22C55E",
   },
   {
     icon: LayersIcon,
-    title: "Multi-Chain Deployment",
-    description: "Deploy your stablecoin across Polygon, Ethereum, Arbitrum, and other major networks.",
+    title: "Tokenized Assets",
+    description: "Tokenize real-world assets: real estate, commodities, receivables, and alternative investments.",
     color: "#8B5CF6",
   },
   {
     icon: ChartIcon,
-    title: "Treasury Management",
-    description: "Real-time reserve management, yield optimization, and automated minting/burning.",
+    title: "Bonds & Debt",
+    description: "Issue on-chain bonds with automated coupon payments, maturity handling, and secondary trading.",
     color: "#3B82F6",
   },
 ];
@@ -105,13 +105,13 @@ export default function Issuance() {
     <PageContainer>
       <HeroSection>
         <HeroContent>
-          <ProductBadge $color="#F59E0B">Issuance</ProductBadge>
+          <ProductBadge $color="#F59E0B">Digital Securities</ProductBadge>
           <HeroTitle>
-            Launch your own stablecoin
+            Issue any digital asset
           </HeroTitle>
           <HeroSubtitle>
-            Full-stack stablecoin issuance platform. From reserve management to
-            multi-chain deployment, we provide the complete infrastructure.
+            Stablecoins, security tokens, tokenized assets, and bonds.
+            Compliant issuance infrastructure with multi-chain deployment.
           </HeroSubtitle>
           <HeroButtons>
             <Link href="/contact">

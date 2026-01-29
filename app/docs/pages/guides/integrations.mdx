@@ -1,0 +1,842 @@
+# Third-Party Integrations
+
+Lux Financial provides a configurable integration layer that allows you to connect your preferred providers for KYC, AML, stablecoins, banking, and more. Each integration can be enabled per-environment and configured via the API or dashboard.
+
+## Integration Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                      Lux Financial API                          │
+├─────────────────────────────────────────────────────────────────┤
+│                    Integration Layer                            │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐          │
+│  │   KYC    │ │   AML    │ │ Banking  │ │  Crypto  │          │
+│  │ Adapter  │ │ Adapter  │ │ Adapter  │ │ Adapter  │          │
+│  └────┬─────┘ └────┬─────┘ └────┬─────┘ └────┬─────┘          │
+└───────┼────────────┼────────────┼────────────┼──────────────────┘
+        │            │            │            │
+   ┌────▼────┐  ┌────▼────┐  ┌────▼────┐  ┌────▼────┐
+   │ Jumio   │  │Chainalysis│ │  Plaid  │  │ Bridge  │
+   │ Onfido  │  │ Elliptic │  │  Moov   │  │ Circle  │
+   │ Persona │  │ComplyAdv │  │ Modern  │  │ Paxos   │
+   │ Sumsub  │  │ Sardine  │  │Treasury │  │ Fireblocks│
+   └─────────┘  └──────────┘  └─────────┘  └─────────┘
+```
+
+## KYC/KYB Providers
+
+Identity verification providers for customer onboarding.
+
+### Available Providers
+
+| Provider | Type | Features | Regions |
+|----------|------|----------|---------|
+| **Jumio** | KYC/KYB | Document verification, biometrics, AML screening | Global |
+| **Onfido** | KYC | AI-powered document & biometric verification | Global |
+| **Persona** | KYC/KYB | Customizable verification flows | US, EU, Global |
+| **Veriff** | KYC | Video-based identity verification | Global |
+| **Sumsub** | KYC/KYB | Full compliance suite with transaction monitoring | Global |
+| **Trulioo** | KYC/KYB | Global identity verification network | 195+ countries |
+| **Alloy** | KYC/KYB | Orchestration layer for multiple data sources | US focus |
+| **Socure** | KYC | AI/ML identity verification | US |
+| **Plaid Identity** | KYC | Bank-verified identity | US |
+| **Stripe Identity** | KYC | Document verification with Stripe | Global |
+
+### Configuration
+
+```typescript
+// Configure KYC provider via API
+await lux.integrations.configure({
+  type: 'kyc',
+  provider: 'jumio',
+  credentials: {
+    apiKey: process.env.JUMIO_API_KEY,
+    apiSecret: process.env.JUMIO_API_SECRET
+  },
+  settings: {
+    workflow: 'netverify',
+    enableBiometrics: true,
+    documentTypes: ['passport', 'driving_license', 'id_card'],
+    callbackUrl: 'https://api.yourbank.com/webhooks/kyc'
+  }
+});
+```
+
+### Usage
+
+```typescript
+// Initiate KYC verification (uses configured provider)
+const verification = await lux.kyc.initiate({
+  customerId: 'cus_123',
+  type: 'individual',
+  redirectUrl: 'https://yourbank.com/kyc/complete'
+});
+
+// Returns provider-agnostic verification URL
+// { verificationUrl: 'https://...', verificationId: 'ver_abc' }
+```
+
+---
+
+## AML/Sanctions Providers
+
+Anti-money laundering and sanctions screening providers.
+
+### Available Providers
+
+| Provider | Features | Data Sources |
+|----------|----------|--------------|
+| **Built-in** | Sanctions screening, PEP | 25+ government lists (synced daily) |
+| **Chainalysis** | Blockchain analytics, crypto AML | On-chain risk scoring |
+| **Elliptic** | Crypto compliance, wallet screening | Transaction monitoring |
+| **ComplyAdvantage** | AML screening, adverse media | PEP, sanctions, news |
+| **Sardine** | Fraud & AML, device intelligence | Behavioral analytics |
+| **Unit21** | Transaction monitoring, case management | Rule engine |
+| **Hummingbird** | AML case management | SAR filing |
+| **Refinitiv (LSEG)** | World-Check, PEP screening | Premium data |
+| **Dow Jones Risk** | Risk & compliance data | News, PEP, sanctions |
+| **LexisNexis** | Identity verification, risk | Public records |
+
+### Configuration
+
+```typescript
+// Configure crypto AML provider
+await lux.integrations.configure({
+  type: 'aml',
+  provider: 'chainalysis',
+  credentials: {
+    apiKey: process.env.CHAINALYSIS_API_KEY
+  },
+  settings: {
+    riskThreshold: 'high', // low, medium, high
+    enableRealTimeAlerts: true,
+    monitoredAssets: ['BTC', 'ETH', 'USDC', 'USDT']
+  }
+});
+
+// Configure traditional AML provider
+await lux.integrations.configure({
+  type: 'aml',
+  provider: 'complyadvantage',
+  credentials: {
+    apiKey: process.env.COMPLYADVANTAGE_API_KEY
+  },
+  settings: {
+    fuzziness: 0.6,
+    searchTypes: ['sanctions', 'pep', 'adverse-media'],
+    enableOngoingMonitoring: true
+  }
+});
+```
+
+### Usage
+
+```typescript
+// Screen crypto address
+const addressRisk = await lux.aml.screenAddress({
+  address: '0x1234...',
+  chain: 'ethereum',
+  provider: 'chainalysis' // optional, uses configured default
+});
+
+// { riskScore: 15, riskLevel: 'low', categories: [], alerts: [] }
+
+// Screen entity with multiple providers
+const screening = await lux.aml.screen({
+  name: 'John Smith',
+  dateOfBirth: '1970-01-15',
+  providers: ['builtin', 'complyadvantage'] // fan out to multiple
+});
+```
+
+---
+
+## Stablecoin & Crypto Providers
+
+Stablecoin issuance, custody, and on/off-ramp providers.
+
+### Available Providers
+
+| Provider | Type | Stablecoins | Features |
+|----------|------|-------------|----------|
+| **Bridge** | On/Off-ramp | USDC | Fast US ↔ stablecoin rails |
+| **Circle** | Issuance | USDC | Native USDC minting/burning |
+| **Paxos** | Issuance | USDP, PYUSD | Regulated stablecoin issuer |
+| **Fireblocks** | Custody | All | MPC custody, DeFi access |
+| **Anchorage** | Custody | All | Qualified custodian |
+| **BitGo** | Custody | All | Multi-sig, insurance |
+| **Copper** | Custody | All | ClearLoop, prime services |
+| **MoonPay** | On/Off-ramp | Multiple | Consumer fiat ramps |
+| **Ramp Network** | On/Off-ramp | Multiple | Embedded ramps |
+| **Transak** | On/Off-ramp | Multiple | Global coverage |
+| **Zero Hash** | Infrastructure | Multiple | B2B crypto infrastructure |
+
+### Configuration
+
+```typescript
+// Configure Bridge for stablecoin on/off-ramps
+await lux.integrations.configure({
+  type: 'stablecoin',
+  provider: 'bridge',
+  credentials: {
+    apiKey: process.env.BRIDGE_API_KEY,
+    apiSecret: process.env.BRIDGE_API_SECRET
+  },
+  settings: {
+    defaultCurrency: 'USDC',
+    supportedChains: ['ethereum', 'polygon', 'base'],
+    webhookUrl: 'https://api.yourbank.com/webhooks/bridge'
+  }
+});
+
+// Configure Circle for USDC operations
+await lux.integrations.configure({
+  type: 'stablecoin',
+  provider: 'circle',
+  credentials: {
+    apiKey: process.env.CIRCLE_API_KEY
+  },
+  settings: {
+    walletSet: 'production',
+    idempotencyKeyPrefix: 'yourbank'
+  }
+});
+
+// Configure custody provider
+await lux.integrations.configure({
+  type: 'custody',
+  provider: 'fireblocks',
+  credentials: {
+    apiKey: process.env.FIREBLOCKS_API_KEY,
+    privateKey: process.env.FIREBLOCKS_PRIVATE_KEY
+  },
+  settings: {
+    vaultAccountId: 'your-vault-id',
+    enableAutoSweep: true
+  }
+});
+```
+
+### Usage
+
+```typescript
+// Create stablecoin on-ramp (fiat -> USDC)
+const onramp = await lux.stablecoin.onramp({
+  customerId: 'cus_123',
+  amount: 10000,
+  sourceCurrency: 'USD',
+  destinationCurrency: 'USDC',
+  destinationChain: 'polygon',
+  destinationAddress: '0x...',
+  provider: 'bridge' // optional
+});
+
+// Create off-ramp (USDC -> fiat)
+const offramp = await lux.stablecoin.offramp({
+  customerId: 'cus_123',
+  amount: 5000,
+  sourceCurrency: 'USDC',
+  sourceChain: 'ethereum',
+  destinationCurrency: 'USD',
+  destinationAccount: 'ext_acc_456'
+});
+```
+
+---
+
+## Banking & Payments Providers
+
+Bank account access, payment processing, and treasury management. All providers are **pluggable** - swap backends without changing your integration code.
+
+### Available Providers
+
+#### Account Aggregation
+| Provider | Features | Regions |
+|----------|----------|---------|
+| **Plaid** | Bank connections, transactions, identity, balance | US, CA, UK, EU |
+| **MX** | Data enrichment, financial insights, budgeting | US |
+| **Finicity** | Mastercard network, VOA/VOI | US, CA |
+| **Yodlee** | Global aggregation, wealth data | Global |
+| **Akoya** | Bank-direct API network | US |
+| **Tink** | Open banking (PSD2) | EU, UK |
+| **TrueLayer** | Open banking, VRP | UK, EU |
+| **Basiq** | Open banking | AU, NZ |
+
+#### Banking-as-a-Service (BaaS)
+| Provider | Features | Regions |
+|----------|----------|---------|
+| **Cross River** | FBO accounts, ACH, wire, cards, lending | US |
+| **Column** | Ledger, cards, ACH, wire (developer-first) | US |
+| **Treasury Prime** | Multi-bank BaaS, virtual accounts | US |
+| **Synctera** | FinTech banking platform | US |
+| **Unit** | Embedded banking, cards, ACH | US |
+| **Bond** | Cards, ACH, accounts | US |
+| **Griffin** | Banking-as-a-Service | UK |
+| **Solarisbank** | Banking infrastructure | EU |
+| **Railsr** | Embedded finance | EU, UK |
+
+#### Payments & Treasury
+| Provider | Features | Regions |
+|----------|----------|---------|
+| **Moov** | ACH, cards, wallets, payouts | US |
+| **Modern Treasury** | Multi-bank payments, reconciliation, virtual accounts | US, EU |
+| **Increase** | ACH, wire, cards, real-time payments (API-first) | US |
+| **Dwolla** | ACH, real-time payments | US |
+| **CurrencyCloud** | Cross-border FX, multi-currency accounts | Global |
+| **Wise Platform** | International transfers, multi-currency | Global |
+| **Nium** | Global payments, cards, crypto | Global |
+| **Rapyd** | Local payment methods, payouts | Global |
+| **Airwallex** | Global accounts, FX, payments | Global |
+| **Payoneer** | Mass payouts, marketplace payments | Global |
+
+#### Sponsor Banks (Direct Integration)
+| Bank | Programs | Specialization |
+|------|----------|----------------|
+| **Cross River Bank** | ACH, wire, cards, lending | FinTech partnerships |
+| **Evolve Bank & Trust** | BaaS, ACH, cards | Digital banking |
+| **Blue Ridge Bank** | BaaS, lending | FinTech programs |
+| **Coastal Community Bank** | BaaS, ACH | West coast focus |
+| **Sutton Bank** | Cards, prepaid | Card programs |
+| **Metropolitan Commercial Bank** | FBO, ACH, wire | Crypto-friendly |
+| **Choice Financial** | BaaS, ACH | Digital assets |
+| **Lead Bank** | BaaS, ACH | FinTech programs |
+
+### Configuration
+
+```typescript
+// Configure Plaid for account linking
+await lux.integrations.configure({
+  type: 'banking',
+  provider: 'plaid',
+  credentials: {
+    clientId: process.env.PLAID_CLIENT_ID,
+    secret: process.env.PLAID_SECRET
+  },
+  settings: {
+    environment: 'production', // sandbox, development, production
+    products: ['auth', 'transactions', 'identity'],
+    countryCodes: ['US', 'CA'],
+    webhookUrl: 'https://api.yourbank.com/webhooks/plaid'
+  }
+});
+
+// Configure Modern Treasury for payments
+await lux.integrations.configure({
+  type: 'payments',
+  provider: 'modern_treasury',
+  credentials: {
+    organizationId: process.env.MT_ORG_ID,
+    apiKey: process.env.MT_API_KEY
+  },
+  settings: {
+    defaultLedger: 'operating',
+    enableReconciliation: true
+  }
+});
+
+// Configure CurrencyCloud for FX
+await lux.integrations.configure({
+  type: 'fx',
+  provider: 'currencycloud',
+  credentials: {
+    loginId: process.env.CC_LOGIN_ID,
+    apiKey: process.env.CC_API_KEY
+  },
+  settings: {
+    onBehalfOf: null, // or sub-account UUID
+    defaultBeneficiaryCountry: 'US'
+  }
+});
+```
+
+### Usage
+
+```typescript
+// Link bank account via Plaid
+const linkToken = await lux.banking.createLinkToken({
+  customerId: 'cus_123',
+  products: ['auth', 'transactions']
+});
+
+// Exchange public token after user completes Plaid Link
+const linkedAccount = await lux.banking.exchangePublicToken({
+  customerId: 'cus_123',
+  publicToken: 'public-sandbox-xxx'
+});
+
+// Get account balance
+const balance = await lux.banking.getBalance({
+  accountId: linkedAccount.id
+});
+
+// Initiate ACH payment
+const payment = await lux.payments.create({
+  type: 'ach',
+  amount: 1000,
+  currency: 'USD',
+  sourceAccount: 'int_acc_123',
+  destinationAccount: linkedAccount.id,
+  provider: 'modern_treasury' // optional
+});
+```
+
+---
+
+## Blockchain & Node Providers
+
+Blockchain RPC and indexing services.
+
+### Available Providers
+
+| Provider | Type | Chains |
+|----------|------|--------|
+| **Alchemy** | RPC, Indexing | Ethereum, Polygon, Arbitrum, Optimism, Base |
+| **Infura** | RPC | Ethereum, Polygon, Arbitrum, Optimism |
+| **QuickNode** | RPC | 20+ chains |
+| **Ankr** | RPC | 40+ chains |
+| **Moralis** | Indexing | EVM chains, Solana |
+| **The Graph** | Indexing | EVM chains |
+| **Helius** | RPC, Indexing | Solana |
+| **Lux Network** | Native | Lux Chain |
+
+### Configuration
+
+```typescript
+// Configure blockchain providers
+await lux.integrations.configure({
+  type: 'blockchain',
+  provider: 'alchemy',
+  credentials: {
+    apiKey: process.env.ALCHEMY_API_KEY
+  },
+  settings: {
+    networks: {
+      ethereum: 'eth-mainnet',
+      polygon: 'polygon-mainnet',
+      arbitrum: 'arb-mainnet'
+    },
+    enableWebhooks: true
+  }
+});
+```
+
+---
+
+## Tax & Reporting Providers
+
+Tax calculation and regulatory reporting.
+
+### Available Providers
+
+| Provider | Features |
+|----------|----------|
+| **TaxBit** | Crypto tax reporting, cost basis |
+| **CoinTracker** | Portfolio tracking, tax reports |
+| **Ledgible** | Tax & accounting for crypto |
+| **TokenTax** | Crypto tax calculation |
+| **Sumsub** | Regulatory reporting |
+
+---
+
+## Fraud & Risk Providers
+
+Fraud detection and risk scoring.
+
+### Available Providers
+
+| Provider | Features |
+|----------|----------|
+| **Sardine** | Device intelligence, behavioral analytics |
+| **Sift** | ML-based fraud detection |
+| **Forter** | E-commerce fraud prevention |
+| **Kount** | Identity trust, fraud prevention |
+| **SEON** | Digital footprint analysis |
+| **Spec** | Fraud ops platform |
+
+---
+
+## Managing Integrations
+
+### List Configured Integrations
+
+```typescript
+const integrations = await lux.integrations.list();
+
+// Returns:
+// [
+//   { type: 'kyc', provider: 'jumio', status: 'active', ... },
+//   { type: 'aml', provider: 'chainalysis', status: 'active', ... },
+//   ...
+// ]
+```
+
+### Update Integration
+
+```typescript
+await lux.integrations.update('int_123', {
+  settings: {
+    enableBiometrics: false
+  }
+});
+```
+
+### Disable Integration
+
+```typescript
+await lux.integrations.disable('int_123');
+```
+
+### Test Integration
+
+```typescript
+const testResult = await lux.integrations.test('int_123');
+// { success: true, latency: 245, message: 'Connection successful' }
+```
+
+---
+
+## MCP Server Integration
+
+Lux provides a Model Context Protocol (MCP) server for AI-powered operations.
+
+### Installation
+
+```bash
+npx @lux/mcp-server init
+```
+
+### Configuration
+
+```json
+{
+  "mcpServers": {
+    "lux-financial": {
+      "command": "npx",
+      "args": ["@lux/mcp-server"],
+      "env": {
+        "LUX_API_KEY": "sk_live_xxx"
+      }
+    }
+  }
+}
+```
+
+### Available Tools
+
+| Tool | Description |
+|------|-------------|
+| `lux_get_customer` | Retrieve customer details |
+| `lux_list_customers` | List customers with filters |
+| `lux_create_customer` | Create new customer |
+| `lux_screen_sanctions` | Screen against sanctions |
+| `lux_get_wallet` | Get wallet details |
+| `lux_list_wallets` | List wallets |
+| `lux_create_transfer` | Create fund transfer |
+| `lux_list_transfers` | List transfers |
+| `lux_get_balance` | Get account/wallet balance |
+| `lux_create_payment` | Initiate payment |
+| `lux_get_rates` | Get FX/stablecoin rates |
+| `lux_list_integrations` | List configured integrations |
+
+### Example AI Interactions
+
+**Customer Support Agent:**
+```
+User: I need to check if customer John Smith is cleared for sanctions
+
+AI: I'll screen John Smith against sanctions lists.
+[Calls lux_screen_sanctions with name="John Smith"]
+
+The screening completed with no matches found. John Smith is cleared
+against SDN, UN, EU FSF, and OFSI lists as of today. Screening ID:
+scr_abc123 for your records.
+```
+
+**Compliance Review:**
+```
+User: Show me all pending KYC verifications from today
+
+AI: [Calls lux_list_customers with filters]
+
+Found 12 customers with pending KYC:
+1. Jane Doe (cus_001) - Document verification pending
+2. Acme Corp (cus_002) - Beneficial owner identification needed
+3. ...
+
+Would you like me to send reminder emails or escalate any of these?
+```
+
+**Treasury Operations:**
+```
+User: What's our USDC position across all chains?
+
+AI: [Calls lux_list_wallets and lux_get_balance for each]
+
+Current USDC holdings:
+- Ethereum: $2.4M (0x1234...5678)
+- Polygon: $850K (0xabcd...efgh)
+- Arbitrum: $320K (0x9876...5432)
+- Base: $125K (0xfedc...ba98)
+
+Total: $3.695M
+
+The Polygon wallet is running low relative to recent outflow volume.
+Should I prepare a transfer from Ethereum?
+```
+
+---
+
+## AI-Powered Features
+
+Lux's AI capabilities extend beyond MCP to embedded intelligence throughout the platform.
+
+### AI Customer Support
+
+Automated customer support with full context awareness:
+
+```typescript
+// Configure AI support agent
+await lux.ai.configureSupport({
+  model: 'claude-sonnet-4-20250514',
+  systemPrompt: `You are a support agent for ${bankName}.
+    You have access to customer data, transactions, and account details.
+    Always verify customer identity before sharing sensitive information.
+    Escalate fraud concerns immediately.`,
+  tools: [
+    'get_customer',
+    'list_transactions',
+    'get_balance',
+    'create_support_ticket',
+    'escalate_to_human'
+  ],
+  escalationRules: {
+    fraud: 'immediate',
+    complaint: 'within_1_hour',
+    general: 'within_24_hours'
+  }
+});
+
+// Handle customer inquiry
+const response = await lux.ai.support({
+  customerId: 'cus_123',
+  message: "Why was my transfer declined?",
+  channel: 'chat',
+  sessionId: 'session_xyz'
+});
+```
+
+### AI Compliance Screening
+
+Intelligent screening with natural language queries:
+
+```typescript
+// AI-powered compliance review
+const review = await lux.ai.complianceReview({
+  customerId: 'cus_123',
+  query: `Review this customer's recent activity for any red flags.
+          Check transaction patterns, counterparties, and geography.`
+});
+
+// Returns structured analysis
+{
+  "riskLevel": "medium",
+  "findings": [
+    {
+      "type": "velocity",
+      "description": "Transaction frequency increased 3x in last 30 days",
+      "severity": "medium"
+    },
+    {
+      "type": "geography",
+      "description": "New transfers to high-risk jurisdiction (Country X)",
+      "severity": "high"
+    }
+  ],
+  "recommendation": "Enhanced due diligence recommended",
+  "suggestedActions": [
+    "Request source of funds documentation",
+    "Schedule customer call for business review"
+  ]
+}
+```
+
+### AI Transaction Monitoring
+
+Real-time transaction analysis:
+
+```typescript
+// Configure AI transaction monitor
+await lux.ai.configureMonitor({
+  triggers: ['high_value', 'new_counterparty', 'unusual_pattern'],
+  analysis: {
+    contextWindow: '90_days',
+    peerComparison: true,
+    behavioralBaseline: true
+  },
+  actions: {
+    low_risk: 'log',
+    medium_risk: 'alert',
+    high_risk: 'hold_and_alert'
+  }
+});
+
+// AI analyzes each transaction in real-time
+// Webhook notification:
+{
+  "event": "ai.transaction.flagged",
+  "transactionId": "txn_456",
+  "analysis": {
+    "riskScore": 78,
+    "reasons": [
+      "Amount 5x higher than customer's typical transaction",
+      "First transaction to this beneficiary",
+      "Beneficiary country recently added to monitoring list"
+    ],
+    "action": "hold_and_alert",
+    "aiConfidence": 0.92
+  }
+}
+```
+
+### AI Document Processing
+
+Automated document verification and data extraction:
+
+```typescript
+// Process KYC documents with AI
+const extraction = await lux.ai.processDocument({
+  customerId: 'cus_123',
+  documentType: 'passport',
+  image: documentImageBase64,
+  extract: ['name', 'dob', 'nationality', 'expiry', 'document_number'],
+  verify: ['authenticity', 'tampering', 'face_match']
+});
+
+// Returns:
+{
+  "extraction": {
+    "name": "John Michael Smith",
+    "dob": "1985-03-15",
+    "nationality": "US",
+    "expiry": "2028-03-14",
+    "documentNumber": "123456789"
+  },
+  "verification": {
+    "authenticity": { "pass": true, "confidence": 0.98 },
+    "tampering": { "pass": true, "confidence": 0.99 },
+    "faceMatch": { "pass": true, "confidence": 0.94 }
+  },
+  "overallStatus": "approved"
+}
+```
+
+### AI Report Generation
+
+Natural language report generation:
+
+```typescript
+// Generate compliance report with AI
+const report = await lux.ai.generateReport({
+  type: 'monthly_compliance',
+  period: '2026-01',
+  format: 'pdf',
+  sections: [
+    'executive_summary',
+    'customer_onboarding',
+    'transaction_monitoring',
+    'sanctions_screening',
+    'suspicious_activity',
+    'recommendations'
+  ],
+  customPrompt: `Highlight any trends in high-risk transactions
+                 and compare to previous month.`
+});
+
+// Returns PDF report with AI-generated analysis
+```
+
+### AI-Assisted Case Management
+
+Intelligent case routing and resolution:
+
+```typescript
+// AI triages and suggests resolution
+const caseAnalysis = await lux.ai.analyzeCase({
+  caseId: 'case_789',
+  type: 'sanctions_match'
+});
+
+// Returns:
+{
+  "caseId": "case_789",
+  "matchDetails": {
+    "customerName": "John Smith",
+    "sanctionedEntity": "John A. Smith",
+    "source": "SDN",
+    "score": 85
+  },
+  "aiAnalysis": {
+    "falsePositiveIndicators": [
+      "Different date of birth (customer: 1985, sanction: 1962)",
+      "Different country of citizenship",
+      "Customer has 3-year transaction history with no flags"
+    ],
+    "truePositiveIndicators": [
+      "Name similarity high (85%)"
+    ],
+    "recommendation": "likely_false_positive",
+    "confidence": 0.87,
+    "suggestedAction": "Clear with documentation of distinguishing factors"
+  }
+}
+```
+
+---
+
+## Webhooks
+
+All integrations support webhook notifications:
+
+```typescript
+// Configure integration webhooks
+await lux.webhooks.create({
+  url: 'https://api.yourbank.com/webhooks',
+  events: [
+    'kyc.verification.completed',
+    'kyc.verification.failed',
+    'aml.screening.match_found',
+    'aml.alert.created',
+    'stablecoin.onramp.completed',
+    'stablecoin.offramp.completed',
+    'banking.account.linked',
+    'banking.transaction.posted',
+    'ai.transaction.flagged',
+    'ai.case.analyzed'
+  ],
+  secret: 'whsec_xxx'
+});
+```
+
+---
+
+## Environment Configuration
+
+Configure different providers per environment:
+
+```typescript
+// Production config
+await lux.integrations.configure({
+  environment: 'production',
+  type: 'kyc',
+  provider: 'jumio',
+  // ...production credentials
+});
+
+// Sandbox config (uses test/sandbox mode)
+await lux.integrations.configure({
+  environment: 'sandbox',
+  type: 'kyc',
+  provider: 'jumio',
+  // ...sandbox credentials
+});
+```

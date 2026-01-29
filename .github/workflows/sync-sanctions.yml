@@ -1,0 +1,121 @@
+name: Sync Sanctions Data
+
+on:
+  schedule:
+    # Run daily at 00:15 UTC
+    - cron: '15 0 * * *'
+  workflow_dispatch:
+    inputs:
+      force_refresh:
+        description: 'Force refresh all data sources'
+        required: false
+        default: 'false'
+        type: boolean
+
+env:
+  SANCTIONS_DATA_DIR: data/sanctions
+
+jobs:
+  sync-sanctions:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Create sanctions data directory
+        run: mkdir -p ${{ env.SANCTIONS_DATA_DIR }}
+
+      - name: Download OFAC SDN List
+        run: |
+          curl -s "https://www.treasury.gov/ofac/downloads/sdn.xml" \
+            -o ${{ env.SANCTIONS_DATA_DIR }}/sdn.xml
+          echo "Downloaded OFAC SDN List"
+
+      - name: Download OFAC Consolidated List
+        run: |
+          curl -s "https://www.treasury.gov/ofac/downloads/consolidated/cons_prim.csv" \
+            -o ${{ env.SANCTIONS_DATA_DIR }}/ofac_consolidated.csv
+          echo "Downloaded OFAC Consolidated List"
+
+      - name: Download UN Sanctions List
+        run: |
+          curl -s "https://scsanctions.un.org/resources/xml/en/consolidated.xml" \
+            -o ${{ env.SANCTIONS_DATA_DIR }}/un_consolidated.xml
+          echo "Downloaded UN Sanctions List"
+
+      - name: Download EU Sanctions List
+        run: |
+          curl -s "https://webgate.ec.europa.eu/fsd/fsf/public/files/xmlFullSanctionsList_1_1/content" \
+            -o ${{ env.SANCTIONS_DATA_DIR }}/eu_sanctions.xml
+          echo "Downloaded EU Sanctions List"
+
+      - name: Download UK OFSI List
+        run: |
+          curl -s "https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/consolidated_list.csv" \
+            -o ${{ env.SANCTIONS_DATA_DIR }}/uk_ofsi.csv || echo "UK OFSI download failed, using backup URL"
+          echo "Downloaded UK OFSI List"
+
+      - name: Generate metadata
+        run: |
+          cat > ${{ env.SANCTIONS_DATA_DIR }}/metadata.json << EOF
+          {
+            "lastSync": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "sources": [
+              {
+                "code": "SDN",
+                "name": "OFAC SDN List",
+                "country": "US",
+                "file": "sdn.xml",
+                "url": "https://www.treasury.gov/ofac/downloads/sdn.xml"
+              },
+              {
+                "code": "OFAC",
+                "name": "OFAC Consolidated List",
+                "country": "US",
+                "file": "ofac_consolidated.csv",
+                "url": "https://www.treasury.gov/ofac/downloads/consolidated/cons_prim.csv"
+              },
+              {
+                "code": "UN",
+                "name": "UN Security Council Sanctions",
+                "country": "UN",
+                "file": "un_consolidated.xml",
+                "url": "https://scsanctions.un.org/resources/xml/en/consolidated.xml"
+              },
+              {
+                "code": "EU",
+                "name": "EU Financial Sanctions",
+                "country": "EU",
+                "file": "eu_sanctions.xml",
+                "url": "https://webgate.ec.europa.eu/fsd/fsf/public/files/xmlFullSanctionsList_1_1/content"
+              },
+              {
+                "code": "OFSI",
+                "name": "UK OFSI Consolidated List",
+                "country": "GB",
+                "file": "uk_ofsi.csv",
+                "url": "https://assets.publishing.service.gov.uk"
+              }
+            ],
+            "totalSources": 5,
+            "syncTriggeredBy": "${{ github.event_name }}",
+            "forceRefresh": ${{ github.event.inputs.force_refresh || 'false' }}
+          }
+          EOF
+          echo "Generated metadata.json"
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add ${{ env.SANCTIONS_DATA_DIR }}
+          git diff --staged --quiet || git commit -m "chore: sync sanctions data $(date -u +%Y-%m-%d)"
+          git push

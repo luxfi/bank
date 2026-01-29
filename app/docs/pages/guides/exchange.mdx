@@ -1,0 +1,170 @@
+# Exchange & Trading
+
+Launch a white-label centralized exchange (CEX) or integrate decentralized exchange (DEX) aggregation with Lux Financial's trading infrastructure.
+
+## Overview
+
+Lux Financial provides complete exchange infrastructure:
+
+- **White-Label CEX**: Full centralized exchange with your branding
+- **DEX Aggregation**: 100+ DEX venues with smart order routing
+- **Matching Engine**: Sub-10ms execution with deep order books
+- **Institutional Liquidity**: Access to top market makers
+
+## Quick Start
+
+```typescript
+import { Lux } from '@luxbank/sdk';
+
+const lux = new Lux({ apiKey: 'sk_live_...' });
+
+// Create an order
+const order = await lux.exchange.createOrder({
+  symbol: 'BTC/USD',
+  side: 'buy',
+  type: 'limit',
+  quantity: '1.5',
+  price: '42500.00',
+});
+
+console.log(order);
+// {
+//   id: "ord_abc123",
+//   status: "open",
+//   filled: "0.00",
+//   remaining: "1.5",
+//   avgPrice: null
+// }
+```
+
+## CEX Features
+
+### Matching Engine
+
+Our high-frequency matching engine provides:
+
+- Sub-10ms order execution
+- Full order book with market depth
+- Spot, margin, and futures trading
+- FIX API for institutional clients
+
+### Order Types
+
+| Type | Description |
+|------|-------------|
+| Market | Execute immediately at best price |
+| Limit | Execute at specified price or better |
+| Stop | Trigger market order at stop price |
+| Stop-Limit | Trigger limit order at stop price |
+| TWAP | Time-weighted average price |
+| Iceberg | Hide order size |
+
+### Trading Pairs
+
+500+ trading pairs available including:
+
+- Major crypto (BTC, ETH, SOL)
+- Stablecoins (USDC, USDT, PYUSD)
+- Fiat pairs (USD, EUR, GBP)
+- DeFi tokens
+
+## DEX Aggregation
+
+### Supported DEXs
+
+Connect to 100+ decentralized exchanges:
+
+- Uniswap V2/V3
+- SushiSwap
+- Curve
+- Balancer
+- PancakeSwap
+- And many more
+
+### Smart Order Routing
+
+```typescript
+// Get best route across DEXs
+const quote = await lux.dex.getQuote({
+  fromToken: 'ETH',
+  toToken: 'USDC',
+  amount: '10.0',
+  slippage: '0.5',
+});
+
+console.log(quote);
+// {
+//   route: ["Uniswap V3", "Curve"],
+//   expectedOutput: "25420.50",
+//   priceImpact: "0.02%",
+//   gasEstimate: "0.005 ETH"
+// }
+
+// Execute with MEV protection
+const swap = await lux.dex.executeSwap(quote, {
+  mevProtection: true,
+  deadline: 300,
+});
+```
+
+### MEV Protection
+
+All DEX swaps include MEV protection via private mempool:
+
+- Frontrunning prevention
+- Sandwich attack protection
+- Gas optimization
+
+## WebSocket Streams
+
+### Order Book
+
+```typescript
+lux.exchange.subscribe('orderbook', 'BTC/USD', (data) => {
+  console.log('Bids:', data.bids);
+  console.log('Asks:', data.asks);
+});
+```
+
+### Trades
+
+```typescript
+lux.exchange.subscribe('trades', 'BTC/USD', (trade) => {
+  console.log(`${trade.side} ${trade.quantity} @ ${trade.price}`);
+});
+```
+
+### User Orders
+
+```typescript
+lux.exchange.onOrderUpdate((update) => {
+  console.log(`Order ${update.id}: ${update.status}`);
+});
+```
+
+## FIX API
+
+For institutional clients, we support FIX 4.4 protocol:
+
+```
+Host: fix.lux.financial
+Port: 8443
+Comp ID: YOUR_COMP_ID
+```
+
+Contact sales for FIX API credentials.
+
+## Compliance
+
+All trading includes built-in compliance:
+
+- KYC verification before trading
+- Transaction monitoring
+- Sanctions screening
+- Regulatory reporting
+
+## Next Steps
+
+- [API Reference](/api-reference/exchange)
+- [WebSocket Documentation](/api-reference/websocket)
+- [Contact Sales](/contact) for white-label setup

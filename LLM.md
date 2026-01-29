@@ -6,7 +6,7 @@
 
 ## Project Overview
 
-Lux Financial (formerly CDAX) is a white-label stablecoin infrastructure platform for financial institutions. The platform enables banks, fintechs, and payment companies to offer fiat-to-stablecoin conversion, international payments, and digital asset custody.
+Lux Financial (formerly CDAX) is a complete digital asset infrastructure platform for financial institutions. The platform provides everything needed to launch exchanges, DeFi protocols, stablecoin issuance, global payments, and multi-asset custody.
 
 ### Key Domains
 - **lux.financial** - Marketing site (Cloudflare Pages)
@@ -19,10 +19,35 @@ Note: `lux.finance` is the DeFi frontend (Alchemix UI), NOT the bank.
 
 ## Core Platform Features
 
-### Stablecoin Infrastructure
-- **Native Support**: USDC, USDT, PYUSD, USDY, EURC
-- **Multi-Chain**: Polygon, Ethereum, Arbitrum, Optimism, Base, Lux Network
-- **Real-Time Settlement**: <3 seconds on-chain finality
+### Trading & Exchange
+- **CEX Platform**: White-label centralized exchange with institutional liquidity
+- **DEX Aggregation**: 100+ DEX venues with smart order routing and MEV protection
+- **Matching Engine**: Sub-10ms execution with deep order books
+- **Trading APIs**: REST, WebSocket, and FIX protocol support
+
+### DeFi Infrastructure
+- **AMM & Liquidity Pools**: Custom bonding curves, concentrated liquidity
+- **Lending Protocols**: Money markets with isolated risk pools
+- **Yield Vaults**: Auto-compounding yield optimization
+- **Staking**: Liquid staking for 20+ PoS networks
+
+### Digital Securities
+- **Stablecoin Issuance**: Launch fiat-backed stablecoins with audited reserves
+- **Security Tokens**: Compliant equity, debt, and fund tokenization
+- **Tokenized Assets**: Real estate, commodities, and alternative investments
+- **Multi-Chain**: Ethereum, Polygon, Arbitrum, Lux, and 50+ chains
+
+### Global Payments
+- **200+ Countries**: Send payments to every country
+- **180+ Currencies**: All major fiat and crypto currencies
+- **50+ Payment Rails**: SWIFT, SEPA, ACH, SPEI, PIX, UPI, and local networks
+- **Real-Time Settlement**: Instant cross-border payments
+
+### Multi-Asset Wallets
+- **Custodial Wallets**: Fully managed wallet infrastructure
+- **MPC Self-Custody**: Threshold signing with your own key shares
+- **50+ Chains**: Ethereum, Polygon, Solana, and all major networks
+- **HSM-Backed**: Hardware security module integration
 
 ### Enterprise Security Stack
 - **Lux KMS**: HSM-backed key management (AWS CloudHSM, Azure, Thales)
@@ -31,7 +56,7 @@ Note: `lux.finance` is the DeFi frontend (Alchemix UI), NOT the bank.
 - **Post-Quantum Security**: CRYSTALS-Dilithium, Kyber, SPHINCS+ via Lux Node
 
 ### AI-Powered Operations
-- **MCP Server**: Model Context Protocol for AI-powered bank operations
+- **MCP Server**: Model Context Protocol for AI-powered operations
 - **ZAP Protocol**: Browser-extension to MCP communication
 - **Natural Language Banking**: Query accounts, create payments, generate reports
 
@@ -71,15 +96,31 @@ docker compose --profile bank up -d
 
 ### Apps (`/app/`)
 - **site** - Marketing site (Next.js 14, styled-components)
-  - `/products/` - Product pages (orchestration, wallets, cross-border, issuance, infrastructure)
+  - `/products/` - Product pages:
+    - `/exchange` - CEX & DEX platform
+    - `/defi` - DeFi infrastructure (AMM, lending, yield)
+    - `/issuance` - Digital securities (stablecoins, security tokens)
+    - `/cross-border` - Global payments (200+ countries)
+    - `/wallets` - Multi-asset wallets (50+ chains)
+    - `/infrastructure` - KMS, MPC, IAM, post-quantum
+  - `/online-platform/` - Solutions by industry
   - `/about/`, `/contact/`, `/news/` - Core pages
 - **dash** - Client portal (Next.js)
   - TriangleBankLogo component at `/src/components/TriangleBankLogo/`
 - **admin** - Admin dashboard (Next.js)
 - **api** - REST API (NestJS)
 - **docs** - Documentation (Nextra 3)
-  - `/pages/api/` - API reference documentation
-  - `/pages/guides/` - Feature guides (payments, stablecoins, mcp-server, infrastructure)
+  - `/pages/api-reference/` - API reference documentation
+  - `/pages/guides/` - Feature guides:
+    - `exchange.mdx` - CEX & DEX trading
+    - `defi.mdx` - DeFi infrastructure
+    - `wallets.mdx` - Wallet management
+    - `cross-border.mdx` - Global payments
+    - `issuance.mdx` - Digital securities
+    - `stablecoins.mdx` - Stablecoin support
+    - `payments.mdx` - Payment APIs
+    - `mcp-server.mdx` - AI operations
+    - `infrastructure.mdx` - Security stack
   - `/public/llms.txt` - LLM integration index
 - **finance** - DeFi frontend (separate from bank)
 

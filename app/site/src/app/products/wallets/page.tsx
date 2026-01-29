@@ -101,12 +101,16 @@ const walletTypes = [
 ];
 
 const chains = [
-  { name: "Polygon", color: "#8247E5" },
   { name: "Ethereum", color: "#627EEA" },
+  { name: "Polygon", color: "#8247E5" },
   { name: "Arbitrum", color: "#28A0F0" },
   { name: "Optimism", color: "#FF0420" },
   { name: "Base", color: "#0052FF" },
+  { name: "Solana", color: "#9945FF" },
+  { name: "Avalanche", color: "#E84142" },
+  { name: "BNB Chain", color: "#F3BA2F" },
   { name: "Lux Network", color: "#22D3EE" },
+  { name: "50+ More", color: "#666666" },
 ];
 
 export default function Wallets() {
@@ -119,8 +123,8 @@ export default function Wallets() {
             Enterprise wallet infrastructure
           </HeroTitle>
           <HeroSubtitle>
-            Custodial and self-custody wallet solutions with multi-chain support.
-            HSM-backed security with MPC threshold signing options.
+            Custodial and self-custody wallets for fiat, crypto, stablecoins, and securities.
+            50+ chains with HSM-backed security and MPC threshold signing.
           </HeroSubtitle>
           <HeroButtons>
             <Link href="/contact">
@@ -136,16 +140,16 @@ export default function Wallets() {
       {/* Stats */}
       <StatsRow>
         <StatCard>
-          <StatValue $color="#22C55E">6</StatValue>
+          <StatValue $color="#22C55E">50+</StatValue>
           <StatLabel>Chains Supported</StatLabel>
         </StatCard>
         <StatCard>
-          <StatValue>100+</StatValue>
+          <StatValue>10,000+</StatValue>
           <StatLabel>Token Types</StatLabel>
         </StatCard>
         <StatCard>
-          <StatValue>HSM</StatValue>
-          <StatLabel>Key Storage</StatLabel>
+          <StatValue>HSM/MPC</StatValue>
+          <StatLabel>Key Security</StatLabel>
         </StatCard>
         <StatCard>
           <StatValue>SOC 2</StatValue>
@@ -250,13 +254,10 @@ console.<span class="property">log</span>(wallet.<span class="property">addresse
           </SectionSubtitle>
         </SectionHeader>
 
-        <CardGrid $cols={3}>
+        <CardGrid $cols={5}>
           {chains.map((chain, index) => (
             <Card key={index} $accent={chain.color}>
               <CardTitle style={{ color: chain.color }}>{chain.name}</CardTitle>
-              <CardDescription>
-                Native {chain.name} support with optimized gas and fast confirmations
-              </CardDescription>
             </Card>
           ))}
         </CardGrid>

@@ -1,0 +1,611 @@
+# Sanctions Screening API
+
+Screen customers, transactions, and entities against global sanctions lists in real-time. Our sanctions data is synced daily from official government sources and can be refreshed on-demand.
+
+## Overview
+
+The Sanctions API enables you to:
+- Screen individuals and organizations against 25+ global sanctions lists
+- Perform batch screening for bulk onboarding
+- Get real-time alerts on sanctions list updates
+- Access historical screening records for compliance audits
+
+## Data Sources
+
+Our sanctions database includes data from the following sources, refreshed every 24 hours:
+
+| Code | Name | Country | Description |
+|------|------|---------|-------------|
+| `SDN` | OFAC SDN List | US | Office of Foreign Assets Control Specially Designated Nationals |
+| `NONSDN` | OFAC Consolidated (non-SDN) | US | Consolidated non-SDN sanctions |
+| `UN` | UN Security Council | UN | UN Security Council Consolidated Sanctions |
+| `FSF` | EU Financial Sanctions | EU | European Union Financial Sanctions Files |
+| `OFSI` | UK OFSI | GB | Office of Financial Sanctions Implementation |
+| `SECO` | Swiss SECO | CH | Swiss State Secretariat for Economic Affairs |
+| `DFAT` | Australian DFAT | AU | Department of Foreign Affairs and Trade |
+| `SEMA` | Canadian SEMA | CA | Special Economic Measures Act Sanctions |
+| `PEP` | Politically Exposed Persons | Global | Global PEP database |
+| `INTERPOL` | INTERPOL Red Notices | Global | Wanted individuals listing |
+| `DPL` | BIS Denied Persons | US | Bureau of Industry and Security |
+| `LEIE` | OIG Exclusions | US | List of Excluded Individuals and Entities |
+| `FINCEN` | FinCEN Special Measures | US | 311 and 9714 Special Measures |
+| `MAS` | MAS Targeted Sanctions | SG | Monetary Authority of Singapore |
+
+## Endpoints
+
+### Screen Entity
+
+Screen an individual or organization against sanctions lists.
+
+```
+POST /v0/sanctions/screen
+```
+
+#### Request Body
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `name` | string | Yes | Full name of the individual or organization |
+| `type` | string | No | Entity type: `person`, `organization`, `vessel`, `aircraft` |
+| `dateOfBirth` | string | No | Date of birth (YYYY-MM-DD) for individuals |
+| `country` | string | No | ISO 3166-1 alpha-2 country code |
+| `sources` | array | No | Specific sources to screen against (default: all) |
+| `minScore` | number | No | Minimum match score threshold (0-100, default: 80) |
+
+#### Example Request
+
+```bash
+curl -X POST https://api.lux.financial/v0/sanctions/screen \
+  -H "Authorization: Bearer sk_live_your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "John Smith",
+    "type": "person",
+    "dateOfBirth": "1970-01-15",
+    "country": "US",
+    "sources": ["SDN", "UN", "FSF"],
+    "minScore": 85
+  }'
+```
+
+#### Response
+
+```json
+{
+  "id": "scr_1234567890",
+  "status": "completed",
+  "screenedAt": "2026-01-29T12:00:00Z",
+  "query": {
+    "name": "John Smith",
+    "type": "person",
+    "dateOfBirth": "1970-01-15",
+    "country": "US"
+  },
+  "matchCount": 0,
+  "matches": [],
+  "sources": [
+    {
+      "code": "SDN",
+      "name": "OFAC SDN List",
+      "publishDate": "2026-01-28",
+      "downloadDate": "2026-01-29T00:15:00Z"
+    },
+    {
+      "code": "UN",
+      "name": "UN Security Council Sanctions",
+      "publishDate": "2026-01-23",
+      "downloadDate": "2026-01-29T00:15:00Z"
+    },
+    {
+      "code": "FSF",
+      "name": "EU Financial Sanctions",
+      "publishDate": "2026-01-23",
+      "downloadDate": "2026-01-29T00:15:00Z"
+    }
+  ]
+}
+```
+
+#### Match Response Example
+
+When matches are found, the response includes a `matchSummary` explaining why each match was triggered:
+
+```json
+{
+  "id": "scr_1234567891",
+  "status": "completed",
+  "screenedAt": "2026-01-29T12:00:00Z",
+  "query": {
+    "name": "Example Sanctioned Entity",
+    "type": "organization"
+  },
+  "matchCount": 1,
+  "matches": [
+    {
+      "score": 95,
+      "matchSummary": {
+        "matchFields": [
+          {
+            "similarity": "exact",
+            "fieldName": "name",
+            "caseField": "Example Sanctioned Entity",
+            "sanctionField": "Example Sanctioned Entity Ltd",
+            "sanctionFieldNote": "Primary name match"
+          },
+          {
+            "similarity": "partial",
+            "fieldName": "alias",
+            "caseField": "Example Sanctioned Entity",
+            "sanctionField": "ESE Ltd",
+            "sanctionFieldNote": "Alias match"
+          }
+        ]
+      },
+      "sanction": {
+        "id": "sdn_12345",
+        "type": "organization",
+        "categories": ["sanction"],
+        "name": "Example Sanctioned Entity Ltd",
+        "nameFormatted": "EXAMPLE SANCTIONED ENTITY LTD",
+        "entityLink": "https://sanctionssearch.ofac.treas.gov/Details.aspx?id=12345",
+        "source": "SDN",
+        "sourceId": "12345",
+        "description": "Designated pursuant to E.O. 13224",
+        "remarks": "Linked to terrorist financing activities",
+        "effectiveDate": "2024-03-15",
+        "expirationDate": null,
+        "lastUpdate": "2026-01-15",
+        "alias": [
+          "ESE Ltd",
+          "Example SE"
+        ],
+        "addresses": [
+          {
+            "address": "123 Main Street",
+            "city": "Example City",
+            "country": "XX"
+          }
+        ],
+        "identifications": [
+          {
+            "type": "Registration Number",
+            "value": "REG-123456"
+          }
+        ],
+        "emailAddresses": [],
+        "phoneNumbers": [],
+        "websites": [],
+        "cryptoWallets": [],
+        "programs": ["SDGT", "SYRIA"],
+        "additionalSanctions": [],
+        "additionalInformation": [],
+        "sourceLinks": [
+          "https://sanctionssearch.ofac.treas.gov/Details.aspx?id=12345"
+        ],
+        "organizationDetails": {
+          "registrationNumbers": ["REG-123456"]
+        }
+      }
+    }
+  ]
+}
+```
+
+---
+
+### Batch Screen
+
+Screen multiple entities in a single request.
+
+```
+POST /v0/sanctions/screen/batch
+```
+
+#### Request Body
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `cases` | array | Yes | Array of screening cases (max 100) |
+| `sources` | array | No | Sources to screen against (applies to all cases) |
+| `minScore` | number | No | Minimum match score threshold |
+
+Each case in the `cases` array:
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `id` | string | No | Your reference ID for this case |
+| `name` | string | Yes | Full name to screen |
+| `type` | string | No | Entity type |
+| `dateOfBirth` | string | No | Date of birth |
+| `country` | string | No | Country code |
+
+#### Example Request
+
+```bash
+curl -X POST https://api.lux.financial/v0/sanctions/screen/batch \
+  -H "Authorization: Bearer sk_live_your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "cases": [
+      {
+        "id": "customer_001",
+        "name": "John Smith",
+        "type": "person",
+        "country": "US"
+      },
+      {
+        "id": "customer_002",
+        "name": "Acme Corporation",
+        "type": "organization",
+        "country": "GB"
+      }
+    ],
+    "sources": ["SDN", "UN", "FSF", "OFSI"],
+    "minScore": 80
+  }'
+```
+
+#### Response
+
+```json
+{
+  "id": "batch_1234567890",
+  "status": "completed",
+  "screenedAt": "2026-01-29T12:00:00Z",
+  "totalCases": 2,
+  "totalMatches": 0,
+  "results": [
+    {
+      "id": "customer_001",
+      "name": "John Smith",
+      "matchCount": 0,
+      "matches": []
+    },
+    {
+      "id": "customer_002",
+      "name": "Acme Corporation",
+      "matchCount": 0,
+      "matches": []
+    }
+  ],
+  "sources": [...]
+}
+```
+
+---
+
+### Get Screening Record
+
+Retrieve a previous screening result by ID.
+
+```
+GET /v0/sanctions/screen/{screening_id}
+```
+
+#### Example Request
+
+```bash
+curl https://api.lux.financial/v0/sanctions/screen/scr_1234567890 \
+  -H "Authorization: Bearer sk_live_your_api_key"
+```
+
+---
+
+### List Screenings
+
+List all screening records with filtering and pagination.
+
+```
+GET /v0/sanctions/screenings
+```
+
+#### Query Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `limit` | integer | Number of results (default: 20, max: 100) |
+| `offset` | integer | Pagination offset |
+| `status` | string | Filter by status: `clear`, `match`, `pending_review` |
+| `from` | string | Start date (ISO 8601) |
+| `to` | string | End date (ISO 8601) |
+| `customerId` | string | Filter by customer ID |
+
+---
+
+### Get Data Sources
+
+Get information about available sanctions data sources and their last sync time.
+
+```
+GET /v0/sanctions/sources
+```
+
+#### Response
+
+```json
+{
+  "lastSync": "2026-01-29T00:15:00Z",
+  "nextSync": "2026-01-30T00:15:00Z",
+  "sources": [
+    {
+      "code": "SDN",
+      "name": "OFAC SDN List",
+      "country": "US",
+      "totalRecords": 19159,
+      "publishDate": "2026-01-28",
+      "downloadDate": "2026-01-29T00:15:00Z",
+      "status": "active"
+    },
+    {
+      "code": "UN",
+      "name": "UN Security Council Sanctions",
+      "country": "UN",
+      "totalRecords": 1009,
+      "publishDate": "2026-01-23",
+      "downloadDate": "2026-01-29T00:15:00Z",
+      "status": "active"
+    }
+  ]
+}
+```
+
+---
+
+### Trigger Data Refresh
+
+Manually trigger a refresh of sanctions data (requires admin permissions).
+
+```
+POST /v0/sanctions/sources/refresh
+```
+
+#### Request Body
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `sources` | array | No | Specific sources to refresh (default: all) |
+
+#### Example Request
+
+```bash
+curl -X POST https://api.lux.financial/v0/sanctions/sources/refresh \
+  -H "Authorization: Bearer sk_live_your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "sources": ["SDN", "UN"]
+  }'
+```
+
+#### Response
+
+```json
+{
+  "status": "refreshing",
+  "requestedAt": "2026-01-29T14:30:00Z",
+  "estimatedCompletion": "2026-01-29T14:35:00Z",
+  "sources": ["SDN", "UN"]
+}
+```
+
+---
+
+## Match Object
+
+The match object contains detailed information about a sanctions hit, including the `matchSummary` explaining why the match was triggered and the full `sanction` details.
+
+### Top-Level Match Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `score` | number | Match confidence score (0-100) |
+| `matchSummary` | object | Explanation of why the match was triggered |
+| `sanction` | object | Full sanction target details |
+
+### matchSummary Object
+
+The `matchSummary` helps you understand exactly which fields triggered a match:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `matchFields` | array | Array of field matches |
+
+Each item in `matchFields`:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `similarity` | string | Match type: `exact`, `partial`, `fuzzy`, `phonetic` |
+| `fieldName` | string | Name of the matched field (e.g., `name`, `alias`, `dateOfBirth`) |
+| `caseField` | string | The value from your screening request |
+| `sanctionField` | string | The matching value from the sanctions list |
+| `sanctionFieldNote` | string | Additional context about the match |
+
+### Sanction Object
+
+The `sanction` object contains full details about the matched entity:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Unique identifier in the source database |
+| `type` | string | Entity type: `person`, `organization`, `vessel`, `aircraft` |
+| `categories` | array | Risk categories: `sanction`, `debarment`, `pep`, `ban` |
+| `name` | string | Primary name |
+| `nameFormatted` | string | Standardized name format |
+| `source` | string | Source list code |
+| `sourceId` | string | ID in the source database |
+| `description` | string | Designation description |
+| `remarks` | string | Additional remarks |
+| `effectiveDate` | string | Date sanctions became effective |
+| `expirationDate` | string | Expiration date (if applicable) |
+| `lastUpdate` | string | Last update date in source |
+| `alias` | array | Known aliases |
+| `addresses` | array | Known addresses |
+| `identifications` | array | ID documents (passport, tax ID, etc.) |
+| `emailAddresses` | array | Known email addresses |
+| `phoneNumbers` | array | Known phone numbers |
+| `websites` | array | Associated websites |
+| `cryptoWallets` | array | Known cryptocurrency addresses |
+| `sourceLinks` | array | Links to official source pages |
+| `programs` | array | Sanctions programs (e.g., SDGT, SYRIA) |
+| `personDetails` | object | Person-specific fields |
+| `organizationDetails` | object | Organization-specific fields |
+| `vesselDetails` | object | Vessel-specific fields |
+| `aircraftDetails` | object | Aircraft-specific fields |
+
+### Person Details
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `firstName` | string | First name |
+| `middleName` | string | Middle name |
+| `lastName` | string | Last name |
+| `title` | string | Title (Mr., Dr., etc.) |
+| `gender` | string | Gender |
+| `birthDates` | array | Known dates of birth |
+| `citizenships` | array | Citizenships |
+| `nationalities` | array | Nationalities |
+| `positions` | array | Known positions/roles |
+| `education` | array | Educational background |
+
+### Organization Details
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `registrationNumbers` | array | Business registration numbers |
+
+### Vessel Details
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `vesselType` | string | Type of vessel |
+| `callSign` | string | Radio call sign |
+| `flag` | string | Flag state |
+| `owner` | string | Registered owner |
+| `imoNumber` | string | IMO identification number |
+| `tonnage` | string | Tonnage |
+| `grossTonnage` | string | Gross tonnage |
+
+### Aircraft Details
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `icaoCode` | string | ICAO aircraft code |
+| `serialNumber` | string | Aircraft serial number |
+
+---
+
+## Webhooks
+
+Subscribe to real-time notifications for sanctions screening events.
+
+### Events
+
+| Event | Description |
+|-------|-------------|
+| `sanctions.screening.completed` | Screening completed |
+| `sanctions.screening.match_found` | Match found during screening |
+| `sanctions.sources.updated` | Sanctions data sources refreshed |
+| `sanctions.alert.new_match` | Previously cleared customer now matches |
+
+### Webhook Payload
+
+```json
+{
+  "id": "evt_1234567890",
+  "type": "sanctions.screening.match_found",
+  "createdAt": "2026-01-29T12:00:00Z",
+  "data": {
+    "screeningId": "scr_1234567890",
+    "customerId": "cus_abc123",
+    "matchCount": 1,
+    "matches": [...]
+  }
+}
+```
+
+---
+
+## Best Practices
+
+### Customer Onboarding
+
+Screen all new customers during onboarding:
+
+```javascript
+// Screen customer before account creation
+const screening = await lux.sanctions.screen({
+  name: customer.fullName,
+  type: 'person',
+  dateOfBirth: customer.dateOfBirth,
+  country: customer.country,
+  minScore: 85
+});
+
+if (screening.matchCount > 0) {
+  // Flag for manual review
+  await flagForCompliance(customer, screening);
+} else {
+  // Proceed with onboarding
+  await createAccount(customer);
+}
+```
+
+### Ongoing Monitoring
+
+Re-screen existing customers when sanctions lists are updated:
+
+```javascript
+// Subscribe to sanctions updates
+lux.webhooks.on('sanctions.sources.updated', async (event) => {
+  // Get all active customers
+  const customers = await getActiveCustomers();
+
+  // Batch screen
+  const results = await lux.sanctions.screenBatch({
+    cases: customers.map(c => ({
+      id: c.id,
+      name: c.fullName,
+      type: 'person'
+    }))
+  });
+
+  // Alert on new matches
+  for (const result of results.results) {
+    if (result.matchCount > 0) {
+      await alertCompliance(result);
+    }
+  }
+});
+```
+
+### Transaction Screening
+
+Screen counterparties before processing transactions:
+
+```javascript
+// Screen before payment
+const screening = await lux.sanctions.screen({
+  name: payment.beneficiaryName,
+  type: payment.beneficiaryType,
+  country: payment.beneficiaryCountry
+});
+
+if (screening.matchCount > 0) {
+  throw new Error('Transaction blocked: sanctions match found');
+}
+
+// Process payment
+await lux.transfers.create(payment);
+```
+
+---
+
+## Error Codes
+
+| Code | Description |
+|------|-------------|
+| `SANCTIONS_001` | Invalid source code |
+| `SANCTIONS_002` | Batch limit exceeded (max 100 cases) |
+| `SANCTIONS_003` | Name is required |
+| `SANCTIONS_004` | Invalid entity type |
+| `SANCTIONS_005` | Data source temporarily unavailable |
+| `SANCTIONS_006` | Refresh already in progress |

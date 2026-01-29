@@ -1,0 +1,244 @@
+# DeFi Infrastructure
+
+Build institutional-grade DeFi products with Lux Financial's infrastructure—AMMs, lending protocols, yield vaults, and staking.
+
+## Overview
+
+Lux Financial provides complete DeFi infrastructure:
+
+- **AMM & Liquidity Pools**: Custom bonding curves, concentrated liquidity
+- **Lending Protocols**: Money markets with isolated risk pools
+- **Yield Vaults**: Auto-compounding yield optimization
+- **Staking**: Liquid staking for 20+ PoS networks
+
+## Quick Start
+
+```typescript
+import { LuxDeFi } from '@luxbank/defi';
+
+const defi = new LuxDeFi({ chain: 'polygon' });
+
+// Create a liquidity pool
+const pool = await defi.amm.createPool({
+  tokenA: 'USDC',
+  tokenB: 'ETH',
+  fee: 0.003,
+  tickSpacing: 60,
+});
+
+console.log('Pool created:', pool.address);
+```
+
+## AMM & Liquidity Pools
+
+### Pool Types
+
+| Type | Description | Use Case |
+|------|-------------|----------|
+| Constant Product | x * y = k | General trading |
+| Concentrated | Uniswap V3 style | Capital efficiency |
+| Stableswap | Curve style | Pegged assets |
+| Weighted | Balancer style | Index funds |
+
+### Creating Pools
+
+```typescript
+// Concentrated liquidity pool
+const pool = await defi.amm.createPool({
+  tokenA: 'USDC',
+  tokenB: 'ETH',
+  fee: 0.003,
+  tickSpacing: 60,
+});
+
+// Add liquidity with price range
+await defi.amm.addLiquidity({
+  pool: pool.address,
+  amountA: '100000',
+  amountB: '50',
+  priceLower: 1800,
+  priceUpper: 2200,
+});
+```
+
+### Liquidity Management
+
+```typescript
+// Get position info
+const position = await defi.amm.getPosition(positionId);
+
+// Collect fees
+await defi.amm.collectFees(positionId);
+
+// Remove liquidity
+await defi.amm.removeLiquidity({
+  positionId,
+  percentage: 50, // Remove 50%
+});
+```
+
+## Lending Protocols
+
+### Creating Markets
+
+```typescript
+// Create isolated lending market
+const market = await defi.lending.createMarket({
+  collateralAsset: 'ETH',
+  borrowAsset: 'USDC',
+  ltv: 0.75,
+  liquidationThreshold: 0.82,
+  interestModel: 'variable',
+});
+```
+
+### Supply & Borrow
+
+```typescript
+// Supply collateral
+await defi.lending.supply({
+  market: market.address,
+  amount: '10.0',
+});
+
+// Borrow against collateral
+await defi.lending.borrow({
+  market: market.address,
+  amount: '15000',
+});
+
+// Check health factor
+const health = await defi.lending.getHealthFactor();
+// 1.45 (healthy)
+```
+
+### Interest Rate Models
+
+| Model | Description |
+|-------|-------------|
+| Variable | Utilization-based rates |
+| Fixed | Locked rate for term |
+| Stable | Semi-fixed with rebalancing |
+
+## Yield Vaults
+
+### Creating Vaults
+
+```typescript
+// Create auto-compounding vault
+const vault = await defi.vaults.create({
+  name: 'Stablecoin Yield',
+  depositToken: 'USDC',
+  strategy: 'lending-optimizer',
+  protocols: ['aave', 'compound'],
+});
+```
+
+### Vault Operations
+
+```typescript
+// Deposit
+await defi.vaults.deposit({
+  vault: vault.address,
+  amount: '100000',
+});
+
+// Check performance
+const stats = await defi.vaults.getStats(vault.address);
+// {
+//   tvl: "5420000.00",
+//   apy: "8.45%",
+//   userShares: "100000.00"
+// }
+
+// Withdraw
+await defi.vaults.withdraw({
+  vault: vault.address,
+  shares: '50000',
+});
+```
+
+### Strategy Types
+
+- **Lending Optimizer**: Allocate across lending protocols
+- **LP Farming**: Liquidity provision with reward harvesting
+- **Staking**: Stake PoS assets with auto-compound
+- **Delta Neutral**: Market-neutral yield strategies
+
+## Staking
+
+### Liquid Staking
+
+```typescript
+// Stake ETH
+const stake = await defi.staking.stake({
+  asset: 'ETH',
+  amount: '32.0',
+});
+
+// Receive liquid staking token
+console.log('Received:', stake.lstAmount, 'stETH');
+
+// Unstake
+await defi.staking.unstake({
+  asset: 'stETH',
+  amount: '10.0',
+});
+```
+
+### Supported Networks
+
+- Ethereum (ETH)
+- Solana (SOL)
+- Cosmos (ATOM)
+- Polygon (MATIC)
+- And 20+ more
+
+## Protocol Integrations
+
+Connect to major DeFi protocols:
+
+| Protocol | Type | TVL |
+|----------|------|-----|
+| Uniswap V3 | AMM | $4.2B |
+| Aave V3 | Lending | $12.1B |
+| Curve | Stableswap | $2.8B |
+| Lido | Staking | $28.5B |
+| Compound | Lending | $2.1B |
+| Convex | Yield | $1.9B |
+
+## Institutional Compliance
+
+### Permissioned Pools
+
+Deploy DeFi with KYC-gated access:
+
+```typescript
+const pool = await defi.amm.createPool({
+  // ...pool config
+  permissioned: true,
+  whitelist: ['0x...', '0x...'],
+});
+```
+
+### Risk Analytics
+
+- Real-time risk monitoring
+- Stress testing
+- Portfolio analytics
+- Audit trails
+
+## Supported Chains
+
+- Ethereum
+- Polygon
+- Arbitrum
+- Optimism
+- Base
+- Lux Network
+
+## Next Steps
+
+- [API Reference](/api-reference/defi)
+- [AMM Documentation](/api-reference/defi/amm)
+- [Contact Sales](/contact) for institutional setup

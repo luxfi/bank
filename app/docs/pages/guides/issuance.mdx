@@ -1,0 +1,265 @@
+# Digital Securities
+
+Issue stablecoins, security tokens, and tokenized assets with Lux Financial's compliant issuance infrastructure.
+
+## Overview
+
+Lux Financial provides complete digital securities infrastructure:
+
+- **Stablecoin Issuance**: Launch fiat-backed stablecoins with audited reserves
+- **Security Tokens**: Compliant equity, debt, and fund tokenization
+- **Tokenized Assets**: Real estate, commodities, and alternative investments
+- **Multi-Chain Deployment**: Ethereum, Polygon, Arbitrum, Lux, and 50+ chains
+
+## Quick Start
+
+```typescript
+import { LuxIssuance } from '@luxbank/issuance';
+
+const issuance = new LuxIssuance({
+  token: 'ACMEUSD',
+  chains: ['polygon', 'ethereum'],
+});
+
+// Check reserve status
+const reserves = await issuance.getReserves();
+console.log(reserves);
+// {
+//   totalSupply: "50000000.00",
+//   reserves: {
+//     cash: "25000000.00",
+//     tbills: "25000000.00"
+//   },
+//   ratio: "1.00"
+// }
+```
+
+## Stablecoin Issuance
+
+### Reserve Management
+
+```typescript
+// Check reserves
+const reserves = await issuance.getReserves();
+
+// Mint new tokens (requires deposit)
+await issuance.mint({
+  amount: '1000000.00',
+  chain: 'polygon',
+  recipient: '0x...',
+});
+
+// Burn tokens (triggers withdrawal)
+await issuance.burn({
+  amount: '500000.00',
+  chain: 'polygon',
+});
+```
+
+### Reserve Types
+
+| Type | Description |
+|------|-------------|
+| Cash | Bank deposits in licensed institutions |
+| T-Bills | Short-term US Treasury securities |
+| Money Market | High-grade money market funds |
+| Stablecoins | Backed by other stablecoins |
+
+### Transparency
+
+- Real-time proof of reserves dashboard
+- Monthly third-party attestations
+- Automated mint/burn based on deposits
+- Multi-signature treasury controls
+
+## Security Tokens
+
+### Token Types
+
+| Type | Description | Use Case |
+|------|-------------|----------|
+| Equity | Tokenized shares | Company equity |
+| Debt | Tokenized bonds | Corporate bonds |
+| Fund | Fund shares | Investment funds |
+| REIT | Real estate | Property investment |
+
+### Creating Security Tokens
+
+```typescript
+const token = await issuance.createSecurityToken({
+  name: 'Acme Corp Equity',
+  symbol: 'ACME',
+  type: 'equity',
+  totalSupply: '10000000',
+
+  compliance: {
+    accredited: true,
+    jurisdictions: ['US', 'EU'],
+    lockupPeriod: '12m',
+  },
+});
+```
+
+### Cap Table Management
+
+```typescript
+// Get shareholders
+const capTable = await token.getCapTable();
+
+// Transfer with compliance
+await token.transfer({
+  from: '0x...',
+  to: '0x...',
+  amount: '1000',
+  // Compliance checks automatic
+});
+
+// Corporate actions
+await token.dividend({
+  amount: '0.50',
+  currency: 'USDC',
+  recordDate: '2024-03-15',
+});
+```
+
+## Tokenized Assets
+
+### Asset Types
+
+- Real Estate
+- Commodities
+- Art & Collectibles
+- Private Credit
+- Infrastructure
+
+### Creating Asset Tokens
+
+```typescript
+const asset = await issuance.tokenizeAsset({
+  name: 'Manhattan Office Building',
+  type: 'real_estate',
+  valuation: '50000000.00',
+  shares: '1000000',
+
+  details: {
+    address: '123 Park Ave, NYC',
+    sqft: 50000,
+    occupancy: 0.95,
+  },
+});
+```
+
+## Bonds & Debt
+
+### Bond Features
+
+```typescript
+const bond = await issuance.createBond({
+  name: 'Acme 2029 Notes',
+  symbol: 'ACME29',
+  principal: '100000000.00',
+  couponRate: 0.05,
+  frequency: 'semi-annual',
+  maturity: '2029-03-15',
+});
+```
+
+### Automated Operations
+
+- Automated coupon payments
+- Maturity handling
+- Secondary market trading
+- Interest accrual
+
+## Smart Contracts
+
+### Battle-Tested Templates
+
+Built on OpenZeppelin with security features:
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@luxbank/contracts/Mintable.sol";
+
+contract AcmeUSD is ERC20, Mintable {
+    constructor() ERC20("Acme USD", "ACMEUSD") {
+        _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
+    }
+
+    function mint(address to, uint256 amount)
+        external onlyMinter
+    {
+        _mint(to, amount);
+    }
+
+    function burn(uint256 amount) external {
+        _burn(msg.sender, amount);
+    }
+}
+```
+
+### Contract Features
+
+- Audited by leading security firms
+- Upgradeable proxy pattern
+- Pause functionality for emergencies
+- Multi-chain deployment scripts
+
+## Multi-Chain Deployment
+
+### Supported Chains
+
+| Chain | Status | Notes |
+|-------|--------|-------|
+| Ethereum | ✅ | Primary L1 |
+| Polygon | ✅ | Low gas fees |
+| Arbitrum | ✅ | L2 scaling |
+| Optimism | ✅ | L2 scaling |
+| Base | ✅ | Coinbase L2 |
+| Lux | ✅ | Native chain |
+
+### Cross-Chain Bridge
+
+```typescript
+// Bridge tokens between chains
+await issuance.bridge({
+  token: 'ACMEUSD',
+  from: 'ethereum',
+  to: 'polygon',
+  amount: '1000000.00',
+});
+```
+
+## Compliance
+
+### Licensing Support
+
+We help navigate:
+
+- Money transmitter licenses
+- E-money licenses
+- Securities regulations
+- Commodity regulations
+
+### Reserve Attestations
+
+Monthly attestations from Big 4 accounting firms.
+
+### AML/KYC Integration
+
+```typescript
+// All holders verified
+const holder = await token.verifyHolder({
+  address: '0x...',
+  level: 'accredited',
+});
+```
+
+## Next Steps
+
+- [API Reference](/api-reference/issuance)
+- [Smart Contract Templates](/api-reference/contracts)
+- [Contact Sales](/contact) for issuance setup

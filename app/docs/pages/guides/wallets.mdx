@@ -1,0 +1,263 @@
+# Multi-Asset Wallets
+
+Enterprise wallet infrastructure for fiat, crypto, stablecoins, and digital securities. Custodial and self-custody options with 50+ chain support.
+
+## Overview
+
+Lux Financial provides complete wallet infrastructure:
+
+- **Custodial Wallets**: Fully managed wallet operations
+- **MPC Self-Custody**: Threshold signing with your key shares
+- **Multi-Chain**: 50+ chains including Ethereum, Polygon, Solana
+- **HSM-Backed**: Hardware security module integration
+
+## Quick Start
+
+```typescript
+import { Lux } from '@luxbank/sdk';
+
+const lux = new Lux({ apiKey: 'sk_live_...' });
+
+// Create a multi-chain wallet
+const wallet = await lux.wallets.create({
+  type: 'custodial',
+  chains: ['polygon', 'ethereum', 'solana'],
+  label: 'Treasury Operations',
+});
+
+console.log(wallet.addresses);
+// {
+//   polygon: "0x1234...",
+//   ethereum: "0x1234...",
+//   solana: "Abc123..."
+// }
+```
+
+## Custodial Wallets
+
+### Creating Wallets
+
+```typescript
+const wallet = await lux.wallets.create({
+  type: 'custodial',
+  chains: ['polygon', 'ethereum'],
+  label: 'Treasury Operations',
+});
+```
+
+### Balance Management
+
+```typescript
+// Get unified balance
+const balance = await wallet.getBalance({
+  currency: 'USDC',
+});
+// { total: "1250000.00", byChain: {...} }
+
+// Get all balances
+const allBalances = await wallet.getAllBalances();
+```
+
+### Transfers
+
+```typescript
+// Internal transfer
+await lux.wallets.transfer({
+  from: walletA.id,
+  to: walletB.id,
+  amount: '10000.00',
+  currency: 'USDC',
+});
+
+// External transfer
+await lux.wallets.send({
+  from: wallet.id,
+  to: '0x...',
+  amount: '5000.00',
+  currency: 'USDC',
+  chain: 'polygon',
+});
+```
+
+## MPC Self-Custody
+
+For institutions requiring complete control, our MPC solution enables self-custody with threshold signing.
+
+### Setup
+
+```typescript
+import { LuxMPC } from '@luxbank/mpc';
+
+const mpc = new LuxMPC({
+  threshold: 2,
+  parties: 3,
+  keyShareHolders: [
+    { id: 'ops', type: 'internal' },
+    { id: 'security', type: 'internal' },
+    { id: 'backup', type: 'cold' },
+  ],
+});
+```
+
+### Key Generation
+
+```typescript
+// Generate distributed wallet
+const wallet = await mpc.generateWallet({
+  chain: 'polygon',
+});
+
+// Key shares distributed to each party
+```
+
+### Threshold Signing
+
+```typescript
+// Sign requires 2-of-3 parties
+const tx = await mpc.sign({
+  walletId: wallet.id,
+  transaction: {
+    to: '0x...',
+    amount: '10000.00',
+    currency: 'USDC',
+  },
+});
+```
+
+### MPC Features
+
+- 2-of-3, 3-of-5, or custom threshold schemes
+- Air-gapped cold storage support
+- Social recovery with trusted parties
+- Full audit trail and signing ceremonies
+
+## Supported Chains
+
+| Chain | Status | Features |
+|-------|--------|----------|
+| Ethereum | ✅ | Full EVM support |
+| Polygon | ✅ | Low gas, fast confirmation |
+| Arbitrum | ✅ | L2 scaling |
+| Optimism | ✅ | L2 scaling |
+| Base | ✅ | Coinbase L2 |
+| Solana | ✅ | High throughput |
+| Avalanche | ✅ | Subnet support |
+| BNB Chain | ✅ | BSC ecosystem |
+| Lux Network | ✅ | Native support |
+| 40+ More | ✅ | Contact for list |
+
+## Asset Support
+
+### Cryptocurrencies
+
+- Bitcoin (BTC)
+- Ethereum (ETH)
+- Solana (SOL)
+- All major cryptocurrencies
+
+### Stablecoins
+
+- USDC
+- USDT
+- PYUSD
+- DAI
+- Custom stablecoins
+
+### Tokens
+
+- ERC-20
+- ERC-721 (NFTs)
+- ERC-1155
+- SPL tokens
+
+### Fiat
+
+- USD
+- EUR
+- GBP
+- 35+ currencies
+
+## Security
+
+### HSM Integration
+
+Hardware security module support:
+
+- AWS CloudHSM
+- Azure Dedicated HSM
+- Thales Luna
+
+### Key Management
+
+```typescript
+// Keys are never exposed
+// All signing happens in secure enclave
+
+const signature = await wallet.sign({
+  message: 'Hello',
+  // Key material never leaves HSM
+});
+```
+
+### Access Control
+
+- Role-based access control
+- Multi-signature approvals
+- IP whitelisting
+- Rate limiting
+
+## Webhooks
+
+### Balance Updates
+
+```typescript
+// Configure webhook
+await lux.webhooks.create({
+  url: 'https://your-app.com/webhooks',
+  events: ['wallet.balance.updated'],
+});
+
+// Receive updates
+{
+  "event": "wallet.balance.updated",
+  "wallet_id": "wal_123",
+  "balance": {
+    "currency": "USDC",
+    "amount": "15000.00"
+  }
+}
+```
+
+### Transaction Events
+
+- `transaction.pending`
+- `transaction.confirmed`
+- `transaction.failed`
+
+## Gas Management
+
+Automatic gas optimization:
+
+```typescript
+const tx = await wallet.send({
+  to: '0x...',
+  amount: '1000.00',
+  currency: 'USDC',
+  // Gas automatically optimized
+});
+
+// Or specify gas settings
+const tx = await wallet.send({
+  // ...
+  gasSettings: {
+    maxFeePerGas: '50',
+    maxPriorityFeePerGas: '2',
+  },
+});
+```
+
+## Next Steps
+
+- [API Reference](/api-reference/wallets)
+- [MPC Documentation](/guides/infrastructure#mpc)
+- [Contact Sales](/contact) for enterprise setup

@@ -41,6 +41,21 @@ const CheckIcon = () => (
   </svg>
 );
 
+// Exchange Icon
+const ExchangeIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <path d="M16 3l4 4-4 4M20 7H4M8 21l-4-4 4-4M4 17h16" />
+  </svg>
+);
+
+// DeFi Icon
+const DeFiIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <circle cx="12" cy="12" r="10" />
+    <path d="M8 12h8M12 8v8" />
+  </svg>
+);
+
 const industries = [
   {
     icon: BankIcon,
@@ -49,32 +64,44 @@ const industries = [
     features: ["Branded account provisioning", "Card issuance ready", "Compliance tools included"],
   },
   {
-    icon: StoreIcon,
-    title: "Marketplaces",
-    description: "Enable seller payouts in any currency. Multi-currency wallets, instant settlements, and reconciliation.",
-    features: ["Multi-currency seller wallets", "Instant domestic payouts", "Global cross-border payments"],
+    icon: ExchangeIcon,
+    title: "Exchanges & Trading",
+    description: "Launch CEX or DEX platforms with institutional liquidity. White-label exchange infrastructure.",
+    features: ["CEX & DEX platforms", "Institutional liquidity", "Trading APIs"],
+  },
+  {
+    icon: DeFiIcon,
+    title: "DeFi Protocols",
+    description: "Build AMMs, lending protocols, and yield products. Institutional-grade DeFi with compliance.",
+    features: ["AMM & liquidity pools", "Lending protocols", "Yield optimization"],
   },
   {
     icon: LayersIcon,
-    title: "SaaS Platforms",
-    description: "Add financial features to your product. Embedded accounts, billing automation, and revenue optimization.",
-    features: ["Embedded finance APIs", "Subscription billing", "Revenue management"],
+    title: "Digital Asset Businesses",
+    description: "Issue stablecoins, security tokens, or tokenized assets. Full lifecycle infrastructure.",
+    features: ["Stablecoin issuance", "Security token infrastructure", "Multi-chain deployment"],
+  },
+  {
+    icon: StoreIcon,
+    title: "Marketplaces & Platforms",
+    description: "Enable crypto and fiat payouts globally. Multi-currency wallets with instant settlements.",
+    features: ["Multi-currency wallets", "200+ country payouts", "Real-time settlements"],
   },
   {
     icon: ShoppingCartIcon,
-    title: "E-commerce",
-    description: "Accept payments globally, pay suppliers anywhere. FX optimization and treasury management included.",
-    features: ["Multi-currency checkout", "Supplier payments", "FX hedging tools"],
+    title: "E-commerce & Payments",
+    description: "Accept crypto and fiat globally, pay suppliers anywhere. FX and treasury management.",
+    features: ["Crypto & fiat checkout", "Cross-border payments", "FX optimization"],
   },
 ];
 
 const capabilities = [
-  { title: "Account Provisioning", description: "Spin up virtual accounts in seconds. Support for IBANs, sort codes, and routing numbers." },
-  { title: "Payment Orchestration", description: "Route payments intelligently across rails. SWIFT, SEPA, ACH, and local schemes." },
-  { title: "FX Management", description: "Real-time rates, automated conversions, and hedging tools for treasury operations." },
-  { title: "Compliance Tools", description: "Built-in KYC/KYB workflows, sanctions screening, and transaction monitoring." },
-  { title: "Reconciliation", description: "Automatic matching, exception handling, and audit-ready reporting." },
-  { title: "Webhooks & APIs", description: "Real-time notifications, comprehensive APIs, and SDKs for major languages." },
+  { title: "CEX & DEX Platform", description: "White-label exchange with institutional liquidity. Matching engine, order books, DEX aggregation." },
+  { title: "DeFi Infrastructure", description: "AMMs, lending protocols, yield vaults, and staking. Institutional compliance built in." },
+  { title: "Multi-Asset Wallets", description: "Custodial and MPC self-custody. 50+ chains, HSM-backed, fiat and crypto support." },
+  { title: "Global Payments", description: "200+ countries, 180+ currencies, 50+ payment rails. Real-time settlement." },
+  { title: "Digital Securities", description: "Issue stablecoins, security tokens, and tokenized assets. Multi-chain deployment." },
+  { title: "Compliance & Security", description: "KYC/KYB, AML screening, HSM/MPC key management, and post-quantum ready." },
 ];
 
 export default function OnlinePlatform() {
@@ -85,10 +112,11 @@ export default function OnlinePlatform() {
         <HeroContent>
           <HeroBadge>Solutions</HeroBadge>
           <HeroTitle>
-            Financial infrastructure for every use case
+            Complete infrastructure for every use case
           </HeroTitle>
           <HeroSubtitle>
-            Whether you&apos;re building a neobank, powering a marketplace, or adding financial features to your SaaS—we have the infrastructure.
+            Whether you&apos;re launching an exchange, building DeFi protocols, issuing digital assets,
+            or powering global payments—we have the complete infrastructure stack.
           </HeroSubtitle>
           <HeroButtons>
             <Link href="https://app.lux.financial/registration" target="_blank">
@@ -303,8 +331,12 @@ const SectionSubtitle = styled.p`
 
 const IndustriesGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
+
+  @media ${DeviceSize.md} {
+    grid-template-columns: repeat(2, 1fr);
+  }
 
   @media ${DeviceSize.sm} {
     grid-template-columns: 1fr;

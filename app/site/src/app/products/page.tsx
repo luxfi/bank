@@ -68,47 +68,72 @@ const CpuIcon = () => (
   </svg>
 );
 
+// Exchange Icon
+const ExchangeIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <path d="M16 3l4 4-4 4M20 7H4M8 21l-4-4 4-4M4 17h16" />
+  </svg>
+);
+
+// DeFi Icon
+const DeFiIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <circle cx="12" cy="12" r="10" />
+    <path d="M8 12h8M12 8v8" />
+  </svg>
+);
+
+// Securities Icon
+const SecuritiesIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+    <polyline points="14 2 14 8 20 8" />
+    <line x1="16" y1="13" x2="8" y2="13" />
+    <line x1="16" y1="17" x2="8" y2="17" />
+  </svg>
+);
+
 const products = [
   {
-    icon: PaymentsIcon,
-    title: "Orchestration",
-    description: "Move money globally with stablecoin rails. Real-time settlement, multi-currency support, and intelligent routing.",
-    href: "/products/orchestration",
+    icon: ExchangeIcon,
+    title: "CEX & DEX Platform",
+    description: "White-label exchange infrastructure. Launch your own CEX with institutional liquidity or integrate DEX aggregation.",
+    href: "/products/exchange",
     color: "#8B5CF6",
   },
   {
-    icon: WalletIcon,
-    title: "Wallets",
-    description: "Custodial and self-custody wallet infrastructure. Multi-chain support with enterprise-grade security.",
-    href: "/products/wallets",
+    icon: DeFiIcon,
+    title: "DeFi & AMM",
+    description: "Deploy AMMs, liquidity pools, and yield products. Full DeFi stack with institutional-grade compliance.",
+    href: "/products/defi",
     color: "#22C55E",
   },
   {
-    icon: GlobeIcon,
-    title: "Cross-Border Payments",
-    description: "Send payments to 150+ countries. Instant stablecoin settlement with local currency payout.",
-    href: "/products/cross-border",
+    icon: SecuritiesIcon,
+    title: "Digital Securities",
+    description: "Issue, trade, and settle tokenized securities. Compliant infrastructure for STOs, bonds, and equity tokens.",
+    href: "/products/issuance",
     color: "#3B82F6",
+  },
+  {
+    icon: GlobeIcon,
+    title: "Global Payments",
+    description: "Fiat and crypto payments to 200+ countries. All currencies with real-time settlement and local rails.",
+    href: "/products/cross-border",
+    color: "#22D3EE",
+  },
+  {
+    icon: WalletIcon,
+    title: "Multi-Asset Wallets",
+    description: "Custodial and MPC wallets for fiat, crypto, stablecoins, and securities. 50+ chains supported.",
+    href: "/products/wallets",
+    color: "#F59E0B",
   },
   {
     icon: ServerIcon,
     title: "Infrastructure",
-    description: "Enterprise-grade key management, MPC custody, and post-quantum security for future-proof operations.",
+    description: "KMS, MPC, IAM, HSM, and post-quantum security. Enterprise-grade foundation for any financial product.",
     href: "/products/infrastructure",
-    color: "#22D3EE",
-  },
-  {
-    icon: ShieldIcon,
-    title: "Issuance",
-    description: "Launch your own stablecoin or digital asset. Full compliance framework and reserve management.",
-    href: "/products/issuance",
-    color: "#F59E0B",
-  },
-  {
-    icon: CpuIcon,
-    title: "AI Operations",
-    description: "MCP server for AI-powered bank operations. Natural language queries and automated workflows.",
-    href: "/products/infrastructure#mcp",
     color: "#EC4899",
   },
 ];
@@ -120,11 +145,11 @@ export default function Products() {
         <HeroContent>
           <ProductBadge>Products</ProductBadge>
           <HeroTitle>
-            Build the future of finance
+            Complete financial infrastructure
           </HeroTitle>
           <HeroSubtitle>
-            Everything you need to build, launch, and scale financial products.
-            From stablecoin payments to post-quantum security.
+            Banking, trading, DeFi, and digital assets. CEX, DEX, AMM, wallets, payments.
+            Everything to build any financial product, in 200+ countries.
           </HeroSubtitle>
           <HeroButtons>
             <Link href="/contact">
@@ -141,7 +166,7 @@ export default function Products() {
         <SectionHeader>
           <SectionTitle>Our Platform</SectionTitle>
           <SectionSubtitle>
-            Modular infrastructure that grows with your needs
+            Unified infrastructure for banks, exchanges, and DeFi
           </SectionSubtitle>
         </SectionHeader>
 
