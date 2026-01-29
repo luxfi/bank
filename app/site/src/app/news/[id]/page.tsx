@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-import { getPostsDetails, getPosts } from "@/api/ghost";
+import { getPostsDetails } from "@/api/ghost";
 
 import { Content, ContentDetail, MainContainer, Title } from "./styles";
 
@@ -10,22 +10,12 @@ interface IProps {
   };
 }
 
-// For static export, disable dynamic params and return empty list
-// News details won't be pre-rendered without Ghost API env vars
+// For static export (GitHub Pages), we can't pre-render news details
+// without the Ghost API. Return empty array so no news pages are generated.
 export const dynamicParams = false;
 
-export async function generateStaticParams() {
-  // Skip API calls during static export if env vars not available
-  if (!process.env.GHOST_API_URL || !process.env.GHOST_API_KEY) {
-    return [];
-  }
-
-  try {
-    const { posts } = await getPosts({ limit: "100", page: "1" });
-    return posts.map((post) => ({ id: post.id }));
-  } catch {
-    return [];
-  }
+export function generateStaticParams() {
+  return [];
 }
 
 export default async function NewsDetails({ params }: IProps) {
