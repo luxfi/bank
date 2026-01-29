@@ -102,7 +102,10 @@ docker compose --profile bank up -d
 
 ### Apps (`/app/`)
 - **site** - Marketing site (Next.js 14, styled-components)
-  - **Home page** features mobile app showcase with 3 phone mockups
+  - **Home page** features dynamic multi-platform showcase:
+    - Dashboard mockup (app.lux.financial) with live stats, sidebar nav, asset table
+    - Terminal mockup (lux-cli) with animated cursor and CLI commands
+    - Mobile device mockup with balance, send/receive actions, asset list
   - `/products/` - Product pages:
     - `/mobile` - White-label mobile app (iOS/Android) with phone mockups
     - `/exchange` - CEX & DEX platform
