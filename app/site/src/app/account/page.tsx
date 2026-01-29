@@ -127,7 +127,190 @@ const features = [
   },
 ];
 
+type MockPage = "dashboard" | "payments" | "reports" | "wallets" | "settings";
+
 export default function Account() {
+  const [activeMockPage, setActiveMockPage] = useState<MockPage>("dashboard");
+
+  const renderMockContent = () => {
+    switch (activeMockPage) {
+      case "dashboard":
+        return (
+          <>
+            <MockTopBar>
+              <MockTitle>Dashboard</MockTitle>
+              <MockActions>
+                <MockButton>Last 30 Days</MockButton>
+              </MockActions>
+            </MockTopBar>
+            <MockStatsGrid>
+              <MockStatCard>
+                <MockStatLabel>Total Balance</MockStatLabel>
+                <MockStatValue>$1,234,567</MockStatValue>
+                <MockStatChange $positive>+12.5%</MockStatChange>
+              </MockStatCard>
+              <MockStatCard>
+                <MockStatLabel>Pending</MockStatLabel>
+                <MockStatValue>$45,230</MockStatValue>
+                <MockStatChange $positive>+3.2%</MockStatChange>
+              </MockStatCard>
+              <MockStatCard>
+                <MockStatLabel>This Month</MockStatLabel>
+                <MockStatValue>$89,450</MockStatValue>
+                <MockStatChange>-2.1%</MockStatChange>
+              </MockStatCard>
+            </MockStatsGrid>
+            <MockChartPlaceholder>
+              <MockChartBars>
+                <MockChartBar $height={60} />
+                <MockChartBar $height={80} />
+                <MockChartBar $height={45} />
+                <MockChartBar $height={90} />
+                <MockChartBar $height={70} />
+                <MockChartBar $height={85} />
+                <MockChartBar $height={95} />
+              </MockChartBars>
+            </MockChartPlaceholder>
+          </>
+        );
+      case "payments":
+        return (
+          <>
+            <MockTopBar>
+              <MockTitle>Payments</MockTitle>
+              <MockActions>
+                <MockButton>Filter</MockButton>
+                <MockButton $primary>+ New Payment</MockButton>
+              </MockActions>
+            </MockTopBar>
+            <MockTable>
+              <MockTableHeader>
+                <span>Recipient</span>
+                <span>Amount</span>
+                <span>Date</span>
+                <span>Status</span>
+              </MockTableHeader>
+              <MockTableRow>
+                <span>Acme Corp</span>
+                <span>$12,500.00</span>
+                <span>Jan 28, 2026</span>
+                <MockStatus $status="sent">Completed</MockStatus>
+              </MockTableRow>
+              <MockTableRow>
+                <span>Global Trade Ltd</span>
+                <span>€8,750.00</span>
+                <span>Jan 28, 2026</span>
+                <MockStatus $status="pending">Processing</MockStatus>
+              </MockTableRow>
+              <MockTableRow>
+                <span>Tech Solutions</span>
+                <span>£5,200.00</span>
+                <span>Jan 27, 2026</span>
+                <MockStatus $status="sent">Completed</MockStatus>
+              </MockTableRow>
+            </MockTable>
+          </>
+        );
+      case "reports":
+        return (
+          <>
+            <MockTopBar>
+              <MockTitle>Reports</MockTitle>
+              <MockActions>
+                <MockButton>Filter</MockButton>
+                <MockButton $primary>Export CSV</MockButton>
+              </MockActions>
+            </MockTopBar>
+            <MockTable>
+              <MockTableHeader>
+                <span>Report</span>
+                <span>Period</span>
+                <span>Generated</span>
+                <span>Action</span>
+              </MockTableHeader>
+              <MockTableRow>
+                <span>Transaction Summary</span>
+                <span>Q4 2025</span>
+                <span>Jan 15, 2026</span>
+                <MockStatus $status="sent">Download</MockStatus>
+              </MockTableRow>
+              <MockTableRow>
+                <span>FX Activity</span>
+                <span>December 2025</span>
+                <span>Jan 5, 2026</span>
+                <MockStatus $status="sent">Download</MockStatus>
+              </MockTableRow>
+              <MockTableRow>
+                <span>Account Statement</span>
+                <span>2025 Annual</span>
+                <span>Jan 2, 2026</span>
+                <MockStatus $status="sent">Download</MockStatus>
+              </MockTableRow>
+            </MockTable>
+          </>
+        );
+      case "wallets":
+        return (
+          <>
+            <MockTopBar>
+              <MockTitle>Wallets</MockTitle>
+              <MockActions>
+                <MockButton $primary>+ Add Wallet</MockButton>
+              </MockActions>
+            </MockTopBar>
+            <MockWalletGrid>
+              <MockWalletCard>
+                <MockWalletCurrency>USD</MockWalletCurrency>
+                <MockWalletBalance>$845,230.50</MockWalletBalance>
+                <MockWalletLabel>US Dollar</MockWalletLabel>
+              </MockWalletCard>
+              <MockWalletCard>
+                <MockWalletCurrency>EUR</MockWalletCurrency>
+                <MockWalletBalance>€234,120.00</MockWalletBalance>
+                <MockWalletLabel>Euro</MockWalletLabel>
+              </MockWalletCard>
+              <MockWalletCard>
+                <MockWalletCurrency>GBP</MockWalletCurrency>
+                <MockWalletBalance>£155,217.25</MockWalletBalance>
+                <MockWalletLabel>British Pound</MockWalletLabel>
+              </MockWalletCard>
+            </MockWalletGrid>
+          </>
+        );
+      case "settings":
+        return (
+          <>
+            <MockTopBar>
+              <MockTitle>Settings</MockTitle>
+            </MockTopBar>
+            <MockSettingsList>
+              <MockSettingItem>
+                <MockSettingInfo>
+                  <MockSettingTitle>Two-Factor Authentication</MockSettingTitle>
+                  <MockSettingDesc>Add an extra layer of security</MockSettingDesc>
+                </MockSettingInfo>
+                <MockToggle $active />
+              </MockSettingItem>
+              <MockSettingItem>
+                <MockSettingInfo>
+                  <MockSettingTitle>Email Notifications</MockSettingTitle>
+                  <MockSettingDesc>Receive alerts for transactions</MockSettingDesc>
+                </MockSettingInfo>
+                <MockToggle $active />
+              </MockSettingItem>
+              <MockSettingItem>
+                <MockSettingInfo>
+                  <MockSettingTitle>API Access</MockSettingTitle>
+                  <MockSettingDesc>Manage API keys and webhooks</MockSettingDesc>
+                </MockSettingInfo>
+                <MockButton $small>Configure</MockButton>
+              </MockSettingItem>
+            </MockSettingsList>
+          </>
+        );
+    }
+  };
+
   return (
     <PageContainer>
       {/* Hero */}
@@ -155,50 +338,50 @@ export default function Account() {
         <MockContainer>
           <MockFrame>
             <MockSidebar>
-              <MockLogo>T</MockLogo>
-              <MockNavItem $active>Payments</MockNavItem>
-              <MockNavItem>Reports</MockNavItem>
-              <MockNavItem>Wallets</MockNavItem>
-              <MockNavItem>Settings</MockNavItem>
+              <MockLogoContainer>
+                <MockLogo>
+                  <TriangleLogo />
+                </MockLogo>
+                <MockBrandName>TriBank</MockBrandName>
+              </MockLogoContainer>
+              <MockNavItem
+                $active={activeMockPage === "dashboard"}
+                onClick={() => setActiveMockPage("dashboard")}
+              >
+                <DashboardIcon />
+                <span>Dashboard</span>
+              </MockNavItem>
+              <MockNavItem
+                $active={activeMockPage === "payments"}
+                onClick={() => setActiveMockPage("payments")}
+              >
+                <PaymentsIcon />
+                <span>Payments</span>
+              </MockNavItem>
+              <MockNavItem
+                $active={activeMockPage === "reports"}
+                onClick={() => setActiveMockPage("reports")}
+              >
+                <ReportsIcon />
+                <span>Reports</span>
+              </MockNavItem>
+              <MockNavItem
+                $active={activeMockPage === "wallets"}
+                onClick={() => setActiveMockPage("wallets")}
+              >
+                <WalletsIcon />
+                <span>Wallets</span>
+              </MockNavItem>
+              <MockNavItem
+                $active={activeMockPage === "settings"}
+                onClick={() => setActiveMockPage("settings")}
+              >
+                <SettingsIcon />
+                <span>Settings</span>
+              </MockNavItem>
             </MockSidebar>
             <MockMain>
-              <MockTopBar>
-                <MockTitle>Reports</MockTitle>
-                <MockActions>
-                  <MockButton>Filter</MockButton>
-                  <MockButton $primary>Export CSV</MockButton>
-                </MockActions>
-              </MockTopBar>
-              <MockTable>
-                <MockTableHeader>
-                  <span>Payment ID</span>
-                  <span>Date/Time</span>
-                  <span>Originator</span>
-                  <span>Amount</span>
-                  <span>Status</span>
-                </MockTableHeader>
-                <MockTableRow>
-                  <span>1234455</span>
-                  <span>Sep 20, 2025</span>
-                  <span>Zoogle</span>
-                  <span>$3,000.00</span>
-                  <MockStatus $status="sent">Sent</MockStatus>
-                </MockTableRow>
-                <MockTableRow>
-                  <span>6535518</span>
-                  <span>Sep 20, 2025</span>
-                  <span>Lunexa</span>
-                  <span>$45,000.00</span>
-                  <MockStatus $status="pending">Pending</MockStatus>
-                </MockTableRow>
-                <MockTableRow>
-                  <span>6515365</span>
-                  <span>Sep 20, 2025</span>
-                  <span>Veridra</span>
-                  <span>$100,000.00</span>
-                  <MockStatus $status="sent">Sent</MockStatus>
-                </MockTableRow>
-              </MockTable>
+              {renderMockContent()}
             </MockMain>
           </MockFrame>
         </MockContainer>
@@ -350,26 +533,37 @@ const HeroButtons = styled.div`
 `;
 
 const MockContainer = styled.div`
-  max-width: 900px;
+  max-width: 960px;
   margin: 0 auto;
+  perspective: 1000px;
 `;
 
 const MockFrame = styled.div`
   display: flex;
   background: #FFFFFF;
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.05),
+    0 25px 50px -12px rgba(0, 0, 0, 0.4),
+    0 0 80px -20px rgba(255, 255, 255, 0.1);
+  transform: rotateX(2deg);
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: rotateX(0deg);
+  }
 
   @media ${DeviceSize.sm} {
     flex-direction: column;
+    transform: none;
   }
 `;
 
 const MockSidebar = styled.div`
-  width: 180px;
-  background: #1E3A5F;
-  padding: 1.5rem 1rem;
+  width: 200px;
+  background: linear-gradient(180deg, #0F172A 0%, #1E293B 100%);
+  padding: 1.25rem;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
@@ -377,23 +571,18 @@ const MockSidebar = styled.div`
   @media ${DeviceSize.sm} {
     width: 100%;
     flex-direction: row;
+    flex-wrap: wrap;
     padding: 1rem;
     gap: 0.5rem;
     overflow-x: auto;
   }
 `;
 
-const MockLogo = styled.div`
-  width: 32px;
-  height: 32px;
-  background: #FF6B35;
-  border-radius: 8px;
+const MockLogoContainer = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: 600;
-  font-size: 1.4rem;
+  gap: 0.75rem;
+  padding: 0.5rem;
   margin-bottom: 1.5rem;
 
   @media ${DeviceSize.sm} {
@@ -401,24 +590,73 @@ const MockLogo = styled.div`
   }
 `;
 
-const MockNavItem = styled.div<{ $active?: boolean }>`
-  padding: 0.6rem 1rem;
-  border-radius: 6px;
+const MockLogo = styled.div`
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+`;
+
+const MockBrandName = styled.span`
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  letter-spacing: -0.02em;
+`;
+
+const MockNavItem = styled.button<{ $active?: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
   font-size: 1.3rem;
-  color: ${props => props.$active ? '#FFFFFF' : 'rgba(255,255,255,0.7)'};
-  background: ${props => props.$active ? 'rgba(255,255,255,0.15)' : 'transparent'};
+  font-weight: 500;
+  border: none;
+  width: 100%;
+  text-align: left;
+  color: ${props => props.$active ? '#FFFFFF' : 'rgba(255,255,255,0.6)'};
+  background: ${props => props.$active ? 'rgba(255,255,255,0.1)' : 'transparent'};
   cursor: pointer;
+  transition: all 0.15s ease;
+
+  svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    color: #FFFFFF;
+    background: rgba(255,255,255,0.08);
+  }
 
   @media ${DeviceSize.sm} {
+    width: auto;
     white-space: nowrap;
+    padding: 0.5rem 0.75rem;
+
+    span {
+      display: none;
+    }
   }
 `;
 
 const MockMain = styled.div`
   flex: 1;
   padding: 1.5rem;
-  background: #F8FAFC;
-  min-height: 320px;
+  background: linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%);
+  min-height: 380px;
 `;
 
 const MockTopBar = styled.div`
@@ -435,9 +673,10 @@ const MockTopBar = styled.div`
 `;
 
 const MockTitle = styled.h2`
-  font-size: 2rem;
+  font-size: 1.8rem;
   font-weight: 600;
-  color: #1E3A5F;
+  color: #0F172A;
+  letter-spacing: -0.02em;
 `;
 
 const MockActions = styled.div`
@@ -445,38 +684,46 @@ const MockActions = styled.div`
   gap: 0.5rem;
 `;
 
-const MockButton = styled.button<{ $primary?: boolean }>`
-  padding: 0.5rem 1rem;
+const MockButton = styled.button<{ $primary?: boolean; $small?: boolean }>`
+  padding: ${props => props.$small ? '0.4rem 0.75rem' : '0.5rem 1rem'};
   border-radius: 6px;
-  font-size: 1.2rem;
-  border: 1px solid ${props => props.$primary ? '#1E3A5F' : '#E2E8F0'};
-  background: ${props => props.$primary ? '#1E3A5F' : '#FFFFFF'};
-  color: ${props => props.$primary ? '#FFFFFF' : '#1E3A5F'};
+  font-size: ${props => props.$small ? '1.1rem' : '1.2rem'};
+  font-weight: 500;
+  border: 1px solid ${props => props.$primary ? '#0F172A' : '#E2E8F0'};
+  background: ${props => props.$primary ? '#0F172A' : '#FFFFFF'};
+  color: ${props => props.$primary ? '#FFFFFF' : '#0F172A'};
   cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: ${props => props.$primary ? '#1E293B' : '#F8FAFC'};
+  }
 `;
 
 const MockTable = styled.div`
   background: #FFFFFF;
-  border-radius: 8px;
+  border-radius: 10px;
   border: 1px solid #E2E8F0;
   overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 `;
 
 const MockTableHeader = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr auto;
-  padding: 0.75rem 1rem;
+  grid-template-columns: 1.5fr 1fr 1fr auto;
+  padding: 0.875rem 1.25rem;
   background: #F8FAFC;
   border-bottom: 1px solid #E2E8F0;
   font-size: 1.1rem;
-  font-weight: 500;
+  font-weight: 600;
   color: #64748B;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 
   @media ${DeviceSize.sm} {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1fr 1fr auto;
 
-    span:nth-child(4),
-    span:nth-child(5) {
+    span:nth-child(3) {
       display: none;
     }
   }
@@ -484,33 +731,204 @@ const MockTableHeader = styled.div`
 
 const MockTableRow = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr auto;
-  padding: 0.75rem 1rem;
+  grid-template-columns: 1.5fr 1fr 1fr auto;
+  padding: 0.875rem 1.25rem;
   border-bottom: 1px solid #F1F5F9;
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   color: #1E293B;
+  align-items: center;
+  transition: background 0.1s ease;
 
   &:last-child {
     border-bottom: none;
   }
 
-  @media ${DeviceSize.sm} {
-    grid-template-columns: repeat(3, 1fr);
+  &:hover {
+    background: #FAFBFC;
+  }
 
-    span:nth-child(4),
-    span:nth-child(5) {
+  @media ${DeviceSize.sm} {
+    grid-template-columns: 1fr 1fr auto;
+
+    span:nth-child(3) {
       display: none;
     }
   }
 `;
 
 const MockStatus = styled.span<{ $status: string }>`
-  padding: 0.25rem 0.75rem;
+  padding: 0.3rem 0.75rem;
   border-radius: 20px;
   font-size: 1.1rem;
   font-weight: 500;
   background: ${props => props.$status === 'sent' ? '#DCFCE7' : '#FEF3C7'};
   color: ${props => props.$status === 'sent' ? '#166534' : '#92400E'};
+`;
+
+// Dashboard specific
+const MockStatsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+
+  @media ${DeviceSize.sm} {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const MockStatCard = styled.div`
+  background: #FFFFFF;
+  border-radius: 10px;
+  border: 1px solid #E2E8F0;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+`;
+
+const MockStatLabel = styled.div`
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #64748B;
+  margin-bottom: 0.5rem;
+`;
+
+const MockStatValue = styled.div`
+  font-size: 2rem;
+  font-weight: 600;
+  color: #0F172A;
+  letter-spacing: -0.02em;
+`;
+
+const MockStatChange = styled.div<{ $positive?: boolean }>`
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: ${props => props.$positive ? '#16A34A' : '#DC2626'};
+  margin-top: 0.25rem;
+`;
+
+const MockChartPlaceholder = styled.div`
+  background: #FFFFFF;
+  border-radius: 10px;
+  border: 1px solid #E2E8F0;
+  padding: 1.5rem;
+  height: 140px;
+  display: flex;
+  align-items: flex-end;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+`;
+
+const MockChartBars = styled.div`
+  display: flex;
+  gap: 0.75rem;
+  width: 100%;
+  height: 100%;
+  align-items: flex-end;
+`;
+
+const MockChartBar = styled.div<{ $height: number }>`
+  flex: 1;
+  height: ${props => props.$height}%;
+  background: linear-gradient(180deg, #3B82F6 0%, #2563EB 100%);
+  border-radius: 4px 4px 0 0;
+  transition: height 0.3s ease;
+`;
+
+// Wallets specific
+const MockWalletGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+
+  @media ${DeviceSize.sm} {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const MockWalletCard = styled.div`
+  background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+  border-radius: 12px;
+  padding: 1.5rem;
+  color: white;
+`;
+
+const MockWalletCurrency = styled.div`
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 0.75rem;
+`;
+
+const MockWalletBalance = styled.div`
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.25rem;
+`;
+
+const MockWalletLabel = styled.div`
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.5);
+`;
+
+// Settings specific
+const MockSettingsList = styled.div`
+  background: #FFFFFF;
+  border-radius: 10px;
+  border: 1px solid #E2E8F0;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+`;
+
+const MockSettingItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem;
+  border-bottom: 1px solid #F1F5F9;
+
+  &:last-child {
+    border-bottom: none;
+  }
+`;
+
+const MockSettingInfo = styled.div`
+  flex: 1;
+`;
+
+const MockSettingTitle = styled.div`
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: #0F172A;
+  margin-bottom: 0.25rem;
+`;
+
+const MockSettingDesc = styled.div`
+  font-size: 1.15rem;
+  color: #64748B;
+`;
+
+const MockToggle = styled.div<{ $active?: boolean }>`
+  width: 44px;
+  height: 24px;
+  border-radius: 12px;
+  background: ${props => props.$active ? '#16A34A' : '#E2E8F0'};
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    top: 2px;
+    left: ${props => props.$active ? '22px' : '2px'};
+    transition: left 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  }
 `;
 
 const Section = styled.section`

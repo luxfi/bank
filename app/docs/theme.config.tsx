@@ -17,21 +17,14 @@ const config: DocsThemeConfig = {
       </span>
     ),
   },
-  primaryHue: 45, // Gold color
-  primarySaturation: 70,
   darkMode: true,
   nextThemes: {
     defaultTheme: 'dark',
   },
-  useNextSeoProps() {
-    return {
-      titleTemplate: '%s – Lux Financial Docs',
-    }
-  },
   head: (
     <>
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <meta name="description" content="Lux Financial - Stablecoin Infrastructure Documentation" />
+      <meta name="description" content="Lux Financial - Bank Infrastructure Documentation" />
       <meta name="og:title" content="Lux Financial Documentation" />
     </>
   ),

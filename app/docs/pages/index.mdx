@@ -1,15 +1,13 @@
 # Lux Financial Documentation
 
-Welcome to the Lux Financial platform documentation. Lux Financial provides white-label stablecoin infrastructure for financial institutions, enabling banks, fintechs, and payment companies to offer seamless USDC/USDT payments, international transfers, and AI-powered banking operations.
+Welcome to the Lux Financial platform documentation. Lux Financial provides white-label bank infrastructure for financial institutions, enabling banks, fintechs, and payment companies to offer seamless USDC/USDT payments, international transfers, and AI-powered banking operations.
 
 ## Quick Start
 
-<Cards>
-  <Card title="Getting Started" href="/guides/getting-started" />
-  <Card title="API Reference" href="/api" />
-  <Card title="Integration Guide" href="/integration" />
-  <Card title="Customization" href="/customization" />
-</Cards>
+- [Getting Started](/guides/getting-started)
+- [API Reference](/api-reference)
+- [Integration Guide](/integration)
+- [Customization](/customization)
 
 ## Platform Overview
 
@@ -33,26 +31,6 @@ Lux Financial offers a complete neobank infrastructure stack:
 - **AI Compliance**: Automated KYC/KYB and transaction monitoring
 - **AI Chat**: Customer support and admin operations via AI
 
-## Architecture
-
-```mermaid
-graph TB
-    Client[Your Application] --> API[Lux API]
-    Client --> MCP[MCP Server]
-    MCP --> AI[AI Operations]
-    MCP --> ZAP[ZAP Protocol]
-    API --> Compliance[Compliance Engine]
-    API --> Payments[Payment Rails]
-    API --> Custody[Lux Custody]
-    Compliance --> KYC[AI KYC/AML]
-    Payments --> Stablecoins[USDC/USDT]
-    Payments --> SWIFT[SWIFT]
-    Payments --> SEPA[SEPA]
-    Custody --> KMS[Lux KMS]
-    Custody --> MPC[Lux MPC]
-    Custody --> HSM[HSM]
-```
-
 ## Security Stack
 
 | Component | Description |
@@ -75,11 +53,10 @@ graph TB
 
 Try our demo neobank built on Lux Financial:
 
-```bash
-# Access the demo dashboard
+```
 https://demo.lux.financial
 
-# Demo credentials
+Demo credentials:
 Email: demo@trianglebank.com
 Password: demo123
 ```
@@ -89,6 +66,3 @@ Password: demo123
 - **Email**: support@lux.financial
 - **Enterprise**: enterprise@lux.financial
 - **Documentation Issues**: [GitHub Issues](https://github.com/luxfi/bank/issues)
-- **Discord**: [Join our community](https://discord.gg/luxfinancial)
-
-import { Cards, Card } from 'nextra/components'
