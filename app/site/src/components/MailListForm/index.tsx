@@ -58,9 +58,9 @@ export default function MailListForm() {
     <>
       <MailListFormContainer>
         <TextContainer>
-          <Text variant="title">Join Our Mailing List</Text>
-          <Text variant="body" color="#FAFAFA">
-            Stay up to date with the latest news and insights from Lux Financial
+          <Text variant="title">Stay in the loop</Text>
+          <Text variant="body" color="rgba(255, 255, 255, 0.65)">
+            Get the latest on stablecoin infrastructure, product updates, and market insights.
           </Text>
         </TextContainer>
 
@@ -116,8 +116,8 @@ export default function MailListForm() {
             {feedbackMessage && (
               <Text
                 variant="body"
-                color="#6B2F22"
-                style={{ fontWeight: "bold" }}
+                color={feedbackMessage.includes("Thank you") ? "#22C55E" : "#D4AF37"}
+                style={{ fontWeight: "500", textAlign: "center" }}
               >
                 {feedbackMessage}
               </Text>
