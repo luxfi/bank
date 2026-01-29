@@ -10,9 +10,16 @@ interface IProps {
   };
 }
 
-// Generate static params for build time
-// For GitHub Pages, returns empty array (news will redirect to /news)
+// For static export, disable dynamic params and return empty list
+// News details won't be pre-rendered without Ghost API env vars
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
+  // Skip API calls during static export if env vars not available
+  if (!process.env.GHOST_API_URL || !process.env.GHOST_API_KEY) {
+    return [];
+  }
+
   try {
     const { posts } = await getPosts({ limit: "100", page: "1" });
     return posts.map((post) => ({ id: post.id }));
