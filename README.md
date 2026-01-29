@@ -1,8 +1,8 @@
-# Lux Financial
+# Lux Bank
 
 **Complete Digital Asset Infrastructure for Financial Institutions**
 
-Lux Financial (formerly CDAX) provides everything needed to launch exchanges, DeFi protocols, stablecoin issuance, global payments, and multi-asset custody. We power banks, fintechs, and enterprises with institutional-grade infrastructure.
+Lux Bank provides everything needed to launch exchanges, DeFi protocols, stablecoin issuance, global payments, and multi-asset custody. We power banks, fintechs, and enterprises with institutional-grade infrastructure.
 
 ## Platform Overview
 
@@ -18,11 +18,11 @@ Lux Financial (formerly CDAX) provides everything needed to launch exchanges, De
 
 ## Key Domains
 
-- **lux.financial** - Marketing site (Cloudflare Pages)
+- **lux.financial** - Marketing site
 - **app.lux.financial** - Client dashboard
 - **api.lux.financial** - REST API
 - **admin.lux.financial** - Admin dashboard
-- **docs.lux.financial** - Documentation (Nextra)
+- **docs.lux.financial** - Documentation 
 
 > Note: `lux.finance` is the DeFi frontend (Alchemix UI), NOT the bank.
 
