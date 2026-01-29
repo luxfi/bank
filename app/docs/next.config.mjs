@@ -6,5 +6,9 @@ const withNextra = nextra({
 })
 
 export default withNextra({
-  output: 'standalone',
+  output: process.env.STATIC_EXPORT ? 'export' : 'standalone',
+  basePath: process.env.GITHUB_PAGES ? '/bank/docs' : '',
+  images: {
+    unoptimized: true,
+  },
 })

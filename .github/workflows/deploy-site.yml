@@ -49,15 +49,14 @@ jobs:
       - name: Build marketing site
         env:
           GITHUB_PAGES: "true"
+          STATIC_EXPORT: "true"
         run: pnpm --filter @luxbank/site build
 
       - name: Build docs site
         env:
           GITHUB_PAGES: "true"
-        run: |
-          cd app/docs
-          pnpm build
-          pnpm export || true
+          STATIC_EXPORT: "true"
+        run: pnpm --filter @luxbank/docs build
 
       - name: Combine outputs
         run: |
