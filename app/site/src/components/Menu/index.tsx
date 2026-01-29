@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 import HamburgerMenu from "@/components/Hamburguer";
-import { LuxLogo } from "@luxfi/logo";
+import { LuxLogo } from "@luxfi/logo/react";
 
 import { CustomButton } from "../Button";
 import {

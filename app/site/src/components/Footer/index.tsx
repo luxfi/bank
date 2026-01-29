@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LuxLogo } from "@luxfi/logo";
+import { LuxLogo } from "@luxfi/logo/react";
 import { LUX_BRAND } from "@luxbank/brand";
 
 import {
