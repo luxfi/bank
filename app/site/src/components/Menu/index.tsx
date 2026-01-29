@@ -8,7 +8,7 @@ import CommandPalette from "@/components/CommandPalette";
 import NavDropdown from "@/components/NavDropdown";
 import { useThemeMode } from "@/context/ThemeContext";
 
-import { CustomButton } from "../Button";
+import { CustomButton, SecondaryButton } from "../Button";
 import {
   ItemsContainer,
   MainContainer,
@@ -219,6 +219,15 @@ export default function Menu() {
               </SearchShortcut>
             </SearchButton>
 
+            <Link
+              target="_blank"
+              href={"https://app.lux.financial"}
+              onClick={() => {
+                setOpenMenu(false);
+              }}
+            >
+              <SecondaryButton>Login</SecondaryButton>
+            </Link>
             <Link
               target="_blank"
               href={"https://cal.com/luxfi/15min"}
