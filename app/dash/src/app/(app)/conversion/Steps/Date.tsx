@@ -85,7 +85,7 @@ export const Date: React.FC = () => {
             </Text>
             <Link
               target={'_blank'}
-              href={'https://cdax.forex/terms-and-conditions'}
+              href={'https://lux.finance/terms-and-conditions'}
             >
               <Text
                 color="#AB671A"

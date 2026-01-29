@@ -24,7 +24,7 @@ We're paving the way for the next generation of financial services. Our platform
 ## Key Features
 
 ### Regulatory Compliance
-- Class 8 Money Transmission License: CDAX Limited is licensed in the Isle of Man, ensuring full regulatory compliance and operational security.
+- Class 8 Money Transmission License: Lux Financial Limited is licensed in the Isle of Man, ensuring full regulatory compliance and operational security.
 - Transparency: Our open-source approach promotes transparency and trust, essential for building the financial services of the future.
 
 ### Integrations

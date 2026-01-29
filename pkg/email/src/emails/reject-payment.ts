@@ -2,6 +2,7 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import { AttachmentJSON } from '@sendgrid/helpers/classes/attachment';
 import BaseEmail from '../base-email';
+import { LUX_BRAND } from '@luxbank/brand';
 
 interface RejectPaymentEmailContext {
   reference: string;
@@ -18,10 +19,11 @@ const logoImage = readFileSync(
 
 export default class RejectPaymentEmail extends BaseEmail<RejectPaymentEmailContext> {
   constructor(context: RejectPaymentEmailContext) {
+    const { jurisdiction } = LUX_BRAND;
     super(
       context.to,
-      'CDAX Forex <noreply@cdaxforex.com>',
-      'Transaction Deny',
+      `${LUX_BRAND.name} <${jurisdiction.contact.email}>`,
+      'Transaction Denied',
       'emails/operations/transactions/rejected',
       context
     );

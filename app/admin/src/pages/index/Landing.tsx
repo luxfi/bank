@@ -12,7 +12,7 @@ export default function Landing() {
                     <ul>
                         <ListItem text="If you are opening an account as a business, tell us about your business"/>
                         <ListItem text="You’ll need to share details like your business registration, where you’re located etc."/>
-                        <ListItem text="Tell us about yourself and your expected activity and volume of trades with CDAX Forex"/>
+                        <ListItem text="Tell us about yourself and your expected activity and volume of trades with Lux Financial"/>
                         <ListItem text="Add your bank account details " />
                         <ListItem text="If we ask to verify you, once we receive your documents, we’ll work to get it done within 2–3 working days" />
                         <ListItem text="That’s it you’re verified "/>

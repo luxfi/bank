@@ -16,7 +16,7 @@ export default class ContactUsEmail extends BaseEmail<ContactUsEmailContext> {
     constructor(to, context: ContactUsEmailContext) {
         super(
             to,
-            'CDAX Forex <noreply@cdaxforex.com>',
+            `${LUX_BRAND.name} <${LUX_BRAND.jurisdiction.contact.email}>`,
             'Contact Us',
             'emails/operations/contact/us',
             context

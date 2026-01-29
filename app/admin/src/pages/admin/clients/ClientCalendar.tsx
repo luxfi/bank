@@ -99,7 +99,7 @@ export default function ClientCalendar() {
                 {name: 'sanction', label:"Sanction Country?",text: riskAssessmentData.sanction}, 
                 {name: 'rating', label: "Rating Level?", text: riskAssessmentData.rating}, 
                 // {name: 'apply', label: "Apply this case?", text: riskAssessmentData.apply}, 
-                {name: 'known', label: "Is the Company known to CDAX?", text: riskAssessmentData.known}, 
+                {name: 'known', label: "Is the Company known to Lux Financial?", text: riskAssessmentData.known}, 
                 {name: 'yearsKnown', label: "If yes, how long have we known them?", text: riskAssessmentData.yearsKnown},
                 {name: 'metFace', label: "Have the clients ever been met face to face?", text: riskAssessmentData.metFace},
                 {name: 'numberOfBeneficialOwners', label: "Two or less Spouses/Partners?", text: riskAssessmentData.numberOfBeneficialOwners},

@@ -207,7 +207,7 @@ const Navbar = () => {
                     variant="body_sm_regular"
                     color={theme.textColor.layout.secondary.value}
                   >
-                    CDAX
+                    Lux
                   </Text>
                 )}
               </Column>

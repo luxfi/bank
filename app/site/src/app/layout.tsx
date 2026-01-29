@@ -7,6 +7,7 @@ import Menu from "@/components/Menu";
 
 import StyledProviders from "@/providers/StylesProvider";
 import styled from "styled-components";
+import { LUX_BRAND } from "@luxbank/brand";
 
 export default function RootLayout({
   children,
@@ -15,8 +16,10 @@ export default function RootLayout({
 }) {
   const path = usePathname();
   const hideMenu = ["/privacy-policy", "/terms-and-conditions"].includes(path);
+  const { jurisdiction } = LUX_BRAND;
+  const { legalEntity } = jurisdiction;
   const getTitle = {
-    "/privacy-policy": "Privacy policy of CDAX Limited trading as CDAXForex (CDAX)",
+    "/privacy-policy": `Privacy policy of ${legalEntity.name} trading as ${LUX_BRAND.name} (${legalEntity.shortName || LUX_BRAND.name})`,
     "/terms-and-conditions": "Terms & Conditions",
   }[path];
 
@@ -38,21 +41,21 @@ export default function RootLayout({
         <meta name="theme-color" content="#00569e" />
         <meta
           name="description"
-          content="With CDAX, we have removed the complexities, inefficiencies and expenses of traditional cross-border payments with our platform."
+          content={`With ${LUX_BRAND.name}, we have removed the complexities, inefficiencies and expenses of traditional cross-border payments with our platform.`}
         />
         <meta
           property="og:title"
-          content="CDAX | Make payments seamlessly, without complexity and at lower costs, anytime and anywhere."
+          content={`${LUX_BRAND.name} | Make payments seamlessly, without complexity and at lower costs, anytime and anywhere.`}
         />
         <meta
           property="og:description"
-          content="With CDAX, we have removed the complexities, inefficiencies and expenses of traditional cross-border payments with our platform."
+          content={`With ${LUX_BRAND.name}, we have removed the complexities, inefficiencies and expenses of traditional cross-border payments with our platform.`}
         />
-        <meta property="og:url" content="https://cdax.forex/" />
+        <meta property="og:url" content={`https://${LUX_BRAND.domains.primary}/`} />
         <meta property="og:type" content="website" />
         <meta name="robots" content="index, follow" />
 
-        <title>CDAX</title>
+        <title>{LUX_BRAND.name}</title>
       </head>
       <StyledProviders>
         <body>

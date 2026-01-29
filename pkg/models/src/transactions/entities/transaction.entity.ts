@@ -51,7 +51,7 @@ export class Transaction extends BaseEntity {
   short_id: string;
 
   @Property()
-  cdax_id: string;
+  lux_id: string;
 
   @Property()
   gateway: string;
@@ -87,7 +87,7 @@ export class Transaction extends BaseEntity {
   core_rate: string;
 
   /*chris
-  @ManyToOne({entity: () => Beneficiary, nullable: true, joinColumns: ['cdax_beneficiary_id']})
+  @ManyToOne({entity: () => Beneficiary, nullable: true, joinColumns: ['lux_beneficiary_id']})
   beneficiary: Beneficiary;*/
 
   //chris
@@ -96,7 +96,7 @@ export class Transaction extends BaseEntity {
   //////////////////////////////////////////
 
   @Property({ nullable: true })
-  cdax_beneficiary_id: string;
+  lux_beneficiary_id: string;
 
   @Property({ nullable: true })
   beneficiary_id: string;

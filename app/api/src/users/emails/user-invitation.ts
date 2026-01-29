@@ -29,8 +29,8 @@ export default class UserInvitationRole extends BaseEmail<InvitationEmailContext
     constructor(email: string, InvitationData: InvitationData) {
         super(
             email,
-            'CDAX Forex <noreply@cdaxforex.com>',
-            'Welcome to CDAX Forex',
+            `${LUX_BRAND.name} <${LUX_BRAND.jurisdiction.contact.email}>`,
+            `Welcome to ${LUX_BRAND.name}`,
             'emails/registration/user-invitation-role/invite',
             {
                 ...InvitationData,

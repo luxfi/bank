@@ -16,7 +16,7 @@ export default class ApprovePaymentEmail extends BaseEmail<ApprovePaymentEmailCo
     constructor(context: ApprovePaymentEmailContext) {
         super(
             context.to,
-            'CDAX Forex <noreply@cdaxforex.com>',
+            `${LUX_BRAND.name} <${LUX_BRAND.jurisdiction.contact.email}>`,
             'Transaction approved',
             'emails/operations/transactions/approved',
             context

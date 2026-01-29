@@ -3,6 +3,7 @@ import { useCallback, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import * as yup from "yup";
+import { LuxLogo } from "@luxfi/logo";
 import { useAppDispatch } from "../../app/hooks";
 import Button from "../../components/Button";
 import InputField from "../../components/InputField";
@@ -80,11 +81,10 @@ export default function RequestRegistration() {
                     >
                         {({ values, setFieldValue }) => (
                             <Form style={{ minWidth: "33.3%" }}>
-                                <img
-                                    className="logo"
-                                    src="/images/cdax-logo2.svg"
-                                    alt="CDAX"
-                                    width="190px"
+                                <LuxLogo
+                                    size={120}
+                                    variant="color"
+                                    style={{ marginBottom: 64 }}
                                 />
                                 <TitleContainer>
                                     <h1>Request Registration</h1>
@@ -141,7 +141,7 @@ export default function RequestRegistration() {
                                     </Button>
                                 </ButtonContainer>
                                 <SignInContainer>
-                                    <span>Already using CDAX?</span>
+                                    <span>Already using Lux?</span>
                                     <Link to="/">Sign in</Link>
                                 </SignInContainer>
                                 <Row

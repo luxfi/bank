@@ -1,11 +1,11 @@
 
-# CDAX Website
+# Lux Financial Website
 
 
 
 ## Installation
 
-Install cdax website with npm
+Install lux website with npm
 
 ```bash
   npm install

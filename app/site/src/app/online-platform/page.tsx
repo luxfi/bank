@@ -23,7 +23,7 @@ export default function OnlinePlatform() {
           buttonText="Set up an account in minutes"
           onClick={() => {
             const a = document.createElement("a");
-            a.href = "https://app.cdaxforex.com/registration";
+            a.href = "https://app.lux.finance/registration";
             a.target = "_blank";
             a.click();
           }}
@@ -53,7 +53,7 @@ export default function OnlinePlatform() {
 
       <AnimatedDiv>
         <ImageText
-          image="/images/laptop_cdax_app.jpg"
+          image="/images/laptop_lux_app.jpg"
           altText="Payment tracking tool"
           imgPlacement="right"
           title="Payment tracking tool"

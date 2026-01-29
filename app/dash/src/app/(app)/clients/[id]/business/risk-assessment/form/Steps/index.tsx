@@ -80,7 +80,7 @@ export default function FormRiskAssessment() {
 
   const renderTitleStep: Record<EStepRiskAssessment, string> = {
     RESIDENCE_NATIONALITY: 'Residence and nationality of beneficial owners',
-    PRINCIPAL_KNOWN: 'Principal Known to CDAX',
+    PRINCIPAL_KNOWN: 'Principal Known to Lux Financial',
     BENEFICIAL_OWNERS: 'Beneficial owners',
     SOURCE_OF_FUNDS: 'Source of funds/source of wealth (initial and on-going)',
     JURISDICTION: 'Jurisdiction of client entity',

@@ -79,7 +79,7 @@ export function PaymentCard({ type, transaction }: IPaymentCreatedProps) {
           <Text variant="caption_regular" color={textSecondary}>
             Transaction ID
           </Text>
-          <Text variant="body_md_regular">{transaction?.payment?.cdaxId}</Text>
+          <Text variant="body_md_regular">{transaction?.payment?.luxId}</Text>
         </Column>
         <Column>
           <Text variant="caption_regular" color={textSecondary}>

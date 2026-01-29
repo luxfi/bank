@@ -24,14 +24,14 @@ export function PrincipalKnown() {
     principalKnownHaveTheClientsEverBeenMetFaceToFace,
     principalKnownIfNoToTheAboveHasMetTheClientFaceToFace,
     principalKnownIfYesHowLongHaveWeKnown,
-    principalKnownIsTheCompanyKnownToCDAX,
+    principalKnownIsTheCompanyKnownToLux,
   } = useContextBusinessRiskAssessment();
 
   const disableNext = useMemo((): boolean => {
     return (
       !principalKnownHaveTheClientsEverBeenMetFaceToFace ||
-      !principalKnownIsTheCompanyKnownToCDAX ||
-      (principalKnownIsTheCompanyKnownToCDAX === 'Yes' &&
+      !principalKnownIsTheCompanyKnownToLux ||
+      (principalKnownIsTheCompanyKnownToLux === 'Yes' &&
         !principalKnownIfYesHowLongHaveWeKnown) ||
       (principalKnownHaveTheClientsEverBeenMetFaceToFace === 'No' &&
         !principalKnownIfNoToTheAboveHasMetTheClientFaceToFace)
@@ -40,24 +40,24 @@ export function PrincipalKnown() {
     principalKnownIfYesHowLongHaveWeKnown,
     principalKnownHaveTheClientsEverBeenMetFaceToFace,
     principalKnownIfNoToTheAboveHasMetTheClientFaceToFace,
-    principalKnownIsTheCompanyKnownToCDAX,
+    principalKnownIsTheCompanyKnownToLux,
   ]);
 
   return (
     <Column style={{ width: 808, gap: 16 }}>
       <RadioGroup
-        label="Is the Company known to CDAX?"
+        label="Is the Company known to Lux Financial?"
         options={yesNoOptions}
-        value={principalKnownIsTheCompanyKnownToCDAX}
+        value={principalKnownIsTheCompanyKnownToLux}
         onChangeData={(v) =>
-          onChangeData('principalKnownIsTheCompanyKnownToCDAX', v as YES_NO)
+          onChangeData('principalKnownIsTheCompanyKnownToLux', v as YES_NO)
         }
       />
 
       <RadioGroup
         disabled={
-          principalKnownIsTheCompanyKnownToCDAX &&
-          principalKnownIsTheCompanyKnownToCDAX === 'No'
+          principalKnownIsTheCompanyKnownToLux &&
+          principalKnownIsTheCompanyKnownToLux === 'No'
         }
         label="If yes, how long have we known them"
         options={howLongYearsOptions}

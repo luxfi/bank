@@ -9,6 +9,7 @@ import { ICurrentUser, UserRole } from '@/models/auth';
 import { useAuth } from '@/store/useAuth';
 import { Icon, Row, Text, useTheme, Button as ButtonDS } from '@luxbank/ui/';
 import { Avatar } from 'antd';
+import { LuxLogo } from '@luxfi/logo';
 
 import { defaultTheme } from '@/styles/themes/default';
 
@@ -57,18 +58,15 @@ export default function Header() {
       }
     >
       <Link href={'/'}>
-        <Logo
-          src={
+        <LuxLogo
+          variant={
             currentUser?.role === UserRole.SuperAdmin ||
             (currentUser?.role === UserRole.AdminUser &&
               currentUser?.personatedBy)
-              ? '/image/cdax-logo2.svg'
-              : '/image/cdax-logo.svg'
+              ? 'white'
+              : 'color'
           }
-          width={130}
-          height={32}
-          priority
-          alt="CDAX Forex"
+          size={32}
         />
       </Link>
 
@@ -119,14 +117,14 @@ export default function Header() {
               variant="body_md_regular"
               color={'#fff'}
             >
-              CDAX Team
+              Lux Team
             </Text>
 
             {currentUser?.personatedBy && (
               <Row gap="sm" align="center">
                 <Tooltip
                   placement="bottom"
-                  title={`All actions performed on the customer's account will be attributed to the CDAX Team, and will be recorded in the transaction information`}
+                  title={`All actions performed on the customer's account will be attributed to the Lux Team, and will be recorded in the transaction information`}
                 >
                   <div>
                     <Icon

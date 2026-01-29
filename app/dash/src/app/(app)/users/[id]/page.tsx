@@ -63,7 +63,7 @@ export default function UserDetails() {
       setResultModalInfo({
         title: `User ${selectedUser.firstname} ${selectedUser.lastname} removed succesfully.`,
         subtitle:
-          'Note: To restore a user, please contact the CDAX back office.',
+          'Note: To restore a user, please contact the Lux Financial back office.',
         open: true,
       });
     } catch (error) {
@@ -103,7 +103,7 @@ export default function UserDetails() {
             <Row gap="xxs" align="center" style={{ marginRight: '24px' }}>
               <Tooltip
                 placement="bottomLeft"
-                title="Note: To restore a user, please contact the CDAX back office."
+                title="Note: To restore a user, please contact the Lux Financial back office."
               >
                 <>
                   <Icon variant="exclamation-circle" size="sm" />

@@ -15,12 +15,12 @@ export default class TwilioErrorEmail extends BaseEmail<EmailContext> {
     constructor(to: string, context: EmailContext) {
         super(
             to,
-            'CDAX Forex <noreply@cdaxforex.com>',
+            `${LUX_BRAND.name} <${LUX_BRAND.jurisdiction.contact.email}>`,
             context.title,
             'emails/alert/twilio/twilio',
             context,
             undefined,
-            'backoffice@cdaxforex.com'
+            LUX_BRAND.jurisdiction.contact.supportEmail
         );
     }
 

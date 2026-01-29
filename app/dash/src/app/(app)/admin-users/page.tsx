@@ -175,7 +175,7 @@ export default function AdminUsers() {
   return (
     <Container>
       <Row justify="space-between" align="center">
-        <Text variant="headline_regular">CDAX Team</Text>
+        <Text variant="headline_regular">Lux Financial Team</Text>
         <Row gap="md" align="center">
           <Row gap="xxxs" align="center">
             <Input
@@ -193,7 +193,7 @@ export default function AdminUsers() {
             leftIcon="plus-square"
             roundness="rounded"
             onClick={() => router.push('/admin-users/new')}
-            text="Add CDAX Member"
+            text="Add Lux Member"
           />
         </Row>
       </Row>

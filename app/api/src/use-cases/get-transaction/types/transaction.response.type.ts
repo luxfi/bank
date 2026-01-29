@@ -90,6 +90,6 @@ export interface GetTransactionResponse {
             country: string;
             routingCodes: RoutingCodes;
         };
-        cdaxId: string;
+        luxId: string;
     };
 }

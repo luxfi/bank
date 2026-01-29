@@ -126,11 +126,11 @@ export default function BusinessRiskAssessmentPart({value, onChange}: any) {
                     </RightPart>
                 </BandedRow>
             </Card>
-            <Card title="PRINCIPAL KNOWN TO CDAX" type="wide">
+            <Card title="PRINCIPAL KNOWN TO Lux Financial" type="wide">
                 <BandedRow>
                     <LeftPart>
                         <Text>
-                            Is the Company known to CDAX?
+                            Is the Company known to Lux Financial?
                         </Text>
                     </LeftPart>
                     <RightPart>
@@ -653,7 +653,7 @@ export default function BusinessRiskAssessmentPart({value, onChange}: any) {
                 <BandedRow>
                     <LeftPart>
                         <Paragraph>
-                            If the rating has attracted a  YES response to any of the questions (apart from whether known to CDAX)  or the client is associated to a high risk jurisdiction then the overall rating must automatically be regarded as High Risk to begin with. The rationale for any down-grade from this position must be fully documented.   All downgrades must be approved by a Director. 
+                            If the rating has attracted a  YES response to any of the questions (apart from whether known to Lux Financial)  or the client is associated to a high risk jurisdiction then the overall rating must automatically be regarded as High Risk to begin with. The rationale for any down-grade from this position must be fully documented.   All downgrades must be approved by a Director. 
                         </Paragraph>
                         <Paragraph>
                             <Text strong>NOTE. </Text>

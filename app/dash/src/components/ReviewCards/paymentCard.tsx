@@ -77,7 +77,7 @@ export function PaymentReviewCard({ type, payment }: IPaymentReviewCardProps) {
             Transaction ID
           </Text>
           <Text variant="body_md_regular">
-            {payment?.payment?.cdaxId || '-'}
+            {payment?.payment?.luxId || '-'}
           </Text>
         </Column>
         <Column>

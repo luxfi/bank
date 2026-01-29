@@ -1,6 +1,7 @@
 import { AttachmentJSON } from '@sendgrid/helpers/classes/attachment';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { LUX_BRAND } from '@luxbank/brand';
 import BaseEmail from '../../model/base-email';
 import { Invitation } from '@luxbank/tools-models';
 
@@ -14,8 +15,8 @@ export default class InvitationEmail extends BaseEmail<InvitationEmailContext> {
     constructor(invitation: Invitation, secret: string) {
         super(
             invitation.email,
-            'CDAX Forex <noreply@cdaxforex.com>',
-            'CDAX Forex invitation',
+            `${LUX_BRAND.name} <${LUX_BRAND.jurisdiction.contact.email}>`,
+            `${LUX_BRAND.name} invitation`,
             'emails/registration/invitation/invitation',
             {
                 invitationUrl: InvitationEmail.getInvitationUrl(invitation, secret)

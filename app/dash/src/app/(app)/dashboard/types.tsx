@@ -33,7 +33,7 @@ export const inApprovalStatusOptions: TSelectOptions[] = [
 export const transactionsColumns: IColumnProps<ITransactionV2>[] = [
   {
     title: 'TRANSACTION ID',
-    dataIndex: 'cdaxId',
+    dataIndex: 'luxId',
     render: (data: string) => {
       if (!data) return '--';
       return data;

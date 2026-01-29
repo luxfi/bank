@@ -23,7 +23,7 @@ describe("User Platform Registration flow", () => {
       await page.setViewport(viewport)
       await page.goto(appUrl);
       await page.waitForSelector("#root");
-      await expect(page.title()).resolves.toMatch('CDAX Forex')
+      await expect(page.title()).resolves.toMatch('Lux Financial')
       await page.screenshot({
         path: './screenshots/index.png'
       });
@@ -32,7 +32,7 @@ describe("User Platform Registration flow", () => {
       const button = await page.$x('//button[.="Get started"]');
       await expect(button.length).toEqual(1);
       await button[0].click();
-      await expect(page).toMatch("Register for your CDAX Forex Account");
+      await expect(page).toMatch("Register for your Lux Financial Account");
       await page.screenshot({
         path: './screenshots/registration_0.png'
       });
@@ -122,7 +122,7 @@ describe("User Platform Registration flow", () => {
       })
       await page.goto(appUrl);
       await page.waitForSelector("#root");
-      await expect(page.title()).resolves.toMatch('CDAX Forex')
+      await expect(page.title()).resolves.toMatch('Lux Financial')
       await page.click(`a[href='/login']`);
       await expect(page.url()).toMatch(`${appUrl}login`)
     });

@@ -34,7 +34,7 @@ export default function UserSteps() {
           *All applications subject to acceptance and satisfactory completion of
           verification requirements.
         </Text>
-        <Link href="https://app.cdaxforex.com/registration" target="_blank">
+        <Link href="https://app.lux.finance/registration" target="_blank">
           <CustomButton>Open an account</CustomButton>
         </Link>
       </StepsImageContainer>

@@ -20,6 +20,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@luxbank/brand": "workspace:*",
     "@luxbank/currency-cloud": "^1.0.32",
     "@luxbank/email": "^1.0.33",
     "@luxbank/ifx": "^1.0.32",

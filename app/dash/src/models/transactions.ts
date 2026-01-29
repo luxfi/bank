@@ -6,7 +6,7 @@ export interface ITransactionV2 {
   id: string;
   transactionStatus: string;
   shortId: string;
-  cdaxId?: string;
+  luxId?: string;
   status: string;
   createdAt: string;
   updatedAt: string;
@@ -22,7 +22,7 @@ export interface ITransactionV2 {
   approvalStatus: string;
   approvedBy: string;
   approvalStatusChangedAt: string;
-  cdaxFee?: string;
+  luxFee?: string;
   spread?: string;
 }
 

@@ -165,7 +165,7 @@ export interface ITransactionDetails {
     conversionDate: string;
   };
   payment: {
-    cdaxId?: string;
+    luxId?: string;
     reason: string;
     paymentReference: string;
     payer: {

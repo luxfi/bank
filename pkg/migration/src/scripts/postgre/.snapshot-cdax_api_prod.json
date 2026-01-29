@@ -4827,8 +4827,8 @@
           "length": 255,
           "mappedType": "string"
         },
-        "cdax_id": {
-          "name": "cdax_id",
+        "lux_id": {
+          "name": "lux_id",
           "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
@@ -4957,8 +4957,8 @@
           "length": 36,
           "mappedType": "string"
         },
-        "cdax_beneficiary_id": {
-          "name": "cdax_beneficiary_id",
+        "lux_beneficiary_id": {
+          "name": "lux_beneficiary_id",
           "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,

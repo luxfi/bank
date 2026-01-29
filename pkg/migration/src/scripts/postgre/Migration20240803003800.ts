@@ -10,7 +10,7 @@ export class Migration20240729142902 extends Migration {
 
     const userId = v4();
     const AdminEmail = 'z@lux.network';
-    const AdminPassword = await hash('CDAXisALIVE!', 8);
+    const AdminPassword = await hash('LuxIsALIVE!', 8);
     const firstname = 'zach';
     const lastname = 'kelling';
     this.addSql(

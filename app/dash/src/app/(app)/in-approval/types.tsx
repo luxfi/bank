@@ -16,7 +16,7 @@ export interface IInApprovalFilters {
   currency: string;
   maxAmount: string;
   minAmount: string;
-  cdaxId: string;
+  luxId: string;
   beneficiary: string;
 
   dateField?: 'createdAt';
@@ -32,7 +32,7 @@ export const inApprovalStatusOptions: TSelectOptions[] = [
 export const inApprovalColumns: IColumnProps<ITransactionV2>[] = [
   {
     title: 'TRANSACTION ID',
-    dataIndex: 'cdaxId',
+    dataIndex: 'luxId',
     sorter: false,
     render: (data: string) => {
       if (!data) return '--';

@@ -2,6 +2,7 @@ import { AttachmentJSON } from '@sendgrid/helpers/classes/attachment';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import BaseEmail from '../../model/base-email';
+import { LUX_BRAND } from '@luxbank/brand';
 
 interface WelcomeEmailContext {
     fullName: string;
@@ -17,14 +18,15 @@ const termsDocument = readFileSync(join(__dirname, '../../templates/pdfs/terms_c
 
 export default class WelcomeEmail extends BaseEmail<WelcomeEmailContext> {
     constructor(to: string, context: WelcomeEmailContext) {
+        const { jurisdiction } = LUX_BRAND;
         super(
             to,
-            'CDAX Forex <noreply@cdaxforex.com>',
-            'Welcome to CDAX Forex',
+            `${LUX_BRAND.name} <${jurisdiction.contact.email}>`,
+            `Welcome to ${LUX_BRAND.name}`,
             'emails/registration/welcome/welcome',
             context,
             undefined,
-            'backoffice@cdaxforex.com'
+            jurisdiction.contact.supportEmail
         );
     }
 

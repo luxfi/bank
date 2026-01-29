@@ -5,6 +5,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { LuxLogo } from "@luxfi/logo";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Button from "../../components/Button";
 import InputField from "../../components/InputField";
@@ -121,7 +122,7 @@ export default function Login() {
             <Container>
                 <FormContainer>
                     <BackButtonContainer>
-                        <Link to={"https://cdax.forex/"}>
+                        <Link to={"https://lux.finance/"}>
                             <ArrowLeftOutlined />
                         </Link>
                     </BackButtonContainer>
@@ -132,11 +133,10 @@ export default function Login() {
                     >
                         {({ values, setFieldValue }) => (
                             <Form style={{ minWidth: "33.3%" }}>
-                                <img
-                                    className="logo"
-                                    src="/images/cdax-logo2.svg"
-                                    alt="CDAX"
-                                    width="190px"
+                                <LuxLogo
+                                    size={120}
+                                    variant="color"
+                                    style={{ marginBottom: 64 }}
                                 />
                                 <TitleContainer>
                                     <h1>Sign In</h1>

@@ -40,7 +40,7 @@ export default function NewUser() {
     <>
       <Container>
         <Column>
-          <BackButton>Invite a CDAX Member</BackButton>
+          <BackButton>Invite a Lux Member</BackButton>
           <Row align="center" width="100%" margin="lg">
             {loading.addSuperAdmin ? (
               <Column

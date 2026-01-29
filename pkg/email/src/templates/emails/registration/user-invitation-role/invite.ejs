@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>CDAX - E-mail Template</title>
+    <title><%= brandName %> - Email</title>
   </head>
 
   <body style="margin: 0; padding: 0; background: #00569e">
@@ -16,7 +16,7 @@
       >
         <tr>
           <td>
-            <img src="cid:hero" style="width: 100%" alt="CDAXForex" />
+            <img src="cid:hero" style="width: 100%" alt="<%= brandName %>" />
           </td>
         </tr>
         <tr>
@@ -34,7 +34,7 @@
             </strong>
             </br></br>
             <strong>
-              We're thrilled to welcome you to CDAX Forex,
+              We're thrilled to welcome you to <%= brandName %>,
               your digital partner in international foreign exchange and
               treasury services.
             </strong>
@@ -177,7 +177,7 @@
                     picture of a valid government-issued photo ID and a picture
                     of your face. or
                     <a
-                      href="mailto:hello@cdaxforex.com"
+                      href="mailto:<%= contactEmail %>"
                       style="text-decoration: underline; color: #00569e"
                       >alternatively arrange a video call with us here</a
                     >.
@@ -277,13 +277,13 @@
               line-height: 25px;
             "
           >
-            <strong> Tips to get started with CDAX Forex </strong>
+            <strong> Tips to get started with <%= brandName %> </strong>
           </td>
         </tr>
         <tr>
           <td style="text-align: center">
             <a
-              href="https://cdax.forex/help/how-do-i-register-for-a-cdax-forex-account/"
+              href="<%= helpUrl %>"
             >
               <img
                 src="cid:help-center"
@@ -303,18 +303,13 @@
               padding-right: 5%;
               text-align: center;
               font-size: 12px;
-              color: #00569e;
+              color: <%= primaryColor %>;
             "
           >
-            CDAX Forex is a registered trading name of CDAX Limited which is
-            licenced by the Isle of Man Financial Services Authority.<br />
-            CDAX Limited is incorporated in the Isle of Man. Company No.
-            135485C<br />
-            Correspondence: 27 Hope Street, Douglas, Isle of Man, IM1 1AR<br />
-            Registered Office: 2nd Floor, St Mary's Court, 20 Hill Street,
-            Douglas, IM1 1EU<br />
+            <%= disclaimer %><br />
+            <%= legalAddress %><br />
             Telephone calls may be recorded.<br />
-            +44 01624 682070
+            <%= contactPhone %>
           </td>
         </tr>
       </table>

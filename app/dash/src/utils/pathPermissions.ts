@@ -33,7 +33,7 @@ const teamMemberRoutes = [
   '/create-payment',
   '/conversion',
   '/balances',
-  'https://cdax.forex/help-centre/',
+  'https://lux.finance/help-centre/',
   '/payment',
   APP_PATHS.IN_APPROVAL.ROOT,
 ];
@@ -41,7 +41,7 @@ const teamMemberRoutes = [
 const teamViewerRoutes = [
   '/balances',
   '/wallet',
-  'https://cdax.forex/help-centre/',
+  'https://lux.finance/help-centre/',
   '/payment',
   APP_PATHS.IN_APPROVAL.ROOT,
 ];
@@ -52,7 +52,7 @@ const teamManagerRoutes = [
   '/wallet',
   '/invite-users',
   '/balances',
-  'https://cdax.forex/help-centre/',
+  'https://lux.finance/help-centre/',
   '/payment',
   APP_PATHS.IN_APPROVAL.ROOT,
 ];
@@ -63,7 +63,7 @@ const adminRoutes = [
   '/wallet',
   '/invite-users',
   '/balances',
-  'https://cdax.forex/help-centre/',
+  'https://lux.finance/help-centre/',
   '/payment',
   APP_PATHS.IN_APPROVAL.ROOT,
 ];
@@ -73,7 +73,7 @@ const superAdminRoutes = [
   '/clients',
   '/admin-users',
   '/archived-users',
-  'https://cdaxkycuploads.cdaxforex.com/index.php/login',
+  'https://kyc.lux.finance/index.php/login',
 ];
 
 export function getPaths(type: TPaths): Array<string> {

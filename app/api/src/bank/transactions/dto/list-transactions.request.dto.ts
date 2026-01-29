@@ -40,7 +40,7 @@ export class ListTransactionsRequestDto {
     reference?: string;
     account?: string;
     gateway?: string;
-    cdaxId?: string;
+    luxId?: string;
     page?: number;
     limit?: number;
 

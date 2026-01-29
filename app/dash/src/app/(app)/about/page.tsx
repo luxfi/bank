@@ -1,11 +1,17 @@
 'use client';
 
 import { Row, Text, useTheme } from '@luxbank/ui';
+import { LUX_BRAND } from '@luxbank/brand';
 
 import { Container, Divider } from './styles';
 
 export default function About() {
   const { theme } = useTheme();
+  const { jurisdiction, domains } = LUX_BRAND;
+  const { legalEntity, regulators, disclaimers } = jurisdiction;
+  const regulator = regulators[0];
+  const address = legalEntity.registeredAddress;
+  const formattedAddress = `${address.line1}, ${address.city}, ${address.postalCode}, ${address.country}`;
 
   return (
     <Container>
@@ -16,19 +22,19 @@ export default function About() {
           variant="body_sm_regular"
           color={theme.textColor.interactive.placeholder.value}
         >
-          135485C27
+          {legalEntity.registrationNumber}
         </Text>
         <Text
           variant="body_sm_regular"
           color={theme.textColor.interactive.placeholder.value}
         >
-          Hope Street, Douglas, IM1 1AR, Isle of Man
+          {formattedAddress}
         </Text>
         <Text
           variant="body_sm_regular"
           color={theme.textColor.interactive.placeholder.value}
         >
-          CDAX Forex - © Copyright 2023
+          {LUX_BRAND.name} - © Copyright {new Date().getFullYear()}
         </Text>
       </div>
 
@@ -37,13 +43,13 @@ export default function About() {
           variant="body_sm_regular"
           color={theme.textColor.interactive.placeholder.value}
         >
-          Licensed by the Isle of Man Financial Services Authotity.
+          Licensed by the {regulator.name}.
         </Text>
         <Text
           variant="body_sm_regular"
           color={theme.textColor.interactive.placeholder.value}
         >
-          CDAX Forex is a registered trading name of CDAX Limited.
+          {LUX_BRAND.name} is a registered trading name of {legalEntity.name}.
         </Text>
         <Row align="center" gap="xxxs">
           <Text
@@ -57,7 +63,7 @@ export default function About() {
             color={theme.textColor.interactive.placeholder.value}
             style={{ flexDirection: 'row' }}
           >
-            27 Hope Street, Douglas, Isle of Man, IM1 1AR
+            {formattedAddress}
           </Text>
         </Row>
         <Row align="center" gap="xxxs">
@@ -71,7 +77,7 @@ export default function About() {
             variant="body_sm_regular"
             color={theme.textColor.interactive.placeholder.value}
           >
-            135485C
+            {legalEntity.registrationNumber}
           </Text>
         </Row>
       </div>
@@ -80,14 +86,13 @@ export default function About() {
         variant="body_sm_regular"
         color={theme.textColor.interactive.placeholder.value}
       >
-        The money transmission services we provide do not constitute deposit
-        taking activity and are not protect by a compensation scheme
+        {disclaimers.general}
       </Text>
 
       <Row justify="center" align="center" gap="lg">
         <Text
           variant="interactive_md_link"
-          href="https://cdax.forex/privacy-policy"
+          href={`https://${domains.primary}/privacy-policy`}
           color={theme.textColor.interactive.default.value}
         >
           Privacy Policy
@@ -95,7 +100,7 @@ export default function About() {
         <Divider />
         <Text
           variant="interactive_md_link"
-          href="https://cdax.forex/terms-and-conditions"
+          href={`https://${domains.primary}/terms-and-conditions`}
           color={theme.textColor.interactive.default.value}
         >
           Terms & Conditions

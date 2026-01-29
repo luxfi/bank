@@ -2,6 +2,7 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import { AttachmentJSON } from '@sendgrid/helpers/classes/attachment';
 import BaseEmail from '../base-email';
+import { LUX_BRAND } from '@luxbank/brand';
 
 interface ApprovePaymentEmailContext {
   reference: string;
@@ -16,10 +17,11 @@ const logoImage = readFileSync(
 
 export default class ApprovePaymentEmail extends BaseEmail<ApprovePaymentEmailContext> {
   constructor(context: ApprovePaymentEmailContext) {
+    const { jurisdiction } = LUX_BRAND;
     super(
       context.to,
-      'CDAX Forex <noreply@cdaxforex.com>',
-      'Transaction approved',
+      `${LUX_BRAND.name} <${jurisdiction.contact.email}>`,
+      'Transaction Approved',
       'emails/operations/transactions/approved',
       context
     );

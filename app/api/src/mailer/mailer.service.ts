@@ -2,10 +2,12 @@ import { Injectable, Logger } from '@nestjs/common';
 import sgMail from '@sendgrid/mail';
 import { join } from 'path';
 import { renderFile } from 'ejs';
+import { LUX_BRAND } from '@luxbank/brand';
 import BaseEmail from '../model/base-email';
 
 const NODE_ENV = process.env.NODE_ENV;
 const DEBUG_EMAILS = process.env.DEBUG_EMAILS?.split(',') ?? [];
+const TEST_EMAIL_DOMAIN = LUX_BRAND.domains.primary.replace(/\./g, '').toLowerCase();
 
 @Injectable()
 export class MailerService {
@@ -38,7 +40,7 @@ export class MailerService {
             sendGridEmail.bcc = email.bcc;
 
         try {
-            if (NODE_ENV === 'development' && !DEBUG_EMAILS.includes(email.to) && !email.to.includes('cdaxforex+')) {
+            if (NODE_ENV === 'development' && !DEBUG_EMAILS.includes(email.to) && !email.to.includes(`${TEST_EMAIL_DOMAIN}+`)) {
                 return;
             }
 

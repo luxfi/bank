@@ -3,9 +3,13 @@ import SG from '@sendgrid/mail';
 import { join } from 'path';
 import { renderFile } from 'ejs';
 import BaseEmail from './base-email';
+import { LUX_BRAND } from '@luxbank/brand';
 
 const NODE_ENV = process.env.NODE_ENV;
 const DEBUG_EMAILS = process.env.DEBUG_EMAILS?.split(',') ?? [];
+
+// Email domain for debug filtering
+const EMAIL_DOMAIN = LUX_BRAND.domains.primary;
 
 @Injectable()
 export class MailerService {
@@ -26,12 +30,13 @@ export class MailerService {
 
     if (email.cc)
       sendGridEmail.cc = email.cc;
-    
+
     if (email.bcc)
       sendGridEmail.bcc = email.bcc;
-    
+
     try {
-      if (NODE_ENV === 'development' && !DEBUG_EMAILS.includes(email.to) && !email.to.includes('cdaxforex+'))
+      // In development, only send to debug emails or internal testing addresses
+      if (NODE_ENV === 'development' && !DEBUG_EMAILS.includes(email.to) && !email.to.includes(`@${EMAIL_DOMAIN}`))
         return;
 
       await SG.send(sendGridEmail);
@@ -39,7 +44,7 @@ export class MailerService {
       this.logger.log(
         `Email sent to ${email.to} from ${email.from} with subject ${email.subject}`
       );
-    } 
+    }
     catch (err) {
       this.logger.debug((err as any).response);
       this.logger.error((err as Error).message, (err as Error).stack);

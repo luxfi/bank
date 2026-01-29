@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>CDAX - Update Metdata Request</title>
+  <title><%= brandName %> - Update Metadata Request</title>
 </head>
 
 <body style="margin: 0;padding: 0;background: #00569e;">
@@ -13,7 +13,7 @@
                   font-size: 16px;">
       <tr>
         <td>
-          <img src="cid:hero" style="width:100%;" alt="CDAXForex" />
+          <img src="cid:hero" style="width:100%;" alt="<%= brandName %>" />
         </td>
       </tr>
       <tr>
@@ -30,14 +30,11 @@
       <% } %>
       <tr>
         <td
-          style="padding-top:100px;padding-bottom:40px;padding-left:5%;padding-right:5%;text-align: center;font-size: 12px;color: #00569e;">
-          CDAX Forex is a registered trading name of CDAX Limited which is licenced by the Isle of Man Financial
-          Services Authority.<br />
-          CDAX Limited is incorporated in the Isle of Man. Company No. 135485C<br />
-          Correspondence: 27 Hope Street, Douglas, Isle of Man, IM1 1AR<br />
-          Registered Office: 2nd Floor, St Mary's Court, 20 Hill Street, Douglas, IM1 1EU<br />
+          style="padding-top:100px;padding-bottom:40px;padding-left:5%;padding-right:5%;text-align: center;font-size: 12px;color: <%= primaryColor %>;">
+          <%= disclaimer %><br />
+          <%= legalAddress %><br />
           Telephone calls may be recorded.<br />
-          +44 01624 682070
+          <%= contactPhone %>
         </td>
       </tr>
     </table>

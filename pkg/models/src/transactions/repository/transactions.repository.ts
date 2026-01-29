@@ -41,11 +41,11 @@ export class TransactionsRepository extends EntityRepository<Transaction> {
     result.status_approval = data.status_approval;
     result.client_uuid = data.client_uuid;
     result.gateway_id = data.gateway_id;
-    // result.cdax_beneficiary_id = data.cdax_beneficiary_id;
+    // result.lux_beneficiary_id = data.lux_beneficiary_id;
     result.gateway_completed_at = data.gateway_completed_at;
     result.conversion_date = data.conversion_date;
     result.settlement_date = data.settlement_date;
-    result.cdax_id = generateShortUniqId(8);
+    result.lux_id = generateShortUniqId(8);
     return result;
   }
 
@@ -62,7 +62,7 @@ export class TransactionsRepository extends EntityRepository<Transaction> {
       {
         orderBy: { createdAt: 'DESC' },
         limit: 10,
-        fields: ['cdax_beneficiary_id'],
+        fields: ['lux_beneficiary_id'],
         flags: [QueryFlag.DISTINCT],
       }
     );
@@ -73,7 +73,7 @@ export class TransactionsRepository extends EntityRepository<Transaction> {
             .createQueryBuilder(Beneficiary, 'b')
             .where({
               uuid: {
-                $in: _ids.map(({ cdax_beneficiary_id }) => cdax_beneficiary_id)
+                $in: _ids.map(({ lux_beneficiary_id }) => lux_beneficiary_id)
               },
               isApproved: true,
               deletedAt: null

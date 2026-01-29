@@ -27,7 +27,7 @@ export interface ITransactionsFilters {
   currency?: string;
   minAmount?: string;
   maxAmount?: string;
-  cdaxId?: string;
+  luxId?: string;
   account?: string;
   type?: string;
 
@@ -85,11 +85,11 @@ export const transactionColumns: IColumnProps<ITransactionV2>[] = [
   {
     title: 'Transaction ID',
     sorter: false,
-    dataIndex: 'cdaxId',
+    dataIndex: 'luxId',
     orderBy: 'reference',
     show: true,
     render: (_, record) => {
-      const value = `${record?.cdaxId ?? ''}`;
+      const value = `${record?.luxId ?? ''}`;
 
       return <span>{value}</span>;
     },
@@ -196,7 +196,7 @@ export const transactionColumnsSuperAdmin: IColumnProps<ITransactionV2>[] = [
     show: true,
     width: 200,
     render: (_, record) => {
-      const id = `${record?.cdaxId ?? '--'}`;
+      const id = `${record?.luxId ?? '--'}`;
       const gateway = `${record?.gateway ?? '--'}`;
 
       return (
@@ -299,8 +299,8 @@ export const transactionColumnsSuperAdmin: IColumnProps<ITransactionV2>[] = [
     },
   },
   {
-    title: 'CDAX Fee',
-    dataIndex: 'cdaxFee',
+    title: 'Lux Fee',
+    dataIndex: 'luxFee',
     show: true,
     width: 200,
     render: (value) => {

@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createRef, useCallback, useEffect, useState } from 'react';
@@ -9,6 +8,7 @@ import ReCAPTCHA from 'react-google-recaptcha';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
 import ModalForgotPassword from '@/components/ModalForgotPassword';
+import { LuxLogo } from '@luxfi/logo';
 
 // import { useCurrentUser } from '@/context/CurrentUser';
 
@@ -120,13 +120,7 @@ export default function SignIn() {
     <>
       <Container>
         <FormContainer>
-          <Image
-            id="img1"
-            src={'/image/cdax-logo.svg'}
-            alt="Mini Phone"
-            width={212}
-            height={200}
-          />
+          <LuxLogo size={120} variant="color" style={{ marginBottom: 24 }} />
           <TitleContainer>
             <Title>Sign In</Title>
             <Subtitle>Welcome back! Please enter your details</Subtitle>

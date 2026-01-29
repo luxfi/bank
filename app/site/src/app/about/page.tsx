@@ -3,9 +3,14 @@ import AnimatedDiv from "@/components/AnimatedDiv";
 import BannerWithCard from "@/components/BannerWithCard";
 
 import { TeamCardsContainer } from "./styles";
-import { cdaxTeam } from "./teamDescription";
+import { luxTeam } from "./teamDescription";
+import { LUX_BRAND } from "@luxbank/brand";
 
 export default function About() {
+  const { jurisdiction } = LUX_BRAND;
+  const { legalEntity, regulators } = jurisdiction;
+  const regulator = regulators[0];
+
   return (
     <>
       <AnimatedDiv>
@@ -15,11 +20,11 @@ export default function About() {
           responsiveHeight="700px"
           imageTitle="About"
           title="Meet The Team"
-          text="Matthew and Chris are co-founders of Cdax Limited, an Isle of Man based foreign exchange company which launched in early 2022.  Our team of professionals have over 75 years combined experience in financial services. The business provides an alternative service from the banks for international foreign exchange and cross border payments.  Cdax Limited is licenced by the Isle of Man Financial Services Authority as a Money Transmission Services business with a class 8 licence. "
+          text={`Our team of professionals have over 75 years combined experience in financial services. The business provides an alternative service from the banks for international foreign exchange and cross border payments. ${legalEntity.name} is licensed by the ${regulator.name} as a Money Transmission Services business.`}
         />
       </AnimatedDiv>
       <TeamCardsContainer>
-        {cdaxTeam.map((member, index) => (
+        {luxTeam.map((member, index) => (
           <AboutCard key={index} member={member} />
         ))}
       </TeamCardsContainer>

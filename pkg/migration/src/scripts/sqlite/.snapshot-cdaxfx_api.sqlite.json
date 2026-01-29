@@ -4980,8 +4980,8 @@
           "length": null,
           "mappedType": "text"
         },
-        "cdax_id": {
-          "name": "cdax_id",
+        "lux_id": {
+          "name": "lux_id",
           "type": "text",
           "unsigned": false,
           "autoincrement": false,
@@ -5110,8 +5110,8 @@
           "length": 36,
           "mappedType": "text"
         },
-        "cdax_beneficiary_id": {
-          "name": "cdax_beneficiary_id",
+        "lux_beneficiary_id": {
+          "name": "lux_beneficiary_id",
           "type": "text",
           "unsigned": false,
           "autoincrement": false,

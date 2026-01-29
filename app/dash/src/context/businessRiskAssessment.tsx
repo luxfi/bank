@@ -55,7 +55,7 @@ interface IDataForm {
   residenceNationalityWhatIsTheRiskRatingTheJurisdiction: RISK_LEVELS;
   residenceNationalityDoesThisApplyThisCase: YES_NO;
 
-  principalKnownIsTheCompanyKnownToCDAX: YES_NO;
+  principalKnownIsTheCompanyKnownToLux: YES_NO;
   principalKnownIfYesHowLongHaveWeKnown: YEARS;
   principalKnownHaveTheClientsEverBeenMetFaceToFace: YES_NO;
   principalKnownIfNoToTheAboveHasMetTheClientFaceToFace: string;
@@ -145,7 +145,7 @@ const initForm: IDataForm = {
   residenceNationalityWhatIsTheRiskRatingTheJurisdiction: undefined,
   residenceNationalityDoesThisApplyThisCase: undefined,
 
-  principalKnownIsTheCompanyKnownToCDAX: undefined,
+  principalKnownIsTheCompanyKnownToLux: undefined,
   principalKnownIfYesHowLongHaveWeKnown: undefined,
   principalKnownHaveTheClientsEverBeenMetFaceToFace: undefined,
   principalKnownIfNoToTheAboveHasMetTheClientFaceToFace: '',
@@ -234,7 +234,7 @@ export function BusinessRiskAssessmentProvider({
         data.residenceNationalityWhatIsTheRiskRatingTheJurisdiction as string,
       apply: data.residenceNationalityDoesThisApplyThisCase as string,
 
-      known: data.principalKnownIsTheCompanyKnownToCDAX as string,
+      known: data.principalKnownIsTheCompanyKnownToLux as string,
       yearsKnown: data.principalKnownIfYesHowLongHaveWeKnown as string,
       metFace:
         data.principalKnownHaveTheClientsEverBeenMetFaceToFace === 'No'

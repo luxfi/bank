@@ -12,9 +12,9 @@ const rawTokens = require('../styles/theme/tokens.json');
 */
 
 (async function main() {
-  const light = transformTokens(rawTokens, ['cdax/light', 'core'], ['core']);
+  const light = transformTokens(rawTokens, ['lux/light', 'core'], ['core']);
 
-  const dark = transformTokens(rawTokens, ['cdax/dark', 'core'], ['core']);
+  const dark = transformTokens(rawTokens, ['lux/dark', 'core'], ['core']);
 
   const content = `
   export interface ILightTheme ${JSON.stringify(light, null, 2)}

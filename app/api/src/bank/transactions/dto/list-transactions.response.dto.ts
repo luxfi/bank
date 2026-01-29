@@ -55,7 +55,7 @@ export class TransactionsResponseDto {
     approvalStatus?: ETransactionApprovalStatus;
     approvedBy?: string;
     approvalStatusChangedAt?: string;
-    cdaxFee?: string;
+    luxFee?: string;
     spread?: string;
 }
 

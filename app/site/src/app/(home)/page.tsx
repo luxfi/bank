@@ -50,7 +50,7 @@ export default function Home() {
               {`Subject to jurisdiction. We reserve the right to decline any
             application without explanation.`}
             </Text>
-            <Link href="https://app.cdaxforex.com/registration" target="_blank">
+            <Link href="https://app.lux.finance/registration" target="_blank">
               <CustomButton>Set up an account in minutes</CustomButton>
             </Link>
           </TextContainer>
@@ -85,7 +85,7 @@ export default function Home() {
             *Subject to jurisdiction. We reserve the right to decline any
             application without explanation.
           </Text>
-          <Link href="https://app.cdaxforex.com/registration" target="_blank">
+          <Link href="https://app.lux.finance/registration" target="_blank">
             <CustomButton>Set up an account in minutes</CustomButton>
           </Link>
         </TextContainer>
@@ -94,9 +94,9 @@ export default function Home() {
       <AnimatedDiv>
         <ImageText
           image="/images/working_team.jpg"
-          altText="CDAX"
+          altText="Lux Financial"
           imgPlacement="left"
-          title="CDAX is a specialist online money transmission services provider based in the Isle of Man."
+          title="Lux Financial is a specialist online money transmission services provider based in the Isle of Man."
           text="Specialising in international currency exchange and treasury services we are licenced by the Isle of Man Financial Services Authority as a provider of money transmission services.  We can offer a friction free online solution to help manage all your foreign currency needs in one place.  Our simple to use platform enables you to exchange currencies and make cross border payments effectively and efficiently at highly competitive rates when compared to traditional payment channels."
         />
       </AnimatedDiv>
@@ -195,8 +195,8 @@ export default function Home() {
           imgPositionY={"-180px"}
           height="580px"
           responsiveHeight="700px"
-          title="CDAX for larger businesses and institutions"
-          text="Our team of experienced professionals can assist you with your foreign currency needs and treasury management solutions. Speak to us to hear how CDAX can work for your business"
+          title="Lux Financial for larger businesses and institutions"
+          text="Our team of experienced professionals can assist you with your foreign currency needs and treasury management solutions. Speak to us to hear how Lux Financial can work for your business"
           buttonText="Speak to a consultant"
           onClick={() => router.push("/contact")}
         />

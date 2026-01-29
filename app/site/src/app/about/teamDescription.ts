@@ -1,6 +1,6 @@
 import { IMember } from "@/components/AboutCard";
 
-export const cdaxTeam: Array<IMember> = [
+export const luxTeam: Array<IMember> = [
   {
     picture: "/images/profile-1.png",
     name: "Chris Connor",

@@ -21,6 +21,7 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "@luxbank/brand": "workspace:*",
     "@nestjs/common": "^10.3.10",
     "@sendgrid/helpers": "^8.0.0",
     "@sendgrid/mail": "^8.1.3",

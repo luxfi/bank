@@ -1,7 +1,8 @@
 /* eslint-disable prettier/prettier */
 
-import Image from 'next/image';
 import Link from 'next/link';
+import { LuxLogo } from '@luxfi/logo';
+import { LUX_BRAND } from '@luxbank/brand';
 
 import { Constants } from '@/lib/constants';
 
@@ -16,42 +17,30 @@ import {
 } from './styles';
 
 export default function Footer() {
+  const { jurisdiction } = LUX_BRAND;
+  const address = jurisdiction.legalEntity.registeredAddress;
+
   return (
     <Container>
       <InnerContainer>
         <LeftColumn>
           <Link href={'/'}>
-            <Image
-              alt="CDAX Forex"
-              src={'image/footer-logo.svg'}
-              width={50}
-              height={50}
-            />
+            <LuxLogo variant="white" size={50} />
           </Link>
 
           <LeftColumnText>
-            CDAX Forex <br />
-            135485C
-            <br />
-            27 Hope Street, Douglas, IM1 1AR, Isle of Man <br />
-            CDAX Forex - © Copyright {new Date().getFullYear()}
+            {LUX_BRAND.name} <br />
+            {address.line1}, {address.city}, {address.postalCode}, {address.country} <br />
+            {LUX_BRAND.name} - © Copyright {new Date().getFullYear()}
           </LeftColumnText>
         </LeftColumn>
 
         <CenterColumn>
           <span>
-            Licensed by the Isle of Man Financial Services Authority.
+            {jurisdiction.disclaimers.general}
             <br />
             <br />
-            CDAX Forex is a registered trading name of CDAX Limited.
-            <br />
-            Registered office: 27 Hope Street, Douglas, Isle of Man, IM1 1AR
-            <br />
-            Company number: 135485C
-            <br />
-            <br />
-            The money transmission services we provide do not constitute deposit
-            taking activity and are not protected by a compensation scheme
+            {jurisdiction.disclaimers.safeguarding}
           </span>
         </CenterColumn>
 
@@ -66,7 +55,7 @@ export default function Footer() {
         </RightColumn>
 
         <MaxRightColumn>
-          Regulated by the IOM Financial Services Authority
+          {jurisdiction.regulators[0]?.name}
         </MaxRightColumn>
       </InnerContainer>
     </Container>

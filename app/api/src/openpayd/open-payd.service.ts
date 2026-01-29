@@ -1352,7 +1352,7 @@ export class OpenPaydService implements OpenPaydInterface {
                         identifier: feeReceiver,
                         type: 'ACCOUNT'
                     },
-                    comment: 'CDAX_FEE',
+                    comment: 'LUX_FEE',
                     additionalParams: {
                         transaction_id,
                         type

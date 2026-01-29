@@ -12,6 +12,8 @@
     "@ant-design/cssinjs": "^1.21.0",
     "@ant-design/icons": "^5.3.7",
     "@emotion/is-prop-valid": "^1.2.2",
+    "@luxbank/brand": "workspace:*",
+    "@luxfi/logo": "^1.0.0",
     "@tryghost/content-api": "^1.11.20",
     "antd": "^5.13.2",
     "formik": "^2.4.5",

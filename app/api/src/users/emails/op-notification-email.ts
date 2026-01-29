@@ -13,8 +13,8 @@ const logoImage = readFileSync(join(__dirname, '../../templates/emails/operation
 export default class OPNotificationEmail extends BaseEmail<OPNotificationEmailContext> {
     constructor(context: OPNotificationEmailContext) {
         super(
-            'backoffice@cdaxforex.com',
-            'CDAX Forex <noreply@cdaxforex.com>',
+            LUX_BRAND.jurisdiction.contact.supportEmail,
+            `${LUX_BRAND.name} <${LUX_BRAND.jurisdiction.contact.email}>`,
             'OpenPayd Transaction',
             'emails/operations/openpayd/notification',
             context,

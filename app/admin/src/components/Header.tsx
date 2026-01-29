@@ -2,6 +2,7 @@ import { UserOutlined } from "@ant-design/icons";
 import { Avatar, Tooltip } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { LuxLogo } from "@luxfi/logo";
 import Constants from "../Constants";
 import { useAppSelector } from "../app/hooks";
 import { selectCurrentUser } from "../features/auth/AuthSlice";
@@ -86,11 +87,7 @@ export default function Header({ currentLocation }: IProps) {
     return (
         <Container>
             <Link to="/">
-                <img
-                    src={`${process.env.PUBLIC_URL}/images/cdax-logo.svg`}
-                    style={{ width: "200px" }}
-                    alt="CDAX Forex"
-                />
+                <LuxLogo size={40} variant="color" />
             </Link>
             <ButtonsContainer>
                 {currentLocation === "/" && (

@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { LUX_BRAND } from '@luxbank/brand';
 import Constants from '../Constants';
 import { device } from '../utils/media-query-helpers';
 
@@ -85,6 +86,12 @@ const FooterLink = styled.a`
 
 export default function Footer() {
     const navigate = useNavigate();
+    const { jurisdiction } = LUX_BRAND;
+    const { legalEntity, regulators, disclaimers } = jurisdiction;
+    const regulator = regulators[0];
+    const address = legalEntity.registeredAddress;
+    const formattedAddress = `${address.line1}, ${address.city}, ${address.postalCode}, ${address.country}`;
+
     return (
         <Container>
             <InnerContainer>
@@ -93,22 +100,22 @@ export default function Footer() {
                         navigate('/');
                         return false;
                     }}>
-                        <img src={`${process.env.PUBLIC_URL}/images/footer-logo.svg`} width="50" alt="CDAX Forex" />
+                        <img src={`${process.env.PUBLIC_URL}/images/footer-logo.svg`} width="50" alt={LUX_BRAND.name} />
                     </a>
                     <LeftColumnText>
-                        CDAX Forex <br />
-                        135485C<br/>
-                        27 Hope Street, Douglas, IM1 1AR, Isle of Man <br />
-                        CDAX Forex - © Copyright {new Date().getFullYear()}
+                        {LUX_BRAND.name} <br />
+                        {legalEntity.registrationNumber}<br/>
+                        {formattedAddress} <br />
+                        {LUX_BRAND.name} - © Copyright {new Date().getFullYear()}
                     </LeftColumnText>
                 </LeftColumn>
                 <CenterColumn>
-                    Licensed by the Isle of Man Financial Services Authority.<br /><br />
-                    CDAX Forex is a registered trading name of CDAX Limited.<br />
-                    Registered office: 27 Hope Street, Douglas, Isle of Man, IM1 1AR<br/>
-                    Company number: 135485C
+                    Licensed by the {regulator.name}.<br /><br />
+                    {LUX_BRAND.name} is a registered trading name of {legalEntity.name}.<br />
+                    Registered office: {formattedAddress}<br/>
+                    Company number: {legalEntity.registrationNumber}
                     <br/><br/>
-                    The money transmission services we provide do not constitute deposit taking activity and are not protected by a compensation scheme
+                    {disclaimers.general}
                 </CenterColumn>
                 <RightColumn>
                     <FooterLink href={Constants.PRIVACY_POLICY_URL} onClick={() => {
@@ -122,7 +129,7 @@ export default function Footer() {
                     }}>Terms & Conditions</FooterLink>
                 </RightColumn>
                 <MaxRightColumn>
-                    Regulated by the IOM Financial Services Authority
+                    Regulated by the {regulator.shortName || regulator.name}
                 </MaxRightColumn>
             </InnerContainer>
         </Container>

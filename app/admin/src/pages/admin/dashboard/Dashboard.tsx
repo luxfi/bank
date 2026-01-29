@@ -35,7 +35,7 @@ export default function Dashboard() {
                         {/* <DashboardLink
                             icon='add-beneficiary'
                             text='Notifications'
-                            onClick={() => window.open('https://cdaxforex.paydirect.io/login')}
+                            onClick={() => window.open('https://lux.paydirect.io/login')}
                         /> */}
                     </LinksContainer>
                 </Container>

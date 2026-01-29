@@ -1,5 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
+import { LuxLogo } from "@luxfi/logo";
+import { LUX_BRAND } from "@luxbank/brand";
 
 import {
   Column,
@@ -10,26 +11,27 @@ import {
 } from "./styles";
 
 export default function Footer() {
+  const { jurisdiction } = LUX_BRAND;
+  const currentYear = new Date().getFullYear();
+  const address = jurisdiction.legalEntity.registeredAddress;
+
   return (
     <FooterContainer>
       <ContentContainer>
         <ColumnsContainer>
           <Column>
-            <Image
-              src="/images/cdax-logo-white.svg"
-              alt="logo"
-              width={191}
-              height={45}
+            <LuxLogo
+              size={45}
+              variant="white"
               style={{
-                maxWidth: "100%",
-                height: "auto",
+                marginBottom: 16,
               }}
             />
-            <p>27 Hope Street, Douglas, IM1 1AR, Isle of Man</p>
-            <p>CDAX - © Copyright 2024</p>
+            <p>{`${address.line1}, ${address.city}, ${address.postalCode}, ${address.country}`}</p>
+            <p>{`${LUX_BRAND.name} - © Copyright ${currentYear}`}</p>
           </Column>
           <Column style={{ marginTop: "70px" }}>
-            <p>Licensed by the Isle of Man Financial Services Authority.</p>
+            <p>{jurisdiction.disclaimers.general}</p>
             <p>Telephone calls may be recorded</p>
           </Column>
         </ColumnsContainer>
@@ -46,8 +48,7 @@ export default function Footer() {
           }}
         >
           <p style={{ textAlign: "center", lineHeight: "2.8rem" }}>
-            The money transmission services we provide do not constitute deposit
-            taking activity and are not protected by a compensation scheme.
+            {jurisdiction.disclaimers.safeguarding}
           </p>
         </div>
       </ContentContainer>

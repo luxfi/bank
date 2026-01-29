@@ -98,7 +98,7 @@ export const ConversionCard = ({ data }: IConversionCardProps) => {
                 Transaction ID
               </Text>
               <Text variant="body_md_regular">
-                {data.payment?.cdaxId || '-'}
+                {data.payment?.luxId || '-'}
               </Text>
             </Column>
           </Column>

@@ -69,7 +69,7 @@ export default function Dashboard() {
                         {message && !user?.isApproved ? (
                             <>
                                 You must submit the following documents before
-                                using CDAX:
+                                using Lux Financial:
                                 <br />{" "}
                                 <DocuemntText to="/dashboard/documents">
                                     {message}

@@ -18,12 +18,12 @@ export default class BeneficiaryEmail extends BaseEmail<BeneficiaryEmailContext>
     constructor(to: string, context: BeneficiaryEmailContext) {
         super(
             to,
-            'CDAX Forex <noreply@cdaxforex.com>',
+            `${LUX_BRAND.name} <${LUX_BRAND.jurisdiction.contact.email}>`,
             'Beneficiary approval/disapproval',
             'emails/operations/beneficiary/approve',
             context,
             undefined,
-            'backoffice@cdaxforex.com'
+            LUX_BRAND.jurisdiction.contact.supportEmail
         );
     }
 

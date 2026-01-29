@@ -6,6 +6,7 @@ import { SidebarProvider } from '@/context/useSidebar';
 import NotificationProvider from '@/providers/NotificationProvider';
 import ServerProviders from '@/providers/ServerProviders';
 import StyledProviders from '@/providers/StylesProvider';
+import { LUX_BRAND } from '@luxbank/brand';
 
 const myFont = localFont({
   variable: '--ds-icons',
@@ -23,16 +24,16 @@ export default async function RootLayout({
         <link rel="icon" href="/image/favicon.ico" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#00569e" />
-        <meta name="description" content="CDAX Forex Control Panel" />
-        <meta property="og:title" content="CDAX Forex" />
-        <meta property="og:description" content="CDAX Forex Control Panel" />
+        <meta name="description" content={`${LUX_BRAND.name} Control Panel`} />
+        <meta property="og:title" content={LUX_BRAND.name} />
+        <meta property="og:description" content={`${LUX_BRAND.name} Control Panel`} />
         <meta
           property="og:image"
-          content="https://app.cdaxforex.com/images/snapshot.png"
+          content={`https://${LUX_BRAND.domains.app}/images/snapshot.png`}
         />
-        <meta property="og:url" content="app.cdaxforex.com" />
+        <meta property="og:url" content={LUX_BRAND.domains.app} />
         <meta property="og:type" content="website" />
-        <title>CDAX Forex</title>
+        <title>{LUX_BRAND.name}</title>
       </head>
       <body className={myFont.variable}>
         <main>

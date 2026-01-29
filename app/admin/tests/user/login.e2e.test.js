@@ -9,7 +9,7 @@ describe("App.js", () => {
     it("user opens an app and logs in as an user", async () => {
       await page.goto(appUrl);
       await page.waitForSelector("#root");
-      await expect(page.title()).resolves.toMatch('CDAX Forex')
+      await expect(page.title()).resolves.toMatch('Lux Financial')
       
       //Navigate to log in screen
       await page.click(`a[href='/login']`);

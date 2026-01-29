@@ -56,7 +56,7 @@ export class WebhooksCurrencyCloudService {
             tx.gateway_updated_at = data.updated_at;
             tx.gateway_spread_table = data.spread_table;
             tx.status_approval = TransactionStatusApproval.Done;
-            tx.cdax_id = generateShortUniqId(8);
+            tx.lux_id = generateShortUniqId(8);
         } else {
             tx.status = data.status;
             tx.settlement_date = data.settlement_date;
@@ -97,7 +97,7 @@ export class WebhooksCurrencyCloudService {
             tx.payment_date = data.payment_date;
             tx.transferred_at = data.transferred_at;
             tx.status_approval = TransactionStatusApproval.Done;
-            tx.cdax_id = generateShortUniqId(8);
+            tx.lux_id = generateShortUniqId(8);
         } else {
             tx.status = data.status;
             tx.settlement_date = data.transferred_at;
@@ -142,7 +142,7 @@ export class WebhooksCurrencyCloudService {
             tx.reference = data.additional_information;
             tx.sender_information = data.sender;
             tx.status_approval = TransactionStatusApproval.Done;
-            tx.cdax_id = generateShortUniqId(8);
+            tx.lux_id = generateShortUniqId(8);
         } else {
             tx.status = data.status;
             tx.settlement_date = data.settles_at;

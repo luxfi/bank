@@ -1,12 +1,12 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import Button from '@/components/Button';
 import Input from '@/components/Input';
+import { LuxLogo } from '@luxfi/logo';
 
 import { LoadingOutlined } from '@ant-design/icons';
 import { useFormik } from 'formik';
@@ -99,13 +99,7 @@ export default function Registration() {
   return (
     <Container>
       <FormContainer onSubmit={formik.handleSubmit}>
-        <Image
-          id="img1"
-          src={'/image/cdax-logo.svg'}
-          alt="Mini Phone"
-          width={212}
-          height={200}
-        />
+        <LuxLogo size={120} variant="color" style={{ marginBottom: 24 }} />
         <TitleContainer>
           <Title>Request Registration</Title>
           <Subtitle>Fill out the form to request access</Subtitle>
@@ -173,7 +167,7 @@ export default function Registration() {
               </MainActionContainer>
 
               <RequestRegistration>
-                {`Already using CDAX?  `}
+                {`Already using Lux?  `}
                 <Link href={'/'}>Sign in</Link>
               </RequestRegistration>
             </ButtonsContainer>

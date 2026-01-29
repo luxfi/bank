@@ -1,9 +1,9 @@
 "use client";
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
 import HamburgerMenu from "@/components/Hamburguer";
+import { LuxLogo } from "@luxfi/logo";
 
 import { CustomButton } from "../Button";
 import {
@@ -46,7 +46,7 @@ const menuLinks: Array<IMenuLink> = [
   },
   {
     label: "Login",
-    path: "https://app.cdaxforex.com/login",
+    path: "https://app.lux.finance/login",
   },
 ];
 
@@ -68,15 +68,11 @@ export default function Menu() {
               setOpenMenu(false);
             }}
           >
-            <Image
-              src="/images/cdax-logo.svg"
-              alt="logo"
-              width={191}
-              height={45}
+            <LuxLogo
+              size={45}
+              variant="white"
               style={{
                 cursor: "pointer",
-                maxWidth: "100%",
-                height: "auto",
               }}
             />
           </Link>
@@ -98,7 +94,7 @@ export default function Menu() {
         </ItemsContainer>
         <Link
           target="_blank"
-          href={"https://app.cdaxforex.com/registration"}
+          href={"https://app.lux.finance/registration"}
           onClick={() => {
             setOpenMenu(false);
           }}

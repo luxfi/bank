@@ -19,8 +19,8 @@ export default class AdminInvitationEmail extends BaseEmail<InvitationEmailConte
     constructor(invitation: Invitation, secret: string, password: string) {
         super(
             invitation.email,
-            'CDAX Forex <noreply@cdaxforex.com>',
-            'Welcome to CDAX Forex',
+            `${LUX_BRAND.name} <${LUX_BRAND.jurisdiction.contact.email}>`,
+            `Welcome to ${LUX_BRAND.name}`,
             'emails/registration/invitation/admin',
             {
                 invitationUrl: AdminInvitationEmail.getInvitationUrl(invitation, secret),

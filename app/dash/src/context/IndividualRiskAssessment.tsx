@@ -51,8 +51,8 @@ interface IDataForm {
   sourceOfFoundsSeeClientRiskAssessmentGuidance: YES_NO;
   sourceOfFoundsSeeClientRiskAssessmentGuidanceDetails: string;
 
-  otherFactorsIsTheApplicantToCDAX: YES_NO;
-  otherFactorsIsTheApplicantToCDAXDetails: string;
+  otherFactorsIsTheApplicantToLux: YES_NO;
+  otherFactorsIsTheApplicantToLuxDetails: string;
   otherFactorsHaveTheClientsEverBeenMetFaceToFace: YES_NO;
   otherFactorsHaveTheClientsEverBeenMetFaceToFaceDetails: string;
 
@@ -101,8 +101,8 @@ const initForm: IDataForm = {
 
   otherFactorsHaveTheClientsEverBeenMetFaceToFace: undefined,
   otherFactorsHaveTheClientsEverBeenMetFaceToFaceDetails: '',
-  otherFactorsIsTheApplicantToCDAX: undefined,
-  otherFactorsIsTheApplicantToCDAXDetails: '',
+  otherFactorsIsTheApplicantToLux: undefined,
+  otherFactorsIsTheApplicantToLuxDetails: '',
 
   residenceClientNationality: '',
   residenceDoesThisApplyThisCase: undefined,
@@ -208,8 +208,8 @@ export function IndividualRiskAssessmentProvider({
       known: data.otherFactorsHaveTheClientsEverBeenMetFaceToFace as string,
       yearsKnown: data.otherFactorsHaveTheClientsEverBeenMetFaceToFaceDetails,
       metFace:
-        data.otherFactorsIsTheApplicantToCDAX === 'No'
-          ? data.otherFactorsIsTheApplicantToCDAXDetails
+        data.otherFactorsIsTheApplicantToLux === 'No'
+          ? data.otherFactorsIsTheApplicantToLuxDetails
           : 'Yes',
 
       riskRating: data.riskRatingRiskRating as string,

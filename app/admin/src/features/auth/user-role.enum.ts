@@ -1,15 +1,15 @@
 export enum UserRole {
-  /** CDAX User with full dashboard access. */
+  /** Lux Financial User with full dashboard access. */
   AdminUser = "user:admin",
-  /** CDAX User with readonly access to the dashboard. */
+  /** Lux Financial User with readonly access to the dashboard. */
   ViewerUser = "user:viewer",
-  /** CDAX User with full access except some admin functions. */
+  /** Lux Financial User with full access except some admin functions. */
 
   //TeamUser = "user:team", //deprecated
   TeamMember = "user:member",
   TeamManager = "user:manager",
 
-  /** CDAX Super Admin */
+  /** Lux Financial Super Admin */
   SuperAdmin = "admin:super",
 }
 

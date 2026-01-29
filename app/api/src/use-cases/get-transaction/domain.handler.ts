@@ -94,7 +94,7 @@ export class GetTransactionDomainUseCase extends GetTransactionUseCase {
                         ] as any)
                         : []
                 },
-                cdaxId: transactionDetail.cdax_id
+                luxId: transactionDetail.lux_id
             }
         };
     }

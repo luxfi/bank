@@ -7,13 +7,15 @@
     "build": "next build",
     "start": "node server.js",
     "lint": "next lint",
-    "build:tokens": "node src/scripts/generateTheme src/styles/theme/tokens.json src/styles/theme/index.ts cdax/light cdax/dark"
+    "build:tokens": "node src/scripts/generateTheme src/styles/theme/tokens.json src/styles/theme/index.ts lux/light lux/dark"
   },
   "dependencies": {
     "@ant-design/cssinjs": "^1.21.0",
     "@ant-design/icons": "^5.3.7",
     "@ant-design/static-style-extract": "^1.0.2",
+    "@luxbank/brand": "workspace:*",
     "@luxbank/ui": "^0.0.39",
+    "@luxfi/logo": "^1.0.0",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@reduxjs/toolkit": "^2.2.6",

@@ -21,6 +21,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@luxbank/brand": "workspace:*",
     "@luxbank/currency-cloud": "^1.0.31",
     "@luxbank/misc": "^1.0.31",
     "@luxbank/models": "^1.0.31",

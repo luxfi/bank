@@ -20,7 +20,7 @@ export class ListTransactionsRequest {
 
     reference?: string;
     account?: string;
-    cdaxId?: string;
+    luxId?: string;
 
     page?: number;
     limit?: number;

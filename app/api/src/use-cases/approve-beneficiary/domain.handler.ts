@@ -100,7 +100,7 @@ export class ApproveBeneficiaryDomainUseCase {
                 fullName: beneficiary.getName(),
                 accountNumber: beneficiary.accountNumber,
                 currency: beneficiary.currency,
-                message: `Congratulations to ${beneficiary.getName()} for being approved to receive payment through CDAX Forex!`
+                message: `Congratulations to ${beneficiary.getName()} for being approved to receive payment through Lux Forex!`
             })
         );
     }
@@ -157,7 +157,7 @@ export class ApproveBeneficiaryDomainUseCase {
             currency: beneficiary.currency,
             accountHolder: beneficiary.getName(),
             nickname: beneficiary.getName(),
-            defaultReference: 'CDAX',
+            defaultReference: 'Lux',
             ...((beneficiary.accountNumber && {
                 accountNumber: beneficiary.accountNumber
             }) ||

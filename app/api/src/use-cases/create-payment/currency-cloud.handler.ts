@@ -46,7 +46,7 @@ export class CreatePaymentCCUseCase extends CreatePaymentUseCase {
                 amount: createPaymentDto.amount,
                 currency: createPaymentDto.currency,
                 beneficiary_id: beneficiary?.gatewayId,
-                cdax_beneficiary_id: createPaymentDto.beneficiaryId,
+                lux_beneficiary_id: createPaymentDto.beneficiaryId,
                 reference: createPaymentDto.reference,
                 reason: createPaymentDto.reason,
                 payment_type: createPaymentDto.type,

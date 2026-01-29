@@ -2,6 +2,7 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import { AttachmentJSON } from '@sendgrid/helpers/classes/attachment';
 import BaseEmail from '../base-email';
+import { LUX_BRAND } from '@luxbank/brand';
 
 interface BeneficiaryEmailContext {
   fullName: string;
@@ -21,10 +22,11 @@ const logoImage = readFileSync(
 
 export default class BeneficiaryCreatedEmail extends BaseEmail<BeneficiaryEmailContext> {
   constructor(to: string, context: BeneficiaryEmailContext) {
+    const { jurisdiction } = LUX_BRAND;
     super(
       `${process.env.BACKOFFICE_EMAIL ?? to}`,
-      'CDAX Forex <noreply@cdaxforex.com>',
-      'CDAX Forex Beneficiary created',
+      `${LUX_BRAND.name} <${jurisdiction.contact.email}>`,
+      `${LUX_BRAND.name} Beneficiary Created`,
       'emails/operations/beneficiary-created/request',
       context
     );

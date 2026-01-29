@@ -217,7 +217,7 @@ export default function BaseSlide({ verifyCode, title, sort, children }: PropsWi
                     : <PageTitle>{title} </PageTitle>
                 )
             :
-            (<PageTitle>Register for your CDAX Forex Account</PageTitle>)
+            (<PageTitle>Register for your Lux Financial Account</PageTitle>)
         }
     </HeaderContainer>);
     return (

@@ -196,7 +196,7 @@ export default function RiskAssessment() {
 
           <Column padding="sm" gap="sm" style={styleContainer}>
             <LabelAndValue
-              label="Is the applicant known to CDAX? "
+              label="Is the applicant known to Lux Financial? "
               value={individual.known ?? ''}
             />
             <LabelAndValue

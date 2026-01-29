@@ -53,9 +53,9 @@ export class BeneficiariesService {
 
         let message = '';
         if (beneficiary.isApproved)
-            message = `Congratulations to ${beneficiary.getName()} for being approved to receive payment through CDAX Forex!`;
+            message = `Congratulations to ${beneficiary.getName()} for being approved to receive payment through Lux Forex!`;
         else
-            message = `The beneficiary has been disapproved because he/she does not meet the necessary requirements for CDAX Forex to process the payment. This could include having incorrect information, not having an active account, or not having the necessary documents required.`;
+            message = `The beneficiary has been disapproved because he/she does not meet the necessary requirements for Lux Forex to process the payment. This could include having incorrect information, not having an active account, or not having the necessary documents required.`;
 
         await this.mailer.send(
             new BeneficiaryEmail(beneficiary.creator.username, {

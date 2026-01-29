@@ -63,7 +63,7 @@ export class DisapproveBeneficiaryDomainUseCase {
                 fullName: beneficiary.getName(),
                 accountNumber: beneficiary.accountNumber,
                 currency: beneficiary.currency,
-                message: `The beneficiary has been disapproved because he/she does not meet the necessary requirements for CDAX Forex to process the payment. This could include having incorrect information, not having an active account, or not having the necessary documents required.`,
+                message: `The beneficiary has been disapproved because he/she does not meet the necessary requirements for Lux Forex to process the payment. This could include having incorrect information, not having an active account, or not having the necessary documents required.`,
             })
         );
     }

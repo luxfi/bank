@@ -92,7 +92,7 @@ export class UsersService {
     async prepare2FA(user: User) {
         if (!user.twoFA) {
             const secret = authenticator.generateSecret(20);
-            const otpauthUrl = authenticator.keyuri(user.username, 'CDAX', secret);
+            const otpauthUrl = authenticator.keyuri(user.username, 'Lux', secret);
             user.twoFASecret = secret;
             this.store(user);
 

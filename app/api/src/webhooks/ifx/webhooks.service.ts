@@ -76,7 +76,7 @@ export class WebhooksIfxService {
             trx.payment_date = data.timestamp;
             trx.status_approval = TransactionStatusApproval.Done;
             trx.gateway_id = data.id;
-            trx.cdax_id = generateShortUniqId(8);
+            trx.lux_id = generateShortUniqId(8);
         } else {
             trx.status = 'completed';
             trx.settlement_date = data.timestamp;

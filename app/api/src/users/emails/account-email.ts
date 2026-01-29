@@ -1,6 +1,7 @@
 import { AttachmentJSON } from '@sendgrid/helpers/classes/attachment';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { LUX_BRAND } from '@luxbank/brand';
 import BaseEmail from '../../model/base-email';
 
 interface AccountEmailContext {
@@ -14,7 +15,7 @@ const icon1Image = readFileSync(join(__dirname, '../../templates/emails/operatio
 
 export default class AccountEmail extends BaseEmail<AccountEmailContext> {
     constructor(to: string, context: AccountEmailContext) {
-        super(to, 'CDAX Forex <noreply@cdaxforex.com>', 'CDAX Forex - Account Approved', 'emails/operations/account/approve', context, undefined, 'backoffice@cdaxforex.com');
+        super(to, `${LUX_BRAND.name} <${LUX_BRAND.jurisdiction.contact.email}>`, `${LUX_BRAND.name} - Account Approved`, 'emails/operations/account/approve', context, undefined, LUX_BRAND.jurisdiction.contact.supportEmail);
     }
 
     getAttachments(): AttachmentJSON[] {

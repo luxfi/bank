@@ -81,11 +81,11 @@ export default function RiskAssessment() {
             />
           </Column>
 
-          <Text variant="body_md_semibold">{`Principal known to CDAX`}</Text>
+          <Text variant="body_md_semibold">{`Principal known to Lux Financial`}</Text>
 
           <Column padding="sm" gap="sm" style={styleContainer}>
             <LabelAndValue
-              label="Is the Company known to CDAX?"
+              label="Is the Company known to Lux Financial?"
               value={company.known ?? ''}
             />
             <LabelAndValue

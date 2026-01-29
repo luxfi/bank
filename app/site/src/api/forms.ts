@@ -3,7 +3,7 @@ import { dataFetch } from "./fetcher";
 export async function ContactSubmit(formData: any): Promise<any> {
   try {
     const response = await dataFetch({
-      endpoint: "/api/v1/mail-contact/cdax",
+      endpoint: "/api/v1/mail-contact/lux",
       method: "POST",
       bodyParams: formData,
     });

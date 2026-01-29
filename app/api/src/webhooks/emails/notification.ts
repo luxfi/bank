@@ -15,7 +15,7 @@ export default class NotificationEmail extends BaseEmail<NotificationEmailContex
     constructor(to, context: NotificationEmailContext) {
         super(
             to,
-            'CDAX Forex <noreply@cdaxforex.com>',
+            `${LUX_BRAND.name} <${LUX_BRAND.jurisdiction.contact.email}>`,
             'Shufti Pro Notification',
             'emails/operations/webhooks/notification',
             context

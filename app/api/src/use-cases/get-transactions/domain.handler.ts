@@ -33,7 +33,7 @@ export class GetTransactionsDomainUseCase extends GetTransactionsUseCase {
             beneficiary,
             type,
             gateway,
-            cdaxId,
+            luxId,
         } = query;
 
         const search = <any>{
@@ -79,8 +79,8 @@ export class GetTransactionsDomainUseCase extends GetTransactionsUseCase {
         if (currency)
             search.$and.push({$or: [{ currency: currency }, { buy_currency: currency }]});
 
-        if (beneficiary) 
-            search.$and.push({ cdax_beneficiary_id: beneficiary });
+        if (beneficiary)
+            search.$and.push({ lux_beneficiary_id: beneficiary });
 
         if (reference)
             search.$and.push({reference: { $like: `%${reference}%` }});
@@ -143,8 +143,8 @@ export class GetTransactionsDomainUseCase extends GetTransactionsUseCase {
             });
         }
 
-        if (cdaxId)
-            search.$and.push({cdax_id: cdaxId});
+        if (luxId)
+            search.$and.push({lux_id: luxId});
 
         const pageConfig = {
             page: page || 1,
@@ -158,7 +158,7 @@ export class GetTransactionsDomainUseCase extends GetTransactionsUseCase {
                 populate: [
                     'creator',
                     'beneficiary',
-                    'cdax_beneficiary_id',
+                    'lux_beneficiary_id',
                     'creator.contact',
                     'creator.clients',
                     'creator.clients.account',
@@ -211,7 +211,7 @@ export class GetTransactionsDomainUseCase extends GetTransactionsUseCase {
 
                     reason: transaction.reason,
                     ...(user.role === UserRole.SuperAdmin
-                        ? { cdaxFee: transaction.fee_amount }
+                        ? { luxFee: transaction.fee_amount }
                         : {}),
                     ...(user.role === UserRole.SuperAdmin
                         ? { spread: transaction.gateway_spread_table }
@@ -224,7 +224,7 @@ export class GetTransactionsDomainUseCase extends GetTransactionsUseCase {
                         amount: transaction.amount ?? '',
                         currency: transaction.currency as ECurrencyCode,
                     },
-                    cdaxId: transaction.cdax_id
+                    luxId: transaction.lux_id
                 };
             }) as any,
             pagination

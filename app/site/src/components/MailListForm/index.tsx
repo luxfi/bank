@@ -60,7 +60,7 @@ export default function MailListForm() {
         <TextContainer>
           <Text variant="title">Join Our Mailing List</Text>
           <Text variant="body" color="#1E3456">
-            Stay up to date with the latest news and insights from CDAX
+            Stay up to date with the latest news and insights from Lux Financial
           </Text>
         </TextContainer>
 

@@ -359,7 +359,7 @@ export default function Search(props: PropsWithChildren<SearchProps>) {
                   "Type/Reason",
                   "In",
                   "Out",
-                  "Spread / CDAX Fee",
+                  "Spread / Lux Financial Fee",
               ]
             : [
                   "Reference",
@@ -771,7 +771,7 @@ export default function Search(props: PropsWithChildren<SearchProps>) {
                                                             transaction.client_rate
                                                         }
                                                         <br />
-                                                        CDAX rate:{" "}
+                                                        Lux Financial rate:{" "}
                                                         {transaction.core_rate}
                                                         <br />
                                                         {!!transaction.fee_amount && (

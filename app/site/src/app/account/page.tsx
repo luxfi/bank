@@ -13,7 +13,7 @@ export default function Account() {
     <>
       <AnimatedDiv style={{ paddingBottom: "48px" }}>
         <PannelWithBackground
-          title="CDAX Account"
+          title="Lux Financial Account"
           imgPath="/images/airplane_fade.jpg"
           responsiveImgPath="/images/airplane_full.jpg"
           height={595}
@@ -22,7 +22,7 @@ export default function Account() {
           buttonText="Open an account"
           onClick={() => {
             const a = document.createElement("a");
-            a.href = "https://app.cdaxforex.com/registration";
+            a.href = "https://app.lux.finance/registration";
             a.target = "_blank";
             a.click();
           }}
@@ -51,7 +51,7 @@ export default function Account() {
           height={"500px"}
           responsiveHeight={"560px"}
           title="Moving money across borders can be a costly and slow process. "
-          text="CDAX offers you a bank beating tool that gives you access to multiple currencies, simply and efficiently, with significant savings in time and money."
+          text="Lux Financial offers you a bank beating tool that gives you access to multiple currencies, simply and efficiently, with significant savings in time and money."
         />
       </AnimatedDiv>
 

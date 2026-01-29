@@ -67,7 +67,7 @@ export default function Contact() {
           }}
         >
           <Text variant="title" color="#1E3456">
-            Contact us - CDAX
+            Contact us - Lux Financial
           </Text>
           <Text variant="body" color="#516686">
             Let&apos;s get this conversation stared. Tell us a bit about
@@ -124,7 +124,7 @@ export default function Contact() {
             <div>
               <Text variant="body">Email us on: </Text>
               <Text variant="body_lg" color="#1E3456">
-                hello@cdaxforex.com
+                hello@lux.finance
               </Text>
             </div>
             <div>

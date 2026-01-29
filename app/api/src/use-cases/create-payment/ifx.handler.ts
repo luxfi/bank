@@ -45,7 +45,7 @@ export class CreatePaymentIFXUseCase extends CreatePaymentUseCase {
                 beneficiary_id: createPaymentDto.beneficiaryId,
                 reference: createPaymentDto.reference,
                 reason: createPaymentDto.reason,
-                cdax_beneficiary_id: beneficiary?.uuid,
+                lux_beneficiary_id: beneficiary?.uuid,
                 payment_type: createPaymentDto.type,
                 payment_date: createPaymentDto.date,
                 status_approval,

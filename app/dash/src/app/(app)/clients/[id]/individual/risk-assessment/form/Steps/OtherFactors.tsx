@@ -21,8 +21,8 @@ export function OtherFactors() {
   const {
     otherFactorsHaveTheClientsEverBeenMetFaceToFace,
     otherFactorsHaveTheClientsEverBeenMetFaceToFaceDetails,
-    otherFactorsIsTheApplicantToCDAX,
-    otherFactorsIsTheApplicantToCDAXDetails,
+    otherFactorsIsTheApplicantToLux,
+    otherFactorsIsTheApplicantToLuxDetails,
     onChangeData,
     resetConversion,
   } = useContextIndividualRiskAssessment();
@@ -32,21 +32,21 @@ export function OtherFactors() {
       !otherFactorsHaveTheClientsEverBeenMetFaceToFace ||
       (otherFactorsHaveTheClientsEverBeenMetFaceToFace === 'Yes' &&
         !otherFactorsHaveTheClientsEverBeenMetFaceToFaceDetails) ||
-      !otherFactorsIsTheApplicantToCDAX ||
-      (otherFactorsIsTheApplicantToCDAX === 'No' &&
-        !otherFactorsIsTheApplicantToCDAXDetails)
+      !otherFactorsIsTheApplicantToLux ||
+      (otherFactorsIsTheApplicantToLux === 'No' &&
+        !otherFactorsIsTheApplicantToLuxDetails)
     );
   }, [
     otherFactorsHaveTheClientsEverBeenMetFaceToFace,
     otherFactorsHaveTheClientsEverBeenMetFaceToFaceDetails,
-    otherFactorsIsTheApplicantToCDAX,
-    otherFactorsIsTheApplicantToCDAXDetails,
+    otherFactorsIsTheApplicantToLux,
+    otherFactorsIsTheApplicantToLuxDetails,
   ]);
 
   return (
     <Column style={{ width: 808, gap: 16 }}>
       <RadioGroup
-        label="Is the applicant known to CDAX?"
+        label="Is the applicant known to Lux Financial?"
         options={yesNoOptions}
         value={otherFactorsHaveTheClientsEverBeenMetFaceToFace}
         onChangeData={(v) =>
@@ -75,21 +75,21 @@ export function OtherFactors() {
       <RadioGroup
         label="Have the clients ever been met face to face?"
         options={yesNoOptions}
-        value={otherFactorsIsTheApplicantToCDAX}
+        value={otherFactorsIsTheApplicantToLux}
         onChangeData={(v) =>
-          onChangeData('otherFactorsIsTheApplicantToCDAX', v as YES_NO)
+          onChangeData('otherFactorsIsTheApplicantToLux', v as YES_NO)
         }
       />
 
       <Input
         disabled={
-          !otherFactorsIsTheApplicantToCDAX ||
-          otherFactorsIsTheApplicantToCDAX === 'Yes'
+          !otherFactorsIsTheApplicantToLux ||
+          otherFactorsIsTheApplicantToLux === 'Yes'
         }
         label="If no to the above who has met the client face to face?"
-        value={otherFactorsIsTheApplicantToCDAXDetails}
+        value={otherFactorsIsTheApplicantToLuxDetails}
         onChange={(v) =>
-          onChangeData('otherFactorsIsTheApplicantToCDAXDetails', v)
+          onChangeData('otherFactorsIsTheApplicantToLuxDetails', v)
         }
       />
 
@@ -98,7 +98,7 @@ export function OtherFactors() {
       <Text
         style={{ fontSize: 12 }}
         variant="body_md_regular"
-      >{`If the rating has attracted a YES response to any of the questions (apart from whether known to CDAX) or the client is associated to a high risk jurisdiction then the overall rating must automatically be regarded as High Risk to begin with. The rationale for any downgrade from this position must be fully documented. All downgrades must be approved by a Director.`}</Text>
+      >{`If the rating has attracted a YES response to any of the questions (apart from whether known to Lux Financial) or the client is associated to a high risk jurisdiction then the overall rating must automatically be regarded as High Risk to begin with. The rationale for any downgrade from this position must be fully documented. All downgrades must be approved by a Director.`}</Text>
 
       <Text
         style={{ fontSize: 12 }}

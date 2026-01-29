@@ -261,8 +261,8 @@ export default function Pending() {
             placeholder="Transaction ID"
             leadingIcon="magnifer"
             roundness="rounded"
-            value={urlParams?.cdaxId}
-            onChangeText={(value) => handleSetFilters('cdaxId', value)}
+            value={urlParams?.luxId}
+            onChangeText={(value) => handleSetFilters('luxId', value)}
           />
 
           <Divider />

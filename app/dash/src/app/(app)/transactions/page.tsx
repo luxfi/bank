@@ -342,8 +342,8 @@ export default function Transactions() {
           <Input
             label="Transaction ID"
             placeholder="Transaction ID"
-            value={urlParams?.cdaxId}
-            onChange={(value) => handleSetFilters('cdaxId', value)}
+            value={urlParams?.luxId}
+            onChange={(value) => handleSetFilters('luxId', value)}
           />
           <Divider />
           <Row gap="sm">

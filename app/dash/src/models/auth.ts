@@ -2,16 +2,16 @@ import { EnumEntityType } from './entityType';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export enum UserRole {
-  /** CDAX Super Admin */
+  /** Lux Super Admin */
   SuperAdmin = 'admin:super',
-  /** CDAX User with full dashboard access. */
+  /** Lux User with full dashboard access. */
   AdminUser = 'user:admin',
-  /** CDAX User with full access except some admin functions. */
+  /** Lux User with full access except some admin functions. */
   TeamManager = 'user:manager',
 
   TeamMember = 'user:member',
 
-  /** CDAX User with readonly access to the dashboard. */
+  /** Lux User with readonly access to the dashboard. */
   ViewerUser = 'user:viewer',
 }
 

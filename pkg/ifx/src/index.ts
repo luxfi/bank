@@ -12,6 +12,7 @@ import { Conversion } from './requests/conversion.request';
 import { AcceptQuote, ConversionDetail, QuoteCreated, QuotePreview } from './responses/conversion.response';
 import { AccountBeneficiary } from './requests/account-beneficiary.request';
 import { IFXErrorResponse } from './utils/error.response';
+import { LUX_BRAND } from '@luxbank/brand';
 
 export * from './types';
 export * from './oauth-client';
@@ -121,18 +122,23 @@ export class PaymentProviderIFX {
 
   async createPayment(body: Payment): Promise<PaymentCreated> {
     try {
+      const { jurisdiction } = LUX_BRAND;
+      const { legalEntity } = jurisdiction;
+      // Prefer businessAddress for payments, fallback to registeredAddress
+      const address = legalEntity.businessAddress || legalEntity.registeredAddress;
+
       const { data } = await this.coreRequester.post('/third-party-payments', {
         ...body,
-        ultimateDebtorName: 'CDAX Limited',
-        ultimateDebtorBuildingNumber: '27',
-        ultimateDebtorStreetName: 'Hope St',
-        ultimateDebtorCity: 'Isle of Man',
-        ultimateDebtorCountry: 'IM',
-        ultimateDebtorPostCode: 'IM1 1AR',
-        ultimateDebtorIdentificationNumber: '135485C'
+        ultimateDebtorName: legalEntity.name,
+        ultimateDebtorBuildingNumber: address.buildingNumber || '',
+        ultimateDebtorStreetName: address.line1,
+        ultimateDebtorCity: address.city,
+        ultimateDebtorCountry: address.countryCode,
+        ultimateDebtorPostCode: address.postalCode,
+        ultimateDebtorIdentificationNumber: legalEntity.registrationNumber || ''
       });
       return data;
-    } 
+    }
     catch (error) {
       throw new IFXErrorResponse(error as any);
     }

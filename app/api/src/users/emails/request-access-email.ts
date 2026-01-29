@@ -2,6 +2,7 @@ import { AttachmentJSON } from '@sendgrid/helpers/classes/attachment';
 import dayjs from 'dayjs';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { LUX_BRAND } from '@luxbank/brand';
 import BaseEmail from '../../model/base-email';
 import { RequestAccessDto } from '@luxbank/tools-models';
 
@@ -19,8 +20,8 @@ export default class RequestAccessEmail extends BaseEmail<RequestAccessEmailCont
     constructor(request: RequestAccessDto) {
         super(
             `${process.env.BACKOFFICE_EMAIL ?? request.email}`,
-            'CDAX Forex <noreply@cdaxforex.com>',
-            'CDAX Forex Registration Request',
+            `${LUX_BRAND.name} <${LUX_BRAND.jurisdiction.contact.email}>`,
+            `${LUX_BRAND.name} Registration Request`,
             'emails/registration/request-access/request',
             {
                 firstName: request.firstname,

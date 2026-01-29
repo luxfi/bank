@@ -13,7 +13,7 @@ import { RecaptchaGuard } from './recaptcha.guard';
 export class MailContactController {
     constructor(private readonly mailContactService: MailContactService) { }
 
-    @Post('cdax')
+    @Post('lux')
     @UseGuards(RecaptchaGuard)
     @Anonymous()
     @UsePipes(new ValidationPipe({ transform: true }))

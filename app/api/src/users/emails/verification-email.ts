@@ -2,6 +2,7 @@ import { AttachmentJSON } from '@sendgrid/helpers/classes/attachment';
 import { User } from '@luxbank/tools-models';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { LUX_BRAND } from '@luxbank/brand';
 import BaseEmail from '../../model/base-email';
 
 interface VerificationEmailContext {
@@ -18,8 +19,8 @@ export default class VerificationEmail extends BaseEmail<VerificationEmailContex
     constructor(to: string, user: User, code: string) {
         super(
             to,
-            'CDAX Forex <noreply@cdaxforex.com>',
-            'CDAX Forex email verification',
+            `${LUX_BRAND.name} <${LUX_BRAND.jurisdiction.contact.email}>`,
+            `${LUX_BRAND.name} email verification`,
             'emails/registration/verification/verification',
             {
                 fullName: user.firstname,

@@ -6,23 +6,23 @@ export default function PrivacyPage() {
     return <Layout>
             <Container>
                 <TermsContainer>
-<p><strong>Privacy policy of CDAX Limited trading as CDAXForex (CDAX)</strong></p>
+<p><strong>Privacy policy of Lux Limited trading as Lux FinancialForex (Lux Financial)</strong></p>
 <p>We take data privacy very seriously and recognise the importance of protecting and respecting your personal data. This Privacy Policy describes the information we collect, how we use that information, to whom we pass the information, your rights and key contact information.</p>
 <p><strong>1. Overview</strong></p>
-<p>To provide you with our money transfer services (also known as “e-money services”) CDAX Limited, trading as CDAXForex (CDAX) need to collect information about you. Our aim is not to be intrusive, and we won’t ask you unnecessary questions. Any information we receive about you will be subject to strict controls to minimise the risk of misuse – including unauthorised access to, or disclosure of, your personal data.</p>
-<p>Please read this notice carefully, together with our Terms and Conditions and any other documents referred to in it. Here we set out the basis on which any information we collect about you or from you, or that you provide to us, will be processed by us and other parties in providing you with the services accessed through the website, apps or over the phone. CDAX (“our”, “us” and “we”) commits to using your information only in accordance with the terms of this Privacy Policy.</p>
-<p>For the purposes of this Privacy Policy, the term “information” means any confidential and/or personal data or other information related to users of CDAX services – including, but not limited to, corporate and individual customers and their connected parties.</p>
+<p>To provide you with our money transfer services (also known as “e-money services”) Lux Limited, trading as Lux FinancialForex (Lux Financial) need to collect information about you. Our aim is not to be intrusive, and we won’t ask you unnecessary questions. Any information we receive about you will be subject to strict controls to minimise the risk of misuse – including unauthorised access to, or disclosure of, your personal data.</p>
+<p>Please read this notice carefully, together with our Terms and Conditions and any other documents referred to in it. Here we set out the basis on which any information we collect about you or from you, or that you provide to us, will be processed by us and other parties in providing you with the services accessed through the website, apps or over the phone. Lux Financial (“our”, “us” and “we”) commits to using your information only in accordance with the terms of this Privacy Policy.</p>
+<p>For the purposes of this Privacy Policy, the term “information” means any confidential and/or personal data or other information related to users of Lux Financial services – including, but not limited to, corporate and individual customers and their connected parties.</p>
 <p>By visiting this website, our partners’ websites, or providing your personal information to one of our employees, for example by telephone or email, you accept and expressly consent to our use and disclosure of your personal information and direct us to do so in the manner described in this Privacy Policy.</p>
 <p>This includes consenting to the processing of any sensitive personal information you provide, as described below in section 2. It also includes information you provide when you browse our website, request a quote, register for an account, enter into a contract for the supply of money transfer services, enter a competition, promotion or survey and when you contact us for other reasons. If you have concerns about any of the terms of this Privacy Policy, please call us so that we can provide further information.</p>
 <p><strong>A special note about children</strong></p>
-<p>Children are not eligible to use CDAX. We respectfully ask that minors (persons under the age of 18) do not submit any information to us or use CDAX services.</p>
+<p>Children are not eligible to use Lux Financial. We respectfully ask that minors (persons under the age of 18) do not submit any information to us or use Lux Financial services.</p>
 <p><strong>2. What information do we collect</strong></p>
 <p>We may collect and process the following information about you:</p>
 <p>Information you provide to us.&nbsp; You may provide us with information by filling in forms on our website, our partners' websites or by talking with us over the phone or corresponding with us via email or otherwise. This includes information you provide when you browse our website, request a quote, register for an account, enter into a contract for the supply of money transfer services, enter a competition, promotion or survey and when you contact us for other reasons.</p>
 <p><strong>Initial information</strong></p>
-<p>To open a CDAX account or use CDAX, you must provide your name, address, phone number and email address – and we may ask you to provide identity document number(s) and copies of identification documents, for example your driving license or passport, or a utility bill.</p>
+<p>To open a Lux Financial account or use Lux Financial, you must provide your name, address, phone number and email address – and we may ask you to provide identity document number(s) and copies of identification documents, for example your driving license or passport, or a utility bill.</p>
 
-<p>In order to make payments using CDAX, you may be asked to provide debit card details (including the long number, start and expiry dates and the card verification value code (CVV/CVC)) and your destination bank details (account number, sort code, IBAN, SWIFT, ABA or routing number). We may also ask you to choose two different security questions to answer (such as your city of birth or your pet's name). If we ask you to set up these security answers, we will be unable to provide our services unless you provide this information.</p>
+<p>In order to make payments using Lux Financial, you may be asked to provide debit card details (including the long number, start and expiry dates and the card verification value code (CVV/CVC)) and your destination bank details (account number, sort code, IBAN, SWIFT, ABA or routing number). We may also ask you to choose two different security questions to answer (such as your city of birth or your pet's name). If we ask you to set up these security answers, we will be unable to provide our services unless you provide this information.</p>
 
 
 
@@ -38,7 +38,7 @@ export default function PrivacyPage() {
 
 
 
-<ul><li>we cannot verify the information that you provide; or</li><li>a query is raised by background checks (see below); or</li><li>if you send or receive certain high-value transactions or high overall payment volumes through CDAX; or</li><li>as is otherwise required in order for us to comply with our regulatory obligations under anti-money laundering, terrorist financing, bribery and corruption, sanctions and other applicable regulations.</li></ul>
+<ul><li>we cannot verify the information that you provide; or</li><li>a query is raised by background checks (see below); or</li><li>if you send or receive certain high-value transactions or high overall payment volumes through Lux Financial; or</li><li>as is otherwise required in order for us to comply with our regulatory obligations under anti-money laundering, terrorist financing, bribery and corruption, sanctions and other applicable regulations.</li></ul>
 
 
 
@@ -66,7 +66,7 @@ export default function PrivacyPage() {
 
 
 
-<p>When you arrive at or leave the CDAX website, whether connected by a fixed line or wirelessly, we receive the web address of the site that you came from or are going to.</p>
+<p>When you arrive at or leave the Lux Financial website, whether connected by a fixed line or wirelessly, we receive the web address of the site that you came from or are going to.</p>
 
 
 
@@ -94,11 +94,11 @@ export default function PrivacyPage() {
 
 
 
-<p>When you use CDAX to purchase currency or send currency to someone else, we ask you to provide information related to that transaction. This information includes the amount, currency and type of the transaction, source of funds, exchange rate, recipient name and bank details, recipient address for some jurisdictions and, optionally, the recipient’s email address and phone number.</p>
+<p>When you use Lux Financial to purchase currency or send currency to someone else, we ask you to provide information related to that transaction. This information includes the amount, currency and type of the transaction, source of funds, exchange rate, recipient name and bank details, recipient address for some jurisdictions and, optionally, the recipient’s email address and phone number.</p>
 
 
 
-<p><strong>Individuals who are not registered users of CDAX</strong></p>
+<p><strong>Individuals who are not registered users of Lux Financial</strong></p>
 
 
 
@@ -114,7 +114,7 @@ export default function PrivacyPage() {
 
 
 
-<p>When you engage an individual who is not a CDAX customer in a transaction, e.g. by sending a payment to that individual, we will retain the information that you submit to us, including, for example, the other party’s name and/or bank details.</p>
+<p>When you engage an individual who is not a Lux Financial customer in a transaction, e.g. by sending a payment to that individual, we will retain the information that you submit to us, including, for example, the other party’s name and/or bank details.</p>
 
 
 
@@ -122,7 +122,7 @@ export default function PrivacyPage() {
 
 
 
-<p>Although the information on Connected Parties and/or Recipients is stored for a certain period of time in compliance with applicable law, we will not use it to market to the non-registered person. Additionally, these persons have the same rights to access and correct information about themselves as registered users of CDAX. You should bring this Privacy Policy to their attention at the earliest opportunity so they aware of how their information will be processed by us and aware of their rights in relation to that information.</p>
+<p>Although the information on Connected Parties and/or Recipients is stored for a certain period of time in compliance with applicable law, we will not use it to market to the non-registered person. Additionally, these persons have the same rights to access and correct information about themselves as registered users of Lux Financial. You should bring this Privacy Policy to their attention at the earliest opportunity so they aware of how their information will be processed by us and aware of their rights in relation to that information.</p>
 
 
 
@@ -138,7 +138,7 @@ export default function PrivacyPage() {
 
 
 
-<p>If you register a debit card or bank account with CDAX, we will use card authorisation and anti-fraud screening services to verify that your bank or card information and address match the information you supplied to CDAX, and that the card has not been reported as lost or stolen.</p>
+<p>If you register a debit card or bank account with Lux Financial, we will use card authorisation and anti-fraud screening services to verify that your bank or card information and address match the information you supplied to Lux Financial, and that the card has not been reported as lost or stolen.</p>
 
 
 
@@ -194,7 +194,7 @@ export default function PrivacyPage() {
 
 
 
-<p>To avoid infringing these restrictions, it is CDAX’s policy that we do not ask for or collect any of the above data from you or any other party, so we therefore ask that you please do not reveal any sensitive data about yourself or others in any communication with us. If you do reveal sensitive data, for example by phone or in an email, you will be giving express consent for us to process that information by storing the recording of the telephone call, or the email or other communication.</p>
+<p>To avoid infringing these restrictions, it is Lux Financial’s policy that we do not ask for or collect any of the above data from you or any other party, so we therefore ask that you please do not reveal any sensitive data about yourself or others in any communication with us. If you do reveal sensitive data, for example by phone or in an email, you will be giving express consent for us to process that information by storing the recording of the telephone call, or the email or other communication.</p>
 
 
 
@@ -202,7 +202,7 @@ export default function PrivacyPage() {
 
 
 
-<p>Our primary purpose in collecting your information is to provide you with a safe, smooth, efficient and customised experience. By submitting your information to CDAX and using CDAX services you agree that we may use your information for the following purposes:</p>
+<p>Our primary purpose in collecting your information is to provide you with a safe, smooth, efficient and customised experience. By submitting your information to Lux Financial and using Lux Financial services you agree that we may use your information for the following purposes:</p>
 
 
 
@@ -246,7 +246,7 @@ export default function PrivacyPage() {
 
 
 
-<ul><li>confirm your opening of a CDAX account;</li><li>send you notice of money transfers that you send or receive through CDAX;</li><li>send you information about important changes to our products and services, including notice of any times that our services may not be available; and</li><li>send notices and other disclosures required by law.</li></ul>
+<ul><li>confirm your opening of a Lux Financial account;</li><li>send you notice of money transfers that you send or receive through Lux Financial;</li><li>send you information about important changes to our products and services, including notice of any times that our services may not be available; and</li><li>send notices and other disclosures required by law.</li></ul>
 
 
 
@@ -266,11 +266,11 @@ export default function PrivacyPage() {
 
 
 
-<ul><li>provide you with information about services we or other CDAX Companies offer that are similar to those that you have already enquired about or purchased;</li><li>provide news about currency market movements, marketing and advertising messages, updates on the services we offer, and promotional offers based on your activities when using the CDAX services;</li><li>measure or understand the effectiveness of advertising we serve to you and others, and to deliver relevant advertising to you, which may be based on your activity on our website(s) or third parties’ websites;</li><li>make suggestions and recommendations to you and other users of our website(s) about services that may interest you or them, which may be based on your activity on our website(s);</li><li>keep you informed about currency market events and news; and</li><li>tell you about new products and features we are developing that you may find useful.</li></ul>
+<ul><li>provide you with information about services we or other Lux Financial Companies offer that are similar to those that you have already enquired about or purchased;</li><li>provide news about currency market movements, marketing and advertising messages, updates on the services we offer, and promotional offers based on your activities when using the Lux Financial services;</li><li>measure or understand the effectiveness of advertising we serve to you and others, and to deliver relevant advertising to you, which may be based on your activity on our website(s) or third parties’ websites;</li><li>make suggestions and recommendations to you and other users of our website(s) about services that may interest you or them, which may be based on your activity on our website(s);</li><li>keep you informed about currency market events and news; and</li><li>tell you about new products and features we are developing that you may find useful.</li></ul>
 
 
 
-<p>You can choose whether to receive some, all or none of these communications and the methods by which you receive them when you request a quote, enquire or complete the registration process (or at any time thereafter) by logging in to your account on the CDAX website, visiting your profile page and accessing the preference centre – or by calling us and amending your preferences over the phone. We may also send you SMS messages for the same purposes.</p>
+<p>You can choose whether to receive some, all or none of these communications and the methods by which you receive them when you request a quote, enquire or complete the registration process (or at any time thereafter) by logging in to your account on the Lux Financial website, visiting your profile page and accessing the preference centre – or by calling us and amending your preferences over the phone. We may also send you SMS messages for the same purposes.</p>
 
 
 
@@ -278,7 +278,7 @@ export default function PrivacyPage() {
 
 
 
-<p>We will use your information to deliver and improve CDAX and manage your account, including:</p>
+<p>We will use your information to deliver and improve Lux Financial and manage your account, including:</p>
 
 
 
@@ -318,7 +318,7 @@ export default function PrivacyPage() {
 
 
 
-<ul><li>to help us better understand your financial circumstances and behaviour so that we may make decisions about how we manage your CDAX Account;</li><li>to process applications for products and services available through us including making decisions about whether to agree to approve any applications;</li><li>for the purposes set out in the sections above (depending on the types of information we receive).</li></ul>
+<ul><li>to help us better understand your financial circumstances and behaviour so that we may make decisions about how we manage your Lux Financial Account;</li><li>to process applications for products and services available through us including making decisions about whether to agree to approve any applications;</li><li>for the purposes set out in the sections above (depending on the types of information we receive).</li></ul>
 
 
 
@@ -326,11 +326,11 @@ export default function PrivacyPage() {
 
 
 
-<p>From time to time we may offer you optional questionnaires, surveys and competitions. If you choose to answer these questionnaires, surveys or competitions, we may use your information to improve CDAX, send you marketing or advertising information, manage the competitions and for such purposes as collecting demographic information or assessing users’ interests and needs. You will be given notice of how the information will be used prior to your participation in the survey, questionnaire or competition.</p>
+<p>From time to time we may offer you optional questionnaires, surveys and competitions. If you choose to answer these questionnaires, surveys or competitions, we may use your information to improve Lux Financial, send you marketing or advertising information, manage the competitions and for such purposes as collecting demographic information or assessing users’ interests and needs. You will be given notice of how the information will be used prior to your participation in the survey, questionnaire or competition.</p>
 
 
 
-<p><strong>Accessing and changing your information</strong> You can review the information you have provided to us and make any desired changes to your information or to the settings on your CDAX account at any time by logging in to your account on the CDAX website, visiting the profile page and changing your details.</p>
+<p><strong>Accessing and changing your information</strong> You can review the information you have provided to us and make any desired changes to your information or to the settings on your Lux Financial account at any time by logging in to your account on the Lux Financial website, visiting the profile page and changing your details.</p>
 
 
 
@@ -346,7 +346,7 @@ export default function PrivacyPage() {
 
 
 
-<ul><li>To support our business and provide services to you</li><li>Just like most banks and financial/payment service providers, CDAX works with third-party service providers (including banking partners and banking intermediaries) who provide important functions that allow us to make our money transfer services easier, faster, and safer.</li><li>This includes business partners under contract with us who support our business operations, such as fraud prevention, bill collection, marketing, customer service, contract administration and technology services. We need to disclose user data to them from time to time so that the services can be performed. Our contracts dictate that these business partners only use your information in connection with the services they perform for us and not for their own benefit.</li><li>By accepting this Privacy Policy and maintaining an account with CDAX, you expressly consent to the transfer of your data to those third parties for the purposes listed.</li></ul>
+<ul><li>To support our business and provide services to you</li><li>Just like most banks and financial/payment service providers, Lux Financial works with third-party service providers (including banking partners and banking intermediaries) who provide important functions that allow us to make our money transfer services easier, faster, and safer.</li><li>This includes business partners under contract with us who support our business operations, such as fraud prevention, bill collection, marketing, customer service, contract administration and technology services. We need to disclose user data to them from time to time so that the services can be performed. Our contracts dictate that these business partners only use your information in connection with the services they perform for us and not for their own benefit.</li><li>By accepting this Privacy Policy and maintaining an account with Lux Financial, you expressly consent to the transfer of your data to those third parties for the purposes listed.</li></ul>
 
 
 
@@ -354,7 +354,7 @@ export default function PrivacyPage() {
 
 
 
-<ul><li>When you ask us to process a currency or payment transaction, we will provide your information to the business partners who are contracted to CDAX to complete this transaction, for example passing bank details to correspondent bank(s) or payment provider(s) involved in the transaction.</li></ul>
+<ul><li>When you ask us to process a currency or payment transaction, we will provide your information to the business partners who are contracted to Lux Financial to complete this transaction, for example passing bank details to correspondent bank(s) or payment provider(s) involved in the transaction.</li></ul>
 
 
 
@@ -378,7 +378,7 @@ export default function PrivacyPage() {
 
 
 
-<ul><li>We may also disclose necessary information in response to the requirements of credit card associations or a civil or criminal legal process.</li><li>We may disclose or share your information in order to enforce or apply the Terms and Conditions – and other agreements – between you and us, or to investigate potential breaches to protect the rights, property, or safety of CDAX, our customers, or others. This includes exchanging information with other companies and organisations for the purposes of fraud protection and credit risk reduction and, if required, to obtain professional advice.</li></ul>
+<ul><li>We may also disclose necessary information in response to the requirements of credit card associations or a civil or criminal legal process.</li><li>We may disclose or share your information in order to enforce or apply the Terms and Conditions – and other agreements – between you and us, or to investigate potential breaches to protect the rights, property, or safety of Lux Financial, our customers, or others. This includes exchanging information with other companies and organisations for the purposes of fraud protection and credit risk reduction and, if required, to obtain professional advice.</li></ul>
 
 
 
@@ -386,7 +386,7 @@ export default function PrivacyPage() {
 
 
 
-<ul><li>We may disclose necessary information to the police and other law enforcement agencies, security forces, competent governmental, intergovernmental or supranational bodies, competent agencies, departments, regulatory authorities, self-regulatory authorities or organisations, and other third parties, including CDAX Group companies, where we are legally compelled and/or permitted to do so.</li></ul>
+<ul><li>We may disclose necessary information to the police and other law enforcement agencies, security forces, competent governmental, intergovernmental or supranational bodies, competent agencies, departments, regulatory authorities, self-regulatory authorities or organisations, and other third parties, including Lux Financial Group companies, where we are legally compelled and/or permitted to do so.</li></ul>
 
 
 
@@ -394,7 +394,7 @@ export default function PrivacyPage() {
 
 
 
-<ul><li>As with any business, it is possible that in the future CDAX could buy, merge with, or be acquired by, another company. We may disclose your information to the prospective seller or buyer of such business or assets, along with its professional advisers. If CDAX or a substantial proportion of its assets are acquired by a third party, information held by us about our customers will be one of the transferred assets, and such successor company would continue to be bound by this Privacy Policy unless and until it is amended.</li></ul>
+<ul><li>As with any business, it is possible that in the future Lux Financial could buy, merge with, or be acquired by, another company. We may disclose your information to the prospective seller or buyer of such business or assets, along with its professional advisers. If Lux Financial or a substantial proportion of its assets are acquired by a third party, information held by us about our customers will be one of the transferred assets, and such successor company would continue to be bound by this Privacy Policy unless and until it is amended.</li></ul>
 
 
 
@@ -418,7 +418,7 @@ export default function PrivacyPage() {
 
 
 
-<ul><li>Our site may, from time to time, contain links to the websites of our business partners, advertisers and affiliates.</li><li>If you request a quote directly on a third-party website or via a third party application, any information that you enter on that website or application (and not directly through CDAX’s website) may be shared with the owner of any such third party website.</li><li>Please note that these websites have their own privacy policies and we do not accept any responsibility or liability for those policies. Please check those policies before you submit any information to third party websites.</li></ul>
+<ul><li>Our site may, from time to time, contain links to the websites of our business partners, advertisers and affiliates.</li><li>If you request a quote directly on a third-party website or via a third party application, any information that you enter on that website or application (and not directly through Lux Financial’s website) may be shared with the owner of any such third party website.</li><li>Please note that these websites have their own privacy policies and we do not accept any responsibility or liability for those policies. Please check those policies before you submit any information to third party websites.</li></ul>
 
 
 
@@ -426,7 +426,7 @@ export default function PrivacyPage() {
 
 
 
-<p>CDAX is committed to adequately protecting your information regardless of where the data resides and to providing appropriate protection for your information where such data is transferred outside of the EEA.</p>
+<p>Lux Financial is committed to adequately protecting your information regardless of where the data resides and to providing appropriate protection for your information where such data is transferred outside of the EEA.</p>
 
 
 
@@ -438,11 +438,11 @@ export default function PrivacyPage() {
 
 
 
-<p>Each time you attempt to make a money transfer using your CDAX account, CDAX may transfer your relevant information to the recipient and any intermediate banks or payment service providers, who may be located outside the EEA, and any other service providers as described above, in order to process, execute or otherwise deal with and provide information about the payment.</p>
+<p>Each time you attempt to make a money transfer using your Lux Financial account, Lux Financial may transfer your relevant information to the recipient and any intermediate banks or payment service providers, who may be located outside the EEA, and any other service providers as described above, in order to process, execute or otherwise deal with and provide information about the payment.</p>
 
 
 
-<p>By submitting your information and making use of CDAX services, you agree to such transfers, storing or processing. We will take all steps reasonably necessary to ensure that your information is treated securely and in accordance with this Privacy Policy. We will do our best to protect your information, however we cannot guarantee the security of your information transmitted to our site or sent to us by email or other non-secure electronic methods; any such transmission is at your own risk. Once we have received your information, we will use protective procedures and security features to try to prevent unauthorised access.</p>
+<p>By submitting your information and making use of Lux Financial services, you agree to such transfers, storing or processing. We will take all steps reasonably necessary to ensure that your information is treated securely and in accordance with this Privacy Policy. We will do our best to protect your information, however we cannot guarantee the security of your information transmitted to our site or sent to us by email or other non-secure electronic methods; any such transmission is at your own risk. Once we have received your information, we will use protective procedures and security features to try to prevent unauthorised access.</p>
 
 
 
@@ -458,7 +458,7 @@ export default function PrivacyPage() {
 
 
 
-<p>CDAX has security measures in place designed to prevent data loss, to preserve data integrity, and to control access to the data. Only authorised employees of CDAX and our business partners processing data on our behalf have access to your personal data. All CDAX employees who have access to your personal data are required to comply with our privacy policy. All business partners are requested by CDAX to ensure that any of their employees who have access to your personal data have signed non-disclosure agreements. Contracts with business partners acting as data processors for CDAX involving personal data require an adequate level of security and require that personal data is processed only as instructed by CDAX.</p>
+<p>Lux Financial has security measures in place designed to prevent data loss, to preserve data integrity, and to control access to the data. Only authorised employees of Lux Financial and our business partners processing data on our behalf have access to your personal data. All Lux Financial employees who have access to your personal data are required to comply with our privacy policy. All business partners are requested by Lux Financial to ensure that any of their employees who have access to your personal data have signed non-disclosure agreements. Contracts with business partners acting as data processors for Lux Financial involving personal data require an adequate level of security and require that personal data is processed only as instructed by Lux Financial.</p>
 
 
 
@@ -490,7 +490,7 @@ export default function PrivacyPage() {
 
 
 
-<p>We keep our security technology up-to-date to protect your information, but we do not have control over the devices you use to access CDAX.</p>
+<p>We keep our security technology up-to-date to protect your information, but we do not have control over the devices you use to access Lux Financial.</p>
 
 
 
@@ -498,7 +498,7 @@ export default function PrivacyPage() {
 
 
 
-<ul><li>Do not share your information or provide any opportunities for anyone to gain access to your information through your devices, including tablets, phones, watches or laptops.</li><li>Do not click on any internet link contained in an email or SMS which directs you to a CDAX website. Always manually type our address www.cdax.im into your internet browser or use the app.</li><li>Log out and close your browser before visiting other websites once you have completed your transactions.</li><li>Ensure that you use the latest version of your internet browser and that you have up-to-date anti-virus, firewall and other security software installed on your device.</li></ul>
+<ul><li>Do not share your information or provide any opportunities for anyone to gain access to your information through your devices, including tablets, phones, watches or laptops.</li><li>Do not click on any internet link contained in an email or SMS which directs you to a Lux Financial website. Always manually type our address www.lux.finance into your internet browser or use the app.</li><li>Log out and close your browser before visiting other websites once you have completed your transactions.</li><li>Ensure that you use the latest version of your internet browser and that you have up-to-date anti-virus, firewall and other security software installed on your device.</li></ul>
 
 
 
@@ -526,7 +526,7 @@ export default function PrivacyPage() {
 
 
 
-<p>Whilst we endeavour at all times to keep your information accurate, we welcome your corrections. You can correct your profile at any time by logging onto your account via the CDAX website, or you can call your account manager to make any changes. We may ask you for additional verification information if you are changing certain details such as your name or your address.</p>
+<p>Whilst we endeavour at all times to keep your information accurate, we welcome your corrections. You can correct your profile at any time by logging onto your account via the Lux Financial website, or you can call your account manager to make any changes. We may ask you for additional verification information if you are changing certain details such as your name or your address.</p>
 
 
 
@@ -562,7 +562,7 @@ export default function PrivacyPage() {
 
 
 
-<p>CDAX puts the human factor at the heart of our customer service, so there are no circumstances when profiling or other automated decision making will have a legal impact on you without a person reviewing and making a decision on the result. If you feel you may have been unfairly impacted by profiling, our team can manually assess whether the decision is fair and discuss the situation with you.</p>
+<p>Lux Financial puts the human factor at the heart of our customer service, so there are no circumstances when profiling or other automated decision making will have a legal impact on you without a person reviewing and making a decision on the result. If you feel you may have been unfairly impacted by profiling, our team can manually assess whether the decision is fair and discuss the situation with you.</p>
 
 
 
@@ -586,7 +586,7 @@ export default function PrivacyPage() {
 
 
 
-<p>You can do this by checking or unchecking certain boxes on the forms we use to collect your information, or by logging onto your account and managing your contact preferences, or by clicking on the ‘unsubscribe’ link(s) at the foot of every marketing or promotional email. You may exercise any of the above rights by contacting us at <a href="mailto:compliance@cdaxforex.com" target="_blank" rel="noreferrer noopener">compliance@cdaxforex.com</a> or by calling your Account Manager.</p>
+<p>You can do this by checking or unchecking certain boxes on the forms we use to collect your information, or by logging onto your account and managing your contact preferences, or by clicking on the ‘unsubscribe’ link(s) at the foot of every marketing or promotional email. You may exercise any of the above rights by contacting us at <a href="mailto:compliance@lux.finance" target="_blank" rel="noreferrer noopener">compliance@lux.finance</a> or by calling your Account Manager.</p>
 
 
 
@@ -594,7 +594,7 @@ export default function PrivacyPage() {
 
 
 
-<p>The Data Controller. The Data Controller is CDAX Limited trading as CDAXForex, Registered office address 2<sup>nd</sup> Floor, St.Mary’s Court, 20 Hill Street, Douglas, Isle of Man, IM1 1EU.</p>
+<p>The Data Controller. The Data Controller is Lux Limited trading as Lux FinancialForex, Registered office address 2<sup>nd</sup> Floor, St.Mary’s Court, 20 Hill Street, Douglas, Isle of Man, IM1 1EU.</p>
 
 
 
@@ -602,7 +602,7 @@ export default function PrivacyPage() {
 
 
 
-<p>If you want to exercise your right to access your information or have any questions about this Privacy Policy, CDAX’s information practices, or your dealings with CDAX, you can contact us by calling the customer service number located on our website, sending an email to <a href="mailto:compliance@cdaxforex.com" target="_blank" rel="noreferrer noopener">compliance@cdaxforex.com</a> or by writing to us at CDAX Limited, 27 Hope Street, Douglas, Isle of Man, IM1 1AR.</p>
+<p>If you want to exercise your right to access your information or have any questions about this Privacy Policy, Lux Financial’s information practices, or your dealings with Lux Financial, you can contact us by calling the customer service number located on our website, sending an email to <a href="mailto:compliance@lux.finance" target="_blank" rel="noreferrer noopener">compliance@lux.finance</a> or by writing to us at Lux Limited, 27 Hope Street, Douglas, Isle of Man, IM1 1AR.</p>
 
 
 
@@ -610,7 +610,7 @@ export default function PrivacyPage() {
 
 
 
-<p>If you believe that we have breached a privacy law with which we should comply, please <a>send an email to </a><a href="mailto:compliance@cdaxforex.com" target="_blank" rel="noreferrer noopener">compliance@cdaxforex.com</a>. We aim to respond in a reasonable time, normally within 30 days. Our Compliance team and Data Protection Officer will look after your complaint and will give you additional information about how it will be managed.</p>
+<p>If you believe that we have breached a privacy law with which we should comply, please <a>send an email to </a><a href="mailto:compliance@lux.finance" target="_blank" rel="noreferrer noopener">compliance@lux.finance</a>. We aim to respond in a reasonable time, normally within 30 days. Our Compliance team and Data Protection Officer will look after your complaint and will give you additional information about how it will be managed.</p>
 
 
 
@@ -634,7 +634,7 @@ export default function PrivacyPage() {
 
 
 
-<p>We may amend this Privacy Policy at any time, as new features are added to the CDAX services or as we incorporate suggestions from our customers. Any changes we may make will be posted on CDAX website so please check back frequently.</p>
+<p>We may amend this Privacy Policy at any time, as new features are added to the Lux Financial services or as we incorporate suggestions from our customers. Any changes we may make will be posted on Lux Financial website so please check back frequently.</p>
 
 
 

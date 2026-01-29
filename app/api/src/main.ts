@@ -11,6 +11,7 @@ import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
 import { json, urlencoded } from 'express';
 import helmet from 'helmet';
+import { LUX_BRAND } from '@luxbank/brand';
 import { AppModule } from './app.module';
 import { Request, Response, NextFunction } from 'express';
 
@@ -18,7 +19,7 @@ function buildSwagger(app) {
   // Set up Swagger
   const config = new DocumentBuilder()
     .addBearerAuth()
-    .setTitle('CDAX API')
+    .setTitle(`${LUX_BRAND.name} API`)
     .setDescription('')
     .setVersion('1.0.0')
     .build();
@@ -69,14 +70,15 @@ async function bootstrap() {
   });
 
   // Enable CORS
+  const { domains } = LUX_BRAND;
   app.enableCors({
     origin: [
-      'https://cdax.app',
-      'https://cdax.forex',
-      'https://cdax.cloud',
-      'https://cdax.ai',
+      `https://${domains.app}`,
+      `https://${domains.primary}`,
+      domains.api ? `https://${domains.api}` : null,
+      domains.support ? `https://${domains.support}` : null,
       'http://localhost:3000'
-    ],
+    ].filter(Boolean),
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,

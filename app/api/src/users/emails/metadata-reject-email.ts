@@ -1,6 +1,7 @@
 import { AttachmentJSON } from '@sendgrid/helpers/classes/attachment';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { LUX_BRAND } from '@luxbank/brand';
 import BaseEmail from '../../model/base-email';
 
 interface MetadataEmailContext {
@@ -15,9 +16,10 @@ const logoImage = readFileSync(join(__dirname, '../../templates/emails/registrat
 
 export default class MetadataRejectEmail extends BaseEmail<MetadataEmailContext> {
     constructor(context: MetadataEmailContext) {
+        const { jurisdiction } = LUX_BRAND;
         super(
             context.emailTo, //to user
-            'CDAX Forex <noreply@cdaxforex.com',
+            `${LUX_BRAND.name} <${jurisdiction.contact.email}>`,
             'User requested to update his metadata',
             'emails/registration/update-reject/meta',
             context,

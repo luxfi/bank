@@ -12,7 +12,7 @@ export const userRolesDictionary: Record<string, string> = {
   'user:manager': 'Team Manager',
   'user:member': 'Team Member',
   'user:viewer': 'Viewer',
-  'admin:super': 'CDAX Team',
+  'admin:super': 'Lux Financial Team',
 };
 
 export const userRoles = (currentUserRole?: UserRole): TSelectOptions[] => {

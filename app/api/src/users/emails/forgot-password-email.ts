@@ -1,6 +1,7 @@
 import { AttachmentJSON } from '@sendgrid/helpers/classes/attachment';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { LUX_BRAND } from '@luxbank/brand';
 import BaseEmail from '../../model/base-email';
 
 interface ForgotPasswordEmailContext {
@@ -13,8 +14,8 @@ export default class ForgotPasswordEmail extends BaseEmail<ForgotPasswordEmailCo
     constructor(to: string, password: string) {
         super(
             to,
-            'CDAX Forex <noreply@cdaxforex.com>',
-            'CDAX Forex forgot password',
+            `${LUX_BRAND.name} <${LUX_BRAND.jurisdiction.contact.email}>`,
+            `${LUX_BRAND.name} forgot password`,
             'emails/registration/forgot/forgot',
             {
                 password
