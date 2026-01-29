@@ -1,6 +1,6 @@
 # Customers
 
-Customers represent individuals or businesses that use your platform. Each customer can have multiple accounts, wallets, and external accounts.
+Customers represent individuals or businesses that use your platform. Each customer can have multiple accounts, wallets, and external accounts. Customers must complete KYC verification before accessing full platform capabilities.
 
 ## The Customer Object
 
@@ -13,8 +13,29 @@ Customers represent individuals or businesses that use your platform. Each custo
   "first_name": "John",
   "last_name": "Doe",
   "phone": "+1234567890",
+  "date_of_birth": "1990-01-15",
+  "tax_id_provided": true,
+  "address": {
+    "line1": "123 Main St",
+    "line2": "Apt 4B",
+    "city": "New York",
+    "state": "NY",
+    "postal_code": "10001",
+    "country": "US"
+  },
   "status": "active",
   "kyc_status": "approved",
+  "kyc_link": null,
+  "tos_status": "approved",
+  "tos_link": null,
+  "risk_rating": "low",
+  "endorsements": ["can_trade_stablecoins", "can_wire_transfer"],
+  "rejection_reasons": [],
+  "requirements_due": [],
+  "metadata": {
+    "internal_id": "usr_12345",
+    "tier": "premium"
+  },
   "created_at": "2026-01-15T10:00:00.000Z",
   "updated_at": "2026-01-15T10:00:00.000Z"
 }
@@ -24,7 +45,7 @@ Customers represent individuals or businesses that use your platform. Each custo
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | string | Unique identifier (cus_*) |
+| `id` | string | Unique identifier (UUID) |
 | `object` | string | Always "customer" |
 | `type` | string | "individual" or "business" |
 | `email` | string | Customer email address |
@@ -32,20 +53,58 @@ Customers represent individuals or businesses that use your platform. Each custo
 | `last_name` | string | Last name (individuals) |
 | `business_name` | string | Company name (businesses) |
 | `phone` | string | Phone number (E.164 format) |
-| `status` | string | "pending", "active", "suspended" |
-| `kyc_status` | string | "pending", "in_review", "approved", "rejected" |
+| `date_of_birth` | string | Date of birth (YYYY-MM-DD) |
+| `tax_id_provided` | boolean | Whether SSN/TIN was provided |
+| `address` | object | Customer address |
+| `status` | string | "pending", "active", "suspended", "deleted" |
+| `kyc_status` | string | "not_started", "pending", "incomplete", "manual_review", "under_review", "awaiting_ubo", "approved", "rejected" |
+| `kyc_link` | string | URL for KYC verification (if needed) |
+| `tos_status` | string | "pending", "approved" |
+| `tos_link` | string | URL for Terms of Service (if needed) |
+| `risk_rating` | string | "low", "medium", "high" |
+| `endorsements` | array | Capabilities granted to customer |
+| `rejection_reasons` | array | Reasons for KYC rejection |
+| `requirements_due` | array | Outstanding requirements |
+| `metadata` | object | Custom key-value pairs |
+
+### Business Customer Additional Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `business_name` | string | Legal business name |
+| `business_type` | string | "llc", "corporation", "partnership", "sole_proprietor" |
+| `business_ein` | string | Employer Identification Number |
+| `business_phone` | string | Business phone number |
+| `business_email` | string | Business email address |
+| `website` | string | Business website URL |
+| `industry` | string | Business industry classification |
+| `registration_number` | string | Business registration number |
+| `incorporation_date` | string | Date of incorporation |
+| `incorporation_country` | string | Country of incorporation (ISO 3166-1 alpha-2) |
+
+### Endorsements
+
+| Endorsement | Description |
+|-------------|-------------|
+| `can_trade_stablecoins` | Can convert fiat to stablecoins |
+| `can_wire_transfer` | Can send/receive wire transfers |
+| `can_ach_transfer` | Can send/receive ACH transfers |
+| `can_sepa_transfer` | Can send/receive SEPA transfers |
+| `can_swift_transfer` | Can send/receive SWIFT transfers |
+| `can_hold_custody` | Can use custodial wallets |
+| `can_use_mpc` | Can use MPC wallets |
 
 ---
 
 ## Create a Customer
 
-Creates a new customer.
+Creates a new customer. The customer will need to complete KYC verification before being able to transact.
 
 ```
 POST /v0/customers
 ```
 
-### Request Body
+### Individual Customer
 
 ```json
 {
@@ -54,15 +113,61 @@ POST /v0/customers
   "first_name": "John",
   "last_name": "Doe",
   "phone": "+1234567890",
+  "date_of_birth": "1990-01-15",
+  "ssn_last_4": "1234",
   "address": {
     "line1": "123 Main St",
+    "line2": "Apt 4B",
     "city": "New York",
     "state": "NY",
     "postal_code": "10001",
     "country": "US"
+  },
+  "metadata": {
+    "internal_id": "usr_12345"
   }
 }
 ```
+
+### Business Customer
+
+```json
+{
+  "type": "business",
+  "email": "finance@acmecorp.com",
+  "business_name": "Acme Corporation",
+  "business_type": "corporation",
+  "business_ein": "12-3456789",
+  "business_phone": "+1234567890",
+  "business_email": "contact@acmecorp.com",
+  "website": "https://acmecorp.com",
+  "industry": "technology",
+  "incorporation_date": "2015-06-15",
+  "incorporation_country": "US",
+  "address": {
+    "line1": "100 Business Park",
+    "city": "San Francisco",
+    "state": "CA",
+    "postal_code": "94105",
+    "country": "US"
+  }
+}
+```
+
+### Request Parameters
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | string | Yes | "individual" or "business" |
+| `email` | string | Yes | Primary email address |
+| `first_name` | string | Yes* | First name (*required for individuals) |
+| `last_name` | string | Yes* | Last name (*required for individuals) |
+| `business_name` | string | Yes* | Legal name (*required for businesses) |
+| `phone` | string | No | Phone number (E.164 format) |
+| `date_of_birth` | string | No | Date of birth (YYYY-MM-DD) |
+| `ssn_last_4` | string | No | Last 4 digits of SSN |
+| `address` | object | No | Customer address |
+| `metadata` | object | No | Custom key-value pairs |
 
 ### Response
 
@@ -75,25 +180,51 @@ POST /v0/customers
   "first_name": "John",
   "last_name": "Doe",
   "status": "pending",
-  "kyc_status": "pending",
+  "kyc_status": "not_started",
+  "kyc_link": "https://verify.lux.financial/kyc/abc123",
+  "tos_status": "pending",
+  "tos_link": "https://verify.lux.financial/tos/abc123",
+  "endorsements": [],
+  "requirements_due": ["kyc_verification", "tos_acceptance"],
   "created_at": "2026-01-15T10:00:00.000Z"
 }
 ```
 
-### Example
+### SDK Example
 
 ```typescript
-const customer = await lux.customers.create({
+// Individual customer
+const individual = await lux.customers.create({
   type: 'individual',
   email: 'john@example.com',
   first_name: 'John',
   last_name: 'Doe',
   phone: '+1234567890',
+  date_of_birth: '1990-01-15',
   address: {
     line1: '123 Main St',
     city: 'New York',
     state: 'NY',
     postal_code: '10001',
+    country: 'US',
+  },
+});
+
+// Direct user to KYC flow
+console.log(individual.kyc_link);
+
+// Business customer
+const business = await lux.customers.create({
+  type: 'business',
+  email: 'finance@acmecorp.com',
+  business_name: 'Acme Corporation',
+  business_type: 'corporation',
+  business_ein: '12-3456789',
+  address: {
+    line1: '100 Business Park',
+    city: 'San Francisco',
+    state: 'CA',
+    postal_code: '94105',
     country: 'US',
   },
 });
@@ -117,8 +248,29 @@ GET /v0/customers/{customer_id}
   "email": "john@example.com",
   "first_name": "John",
   "last_name": "Doe",
+  "phone": "+1234567890",
+  "date_of_birth": "1990-01-15",
+  "tax_id_provided": true,
+  "address": {
+    "line1": "123 Main St",
+    "line2": "Apt 4B",
+    "city": "New York",
+    "state": "NY",
+    "postal_code": "10001",
+    "country": "US"
+  },
   "status": "active",
   "kyc_status": "approved",
+  "kyc_link": null,
+  "tos_status": "approved",
+  "tos_link": null,
+  "risk_rating": "low",
+  "endorsements": ["can_trade_stablecoins", "can_wire_transfer", "can_ach_transfer"],
+  "rejection_reasons": [],
+  "requirements_due": [],
+  "metadata": {
+    "internal_id": "usr_12345"
+  },
   "created_at": "2026-01-15T10:00:00.000Z",
   "updated_at": "2026-01-15T10:00:00.000Z"
 }
@@ -181,7 +333,7 @@ PATCH /v0/customers/{customer_id}
 
 ## Submit KYC Documents
 
-Submit identity verification documents for a customer.
+Submit identity verification documents for a customer. This endpoint is used when you want to handle KYC document collection yourself rather than using the hosted KYC link.
 
 ```
 POST /v0/customers/{customer_id}/kyc
@@ -198,13 +350,150 @@ POST /v0/customers/{customer_id}/kyc
 }
 ```
 
+### Document Types
+
+| Type | Description |
+|------|-------------|
+| `passport` | Passport (front only) |
+| `drivers_license` | Driver's license (front + back) |
+| `national_id` | National ID card (front + back) |
+
 ### Response
 
 ```json
 {
   "id": "kyc_xyz789",
   "object": "kyc_submission",
+  "customer_id": "cus_abc123",
   "status": "in_review",
   "created_at": "2026-01-15T10:00:00.000Z"
+}
+```
+
+---
+
+## KYC Status Lifecycle
+
+```
+not_started → pending → incomplete → under_review → approved
+                                  ↘ manual_review → approved
+                                  ↘ rejected
+```
+
+| Status | Description |
+|--------|-------------|
+| `not_started` | KYC not initiated |
+| `pending` | Awaiting document submission |
+| `incomplete` | Additional documents required |
+| `under_review` | Documents being reviewed |
+| `manual_review` | Requires manual compliance review |
+| `awaiting_ubo` | Waiting for Ultimate Beneficial Owner info (businesses) |
+| `approved` | KYC approved, customer can transact |
+| `rejected` | KYC rejected, see `rejection_reasons` |
+
+---
+
+## Delete a Customer
+
+Soft delete a customer. The customer's data is retained but they cannot access the platform.
+
+```
+DELETE /v0/customers/{customer_id}
+```
+
+### Response
+
+```json
+{
+  "id": "cus_abc123",
+  "object": "customer",
+  "status": "deleted",
+  "deleted_at": "2026-01-15T10:00:00.000Z"
+}
+```
+
+---
+
+## Get Customer Wallets
+
+List all wallets belonging to a customer.
+
+```
+GET /v0/customers/{customer_id}/wallets
+```
+
+### Response
+
+```json
+{
+  "object": "list",
+  "data": [
+    {
+      "id": "wal_abc123",
+      "object": "wallet",
+      "type": "custodial",
+      "label": "Treasury",
+      "chains": ["polygon", "ethereum"],
+      "created_at": "2026-01-15T10:00:00.000Z"
+    }
+  ],
+  "has_more": false
+}
+```
+
+---
+
+## Get Customer External Accounts
+
+List external bank accounts linked to a customer.
+
+```
+GET /v0/customers/{customer_id}/external-accounts
+```
+
+### Response
+
+```json
+{
+  "object": "list",
+  "data": [
+    {
+      "id": "ext_abc123",
+      "object": "external_account",
+      "type": "us_bank_account",
+      "account_name": "Business Checking",
+      "bank_name": "Chase",
+      "last_4": "6789",
+      "status": "verified",
+      "created_at": "2026-01-15T10:00:00.000Z"
+    }
+  ],
+  "has_more": false
+}
+```
+
+---
+
+## Error Responses
+
+### 400 Bad Request
+
+```json
+{
+  "code": "bad_customer_request",
+  "message": "Fields missing from customer body",
+  "source": {
+    "location": "body",
+    "key": "first_name,email"
+  }
+}
+```
+
+### 404 Not Found
+
+```json
+{
+  "code": "customer_not_found",
+  "message": "Customer with ID cus_abc123 not found"
 }
 ```

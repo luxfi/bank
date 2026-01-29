@@ -212,23 +212,23 @@ const TriangleSymbol = () => (
 const features = [
   {
     icon: WalletIcon,
-    title: "Native Stablecoin Support",
-    description: "USDC, USDT, PYUSD, and crypto assets natively supported. Multi-chain deployment on Polygon, Ethereum, Arbitrum, and more.",
+    title: "All Assets, All Chains",
+    description: "Stablecoins, crypto, digital securities, and tokenized assets. Multi-chain support across Ethereum, Polygon, Arbitrum, and 50+ networks.",
   },
   {
     icon: GlobeIcon,
-    title: "Global Payments",
-    description: "Send stablecoins to 150+ countries. Real-time settlement via blockchain rails, bypassing legacy banking hours.",
+    title: "200+ Countries & Currencies",
+    description: "Fiat and crypto payments worldwide. Real-time settlement via blockchain rails with local currency conversion.",
   },
   {
     icon: CurrencyIcon,
-    title: "Real-time FX",
-    description: "Competitive rates with transparent pricing. Automated hedging and treasury tools built-in.",
+    title: "Integrated CEX & DEX",
+    description: "White-label exchange platform with CEX liquidity and DEX access. Launch your own trading venue in weeks.",
   },
   {
     icon: ShieldIcon,
-    title: "Built-in Compliance",
-    description: "AI-powered KYC/KYB, sanctions screening, and transaction monitoring. Compliance risk scoring in real-time.",
+    title: "DeFi Infrastructure",
+    description: "Deploy AMMs, liquidity pools, and yield products. Full DeFi stack with institutional-grade security and compliance.",
   },
   {
     icon: CodeIcon,
@@ -237,8 +237,8 @@ const features = [
   },
   {
     icon: ZapIcon,
-    title: "ZAP Protocol",
-    description: "Browser-to-MCP communication via ZAP. Real-time AI chat for customer support and admin operations.",
+    title: "Digital Securities",
+    description: "Issue, trade, and settle tokenized securities. Compliant infrastructure for STOs and regulated digital assets.",
   },
 ];
 
@@ -330,11 +330,11 @@ export default function Home() {
       <HeroSection>
         <HeroContent>
           <HeroTitle>
-            Bank infrastructure designed for the age of AI & Quantum Compute
+            The complete financial infrastructure for the digital economy
           </HeroTitle>
           <HeroSubtitle>
-            USDC/USDT payments, MPC custody, and AI-powered operations.
-            Build the neobank of the future with post-quantum security.
+            Fiat, crypto, stablecoins, digital securities. CEX, DEX, AMM.
+            200+ countries. All in one platform with post-quantum security.
           </HeroSubtitle>
           <HeroButtons>
             <Link href="https://app.lux.financial/registration" target="_blank">
@@ -345,10 +345,10 @@ export default function Home() {
             </Link>
           </HeroButtons>
           <BadgeRow>
-            <Badge>USDC/USDT</Badge>
-            <Badge>MPC Custody</Badge>
-            <Badge>Post-Quantum</Badge>
-            <Badge>MCP + ZAP</Badge>
+            <Badge>CEX + DEX</Badge>
+            <Badge>AMM + DeFi</Badge>
+            <Badge>Digital Securities</Badge>
+            <Badge>200+ Countries</Badge>
           </BadgeRow>
         </HeroContent>
 
@@ -382,7 +382,7 @@ export default function Home() {
         <SectionHeader>
           <SectionTitle>Everything you need to build</SectionTitle>
           <SectionSubtitle>
-            A complete platform for fintechs and neobanks to embed stablecoin payments, crypto custody, and AI-powered operations.
+            Banking, trading, DeFi, and digital assets—unified infrastructure for fintechs, neobanks, and financial institutions worldwide.
           </SectionSubtitle>
         </SectionHeader>
 
@@ -565,9 +565,9 @@ export default function Home() {
 
       {/* Final CTA */}
       <CTASection>
-        <CTATitle>Ready to build the future of banking?</CTATitle>
+        <CTATitle>Ready to build the future of finance?</CTATitle>
         <CTASubtitle>
-          Join companies building on Lux Financial&apos;s stablecoin and AI-powered infrastructure.
+          Join companies building banks, exchanges, and DeFi products on Lux Financial&apos;s unified infrastructure.
         </CTASubtitle>
         <Link href="https://app.lux.financial/registration" target="_blank">
           <CustomButton>Start Building</CustomButton>

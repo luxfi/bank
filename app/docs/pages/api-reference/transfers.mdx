@@ -1,6 +1,6 @@
 # Transfers
 
-Transfers move funds between accounts and wallets within the Lux platform.
+Transfers move funds between accounts, wallets, and external bank accounts. Supports multiple payment rails including ACH, Wire, SEPA, SWIFT, PIX, and SPEI across fiat and crypto.
 
 ## The Transfer Object
 
@@ -8,20 +8,31 @@ Transfers move funds between accounts and wallets within the Lux platform.
 {
   "id": "txfr_abc123",
   "object": "transfer",
+  "client_reference_id": "your_reference_123",
   "amount": "10000.00",
-  "currency": "USD",
+  "currency": "usd",
+  "on_behalf_of": "cus_xyz789",
+  "developer_fee": "10.00",
   "source": {
-    "type": "account",
-    "account_id": "acct_123"
+    "payment_rail": "ach_push",
+    "currency": "usd"
   },
   "destination": {
-    "type": "wallet",
-    "wallet_id": "wal_456",
-    "chain": "polygon"
+    "payment_rail": "ethereum",
+    "currency": "usdc",
+    "to_address": "0x71C7656EC7ab88b098defB751B7401B5f6d8976F"
   },
-  "status": "completed",
+  "state": "payment_processed",
+  "receipt": {
+    "initial_amount": "10000.00",
+    "developer_fee": "10.00",
+    "exchange_fee": "5.00",
+    "subtotal_amount": "9985.00",
+    "gas_fee": "0.50",
+    "final_amount": "9984.50"
+  },
   "created_at": "2026-01-15T10:00:00.000Z",
-  "completed_at": "2026-01-15T10:00:02.000Z"
+  "updated_at": "2026-01-15T10:00:02.000Z"
 }
 ```
 
@@ -29,13 +40,21 @@ Transfers move funds between accounts and wallets within the Lux platform.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | string | Unique identifier (txfr_*) |
-| `object` | string | Always "transfer" |
-| `amount` | string | Transfer amount |
-| `currency` | string | Currency code |
-| `source` | object | Source account/wallet |
-| `destination` | object | Destination account/wallet |
-| `status` | string | "pending", "processing", "completed", "failed" |
+| `id` | string | Unique identifier (UUID) |
+| `client_reference_id` | string | Your reference ID (max 256 chars) |
+| `amount` | string | Transfer amount as decimal string |
+| `currency` | string | Fiat currency (usd, eur, mxn, brl, gbp) |
+| `on_behalf_of` | string | Customer ID for the transfer |
+| `developer_fee` | string | Your fee deducted from transfer |
+| `developer_fee_percent` | string | Your fee as percentage (0.0-100.0) |
+| `source` | object | Source account/wallet/bank |
+| `destination` | object | Destination account/wallet/bank |
+| `state` | string | Transfer state (see lifecycle below) |
+| `source_deposit_instructions` | object | Instructions for customer deposits |
+| `receipt` | object | Fee breakdown and final amounts |
+| `return_details` | object | Return information if applicable |
+| `created_at` | string | ISO8601 creation timestamp |
+| `updated_at` | string | ISO8601 last update timestamp |
 
 ---
 
@@ -45,99 +64,312 @@ Transfers move funds between accounts and wallets within the Lux platform.
 POST /v0/transfers
 ```
 
-### Account to Wallet (Stablecoin Mint)
+### Headers
 
-```json
-{
-  "amount": "10000.00",
-  "currency": "USD",
-  "source": {
-    "type": "account",
-    "account_id": "acct_123"
-  },
-  "destination": {
-    "type": "wallet",
-    "wallet_id": "wal_456",
-    "chain": "polygon",
-    "asset": "USDC"
-  }
-}
-```
+| Header | Required | Description |
+|--------|----------|-------------|
+| `Api-Key` | Yes | Your API key |
+| `Idempotency-Key` | Yes | Unique key for idempotent requests |
 
-### Wallet to Account (Stablecoin Redeem)
-
-```json
-{
-  "amount": "5000.00",
-  "currency": "USD",
-  "source": {
-    "type": "wallet",
-    "wallet_id": "wal_456",
-    "chain": "polygon",
-    "asset": "USDC"
-  },
-  "destination": {
-    "type": "account",
-    "account_id": "acct_123"
-  }
-}
-```
-
-### Wallet to Wallet
+### Request Body
 
 ```json
 {
   "amount": "1000.00",
+  "on_behalf_of": "cus_xyz789",
+  "developer_fee": "5.00",
+  "client_reference_id": "your_ref_123",
   "source": {
-    "type": "wallet",
-    "wallet_id": "wal_123",
-    "chain": "polygon",
-    "asset": "USDC"
+    "payment_rail": "ethereum",
+    "currency": "usdc",
+    "from_address": "0x71C7656EC7ab88b098defB751B7401B5f6d8976F"
   },
   "destination": {
-    "type": "wallet",
-    "wallet_id": "wal_456",
-    "chain": "polygon",
-    "asset": "USDC"
+    "payment_rail": "ach",
+    "currency": "usd",
+    "external_account_id": "ext_abc123"
   }
 }
 ```
 
-### Response
+### Request Parameters
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `amount` | string | Yes* | Transfer amount (omit if `flexible_amount` enabled) |
+| `on_behalf_of` | string | Yes | Customer ID |
+| `developer_fee` | string | No | Your fixed fee amount |
+| `developer_fee_percent` | string | No | Your fee as percentage |
+| `client_reference_id` | string | No | Your reference ID |
+| `dry_run` | boolean | No | Validate without creating |
+| `source` | object | Yes | Source configuration |
+| `destination` | object | Yes | Destination configuration |
+| `features` | object | No | Feature flags |
+
+### Features
+
+```json
+{
+  "features": {
+    "flexible_amount": true,
+    "static_template": true,
+    "allow_any_from_address": true
+  }
+}
+```
+
+| Feature | Description |
+|---------|-------------|
+| `flexible_amount` | Accept variable amounts (omit `amount` from request) |
+| `static_template` | Use static deposit instructions |
+| `allow_any_from_address` | Accept deposits from any address |
+
+---
+
+## Transfer Examples
+
+### ACH to Crypto (Onramp)
+
+```json
+{
+  "amount": "1000.00",
+  "on_behalf_of": "cus_xyz789",
+  "source": {
+    "payment_rail": "ach_push",
+    "currency": "usd"
+  },
+  "destination": {
+    "payment_rail": "ethereum",
+    "currency": "usdc",
+    "to_address": "0x71C7656EC7ab88b098defB751B7401B5f6d8976F"
+  }
+}
+```
+
+### Crypto to ACH (Offramp)
+
+```json
+{
+  "amount": "1000.00",
+  "on_behalf_of": "cus_xyz789",
+  "source": {
+    "payment_rail": "ethereum",
+    "currency": "usdc",
+    "from_address": "0x71C7656EC7ab88b098defB751B7401B5f6d8976F"
+  },
+  "destination": {
+    "payment_rail": "ach",
+    "currency": "usd",
+    "external_account_id": "ext_abc123"
+  }
+}
+```
+
+### Wire to Crypto (Onramp)
+
+```json
+{
+  "amount": "50000.00",
+  "on_behalf_of": "cus_xyz789",
+  "source": {
+    "payment_rail": "wire",
+    "currency": "usd"
+  },
+  "destination": {
+    "payment_rail": "polygon",
+    "currency": "usdc",
+    "to_address": "0x71C7656EC7ab88b098defB751B7401B5f6d8976F"
+  }
+}
+```
+
+### Crypto to Wire (Offramp)
+
+```json
+{
+  "amount": "50000.00",
+  "on_behalf_of": "cus_xyz789",
+  "source": {
+    "payment_rail": "polygon",
+    "currency": "usdc",
+    "from_address": "0x71C7656EC7ab88b098defB751B7401B5f6d8976F"
+  },
+  "destination": {
+    "payment_rail": "wire",
+    "currency": "usd",
+    "external_account_id": "ext_abc123",
+    "wire_message": "Payment for services"
+  }
+}
+```
+
+### SEPA to Crypto (EUR Onramp)
+
+```json
+{
+  "amount": "5000.00",
+  "on_behalf_of": "cus_xyz789",
+  "source": {
+    "payment_rail": "sepa",
+    "currency": "eur"
+  },
+  "destination": {
+    "payment_rail": "ethereum",
+    "currency": "usdc",
+    "to_address": "0x71C7656EC7ab88b098defB751B7401B5f6d8976F"
+  }
+}
+```
+
+### Crypto to SEPA (EUR Offramp)
+
+```json
+{
+  "amount": "5000.00",
+  "on_behalf_of": "cus_xyz789",
+  "source": {
+    "payment_rail": "ethereum",
+    "currency": "usdc",
+    "from_address": "0x71C7656EC7ab88b098defB751B7401B5f6d8976F"
+  },
+  "destination": {
+    "payment_rail": "sepa",
+    "currency": "eur",
+    "external_account_id": "ext_eur123",
+    "sepa_reference": "Invoice 12345"
+  }
+}
+```
+
+### SWIFT International Transfer
+
+```json
+{
+  "amount": "100000.00",
+  "on_behalf_of": "cus_xyz789",
+  "source": {
+    "payment_rail": "polygon",
+    "currency": "usdc",
+    "from_address": "0x71C7656EC7ab88b098defB751B7401B5f6d8976F"
+  },
+  "destination": {
+    "payment_rail": "swift",
+    "currency": "usd",
+    "external_account_id": "ext_intl123",
+    "swift_reference": "Trade Settlement",
+    "swift_charges": "sha"
+  }
+}
+```
+
+### PIX (Brazil)
+
+```json
+{
+  "amount": "1000.00",
+  "on_behalf_of": "cus_xyz789",
+  "source": {
+    "payment_rail": "pix",
+    "currency": "brl"
+  },
+  "destination": {
+    "payment_rail": "polygon",
+    "currency": "usdc",
+    "to_address": "0x71C7656EC7ab88b098defB751B7401B5f6d8976F"
+  }
+}
+```
+
+### SPEI (Mexico)
+
+```json
+{
+  "amount": "10000.00",
+  "on_behalf_of": "cus_xyz789",
+  "source": {
+    "payment_rail": "spei",
+    "currency": "mxn"
+  },
+  "destination": {
+    "payment_rail": "ethereum",
+    "currency": "usdc",
+    "to_address": "0x71C7656EC7ab88b098defB751B7401B5f6d8976F"
+  }
+}
+```
+
+### Wallet to Wallet (Cross-Chain)
+
+```json
+{
+  "amount": "1000.00",
+  "on_behalf_of": "cus_xyz789",
+  "source": {
+    "payment_rail": "ethereum",
+    "currency": "usdc",
+    "from_address": "0x71C7656EC7ab88b098defB751B7401B5f6d8976F"
+  },
+  "destination": {
+    "payment_rail": "polygon",
+    "currency": "usdc",
+    "to_address": "0xb794f5ea0ba39494ce839613fffba74279579268"
+  }
+}
+```
+
+---
+
+## Response
+
+### Success Response (201)
 
 ```json
 {
   "id": "txfr_abc123",
-  "object": "transfer",
-  "amount": "10000.00",
-  "currency": "USD",
-  "status": "pending",
-  "estimated_completion": "2026-01-15T10:00:05.000Z",
-  "created_at": "2026-01-15T10:00:00.000Z"
+  "client_reference_id": "your_ref_123",
+  "state": "awaiting_funds",
+  "on_behalf_of": "cus_xyz789",
+  "amount": "1000.00",
+  "currency": "usd",
+  "developer_fee": "5.00",
+  "source": {
+    "payment_rail": "ethereum",
+    "currency": "usdc",
+    "from_address": "0x71C7656EC7ab88b098defB751B7401B5f6d8976F"
+  },
+  "destination": {
+    "payment_rail": "ach",
+    "currency": "usd",
+    "external_account_id": "ext_abc123"
+  },
+  "source_deposit_instructions": {
+    "payment_rail": "ethereum",
+    "amount": "1000.00",
+    "currency": "usdc",
+    "from_address": "0x71C7656EC7ab88b098defB751B7401B5f6d8976F",
+    "to_address": "0xb794f5ea0ba39494ce839613fffba74279579268"
+  },
+  "receipt": {
+    "initial_amount": "1000.00",
+    "developer_fee": "5.00",
+    "exchange_fee": "2.50",
+    "subtotal_amount": "992.50",
+    "url": "https://dashboard.lux.financial/transaction/.../receipt/..."
+  },
+  "created_at": "2026-01-15T10:00:00.000Z",
+  "updated_at": "2026-01-15T10:00:00.000Z"
 }
 ```
 
-### Example
+### Dry Run Response
 
-```typescript
-const transfer = await lux.transfers.create({
-  amount: '10000.00',
-  currency: 'USD',
-  source: {
-    type: 'account',
-    account_id: 'acct_123',
-  },
-  destination: {
-    type: 'wallet',
-    wallet_id: 'wal_456',
-    chain: 'polygon',
-    asset: 'USDC',
-  },
-});
+When `dry_run: true`, a valid transfer returns:
 
-// Wait for completion
-const completed = await lux.transfers.retrieve(transfer.id);
-console.log(completed.status); // "completed"
+```json
+{
+  "state": "valid",
+  "notes": ["This is a valid transfer route"]
+}
 ```
 
 ---
@@ -153,23 +385,36 @@ GET /v0/transfers/{transfer_id}
 ```json
 {
   "id": "txfr_abc123",
-  "object": "transfer",
-  "amount": "10000.00",
-  "currency": "USD",
-  "source": {...},
-  "destination": {...},
-  "status": "completed",
-  "fee": {
-    "amount": "0.50",
-    "currency": "USD"
+  "client_reference_id": "your_ref_123",
+  "state": "payment_processed",
+  "on_behalf_of": "cus_xyz789",
+  "amount": "1000.00",
+  "currency": "usd",
+  "developer_fee": "5.00",
+  "source": {
+    "payment_rail": "ethereum",
+    "currency": "usdc",
+    "from_address": "0x71C7656EC7ab88b098defB751B7401B5f6d8976F"
   },
-  "blockchain_tx": {
-    "chain": "polygon",
-    "hash": "0xabc123...",
-    "block_number": 12345678
+  "destination": {
+    "payment_rail": "ach",
+    "currency": "usd",
+    "external_account_id": "ext_abc123",
+    "trace_number": "123456789012345"
+  },
+  "receipt": {
+    "initial_amount": "1000.00",
+    "developer_fee": "5.00",
+    "exchange_fee": "2.50",
+    "subtotal_amount": "992.50",
+    "gas_fee": "0.50",
+    "final_amount": "992.00",
+    "source_tx_hash": "0xabc123...",
+    "destination_tx_hash": null,
+    "url": "https://dashboard.lux.financial/transaction/.../receipt/..."
   },
   "created_at": "2026-01-15T10:00:00.000Z",
-  "completed_at": "2026-01-15T10:00:02.000Z"
+  "updated_at": "2026-01-15T10:00:02.000Z"
 }
 ```
 
@@ -185,51 +430,237 @@ GET /v0/transfers
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `customer_id` | string | Filter by customer |
-| `account_id` | string | Filter by account |
-| `wallet_id` | string | Filter by wallet |
-| `status` | string | Filter by status |
+| `on_behalf_of` | string | Filter by customer ID |
+| `state` | string | Filter by state |
 | `since` | string | Start date (ISO8601) |
 | `until` | string | End date (ISO8601) |
+| `limit` | integer | Results per page (1-100) |
+| `cursor` | string | Pagination cursor |
 
 ---
 
-## Transfer Status Lifecycle
+## Transfer State Lifecycle
 
 ```
-pending → processing → completed
-                    ↘ failed
+awaiting_funds → funds_received → in_review → payment_submitted → payment_processed
+                                           ↘ canceled
+                                           ↘ undeliverable → returned / refunded
 ```
 
-| Status | Description |
-|--------|-------------|
-| `pending` | Transfer created, awaiting processing |
-| `processing` | Transfer in progress |
-| `completed` | Transfer successful |
-| `failed` | Transfer failed, see `failure_reason` |
+| State | Description |
+|-------|-------------|
+| `awaiting_funds` | Waiting for customer deposit |
+| `funds_received` | Deposit confirmed, processing |
+| `in_review` | Under compliance review |
+| `payment_submitted` | Payment sent to destination |
+| `payment_processed` | Transfer complete |
+| `canceled` | Transfer canceled |
+| `undeliverable` | Cannot deliver to destination |
+| `returned` | Funds returned to source |
+| `refunded` | Refund issued to customer |
 
 ---
 
-## Cross-Chain Transfers
+## Payment Rails
 
-Transfer assets across different chains:
+### Fiat Rails
+
+| Rail | Currencies | Description |
+|------|------------|-------------|
+| `ach` | USD | Standard ACH (2-3 days) |
+| `ach_push` | USD | ACH Push from customer |
+| `ach_same_day` | USD | Same-day ACH |
+| `wire` | USD | Domestic wire transfer |
+| `swift` | USD | International wire (SWIFT) |
+| `sepa` | EUR | SEPA transfer (EU) |
+| `faster_payments` | GBP | UK Faster Payments |
+| `pix` | BRL | Brazil instant payments |
+| `spei` | MXN | Mexico interbank transfer |
+
+### Crypto Rails
+
+| Rail | Assets | Description |
+|------|--------|-------------|
+| `ethereum` | USDC, USDT, DAI, PYUSD | Ethereum mainnet |
+| `polygon` | USDC, USDT | Polygon PoS |
+| `arbitrum` | USDC, USDT | Arbitrum One |
+| `optimism` | USDC, USDT | Optimism |
+| `base` | USDC, USDT | Base |
+| `avalanche_c_chain` | USDC, USDT | Avalanche C-Chain |
+| `solana` | USDC, USDT | Solana |
+| `stellar` | USDC | Stellar network |
+| `tron` | USDT | Tron network |
+
+---
+
+## Currencies
+
+### Fiat Currencies
+
+| Code | Name |
+|------|------|
+| `usd` | US Dollar |
+| `eur` | Euro |
+| `gbp` | British Pound |
+| `mxn` | Mexican Peso |
+| `brl` | Brazilian Real |
+
+### Crypto Currencies
+
+| Code | Name |
+|------|------|
+| `usdc` | USD Coin |
+| `usdt` | Tether USD |
+| `eurc` | Euro Coin |
+| `dai` | Dai Stablecoin |
+| `pyusd` | PayPal USD |
+| `usdb` | Bridge USD |
+
+---
+
+## Deposit Instructions
+
+For onramp transfers, the response includes `source_deposit_instructions`:
+
+### Wire/ACH Instructions
 
 ```json
 {
-  "amount": "1000.00",
-  "source": {
-    "type": "wallet",
-    "wallet_id": "wal_123",
-    "chain": "ethereum",
-    "asset": "USDC"
-  },
-  "destination": {
-    "type": "wallet",
-    "wallet_id": "wal_456",
-    "chain": "polygon",
-    "asset": "USDC"
+  "source_deposit_instructions": {
+    "payment_rail": "wire",
+    "amount": "50000.00",
+    "currency": "usd",
+    "deposit_message": "BRG7ABC123XYZ",
+    "bank_name": "Metropolitan Commercial Bank",
+    "bank_address": "99 Park Avenue, New York, NY 10016",
+    "bank_routing_number": "026013356",
+    "bank_account_number": "1234567890",
+    "bank_beneficiary_name": "Lux Financial LLC",
+    "bank_beneficiary_address": "123 Main St, New York, NY 10001"
   }
 }
 ```
 
-Cross-chain transfers use our bridge infrastructure for seamless asset movement.
+### SEPA Instructions
+
+```json
+{
+  "source_deposit_instructions": {
+    "payment_rail": "sepa",
+    "amount": "5000.00",
+    "currency": "eur",
+    "deposit_message": "BRG7EUR123",
+    "bank_name": "Partner Bank",
+    "bank_address": "Frankfurt, Germany",
+    "iban": "DE89370400440532013000",
+    "bic": "COBADEFFXXX",
+    "account_holder_name": "Lux Financial EU"
+  }
+}
+```
+
+### Crypto Instructions
+
+```json
+{
+  "source_deposit_instructions": {
+    "payment_rail": "ethereum",
+    "amount": "1000.00",
+    "currency": "usdc",
+    "from_address": "0x71C7656EC7ab88b098defB751B7401B5f6d8976F",
+    "to_address": "0xb794f5ea0ba39494ce839613fffba74279579268"
+  }
+}
+```
+
+---
+
+## Receipt Object
+
+The receipt provides a breakdown of fees and final amounts:
+
+```json
+{
+  "receipt": {
+    "initial_amount": "1000.00",
+    "developer_fee": "5.00",
+    "exchange_fee": "2.50",
+    "subtotal_amount": "992.50",
+    "gas_fee": "0.50",
+    "final_amount": "992.00",
+    "remaining_prefunded_balance": "50000.00",
+    "source_tx_hash": "0xabc123...",
+    "destination_tx_hash": "0xdef456...",
+    "exchange_rate": "0.91",
+    "url": "https://dashboard.lux.financial/transaction/.../receipt/..."
+  }
+}
+```
+
+| Field | Description |
+|-------|-------------|
+| `initial_amount` | Original transfer amount |
+| `developer_fee` | Your platform fee |
+| `exchange_fee` | Lux processing fee |
+| `subtotal_amount` | Amount after fixed fees |
+| `gas_fee` | Blockchain gas costs (if applicable) |
+| `final_amount` | Amount received by destination |
+| `exchange_rate` | Currency conversion rate (if applicable) |
+| `source_tx_hash` | Source blockchain transaction |
+| `destination_tx_hash` | Destination blockchain transaction |
+| `url` | Customer-facing receipt URL |
+
+---
+
+## Error Responses
+
+### 400 Bad Request
+
+```json
+{
+  "code": "bad_request",
+  "message": "Invalid source currency for payment rail",
+  "source": {
+    "location": "body",
+    "key": "source.currency"
+  }
+}
+```
+
+### 403 AML Violation
+
+```json
+{
+  "code": "aml_violation",
+  "message": "Failed AML Screening"
+}
+```
+
+---
+
+## SDK Example
+
+```typescript
+const transfer = await lux.transfers.create({
+  amount: '1000.00',
+  on_behalf_of: 'cus_xyz789',
+  developer_fee: '5.00',
+  source: {
+    payment_rail: 'ethereum',
+    currency: 'usdc',
+    from_address: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
+  },
+  destination: {
+    payment_rail: 'ach',
+    currency: 'usd',
+    external_account_id: 'ext_abc123',
+  },
+}, {
+  idempotencyKey: 'unique-key-123',
+});
+
+// Poll for completion
+const completed = await lux.transfers.retrieve(transfer.id);
+console.log(completed.state); // "payment_processed"
+console.log(completed.receipt.final_amount); // "992.00"
+```

@@ -1,6 +1,6 @@
 # Wallets
 
-Wallets provide custodial and self-custody storage for digital assets. Each wallet can hold multiple currencies across multiple chains.
+Wallets provide custodial and self-custody storage for digital assets. Each wallet can hold multiple currencies across multiple chains. Wallets are the primary mechanism for holding stablecoins and executing on-chain transfers.
 
 ## The Wallet Object
 
@@ -11,12 +11,19 @@ Wallets provide custodial and self-custody storage for digital assets. Each wall
   "customer_id": "cus_xyz789",
   "type": "custodial",
   "label": "Treasury Operations",
-  "chains": ["polygon", "ethereum"],
+  "status": "active",
+  "chains": ["polygon", "ethereum", "arbitrum"],
   "addresses": {
     "polygon": "0x1234567890abcdef1234567890abcdef12345678",
-    "ethereum": "0x1234567890abcdef1234567890abcdef12345678"
+    "ethereum": "0x1234567890abcdef1234567890abcdef12345678",
+    "arbitrum": "0x1234567890abcdef1234567890abcdef12345678"
   },
-  "created_at": "2026-01-15T10:00:00.000Z"
+  "metadata": {
+    "department": "treasury",
+    "cost_center": "CC-001"
+  },
+  "created_at": "2026-01-15T10:00:00.000Z",
+  "updated_at": "2026-01-15T10:00:00.000Z"
 }
 ```
 
@@ -29,8 +36,12 @@ Wallets provide custodial and self-custody storage for digital assets. Each wall
 | `customer_id` | string | Owner customer ID |
 | `type` | string | "custodial" or "mpc" |
 | `label` | string | Optional display name |
+| `status` | string | "pending", "active", "suspended" |
 | `chains` | array | Supported chains |
 | `addresses` | object | Chain-specific addresses |
+| `metadata` | object | Custom key-value pairs |
+| `created_at` | string | ISO8601 creation timestamp |
+| `updated_at` | string | ISO8601 last update timestamp |
 
 ---
 
@@ -173,6 +184,38 @@ POST /v0/wallets
 
 ---
 
+## Retrieve a Wallet
+
+```
+GET /v0/wallets/{wallet_id}
+```
+
+### Response
+
+```json
+{
+  "id": "wal_abc123",
+  "object": "wallet",
+  "customer_id": "cus_xyz789",
+  "type": "custodial",
+  "label": "Treasury Operations",
+  "status": "active",
+  "chains": ["polygon", "ethereum", "arbitrum"],
+  "addresses": {
+    "polygon": "0x1234567890abcdef1234567890abcdef12345678",
+    "ethereum": "0x1234567890abcdef1234567890abcdef12345678",
+    "arbitrum": "0x1234567890abcdef1234567890abcdef12345678"
+  },
+  "metadata": {
+    "department": "treasury"
+  },
+  "created_at": "2026-01-15T10:00:00.000Z",
+  "updated_at": "2026-01-15T10:00:00.000Z"
+}
+```
+
+---
+
 ## List Wallets
 
 ```
@@ -184,8 +227,141 @@ GET /v0/wallets
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `customer_id` | string | Filter by customer |
-| `type` | string | Filter by type |
+| `type` | string | Filter by type ("custodial" or "mpc") |
 | `chain` | string | Filter by chain support |
+| `status` | string | Filter by status |
+| `limit` | integer | Results per page (1-100, default 20) |
+| `cursor` | string | Pagination cursor |
+
+### Response
+
+```json
+{
+  "object": "list",
+  "data": [
+    {
+      "id": "wal_abc123",
+      "object": "wallet",
+      "customer_id": "cus_xyz789",
+      "type": "custodial",
+      "label": "Treasury Operations",
+      "status": "active",
+      "chains": ["polygon", "ethereum"],
+      "addresses": {
+        "polygon": "0x1234...",
+        "ethereum": "0x1234..."
+      },
+      "created_at": "2026-01-15T10:00:00.000Z"
+    }
+  ],
+  "has_more": true,
+  "cursor": "cur_xyz789"
+}
+```
+
+---
+
+## Update a Wallet
+
+```
+PATCH /v0/wallets/{wallet_id}
+```
+
+### Request Body
+
+```json
+{
+  "label": "Updated Treasury",
+  "metadata": {
+    "department": "finance"
+  }
+}
+```
+
+### Response
+
+Returns the updated wallet object.
+
+---
+
+## Add Chain to Wallet
+
+Add support for a new blockchain to an existing wallet.
+
+```
+POST /v0/wallets/{wallet_id}/chains
+```
+
+### Request Body
+
+```json
+{
+  "chain": "base"
+}
+```
+
+### Response
+
+```json
+{
+  "id": "wal_abc123",
+  "object": "wallet",
+  "chains": ["polygon", "ethereum", "arbitrum", "base"],
+  "addresses": {
+    "polygon": "0x1234...",
+    "ethereum": "0x1234...",
+    "arbitrum": "0x1234...",
+    "base": "0x5678..."
+  },
+  ...
+}
+```
+
+---
+
+## Get Wallet Transactions
+
+List all transactions for a wallet.
+
+```
+GET /v0/wallets/{wallet_id}/transactions
+```
+
+### Query Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `chain` | string | Filter by chain |
+| `asset` | string | Filter by asset (USDC, USDT) |
+| `type` | string | Filter by type (deposit, withdrawal) |
+| `since` | string | Start date (ISO8601) |
+| `until` | string | End date (ISO8601) |
+| `limit` | integer | Results per page (1-100) |
+| `cursor` | string | Pagination cursor |
+
+### Response
+
+```json
+{
+  "object": "list",
+  "data": [
+    {
+      "id": "wtx_abc123",
+      "object": "wallet_transaction",
+      "wallet_id": "wal_abc123",
+      "type": "deposit",
+      "chain": "polygon",
+      "asset": "USDC",
+      "amount": "1000.00",
+      "tx_hash": "0xabc123...",
+      "block_number": 12345678,
+      "status": "confirmed",
+      "created_at": "2026-01-15T10:00:00.000Z"
+    }
+  ],
+  "has_more": false
+}
+```
 
 ---
 

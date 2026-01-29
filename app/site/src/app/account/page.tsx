@@ -562,7 +562,7 @@ const MockFrame = styled.div`
 
 const MockSidebar = styled.div`
   width: 200px;
-  background: linear-gradient(180deg, #0F172A 0%, #1E293B 100%);
+  background: #000000;
   padding: 1.25rem;
   display: flex;
   flex-direction: column;
@@ -845,7 +845,7 @@ const MockWalletGrid = styled.div`
 `;
 
 const MockWalletCard = styled.div`
-  background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+  background: linear-gradient(135deg, #000000 0%, #1A1A1A 100%);
   border-radius: 12px;
   padding: 1.5rem;
   color: white;
