@@ -29,17 +29,19 @@ export {
 // Re-export types
 export type { LogoVariant, LogoOptions, LogoSettings } from '@luxfi/logo';
 
+// Import for use in functions below
+import { luxLogoWhiteDataUrl, getLogoDataUrl } from '@luxfi/logo';
+
 /**
  * Email-safe logo (inline SVG as base64 for email clients)
  * Uses the white variant for dark email backgrounds
  */
-export { luxLogoWhiteDataUrl as EMAIL_LOGO_BASE64 } from '@luxfi/logo';
+export const EMAIL_LOGO_BASE64 = luxLogoWhiteDataUrl;
 
 /**
  * Email header HTML with logo
  */
 export function getEmailHeader(width = 120): string {
-  const { luxLogoWhiteDataUrl } = require('@luxfi/logo');
   return `<img src="${luxLogoWhiteDataUrl}" alt="Lux Financial" width="${width}" height="${width}" style="display: block; margin: 0 auto;" />`;
 }
 
@@ -48,8 +50,6 @@ export function getEmailHeader(width = 120): string {
  * @deprecated Use getLogoDataUrl from @luxfi/logo directly
  */
 export function getLegacyLogoDataUrl(variant: 'white' | 'dark' | 'brand' = 'white'): string {
-  const { getLogoDataUrl } = require('@luxfi/logo');
-
   switch (variant) {
     case 'dark':
       return getLogoDataUrl({ variant: 'mono' });

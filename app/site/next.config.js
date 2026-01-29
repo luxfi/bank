@@ -4,6 +4,7 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
+  transpilePackages: ['@luxfi/logo', '@luxbank/brand'],
   images: {
     unoptimized: true,
     remotePatterns: [
