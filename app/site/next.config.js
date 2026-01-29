@@ -29,7 +29,10 @@ const nextConfig = {
       },
     ],
   },
-  output: "standalone",
+  // Use 'export' for GitHub Pages static deployment
+  // Set to 'standalone' for Node.js server deployment
+  output: process.env.GITHUB_PAGES ? "export" : "standalone",
+  basePath: process.env.GITHUB_PAGES ? "/bank" : "",
   compress: true,
 };
 
