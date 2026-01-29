@@ -15,6 +15,21 @@ const fadeUp = keyframes`
   }
 `;
 
+const fadeIn = keyframes`
+  from { opacity: 0; }
+  to { opacity: 1; }
+`;
+
+const pulse = keyframes`
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+`;
+
+const typing = keyframes`
+  from { width: 0; }
+  to { width: 100%; }
+`;
+
 // Main content wrapper with max-width
 export const PageContainer = styled.main`
   width: 100%;
@@ -34,20 +49,19 @@ export const PageContainer = styled.main`
   }
 `;
 
-// Hero Section
+// Hero Section - Full width container
 export const HeroSection = styled.section`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
-  align-items: center;
-  padding: 6rem 0;
+  position: relative;
+  padding: 3rem 0 4rem;
   min-height: calc(100vh - 64px);
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
 
   @media ${DeviceSize.md} {
-    grid-template-columns: 1fr;
-    gap: 3rem;
-    padding: 4rem 0;
+    padding: 2rem 0 3rem;
     min-height: auto;
+    gap: 2rem;
   }
 `;
 
@@ -56,6 +70,530 @@ export const HeroContent = styled.div`
   flex-direction: column;
   gap: 1.5rem;
   animation: ${fadeUp} 0.6s ease forwards;
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+`;
+
+// Platform Showcase Container
+export const PlatformShowcase = styled.div`
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 1.5rem;
+  animation: ${fadeUp} 0.6s ease forwards;
+  animation-delay: 0.2s;
+  opacity: 0;
+  animation-fill-mode: forwards;
+
+  @media ${DeviceSize.md} {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+`;
+
+export const PlatformLeft = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+`;
+
+export const PlatformRight = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  @media ${DeviceSize.md} {
+    flex-direction: row;
+  }
+
+  @media ${DeviceSize.sm} {
+    flex-direction: column;
+  }
+`;
+
+// Dashboard Mockup
+export const DashboardMock = styled.div`
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+`;
+
+export const DashboardBrowser = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+`;
+
+export const BrowserDots = styled.div`
+  display: flex;
+  gap: 6px;
+`;
+
+export const BrowserDot = styled.div<{ $color?: string }>`
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: ${props => props.$color || 'rgba(255, 255, 255, 0.15)'};
+`;
+
+export const BrowserUrl = styled.div`
+  flex: 1;
+  display: flex;
+  justify-content: center;
+`;
+
+export const BrowserUrlBox = styled.div`
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  padding: 0.35rem 1rem;
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: ui-monospace, monospace;
+`;
+
+export const DashboardBody = styled.div`
+  display: flex;
+  min-height: 320px;
+
+  @media ${DeviceSize.sm} {
+    min-height: 280px;
+  }
+`;
+
+export const DashboardSidebar = styled.div`
+  width: 180px;
+  background: rgba(0, 0, 0, 0.3);
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 1rem;
+
+  @media ${DeviceSize.sm} {
+    width: 50px;
+    padding: 0.5rem;
+  }
+`;
+
+export const DashboardBrand = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+
+  @media ${DeviceSize.sm} {
+    justify-content: center;
+    gap: 0;
+  }
+`;
+
+export const DashboardBrandIcon = styled.div`
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #D4AF37 0%, #B8960C 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #000;
+`;
+
+export const DashboardBrandText = styled.span`
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+
+  @media ${DeviceSize.sm} {
+    display: none;
+  }
+`;
+
+export const DashboardNavItem = styled.div<{ $active?: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  color: ${props => props.$active ? 'rgba(255, 255, 255, 0.95)' : 'rgba(255, 255, 255, 0.5)'};
+  background: ${props => props.$active ? 'rgba(212, 175, 55, 0.15)' : 'transparent'};
+  margin-bottom: 0.25rem;
+  cursor: pointer;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    opacity: 0.7;
+  }
+
+  @media ${DeviceSize.sm} {
+    justify-content: center;
+    padding: 0.5rem;
+    gap: 0;
+
+    span { display: none; }
+  }
+`;
+
+export const DashboardMain = styled.div`
+  flex: 1;
+  padding: 1.25rem;
+  background: #0a0a0a;
+`;
+
+export const DashboardTopBar = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+`;
+
+export const DashboardPageTitle = styled.h3`
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+`;
+
+export const DashboardStatus = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.75rem;
+  background: rgba(34, 197, 94, 0.1);
+  border-radius: 20px;
+  font-size: 1rem;
+  color: #22C55E;
+`;
+
+export const StatusDot = styled.div<{ $color?: string }>`
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: ${props => props.$color || '#22C55E'};
+`;
+
+export const DashboardStats = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+
+  @media ${DeviceSize.sm} {
+    grid-template-columns: repeat(2, 1fr);
+  }
+`;
+
+export const DashboardStat = styled.div`
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 0.75rem;
+`;
+
+export const DashboardStatLabel = styled.div`
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+
+  svg {
+    width: 12px;
+    height: 12px;
+  }
+`;
+
+export const DashboardStatValue = styled.div`
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+`;
+
+export const DashboardStatChange = styled.div<{ $positive?: boolean }>`
+  font-size: 0.95rem;
+  color: ${props => props.$positive ? '#22C55E' : 'rgba(255, 255, 255, 0.45)'};
+`;
+
+export const DashboardTable = styled.div`
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  overflow: hidden;
+`;
+
+export const DashboardTableRow = styled.div<{ $header?: boolean }>`
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1fr 0.8fr;
+  gap: 0.5rem;
+  padding: 0.65rem 0.75rem;
+  font-size: 1.05rem;
+  color: ${props => props.$header ? 'rgba(255, 255, 255, 0.45)' : 'rgba(255, 255, 255, 0.75)'};
+  background: ${props => props.$header ? 'rgba(255, 255, 255, 0.02)' : 'transparent'};
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  @media ${DeviceSize.sm} {
+    grid-template-columns: 1fr 1fr;
+
+    span:nth-child(3), span:nth-child(4) {
+      display: none;
+    }
+  }
+`;
+
+// Terminal Mockup
+export const TerminalMock = styled.div`
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  flex: 1;
+
+  @media ${DeviceSize.md} {
+    flex: none;
+  }
+`;
+
+export const TerminalHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+`;
+
+export const TerminalTitle = styled.span`
+  margin-left: 0.5rem;
+  font-size: 1rem;
+  font-family: ui-monospace, monospace;
+  color: rgba(255, 255, 255, 0.45);
+`;
+
+export const TerminalBody = styled.div`
+  padding: 1rem;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  background: #0a0a0a;
+  min-height: 180px;
+  max-height: 220px;
+  overflow-y: auto;
+`;
+
+export const TerminalLine = styled.div<{ $type?: 'command' | 'success' | 'info' | 'highlight' }>`
+  color: ${props => {
+    switch(props.$type) {
+      case 'success': return '#22C55E';
+      case 'highlight': return '#D4AF37';
+      case 'info': return 'rgba(255, 255, 255, 0.5)';
+      default: return 'rgba(255, 255, 255, 0.75)';
+    }
+  }};
+  margin-bottom: 0.25rem;
+`;
+
+export const TerminalCursor = styled.span`
+  display: inline-block;
+  width: 8px;
+  height: 14px;
+  background: rgba(255, 255, 255, 0.8);
+  margin-left: 4px;
+  animation: ${pulse} 1s infinite;
+`;
+
+// Mobile Device Mockup
+export const MobileDeviceMock = styled.div`
+  width: 160px;
+  background: linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%);
+  border-radius: 32px;
+  padding: 8px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  flex-shrink: 0;
+  align-self: center;
+
+  @media ${DeviceSize.md} {
+    width: 140px;
+  }
+
+  @media ${DeviceSize.sm} {
+    width: 160px;
+    margin: 0 auto;
+  }
+`;
+
+export const MobileDeviceScreen = styled.div`
+  background: #000;
+  border-radius: 26px;
+  overflow: hidden;
+  aspect-ratio: 9 / 19.5;
+`;
+
+export const MobileDeviceNotch = styled.div`
+  background: #000;
+  padding-top: 0.5rem;
+  display: flex;
+  justify-content: center;
+`;
+
+export const MobileDeviceNotchInner = styled.div`
+  width: 60px;
+  height: 20px;
+  background: #1a1a1a;
+  border-radius: 0 0 12px 12px;
+`;
+
+export const MobileDeviceContent = styled.div`
+  padding: 0.75rem;
+`;
+
+export const MobileDeviceHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+`;
+
+export const MobileDeviceBrand = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+export const MobileDeviceLogo = styled.div`
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  background: linear-gradient(135deg, #D4AF37 0%, #B8960C 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #000;
+`;
+
+export const MobileDeviceName = styled.span`
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+`;
+
+export const MobileDeviceBalance = styled.div`
+  text-align: center;
+  margin-bottom: 1rem;
+`;
+
+export const MobileDeviceBalanceLabel = styled.div`
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+`;
+
+export const MobileDeviceBalanceValue = styled.div`
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.95);
+`;
+
+export const MobileDeviceActions = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 0.75rem;
+`;
+
+export const MobileDeviceAction = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+`;
+
+export const MobileDeviceActionIcon = styled.div<{ $color?: string }>`
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: ${props => props.$color || 'rgba(34, 197, 94, 0.15)'};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 14px;
+    height: 14px;
+    color: #22C55E;
+  }
+`;
+
+export const MobileDeviceActionLabel = styled.span`
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+`;
+
+export const MobileDeviceAsset = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  margin-bottom: 0.4rem;
+`;
+
+export const MobileDeviceAssetInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+`;
+
+export const MobileDeviceAssetIcon = styled.div<{ $color: string }>`
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: ${props => props.$color};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: white;
+`;
+
+export const MobileDeviceAssetName = styled.span`
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+`;
+
+export const MobileDeviceAssetValue = styled.span`
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+`;
+
+export const MobileDeviceHomeBar = styled.div`
+  padding: 0.5rem 0;
+  display: flex;
+  justify-content: center;
+`;
+
+export const MobileDeviceHomeBarInner = styled.div`
+  width: 40px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
 `;
 
 export const HeroTitle = styled.h1`

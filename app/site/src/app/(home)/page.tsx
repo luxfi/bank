@@ -12,14 +12,62 @@ import {
   HeroButtons,
   BadgeRow,
   Badge,
-  HeroMock,
-  MockFrame,
-  MockScreen,
-  MockHeader,
-  MockDot,
-  MockMetric,
-  MockLabel,
-  MockValue,
+  PlatformShowcase,
+  PlatformLeft,
+  PlatformRight,
+  DashboardMock,
+  DashboardBrowser,
+  BrowserDots,
+  BrowserDot,
+  BrowserUrl,
+  BrowserUrlBox,
+  DashboardBody,
+  DashboardSidebar,
+  DashboardBrand,
+  DashboardBrandIcon,
+  DashboardBrandText,
+  DashboardNavItem,
+  DashboardMain,
+  DashboardTopBar,
+  DashboardPageTitle,
+  DashboardStatus,
+  StatusDot,
+  DashboardStats,
+  DashboardStat,
+  DashboardStatLabel,
+  DashboardStatValue,
+  DashboardStatChange,
+  DashboardTable,
+  DashboardTableRow,
+  TerminalMock,
+  TerminalHeader,
+  TerminalTitle,
+  TerminalBody,
+  TerminalLine,
+  TerminalCursor,
+  MobileDeviceMock,
+  MobileDeviceScreen,
+  MobileDeviceNotch,
+  MobileDeviceNotchInner,
+  MobileDeviceContent,
+  MobileDeviceHeader,
+  MobileDeviceBrand,
+  MobileDeviceLogo,
+  MobileDeviceName,
+  MobileDeviceBalance,
+  MobileDeviceBalanceLabel,
+  MobileDeviceBalanceValue,
+  MobileDeviceActions,
+  MobileDeviceAction,
+  MobileDeviceActionIcon,
+  MobileDeviceActionLabel,
+  MobileDeviceAsset,
+  MobileDeviceAssetInfo,
+  MobileDeviceAssetIcon,
+  MobileDeviceAssetName,
+  MobileDeviceAssetValue,
+  MobileDeviceHomeBar,
+  MobileDeviceHomeBarInner,
   FeatureSection,
   SectionHeader,
   SectionTitle,
@@ -473,29 +521,201 @@ export default function Home() {
           </BadgeRow>
         </HeroContent>
 
-        <HeroMock>
-          <MockFrame>
-            <MockScreen>
-              <MockHeader>
-                <MockDot />
-                <MockDot />
-                <MockDot />
-              </MockHeader>
-              <MockMetric>
-                <MockLabel>Total Balance (Multi-chain)</MockLabel>
-                <MockValue>$2,847,293.00</MockValue>
-              </MockMetric>
-              <MockMetric>
-                <MockLabel>USDC on Polygon</MockLabel>
-                <MockValue>$1,428,500.00</MockValue>
-              </MockMetric>
-              <MockMetric>
-                <MockLabel>USDT on Ethereum</MockLabel>
-                <MockValue>$876,293.00</MockValue>
-              </MockMetric>
-            </MockScreen>
-          </MockFrame>
-        </HeroMock>
+        {/* Multi-Platform Showcase */}
+        <PlatformShowcase>
+          <PlatformLeft>
+            {/* Dashboard Mockup - app.lux.financial */}
+            <DashboardMock>
+              <DashboardBrowser>
+                <BrowserDots>
+                  <BrowserDot $color="#FF5F56" />
+                  <BrowserDot $color="#FFBD2E" />
+                  <BrowserDot $color="#27CA40" />
+                </BrowserDots>
+                <BrowserUrl>
+                  <BrowserUrlBox>app.lux.financial</BrowserUrlBox>
+                </BrowserUrl>
+              </DashboardBrowser>
+              <DashboardBody>
+                <DashboardSidebar>
+                  <DashboardBrand>
+                    <DashboardBrandIcon>L</DashboardBrandIcon>
+                    <DashboardBrandText>Lux</DashboardBrandText>
+                  </DashboardBrand>
+                  <DashboardNavItem $active>
+                    <DashboardIcon />
+                    <span>Dashboard</span>
+                  </DashboardNavItem>
+                  <DashboardNavItem>
+                    <WalletIcon />
+                    <span>Wallets</span>
+                  </DashboardNavItem>
+                  <DashboardNavItem>
+                    <GlobeIcon />
+                    <span>Payments</span>
+                  </DashboardNavItem>
+                  <DashboardNavItem>
+                    <CurrencyIcon />
+                    <span>Exchange</span>
+                  </DashboardNavItem>
+                </DashboardSidebar>
+                <DashboardMain>
+                  <DashboardTopBar>
+                    <DashboardPageTitle>Dashboard</DashboardPageTitle>
+                    <DashboardStatus>
+                      <StatusDot />
+                      All systems live
+                    </DashboardStatus>
+                  </DashboardTopBar>
+                  <DashboardStats>
+                    <DashboardStat>
+                      <DashboardStatLabel>
+                        <CurrencyIcon />
+                        Balance
+                      </DashboardStatLabel>
+                      <DashboardStatValue>$2.84M</DashboardStatValue>
+                      <DashboardStatChange $positive>+12.5%</DashboardStatChange>
+                    </DashboardStat>
+                    <DashboardStat>
+                      <DashboardStatLabel>
+                        <GlobeIcon />
+                        24h Volume
+                      </DashboardStatLabel>
+                      <DashboardStatValue>$428K</DashboardStatValue>
+                      <DashboardStatChange $positive>+8.2%</DashboardStatChange>
+                    </DashboardStat>
+                    <DashboardStat>
+                      <DashboardStatLabel>
+                        <WalletIcon />
+                        Wallets
+                      </DashboardStatLabel>
+                      <DashboardStatValue>1,247</DashboardStatValue>
+                      <DashboardStatChange $positive>+156</DashboardStatChange>
+                    </DashboardStat>
+                    <DashboardStat>
+                      <DashboardStatLabel>
+                        <ZapIcon />
+                        Transactions
+                      </DashboardStatLabel>
+                      <DashboardStatValue>8,392</DashboardStatValue>
+                      <DashboardStatChange $positive>+2.1K</DashboardStatChange>
+                    </DashboardStat>
+                  </DashboardStats>
+                  <DashboardTable>
+                    <DashboardTableRow $header>
+                      <span>Asset</span>
+                      <span>Balance</span>
+                      <span>Chain</span>
+                      <span>Status</span>
+                    </DashboardTableRow>
+                    <DashboardTableRow>
+                      <span>USDC</span>
+                      <span>$1,428,500</span>
+                      <span>Polygon</span>
+                      <span style={{ color: '#22C55E' }}>Active</span>
+                    </DashboardTableRow>
+                    <DashboardTableRow>
+                      <span>USDT</span>
+                      <span>$876,293</span>
+                      <span>Ethereum</span>
+                      <span style={{ color: '#22C55E' }}>Active</span>
+                    </DashboardTableRow>
+                    <DashboardTableRow>
+                      <span>BTC</span>
+                      <span>$542,500</span>
+                      <span>Bitcoin</span>
+                      <span style={{ color: '#22C55E' }}>Active</span>
+                    </DashboardTableRow>
+                  </DashboardTable>
+                </DashboardMain>
+              </DashboardBody>
+            </DashboardMock>
+
+            {/* Terminal Mockup - CLI */}
+            <TerminalMock>
+              <TerminalHeader>
+                <BrowserDots>
+                  <BrowserDot $color="#FF5F56" />
+                  <BrowserDot $color="#FFBD2E" />
+                  <BrowserDot $color="#27CA40" />
+                </BrowserDots>
+                <TerminalTitle>lux-cli — zsh</TerminalTitle>
+              </TerminalHeader>
+              <TerminalBody>
+                <TerminalLine $type="command">$ lux balance --all</TerminalLine>
+                <TerminalLine $type="info">Fetching balances across 3 chains...</TerminalLine>
+                <TerminalLine $type="success">✓ USDC (Polygon): $1,428,500.00</TerminalLine>
+                <TerminalLine $type="success">✓ USDT (Ethereum): $876,293.00</TerminalLine>
+                <TerminalLine $type="success">✓ BTC (Bitcoin): $542,500.00</TerminalLine>
+                <TerminalLine $type="highlight">Total: $2,847,293.00</TerminalLine>
+                <TerminalLine $type="command">$ lux pay --to NG --amount 10000 --currency USDC</TerminalLine>
+                <TerminalLine $type="success">✓ Payment sent to Nigeria</TerminalLine>
+                <TerminalLine $type="info">$ <TerminalCursor /></TerminalLine>
+              </TerminalBody>
+            </TerminalMock>
+          </PlatformLeft>
+
+          <PlatformRight>
+            {/* Mobile Device Mockup */}
+            <MobileDeviceMock>
+              <MobileDeviceScreen>
+                <MobileDeviceNotch>
+                  <MobileDeviceNotchInner />
+                </MobileDeviceNotch>
+                <MobileDeviceContent>
+                  <MobileDeviceHeader>
+                    <MobileDeviceBrand>
+                      <MobileDeviceLogo>L</MobileDeviceLogo>
+                      <MobileDeviceName>Lux</MobileDeviceName>
+                    </MobileDeviceBrand>
+                  </MobileDeviceHeader>
+                  <MobileDeviceBalance>
+                    <MobileDeviceBalanceLabel>Total Balance</MobileDeviceBalanceLabel>
+                    <MobileDeviceBalanceValue>$24,850</MobileDeviceBalanceValue>
+                  </MobileDeviceBalance>
+                  <MobileDeviceActions>
+                    <MobileDeviceAction>
+                      <MobileDeviceActionIcon>
+                        <SendIcon />
+                      </MobileDeviceActionIcon>
+                      <MobileDeviceActionLabel>Send</MobileDeviceActionLabel>
+                    </MobileDeviceAction>
+                    <MobileDeviceAction>
+                      <MobileDeviceActionIcon $color="rgba(59, 130, 246, 0.15)">
+                        <ReceiveIcon />
+                      </MobileDeviceActionIcon>
+                      <MobileDeviceActionLabel>Receive</MobileDeviceActionLabel>
+                    </MobileDeviceAction>
+                  </MobileDeviceActions>
+                  <MobileDeviceAsset>
+                    <MobileDeviceAssetInfo>
+                      <MobileDeviceAssetIcon $color="#2775CA">$</MobileDeviceAssetIcon>
+                      <MobileDeviceAssetName>USDC</MobileDeviceAssetName>
+                    </MobileDeviceAssetInfo>
+                    <MobileDeviceAssetValue>$15,000</MobileDeviceAssetValue>
+                  </MobileDeviceAsset>
+                  <MobileDeviceAsset>
+                    <MobileDeviceAssetInfo>
+                      <MobileDeviceAssetIcon $color="#26A17B">₮</MobileDeviceAssetIcon>
+                      <MobileDeviceAssetName>USDT</MobileDeviceAssetName>
+                    </MobileDeviceAssetInfo>
+                    <MobileDeviceAssetValue>$8,500</MobileDeviceAssetValue>
+                  </MobileDeviceAsset>
+                  <MobileDeviceAsset>
+                    <MobileDeviceAssetInfo>
+                      <MobileDeviceAssetIcon $color="#F7931A">₿</MobileDeviceAssetIcon>
+                      <MobileDeviceAssetName>BTC</MobileDeviceAssetName>
+                    </MobileDeviceAssetInfo>
+                    <MobileDeviceAssetValue>$1,350</MobileDeviceAssetValue>
+                  </MobileDeviceAsset>
+                  <MobileDeviceHomeBar>
+                    <MobileDeviceHomeBarInner />
+                  </MobileDeviceHomeBar>
+                </MobileDeviceContent>
+              </MobileDeviceScreen>
+            </MobileDeviceMock>
+          </PlatformRight>
+        </PlatformShowcase>
       </HeroSection>
 
       {/* Stats Section */}
