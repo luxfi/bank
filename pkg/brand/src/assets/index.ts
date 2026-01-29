@@ -11,10 +11,8 @@ export {
   getColorSVG,
   getMonoSVG,
   getWhiteSVG,
-  getFaviconSVG,
-  getWordmarkSVG,
-  getWordmarkGradientSVG,
   getMenuBarSVG,
+  getColorSVGCropped,
   getLogoDataUrl,
   getLogoBase64,
   getLogo,
@@ -23,25 +21,13 @@ export {
   luxLogo,
   luxLogoMono,
   luxLogoWhite,
-  luxWordmark,
-  luxWordmarkGradient,
   luxLogoDataUrl,
   luxLogoMonoDataUrl,
   luxLogoWhiteDataUrl,
-
-  // React components
-  LuxLogo,
-  LuxFavicon,
-  Wordmark,
-
-  // Alternative names
-  LuxfiLogo,
-  LuxfiFavicon,
-  Logo,
 } from '@luxfi/logo';
 
 // Re-export types
-export type { LuxLogoProps, LogoVariant, LogoFormat, LogoOptions, LogoSettings } from '@luxfi/logo';
+export type { LogoVariant, LogoOptions, LogoSettings } from '@luxfi/logo';
 
 /**
  * Email-safe logo (inline SVG as base64 for email clients)
