@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { usePathname } from "next/navigation";
 import styled, { keyframes } from "styled-components";
+import { LuxLogo } from "@/components/Logo";
 
 const BRAND_COLOR = "#D4AF37"; // Gold accent
 
@@ -178,7 +179,7 @@ Be helpful, concise, and professional. For technical questions, provide accurate
       {/* Floating button */}
       {!isOpen && (
         <FloatingButton onClick={() => setIsOpen(true)}>
-          <ChatIcon />
+          <LuxLogo size={28} variant="white" />
           <PulseRing />
         </FloatingButton>
       )}
@@ -188,7 +189,9 @@ Be helpful, concise, and professional. For technical questions, provide accurate
         <ChatWindow>
           <Header>
             <HeaderLeft>
-              <Logo>△</Logo>
+              <LogoWrapper>
+                <LuxLogo size={24} variant="white" />
+              </LogoWrapper>
               <HeaderText>
                 <HeaderTitle>Lux AI</HeaderTitle>
                 <HeaderSubtitle>Ask anything</HeaderSubtitle>
@@ -344,7 +347,7 @@ const HeaderLeft = styled.div`
   gap: 12px;
 `;
 
-const Logo = styled.div`
+const LogoWrapper = styled.div`
   width: 32px;
   height: 32px;
   border-radius: 8px;
@@ -352,9 +355,6 @@ const Logo = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
-  color: black;
-  font-weight: 700;
 `;
 
 const HeaderText = styled.div``;
