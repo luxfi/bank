@@ -1,79 +1,101 @@
-# bank
+# Lux Bank
 
-## Overview
+## Infrastructure for Financial Institutions
 
-The Lux BaaS Platform is the first full-stack, open-source Banking as a Service (BaaS) platform, designed to revolutionize the financial services industry. Our platform enables seamless integrations and interoperability with other regulated banks, breaking down barriers and fostering collaboration in the financial ecosystem.
+Lux Bank is infrastructure for financial institutions — not consumers. We don't offer consumer wallets, debit cards, or retail banking services. Instead, we power [Lux.Financial](https://lux.financial) and provide a complete banking infrastructure stack that lets financial services companies build compliant, secure, and scalable fiat/stablecoin operations without dealing with compliance, custody, or banking rails themselves.
 
-Built with cutting-edge technology, Lux Bank provides a transparent, secure, and efficient banking solution. It is designed to meet the needs of the next generation of financial services, offering a robust set of features and capabilities that go beyond traditional banking.
+While most stablecoin infrastructure focuses on consumer payment flows, Lux Bank focuses on the B2B layer — enabling businesses to hold, move, and convert stablecoins with full regulatory coverage and enterprise-grade security.
 
-### Seamless Integrations
-Lux Bank is built with interoperability in mind. Our platform can seamlessly integrate with other regulated banks, allowing for the exchange of data and transactions in a secure and efficient manner. This interoperability opens up new opportunities for collaboration and innovation in the financial services industry.
+## What You Get with Lux Bank
 
-### Cutting-Edge Technology
-We leverage the latest technologies to provide a superior banking experience. From AI and machine learning for predictive analytics and intelligent automation, to blockchain for secure and transparent transactions, Lux is at the forefront of technological innovation in banking.
+### Stablecoin Rails Built for Scale
+Move USDC, USDT, and other stablecoins globally with settlement in minutes, not days.
 
-### Transparent and Secure
-Security and transparency are at the core of Lux. Our open-source platform allows for complete transparency, fostering trust among users. At the same time, we employ advanced security measures to ensure that all transactions and data are protected.
+### Compliance Handled
+Full KYC/KYB, AML monitoring, and regulatory reporting built in — so you don't have to build or maintain your own compliance stack.
 
-### Efficient Banking Solution
-Lux Bank is designed to streamline banking operations, making them more efficient and user-friendly. Our platform offers a wide range of features, including multi-currency transactions, payment processing, authentication, email delivery, search functionality, error tracking, and user analytics.
+### Enterprise Security
+Bank-grade custody, MPC wallets, and 24/7 monitoring to protect client funds.
 
-### Next Generation of Financial Services
-We're paving the way for the next generation of financial services. Our platform is not just a banking solution, but a complete ecosystem for financial innovation. Whether it's developing new financial products, improving customer service, or driving operational efficiency, Lux provides the tools and capabilities to make it happen.
+### Fast Integration
+Go live in 2–4 weeks with dedicated onboarding support.
+
+### White-Label Ready
+Custom branding and domain options available for platforms who want their own client-facing experience.
+
+### Multi-Currency Support
+Operate across USD, EUR, GBP, and 30+ other currencies through a single integration.
 
 ## Key Features
 
 ### Regulatory Compliance
-- Class 8 Money Transmission License: Lux Financial Limited is licensed in the Isle of Man, ensuring full regulatory compliance and operational security.
-- Transparency: Our open-source approach promotes transparency and trust, essential for building the financial services of the future.
+- **Multi-Jurisdiction Support**: Configurable for UK FCA, Isle of Man, Gibraltar, and other regulatory frameworks
+- **Built-in Compliance**: KYC/KYB verification, AML monitoring, sanctions screening, and regulatory reporting
+- **Transparency**: Open-source approach promotes transparency and trust
 
 ### Integrations
 
-Lux Bank seamlessly integrates with various financial and technology services, including but not limited to:
+Lux Bank seamlessly integrates with various financial and technology services:
 
-- **Currency Cloud**: For handling multi-currency transactions and conversions.
-- **Stripe**: For payment processing.
-- **Auth0**: For authentication and authorization.
-- **SendGrid**: For email delivery.
-- **Algolia**: For search functionality.
-- **Sentry**: For error tracking and monitoring.
-- **Google Analytics**: For tracking and analytics.
+- **Currency Cloud**: Multi-currency transactions and conversions
+- **Stripe**: Payment processing
+- **OpenPayd**: Banking rails and payment infrastructure
+- **Auth0**: Authentication and authorization
+- **SendGrid**: Email delivery
+- **Sentry**: Error tracking and monitoring
 
-### Open Source
+### Technical Architecture
 
-- Full Stack Solution: From front-end interfaces to back-end infrastructure, Lux Bank offers a complete banking solution.
-- Community Driven: Our platform is built and maintained by a vibrant community of developers, ensuring continuous improvement and innovation.
-- Customizable: Easily extend and customize the platform to meet specific business needs.
+- **Full Stack Solution**: From front-end interfaces to back-end infrastructure
+- **API-Driven**: Robust APIs for seamless integration and interoperability
+- **MPC Operations**: Multi-party computation for enhanced security and decentralized key management
+- **Modular Design**: Easily extend and customize to meet specific business needs
 
-### Security and Reliability
+## Development
 
-- MPC Operations: Multi-party computation (MPC) for enhanced security and decentralized key management.
-- Decentralized Block Confirmations: Secure and reliable transaction confirmations leveraging blockchain technology.
-- API-Driven: Robust APIs for seamless integration and interoperability with other systems and services.
+### Prerequisites
 
-## Dev: run locally
+- Node.js 18+
+- pnpm 9+
 
-Install `pnpm` [like so](https://pnpm.io/installation)
+### Getting Started
 
-The usual scripts for a Next site, using `pnpm`
-```
+```bash
+# Install dependencies
 pnpm install
-cd sites/<siteName>
+
+# Run development server
 pnpm dev
+
+# Build for production
+pnpm build
 ```
 
-Since "pnpm" is a finger twister, many people alias it to "pn". For example, with `bash`, put `alias pn='pnpm'` in `.bashrc`.
+### Project Structure
+
+```
+├── app/
+│   ├── api/         # Backend API services
+│   ├── dash/        # Client dashboard application
+│   └── site/        # Marketing website
+├── pkg/
+│   └── brand/       # Centralized branding and jurisdiction configuration
+└── ...
+```
 
 ## Architecture
 
 - Next.js 14
+- TypeScript
 - Radix UI Primitives
 - Tailwind CSS
-- Icons from [Lucide](https://lucide.dev)
-- Dark mode with `next-themes`
+- PostgreSQL
+- Redis
 
-## Built on the Hanzo React SDK (@hanzo/ui, @hanzo/auth, @hanzo/commerce)
+## Built with Hanzo
 
-- A potent React framework using Next 14, Tailwind and Radix
-- Renders most content from simple 'Block' definitions (in `/src/content` )
-- Lives [on GitHub here](https://github.com/hanzoai/react-sdk)
+Built on the Hanzo React SDK (@hanzo/ui, @hanzo/auth, @hanzo/commerce) — a potent React framework using Next 14, Tailwind, and Radix.
+
+## License
+
+See [LICENSE](LICENSE) for details.

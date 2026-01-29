@@ -1,6 +1,6 @@
 FROM node:18-alpine as builder
 
-WORKDIR /app-cdax
+WORKDIR /app-lux
 
 COPY package.json package-lock.json .npmrc ./
 
@@ -12,14 +12,14 @@ RUN npm run build
 
 FROM node:18-alpine as runner
 
-WORKDIR /app-cdax
+WORKDIR /app-lux
 
-COPY --from=builder /app-cdax/package.json .
-COPY --from=builder /app-cdax/package-lock.json .
-COPY --from=builder /app-cdax/next.config.js ./
-COPY --from=builder /app-cdax/public ./public
-COPY --from=builder /app-cdax/.next/standalone ./
-COPY --from=builder /app-cdax/.next/static ./.next/static
+COPY --from=builder /app-lux/package.json .
+COPY --from=builder /app-lux/package-lock.json .
+COPY --from=builder /app-lux/next.config.js ./
+COPY --from=builder /app-lux/public ./public
+COPY --from=builder /app-lux/.next/standalone ./
+COPY --from=builder /app-lux/.next/static ./.next/static
 
 EXPOSE 3000
 
