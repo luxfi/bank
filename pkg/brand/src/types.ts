@@ -8,6 +8,7 @@
 // ============================================================================
 
 export type JurisdictionCode =
+  | 'GLOBAL'
   | 'US_FEDERAL' | 'US_STATE' | 'US_TRUST' | 'US_FUND' | 'US_SPONSORED'
   | 'UK_FCA' | 'UK_IOM' | 'UK_GIB'
   | 'EU_GENERIC' | 'EU_IRELAND' | 'EU_MALTA' | 'EU_CYPRUS' | 'EU_LITHUANIA'

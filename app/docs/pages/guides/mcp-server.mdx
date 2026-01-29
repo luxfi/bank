@@ -1,0 +1,272 @@
+# MCP Server
+
+Lux Financial includes a Model Context Protocol (MCP) server for AI-powered bank operations. The MCP server enables AI assistants to query and manage bank operations, power customer support, and automate administrative tasks.
+
+## Overview
+
+The MCP server provides:
+
+- **Bank Operations API**: Query accounts, transactions, payments via AI
+- **Customer Support**: AI-powered chat for customer inquiries
+- **Admin Operations**: Manage compliance, users, and settings via AI
+- **ZAP Protocol**: Real-time browser-to-MCP communication
+
+## Installation
+
+```bash
+npm install @luxbank/mcp-server
+```
+
+## Quick Start
+
+```typescript
+import { LuxMCPServer } from '@luxbank/mcp-server';
+
+const server = new LuxMCPServer({
+  apiKey: process.env.LUX_API_KEY,
+  features: ['accounts', 'payments', 'compliance', 'admin'],
+});
+
+await server.start();
+```
+
+## Available Tools
+
+### Account Operations
+
+```typescript
+// List accounts
+const accounts = await mcp.tools.accounts.list({
+  status: 'active',
+  type: 'business',
+});
+
+// Get account details
+const account = await mcp.tools.accounts.get({
+  id: 'acc_123',
+});
+
+// Get account balance
+const balance = await mcp.tools.accounts.balance({
+  id: 'acc_123',
+  currencies: ['USD', 'USDC', 'USDT'],
+});
+```
+
+### Payment Operations
+
+```typescript
+// List payments
+const payments = await mcp.tools.payments.list({
+  status: 'completed',
+  dateFrom: '2024-01-01',
+  dateTo: '2024-01-31',
+});
+
+// Create payment
+const payment = await mcp.tools.payments.create({
+  from: 'acc_123',
+  to: 'recipient_wallet',
+  amount: 10000,
+  currency: 'USDC',
+  chain: 'polygon',
+});
+
+// Get payment status
+const status = await mcp.tools.payments.status({
+  id: 'pmt_456',
+});
+```
+
+### Compliance Operations
+
+```typescript
+// Run compliance check
+const check = await mcp.tools.compliance.check({
+  entityType: 'individual',
+  name: 'John Doe',
+  country: 'US',
+});
+
+// Get risk assessment
+const risk = await mcp.tools.compliance.riskAssessment({
+  accountId: 'acc_123',
+});
+
+// Screen transaction
+const screening = await mcp.tools.compliance.screenTransaction({
+  paymentId: 'pmt_456',
+});
+```
+
+### Admin Operations
+
+```typescript
+// List users
+const users = await mcp.tools.admin.users.list({
+  role: 'admin',
+});
+
+// Update settings
+await mcp.tools.admin.settings.update({
+  key: 'payment.limits.daily',
+  value: 100000,
+});
+
+// Generate report
+const report = await mcp.tools.admin.reports.generate({
+  type: 'transaction_summary',
+  dateFrom: '2024-01-01',
+  dateTo: '2024-01-31',
+});
+```
+
+## ZAP Protocol Integration
+
+Connect browser extensions to the MCP server via ZAP:
+
+```typescript
+import { ZAPClient } from '@luxbank/zap';
+
+const zap = new ZAPClient({
+  mcpServer: 'wss://mcp.lux.financial',
+  apiKey: process.env.LUX_API_KEY,
+});
+
+// Send message to MCP
+const response = await zap.send({
+  tool: 'accounts.list',
+  params: { status: 'active' },
+});
+
+// Subscribe to real-time updates
+zap.subscribe('payments', (payment) => {
+  console.log('New payment:', payment);
+});
+```
+
+## AI Chat Integration
+
+Power customer support with AI:
+
+```typescript
+import { LuxAIChat } from '@luxbank/mcp-server';
+
+const chat = new LuxAIChat({
+  mcpServer: server,
+  model: 'claude-3-opus',
+  systemPrompt: 'You are a helpful Triangle Bank support agent.',
+});
+
+// Handle customer message
+const response = await chat.message({
+  userId: 'user_123',
+  message: 'What is my current USDC balance?',
+});
+```
+
+## Admin Dashboard Integration
+
+Enable AI-powered admin operations:
+
+```typescript
+// In your admin dashboard
+const adminChat = new LuxAIChat({
+  mcpServer: server,
+  role: 'admin',
+  features: ['compliance', 'users', 'settings', 'reports'],
+});
+
+// Admin query
+const response = await adminChat.message({
+  adminId: 'admin_123',
+  message: 'Show me all high-risk transactions from today',
+});
+```
+
+## Security
+
+### Authentication
+
+All MCP connections require API key authentication:
+
+```typescript
+const server = new LuxMCPServer({
+  apiKey: process.env.LUX_API_KEY,
+  jwtSecret: process.env.JWT_SECRET,
+});
+```
+
+### Role-Based Access
+
+Define permissions per role:
+
+```typescript
+const server = new LuxMCPServer({
+  roles: {
+    customer: ['accounts.get', 'payments.list', 'payments.create'],
+    admin: ['*'], // Full access
+    support: ['accounts.get', 'payments.list', 'compliance.check'],
+  },
+});
+```
+
+### Audit Logging
+
+All MCP operations are logged:
+
+```typescript
+// Enable detailed audit logging
+const server = new LuxMCPServer({
+  audit: {
+    enabled: true,
+    level: 'detailed',
+    destination: 'lux-audit-logs',
+  },
+});
+```
+
+## Rate Limits
+
+| Role | Requests/min | Concurrent |
+|------|--------------|------------|
+| Customer | 60 | 10 |
+| Support | 120 | 20 |
+| Admin | 300 | 50 |
+
+## Example: Customer Support Bot
+
+```typescript
+import { LuxMCPServer, LuxAIChat } from '@luxbank/mcp-server';
+
+const server = new LuxMCPServer({
+  apiKey: process.env.LUX_API_KEY,
+});
+
+const supportBot = new LuxAIChat({
+  mcpServer: server,
+  model: 'claude-3-sonnet',
+  systemPrompt: `You are a Triangle Bank customer support agent.
+    You can help customers:
+    - Check account balances
+    - View transaction history
+    - Initiate payments
+    - Answer questions about stablecoins
+    Always be helpful and professional.`,
+});
+
+// Express route handler
+app.post('/api/chat', async (req, res) => {
+  const { userId, message } = req.body;
+
+  const response = await supportBot.message({
+    userId,
+    message,
+    context: {
+      accountId: await getAccountIdForUser(userId),
+    },
+  });
+
+  res.json({ response });
+});
+```

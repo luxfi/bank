@@ -57,6 +57,11 @@ export const ContentContainer = styled.div<{ $width: number }>`
   flex-direction: column;
   justify-content: space-between;
   width: ${({ $width }) => `${$width}%`};
+  background: linear-gradient(135deg, rgba(9, 9, 11, 0.95) 0%, rgba(24, 24, 27, 0.9) 100%);
+  backdrop-filter: blur(8px);
+  padding: 2.5rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(39, 39, 42, 0.5);
 
   @media ${DeviceSize.md} {
     width: 100%;

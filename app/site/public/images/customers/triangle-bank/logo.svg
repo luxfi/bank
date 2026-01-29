@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60">
+  <defs>
+    <linearGradient id="triangleGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#22D3EE"/>
+      <stop offset="100%" style="stop-color:#06B6D4"/>
+    </linearGradient>
+  </defs>
+  <!-- Triangle icon (right-side-up) -->
+  <polygon points="25,5 45,45 5,45" fill="url(#triangleGrad)"/>
+  <!-- Wordmark -->
+  <text x="55" y="35" font-family="system-ui, -apple-system, sans-serif" font-size="22" font-weight="600" fill="#FFFFFF">Triangle Bank</text>
+</svg>

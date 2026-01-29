@@ -53,18 +53,18 @@ export default function ImageText({
       <TextContainer>
         <Text variant="title">{title}</Text>
         {subtitle && (
-          <Text variant="subtitle" color="#1E3456">
+          <Text variant="subtitle" color="#FAFAFA">
             {subtitle}
           </Text>
         )}
-        <Text variant="body" color="#1E3456" style={{ marginTop: "2.5rem" }}>
+        <Text variant="body" color="#FAFAFA" style={{ marginTop: "2.5rem" }}>
           {text}
         </Text>
         {checkList?.length && (
           <ListContainer>
             {checkList.map((item, index) => (
               <ListItem key={index}>
-                <Text variant="body" color="#1E3456">
+                <Text variant="body" color="#FAFAFA">
                   {item}
                 </Text>
                 <CustomIconCheck />
@@ -75,7 +75,7 @@ export default function ImageText({
         {disclaimer && (
           <Text
             variant="body_sm"
-            color="#1E3456"
+            color="#FAFAFA"
             style={{ marginTop: "2.5rem" }}
           >
             {disclaimer}

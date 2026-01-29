@@ -121,8 +121,8 @@ export function createBrandConfig(
     // Core identity
     name: 'Lux Financial',
     legalName: jurisdiction.legalEntity.name,
-    tagline: 'Global Finance, Simplified',
-    description: 'Lux Financial provides enterprise-grade financial services with seamless multi-currency accounts, competitive FX rates, and blockchain-powered efficiency.',
+    tagline: 'White-Label Banking Infrastructure',
+    description: 'Lux Financial provides enterprise-grade white-label banking infrastructure for fintechs, neobanks, and financial institutions. Modern APIs, multi-currency support, and seamless integrations.',
 
     // Visual identity
     colors: LUX_COLORS,

@@ -1,10 +1,11 @@
-name: Deploy Marketing Site to GitHub Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches: [main]
     paths:
       - 'app/site/**'
+      - 'app/docs/**'
       - 'pkg/brand/**'
       - '.github/workflows/deploy-site.yml'
   workflow_dispatch:
@@ -45,18 +46,40 @@ jobs:
       - name: Build brand package
         run: pnpm --filter @luxbank/brand build
 
-      - name: Build site
+      - name: Build marketing site
         env:
           GITHUB_PAGES: "true"
         run: pnpm --filter @luxbank/site build
 
-      - name: Add .nojekyll
-        run: touch ./app/site/out/.nojekyll
+      - name: Build docs site
+        env:
+          GITHUB_PAGES: "true"
+        run: |
+          cd app/docs
+          pnpm build
+          pnpm export || true
+
+      - name: Combine outputs
+        run: |
+          # Marketing site is the root
+          mkdir -p ./combined-output
+          cp -r ./app/site/out/* ./combined-output/
+
+          # Docs goes to /docs subdirectory
+          mkdir -p ./combined-output/docs
+          if [ -d "./app/docs/out" ]; then
+            cp -r ./app/docs/out/* ./combined-output/docs/
+          elif [ -d "./app/docs/.next/static" ]; then
+            cp -r ./app/docs/.next/static ./combined-output/docs/_next/static
+          fi
+
+          # Add .nojekyll to prevent Jekyll processing
+          touch ./combined-output/.nojekyll
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./app/site/out
+          path: ./combined-output
 
   deploy:
     environment:

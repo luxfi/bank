@@ -20,9 +20,11 @@ const CardContainer = styled(AnimatedDiv)<{ $hasBio: boolean }>`
   border-radius: ${({ theme }) => theme.size["24px"]};
   cursor: ${({ $hasBio }) => ($hasBio ? "pointer" : "default")};
   transition: all 0.2s ease-in-out;
+  background-color: #18181B;
+  border: 1px solid #27272A;
 
   &:hover {
-    ${({ $hasBio }) => ($hasBio ? "background-color: #f4f4f4;" : "")}
+    ${({ $hasBio }) => ($hasBio ? "background-color: #27272A; border-color: #3F3F46;" : "")}
   }
 
   img {
@@ -76,7 +78,7 @@ export default function AboutCard({ member }: IData) {
       href={member.link}
       target="_blank"
       style={{
-        color: "#00569e",
+        color: "#FAFAFA",
         fontSize: "2rem",
         textDecoration: "none",
         lineHeight: "3.2rem",
@@ -105,11 +107,11 @@ export default function AboutCard({ member }: IData) {
           }}
         />
         <Text variant="subtitle">{member.name}</Text>
-        <Text variant="body_lg" color={"#1E3456"}>
+        <Text variant="body_lg" color={"#CCCCCC"}>
           {member.role}
         </Text>
         <div style={{ display: "flex", gap: "1rem" }}>
-          <Text variant="body" color={"#1E3456"}>
+          <Text variant="body" color={"#CCCCCC"}>
             {member.summary}
           </Text>
           {link && link}
@@ -141,7 +143,7 @@ export default function AboutCard({ member }: IData) {
               <Text variant="body">{member.role}</Text>
             </div>
           </PictureModalContainer>
-          <Text variant="body" color={"#1E3456"}>
+          <Text variant="body" color={"#CCCCCC"}>
             {member.bio}
           </Text>
         </ModalContent>

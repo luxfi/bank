@@ -1,0 +1,235 @@
+# Transfers
+
+Transfers move funds between accounts and wallets within the Lux platform.
+
+## The Transfer Object
+
+```json
+{
+  "id": "txfr_abc123",
+  "object": "transfer",
+  "amount": "10000.00",
+  "currency": "USD",
+  "source": {
+    "type": "account",
+    "account_id": "acct_123"
+  },
+  "destination": {
+    "type": "wallet",
+    "wallet_id": "wal_456",
+    "chain": "polygon"
+  },
+  "status": "completed",
+  "created_at": "2026-01-15T10:00:00.000Z",
+  "completed_at": "2026-01-15T10:00:02.000Z"
+}
+```
+
+### Attributes
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Unique identifier (txfr_*) |
+| `object` | string | Always "transfer" |
+| `amount` | string | Transfer amount |
+| `currency` | string | Currency code |
+| `source` | object | Source account/wallet |
+| `destination` | object | Destination account/wallet |
+| `status` | string | "pending", "processing", "completed", "failed" |
+
+---
+
+## Create a Transfer
+
+```
+POST /v0/transfers
+```
+
+### Account to Wallet (Stablecoin Mint)
+
+```json
+{
+  "amount": "10000.00",
+  "currency": "USD",
+  "source": {
+    "type": "account",
+    "account_id": "acct_123"
+  },
+  "destination": {
+    "type": "wallet",
+    "wallet_id": "wal_456",
+    "chain": "polygon",
+    "asset": "USDC"
+  }
+}
+```
+
+### Wallet to Account (Stablecoin Redeem)
+
+```json
+{
+  "amount": "5000.00",
+  "currency": "USD",
+  "source": {
+    "type": "wallet",
+    "wallet_id": "wal_456",
+    "chain": "polygon",
+    "asset": "USDC"
+  },
+  "destination": {
+    "type": "account",
+    "account_id": "acct_123"
+  }
+}
+```
+
+### Wallet to Wallet
+
+```json
+{
+  "amount": "1000.00",
+  "source": {
+    "type": "wallet",
+    "wallet_id": "wal_123",
+    "chain": "polygon",
+    "asset": "USDC"
+  },
+  "destination": {
+    "type": "wallet",
+    "wallet_id": "wal_456",
+    "chain": "polygon",
+    "asset": "USDC"
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "id": "txfr_abc123",
+  "object": "transfer",
+  "amount": "10000.00",
+  "currency": "USD",
+  "status": "pending",
+  "estimated_completion": "2026-01-15T10:00:05.000Z",
+  "created_at": "2026-01-15T10:00:00.000Z"
+}
+```
+
+### Example
+
+```typescript
+const transfer = await lux.transfers.create({
+  amount: '10000.00',
+  currency: 'USD',
+  source: {
+    type: 'account',
+    account_id: 'acct_123',
+  },
+  destination: {
+    type: 'wallet',
+    wallet_id: 'wal_456',
+    chain: 'polygon',
+    asset: 'USDC',
+  },
+});
+
+// Wait for completion
+const completed = await lux.transfers.retrieve(transfer.id);
+console.log(completed.status); // "completed"
+```
+
+---
+
+## Retrieve a Transfer
+
+```
+GET /v0/transfers/{transfer_id}
+```
+
+### Response
+
+```json
+{
+  "id": "txfr_abc123",
+  "object": "transfer",
+  "amount": "10000.00",
+  "currency": "USD",
+  "source": {...},
+  "destination": {...},
+  "status": "completed",
+  "fee": {
+    "amount": "0.50",
+    "currency": "USD"
+  },
+  "blockchain_tx": {
+    "chain": "polygon",
+    "hash": "0xabc123...",
+    "block_number": 12345678
+  },
+  "created_at": "2026-01-15T10:00:00.000Z",
+  "completed_at": "2026-01-15T10:00:02.000Z"
+}
+```
+
+---
+
+## List Transfers
+
+```
+GET /v0/transfers
+```
+
+### Query Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `customer_id` | string | Filter by customer |
+| `account_id` | string | Filter by account |
+| `wallet_id` | string | Filter by wallet |
+| `status` | string | Filter by status |
+| `since` | string | Start date (ISO8601) |
+| `until` | string | End date (ISO8601) |
+
+---
+
+## Transfer Status Lifecycle
+
+```
+pending → processing → completed
+                    ↘ failed
+```
+
+| Status | Description |
+|--------|-------------|
+| `pending` | Transfer created, awaiting processing |
+| `processing` | Transfer in progress |
+| `completed` | Transfer successful |
+| `failed` | Transfer failed, see `failure_reason` |
+
+---
+
+## Cross-Chain Transfers
+
+Transfer assets across different chains:
+
+```json
+{
+  "amount": "1000.00",
+  "source": {
+    "type": "wallet",
+    "wallet_id": "wal_123",
+    "chain": "ethereum",
+    "asset": "USDC"
+  },
+  "destination": {
+    "type": "wallet",
+    "wallet_id": "wal_456",
+    "chain": "polygon",
+    "asset": "USDC"
+  }
+}
+```
+
+Cross-chain transfers use our bridge infrastructure for seamless asset movement.

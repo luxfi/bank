@@ -21,13 +21,13 @@ export const TagButton = styled.button<IProps>`
   background: transparent;
   border-radius: 8px;
   padding: 8px 16px;
-  font-family: "D-DIN-PRO" sans-serif;
-  border: 1px solid #d4dce8;
-  background-color: ${(props) => (props.$isActive ? "#00569E" : "transparent")};
-  border-color: ${(props) => (props.$isActive ? "#00569E" : "#d4dce8")};
-  color: ${(props) => (props.$isActive ? "#F2F2F2" : "#002645")};
+  border: 1px solid #27272A;
+  background-color: ${(props) => (props.$isActive ? "#FAFAFA" : "transparent")};
+  border-color: ${(props) => (props.$isActive ? "#FAFAFA" : "#27272A")};
+  color: ${(props) => (props.$isActive ? "#09090B" : "#A1A1AA")};
 
   &:hover {
     cursor: pointer;
+    border-color: #3F3F46;
   }
 `;

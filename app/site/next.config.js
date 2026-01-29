@@ -30,9 +30,9 @@ const nextConfig = {
       },
     ],
   },
-  // Use 'export' for GitHub Pages static deployment
+  // Use 'export' for static deployment (Cloudflare Pages, GitHub Pages)
   // Set to 'standalone' for Node.js server deployment
-  output: process.env.GITHUB_PAGES ? "export" : "standalone",
+  output: process.env.STATIC_EXPORT ? "export" : "standalone",
   basePath: process.env.GITHUB_PAGES ? "/bank" : "",
   compress: true,
 };

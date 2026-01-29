@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60">
+  <!-- Triangle icon (right-side-up) - white -->
+  <polygon points="25,5 45,45 5,45" fill="#FFFFFF"/>
+  <!-- Wordmark -->
+  <text x="55" y="35" font-family="system-ui, -apple-system, sans-serif" font-size="22" font-weight="600" fill="#FFFFFF">Triangle Bank</text>
+</svg>

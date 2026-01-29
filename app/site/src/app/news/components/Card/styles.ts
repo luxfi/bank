@@ -5,7 +5,8 @@ import styled from "styled-components";
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
-  border: 1px solid #d4dce8;
+  border: 1px solid #27272A;
+  background-color: #18181B;
   height: 462px;
   border-radius: 8px;
   overflow: hidden;
@@ -15,10 +16,8 @@ export const Container = styled.div`
 
   &:hover {
     transform: scale(1.02);
-
-    -webkit-box-shadow: -1px 3px 16px 0px rgba(128, 128, 128, 0.47);
-    -moz-box-shadow: -1px 3px 16px 0px rgba(128, 128, 128, 0.47);
-    box-shadow: -1px 3px 16px 0px rgba(128, 128, 128, 0.47);
+    border-color: #3F3F46;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
   }
 `;
 
@@ -30,21 +29,19 @@ export const ContainerText = styled.div`
 `;
 
 export const Title = styled.h3`
-  font-family: "D-DIN-PRO" sans-serif;
   font-size: 20px;
   font-weight: 500;
-  color: #000000;
+  color: #FAFAFA;
 `;
 
 export const Description = styled.p`
-  font-family: "D-DIN-PRO" sans-serif;
   font-weight: 400;
   font-size: 16px;
-  color: #516686;
+  color: #A1A1AA;
 
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2; /* Número de linhas que você quer mostrar */
+  -webkit-line-clamp: 2;
   overflow: hidden;
   text-overflow: ellipsis;
 `;
@@ -53,8 +50,7 @@ export const ReadMoreButton = styled.button`
   align-self: flex-end;
   width: max-content;
   margin-right: 16px;
-  color: #00569e;
-  font-family: "D-DIN-PRO" sans-serif;
+  color: #FAFAFA;
   font-size: 20px;
   font-weight: 500;
   background: transparent;

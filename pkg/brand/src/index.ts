@@ -48,6 +48,9 @@ export {
 // Assets
 export * from './assets';
 
+// Demo Customers
+export * from './customers';
+
 // Re-export key types for convenience
 export type {
   BrandConfig,

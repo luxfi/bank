@@ -1,0 +1,201 @@
+# Wallets
+
+Wallets provide custodial and self-custody storage for digital assets. Each wallet can hold multiple currencies across multiple chains.
+
+## The Wallet Object
+
+```json
+{
+  "id": "wal_abc123",
+  "object": "wallet",
+  "customer_id": "cus_xyz789",
+  "type": "custodial",
+  "label": "Treasury Operations",
+  "chains": ["polygon", "ethereum"],
+  "addresses": {
+    "polygon": "0x1234567890abcdef1234567890abcdef12345678",
+    "ethereum": "0x1234567890abcdef1234567890abcdef12345678"
+  },
+  "created_at": "2026-01-15T10:00:00.000Z"
+}
+```
+
+### Attributes
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Unique identifier (wal_*) |
+| `object` | string | Always "wallet" |
+| `customer_id` | string | Owner customer ID |
+| `type` | string | "custodial" or "mpc" |
+| `label` | string | Optional display name |
+| `chains` | array | Supported chains |
+| `addresses` | object | Chain-specific addresses |
+
+---
+
+## Create a Wallet
+
+```
+POST /v0/wallets
+```
+
+### Request Body
+
+```json
+{
+  "customer_id": "cus_xyz789",
+  "type": "custodial",
+  "label": "Treasury Operations",
+  "chains": ["polygon", "ethereum", "arbitrum"]
+}
+```
+
+### Response
+
+```json
+{
+  "id": "wal_abc123",
+  "object": "wallet",
+  "customer_id": "cus_xyz789",
+  "type": "custodial",
+  "label": "Treasury Operations",
+  "chains": ["polygon", "ethereum", "arbitrum"],
+  "addresses": {
+    "polygon": "0x1234...",
+    "ethereum": "0x1234...",
+    "arbitrum": "0x1234..."
+  },
+  "created_at": "2026-01-15T10:00:00.000Z"
+}
+```
+
+### Example
+
+```typescript
+const wallet = await lux.wallets.create({
+  customer_id: 'cus_xyz789',
+  type: 'custodial',
+  label: 'Treasury Operations',
+  chains: ['polygon', 'ethereum', 'arbitrum'],
+});
+
+console.log(wallet.addresses);
+// { polygon: "0x1234...", ethereum: "0x1234...", arbitrum: "0x1234..." }
+```
+
+---
+
+## Get Wallet Balance
+
+```
+GET /v0/wallets/{wallet_id}/balance
+```
+
+### Query Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `currency` | string | Filter by currency (USDC, USDT, etc.) |
+| `chain` | string | Filter by chain |
+
+### Response
+
+```json
+{
+  "object": "wallet_balance",
+  "wallet_id": "wal_abc123",
+  "balances": [
+    {
+      "currency": "USDC",
+      "chain": "polygon",
+      "balance": "125000.00",
+      "available": "125000.00",
+      "pending": "0.00"
+    },
+    {
+      "currency": "USDC",
+      "chain": "ethereum",
+      "balance": "50000.00",
+      "available": "50000.00",
+      "pending": "0.00"
+    }
+  ],
+  "total_usd": "175000.00"
+}
+```
+
+---
+
+## Create MPC Wallet
+
+For self-custody with threshold signing.
+
+```
+POST /v0/wallets
+```
+
+### Request Body
+
+```json
+{
+  "customer_id": "cus_xyz789",
+  "type": "mpc",
+  "label": "Cold Storage",
+  "chains": ["polygon"],
+  "mpc_config": {
+    "threshold": 2,
+    "parties": 3,
+    "key_share_holders": [
+      { "id": "party1", "type": "internal" },
+      { "id": "party2", "type": "internal" },
+      { "id": "party3", "type": "cold" }
+    ]
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "id": "wal_mpc123",
+  "object": "wallet",
+  "type": "mpc",
+  "mpc_config": {
+    "threshold": 2,
+    "parties": 3,
+    "status": "key_ceremony_pending"
+  },
+  ...
+}
+```
+
+---
+
+## List Wallets
+
+```
+GET /v0/wallets
+```
+
+### Query Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `customer_id` | string | Filter by customer |
+| `type` | string | Filter by type |
+| `chain` | string | Filter by chain support |
+
+---
+
+## Supported Chains
+
+| Chain | ID | Assets |
+|-------|-----|--------|
+| Polygon | `polygon` | USDC, USDT, MATIC |
+| Ethereum | `ethereum` | USDC, USDT, ETH |
+| Arbitrum | `arbitrum` | USDC, USDT, ARB |
+| Optimism | `optimism` | USDC, USDT, OP |
+| Base | `base` | USDC, USDT |
+| Lux Network | `lux` | USDC, USDT, LUX |

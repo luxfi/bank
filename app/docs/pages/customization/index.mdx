@@ -1,0 +1,114 @@
+# Customization
+
+Lux Financial is fully white-label. Customize every aspect of the platform.
+
+## Branding
+
+### Logo & Colors
+
+Configure your brand in the dashboard or via API:
+
+```typescript
+await client.branding.update({
+  logo: 'https://your-cdn.com/logo.svg',
+  primaryColor: '#D4AF37',
+  backgroundColor: '#000000',
+  accentColor: '#FFFFFF',
+})
+```
+
+### Custom Domain
+
+Point your domain to Lux:
+
+1. Add CNAME record: `payments.yourdomain.com` → `custom.lux.financial`
+2. Configure SSL certificate in dashboard
+3. Update your integration to use custom domain
+
+## Email Templates
+
+Customize transactional emails:
+
+```typescript
+await client.emailTemplates.update('payment_confirmation', {
+  subject: 'Payment Confirmed - {{amount}}',
+  html: `
+    <h1>Payment Received</h1>
+    <p>Hi {{name}},</p>
+    <p>Your payment of {{amount}} {{currency}} has been processed.</p>
+  `,
+})
+```
+
+## Compliance Customization
+
+### KYC Requirements
+
+Configure KYC levels by jurisdiction:
+
+```typescript
+await client.compliance.updateKycRequirements({
+  US: {
+    individual: ['identity', 'address', 'ssn'],
+    business: ['identity', 'business_docs', 'beneficial_owners'],
+  },
+  EU: {
+    individual: ['identity', 'address'],
+    business: ['identity', 'business_docs'],
+  },
+})
+```
+
+### Transaction Limits
+
+Set custom limits:
+
+```typescript
+await client.compliance.updateLimits({
+  daily: 50000,
+  monthly: 500000,
+  perTransaction: 25000,
+})
+```
+
+## Self-Hosting
+
+For enterprise customers, Lux can be deployed on-premises:
+
+### Requirements
+
+- Kubernetes 1.28+
+- PostgreSQL 16+
+- Redis 7+
+- HSM (Thales Luna or AWS CloudHSM)
+
+### Deployment
+
+```yaml
+# values.yaml
+luxBank:
+  image: ghcr.io/luxfi/bank:latest
+  replicas: 3
+
+  database:
+    host: postgres.internal
+    name: luxbank
+
+  redis:
+    host: redis.internal
+
+  hsm:
+    provider: aws-cloudhsm
+    clusterId: cluster-abc123
+```
+
+```bash
+helm install luxbank luxfi/bank -f values.yaml
+```
+
+## Support
+
+For customization support:
+
+- **Enterprise**: enterprise@lux.financial
+- **Technical**: support@lux.financial

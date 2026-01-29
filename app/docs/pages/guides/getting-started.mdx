@@ -1,0 +1,74 @@
+# Getting Started
+
+This guide walks you through setting up your Lux Financial integration.
+
+## Prerequisites
+
+- API credentials (contact sales@lux.financial)
+- Node.js 18+ or Python 3.9+
+- HTTPS endpoint for webhooks
+
+## Installation
+
+### Node.js
+
+```bash
+npm install @luxfi/bank-sdk
+```
+
+### Python
+
+```bash
+pip install luxbank
+```
+
+## Quick Example
+
+```typescript
+import { LuxBank } from '@luxfi/bank-sdk'
+
+const client = new LuxBank({
+  apiKey: process.env.LUX_API_KEY,
+  environment: 'sandbox', // or 'production'
+})
+
+// Create a payment
+const payment = await client.payments.create({
+  amount: 10000, // $100.00 in cents
+  currency: 'USD',
+  destination: {
+    type: 'bank_account',
+    accountNumber: '12345678',
+    routingNumber: '021000021',
+  },
+  reference: 'INV-001',
+})
+
+console.log(`Payment created: ${payment.id}`)
+```
+
+## Environment Setup
+
+### Sandbox
+
+Use sandbox credentials for development and testing:
+
+```
+API Base URL: https://sandbox.api.lux.financial
+Dashboard: https://sandbox.app.lux.financial
+```
+
+### Production
+
+Production credentials are issued after compliance review:
+
+```
+API Base URL: https://api.lux.financial
+Dashboard: https://app.lux.financial
+```
+
+## Next Steps
+
+- [API Authentication](/api/authentication)
+- [Creating Payments](/guides/payments)
+- [Webhook Integration](/integration/webhooks)

@@ -8,7 +8,11 @@ import ReCAPTCHA from 'react-google-recaptcha';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
 import ModalForgotPassword from '@/components/ModalForgotPassword';
+import { TriangleBankLogo } from '@/components/TriangleBankLogo';
 import { LuxLogo } from '@luxfi/logo';
+
+// Demo mode configuration
+const IS_DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === 'true' || process.env.NEXT_PUBLIC_DEMO_CUSTOMER === 'triangle-bank';
 
 // import { useCurrentUser } from '@/context/CurrentUser';
 
@@ -120,10 +124,18 @@ export default function SignIn() {
     <>
       <Container>
         <FormContainer>
-          <LuxLogo size={120} variant="color" style={{ marginBottom: 24 }} />
+          {IS_DEMO_MODE ? (
+            <TriangleBankLogo size={120} style={{ marginBottom: 24 }} />
+          ) : (
+            <LuxLogo size={120} variant="color" style={{ marginBottom: 24 }} />
+          )}
           <TitleContainer>
             <Title>Sign In</Title>
-            <Subtitle>Welcome back! Please enter your details</Subtitle>
+            <Subtitle>
+              {IS_DEMO_MODE
+                ? 'Welcome to Triangle Bank Demo'
+                : 'Welcome back! Please enter your details'}
+            </Subtitle>
           </TitleContainer>
           <Formik
             initialValues={{

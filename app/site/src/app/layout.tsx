@@ -36,9 +36,13 @@ export default function RootLayout({
   return (
     <html lang="en_GB">
       <head>
-        <link rel="icon" href="/images/favicon.ico" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/favicon.svg" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#00569e" />
+        <meta name="theme-color" content="#0B0F14" />
         <meta
           name="description"
           content={`With ${LUX_BRAND.name}, we have removed the complexities, inefficiencies and expenses of traditional cross-border payments with our platform.`}
@@ -59,11 +63,11 @@ export default function RootLayout({
       </head>
       <StyledProviders>
         <body>
+          {!hideMenu && <Menu />}
           {hideMenu && <HeaderBlueBackground />}
-          <div className="content">
-            {!hideMenu && <Menu />}
+          <MainContent>
             {children}
-          </div>
+          </MainContent>
           {path === "/contact" && <MailListForm />}
           <Footer />
         </body>
@@ -72,27 +76,34 @@ export default function RootLayout({
   );
 }
 
+const MainContent = styled.div`
+  min-height: 100vh;
+`;
+
 const HeaderContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  background-color: #00569e;
+  background-color: #0B0F14;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   width: 100%;
-  height: 225px;
+  height: 200px;
 
   div {
     display: flex;
     flex-direction: column;
     padding-block: 16px;
-    width: 80vw;
-    max-width: 1440px;
+    width: 100%;
+    max-width: 1120px;
+    padding-inline: 2rem;
     height: 100%;
     justify-content: flex-end;
   }
 
   h1 {
-    color: white;
-    font-size: 32px;
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 2.8rem;
+    font-weight: 600;
   }
 `;

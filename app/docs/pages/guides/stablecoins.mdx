@@ -1,0 +1,169 @@
+# Stablecoins
+
+Lux Financial provides infrastructure for managing stablecoin payments and custody. We natively support USDC, USDT, and other payment stablecoins across multiple chains.
+
+## Supported Stablecoins
+
+| Stablecoin | Issuer | Chains |
+|------------|--------|--------|
+| **USDC** | Circle | Polygon, Ethereum, Arbitrum, Base |
+| **USDT** | Tether | Polygon, Ethereum, Arbitrum |
+| **PYUSD** | PayPal | Ethereum, Solana |
+| **LUSD** | Lux (1:1 USD backed) | Lux, Polygon, Ethereum |
+| **LEUR** | Lux (1:1 EUR backed) | Lux, Polygon, Ethereum |
+
+## Receiving Stablecoins
+
+Accept USDC/USDT payments from your customers:
+
+```typescript
+const deposit = await lux.deposits.create({
+  amount: 100000, // $1,000.00
+  currency: 'USDC',
+  chain: 'polygon',
+  walletAddress: account.custodyAddress,
+  metadata: { orderId: 'order_123' }
+});
+
+// Get deposit address
+console.log(deposit.address); // 0x1234...5678
+```
+
+## Sending Stablecoins
+
+Send USDC/USDT to any wallet or convert to local fiat:
+
+```typescript
+// Send to wallet
+const payment = await lux.payments.create({
+  from: account.id,
+  to: 'recipient_wallet_address',
+  amount: 50000,
+  currency: 'USDC',
+  chain: 'polygon',
+  destinationCountry: 'NG', // Nigeria
+});
+
+// Convert to local fiat
+const payout = await lux.payouts.create({
+  amount: 50000,
+  stablecoin: 'USDC',
+  destinationCurrency: 'NGN',
+  bankAccount: 'ba_nigeria_123',
+});
+```
+
+## Multi-Chain Support
+
+| Chain | Gas Token | Finality | USDC | USDT |
+|-------|-----------|----------|------|------|
+| Polygon | MATIC | ~2s | ✅ | ✅ |
+| Ethereum | ETH | ~12min | ✅ | ✅ |
+| Arbitrum | ETH | ~15min | ✅ | ✅ |
+| Optimism | ETH | ~2min | ✅ | ✅ |
+| Base | ETH | ~2min | ✅ | ❌ |
+| Lux | LUX | ~2s | ✅ | ✅ |
+
+## Custody Options
+
+### Lux MPC Custody (Recommended)
+
+Self-hosted custody using multi-party computation:
+
+```typescript
+const account = await lux.accounts.create({
+  type: 'business',
+  custody: 'mpc',
+  mpcConfig: {
+    threshold: 2,
+    parties: 3,
+    keySharing: 'shamir',
+  }
+});
+```
+
+### Lux KMS Custody
+
+Enterprise key management with HSM integration:
+
+```typescript
+const account = await lux.accounts.create({
+  type: 'business',
+  custody: 'kms',
+  kmsConfig: {
+    provider: 'lux',
+    hsm: true,
+  }
+});
+```
+
+## International Payments
+
+Send stablecoins to recipients worldwide with automatic conversion to local currency:
+
+| Destination | Currency | Settlement | Method |
+|-------------|----------|------------|--------|
+| Nigeria | NGN | Instant | Bank Transfer |
+| Mexico | MXN | Same-day | SPEI |
+| India | INR | Same-day | IMPS/UPI |
+| Singapore | SGD | Instant | PayNow |
+| China | CNY | Same-day | Alipay/WeChat |
+
+```typescript
+const payment = await lux.payments.create({
+  from: account.id,
+  amount: 10000, // $100.00 USDC
+  currency: 'USDC',
+  chain: 'polygon',
+  destinationCountry: 'IN',
+  destinationCurrency: 'INR',
+  recipient: {
+    name: 'John Doe',
+    bankAccount: '1234567890',
+    ifsc: 'HDFC0001234',
+  }
+});
+```
+
+## Compliance
+
+All stablecoin transactions are automatically screened for:
+
+- **Sanctions**: OFAC, UN, EU sanctions lists
+- **PEP**: Politically exposed persons
+- **Risk Scoring**: AI-powered transaction risk assessment
+- **AML**: Anti-money laundering pattern detection
+
+```typescript
+// Get compliance status for a payment
+const compliance = await lux.compliance.check({
+  paymentId: payment.id,
+});
+
+console.log(compliance.risk); // 'low' | 'medium' | 'high'
+console.log(compliance.flags); // ['pep_match', 'high_value', etc.]
+```
+
+## Smart Contract Addresses
+
+### Polygon Mainnet
+
+```
+USDC: 0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359
+USDT: 0xc2132D05D31c914a87C6611C10748AEb04B58e8F
+```
+
+### Ethereum Mainnet
+
+```
+USDC: 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+USDT: 0xdAC17F958D2ee523a2206206994597C13D831ec7
+```
+
+### Lux Mainnet
+
+```
+LUSD: 0x...
+USDC (Bridged): 0x...
+USDT (Bridged): 0x...
+```

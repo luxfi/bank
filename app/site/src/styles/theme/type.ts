@@ -1,11 +1,29 @@
 interface IColors {
+  // Base colors
   background: string;
+  surface: string;
+  surfaceHover?: string;
   foreground: string;
+
+  // Text hierarchy
   primary: string;
   secondary: string;
+  muted?: string;
+
+  // Borders
+  border?: string;
+  borderHover?: string;
+
+  // Accent
+  accent?: string;
+  accentForeground?: string;
+
+  // States
   disabled: string;
   danger: string;
   success: string;
+
+  // Legacy compatibility
   label: string;
   borderLabel: string;
   placeholder: string;
@@ -13,6 +31,7 @@ interface IColors {
   black: string;
   detail: string;
   sky: string;
+  card?: string;
 }
 
 interface ISize {

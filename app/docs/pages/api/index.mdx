@@ -1,0 +1,170 @@
+# API Reference
+
+The Lux Financial API enables you to move into, out of, and between any form of a dollar—including stablecoins, fiat currencies, and digital assets.
+
+## Base URL
+
+```
+https://api.lux.financial/v0
+```
+
+## Authentication
+
+All API requests require an API key passed in the `Api-Key` header:
+
+```bash
+curl https://api.lux.financial/v0/customers \
+  -H "Api-Key: sk_live_your_api_key"
+```
+
+## Core Resources
+
+| Resource | Description |
+|----------|-------------|
+| [Customers](/api/customers) | Create and manage customer profiles with KYC |
+| [Accounts](/api/accounts) | Multi-currency accounts for holding funds |
+| [Wallets](/api/wallets) | Custodial and MPC wallet infrastructure |
+| [Transfers](/api/transfers) | Move funds between accounts and wallets |
+| [Payments](/api/payments) | Cross-border payments and payouts |
+| [Stablecoins](/api/stablecoins) | USDC, USDT, and other stablecoin operations |
+| [External Accounts](/api/external-accounts) | Bank accounts and crypto addresses |
+| [Rewards](/api/rewards) | Stablecoin yield and reward rates |
+| [Webhooks](/api/webhooks) | Real-time event notifications |
+
+## Response Format
+
+All responses are JSON with consistent structure:
+
+```json
+{
+  "id": "cus_abc123",
+  "object": "customer",
+  "created_at": "2026-01-15T10:00:00.000Z",
+  "updated_at": "2026-01-15T10:00:00.000Z",
+  ...
+}
+```
+
+List endpoints return paginated results:
+
+```json
+{
+  "object": "list",
+  "data": [...],
+  "has_more": true,
+  "cursor": "cur_xyz789"
+}
+```
+
+## Rate Limits
+
+| Plan | Requests/Second | Requests/Day |
+|------|-----------------|--------------|
+| Sandbox | 10 | 10,000 |
+| Production | 100 | 1,000,000 |
+| Enterprise | Custom | Custom |
+
+## SDKs
+
+Official SDKs are available for:
+
+```bash
+# TypeScript/JavaScript
+npm install @luxbank/sdk
+
+# Python
+pip install luxbank
+
+# Go
+go get github.com/luxfi/sdk-go
+```
+
+### Quick Start
+
+```typescript
+import { Lux } from '@luxbank/sdk';
+
+const lux = new Lux({
+  apiKey: 'sk_live_your_api_key',
+});
+
+// Create a customer
+const customer = await lux.customers.create({
+  email: 'user@example.com',
+  first_name: 'John',
+  last_name: 'Doe',
+  type: 'individual',
+});
+
+// Create a transfer
+const transfer = await lux.transfers.create({
+  amount: '1000.00',
+  currency: 'USD',
+  source: { account_id: 'acct_123' },
+  destination: { account_id: 'acct_456' },
+});
+```
+
+## Environments
+
+| Environment | Base URL | Purpose |
+|-------------|----------|---------|
+| Sandbox | `https://api-sandbox.lux.financial/v0` | Testing and development |
+| Production | `https://api.lux.financial/v0` | Live transactions |
+
+## Pagination
+
+List endpoints support cursor-based pagination:
+
+```bash
+GET /v0/customers?limit=20&cursor=cur_abc123
+```
+
+Response includes pagination info:
+
+```json
+{
+  "object": "list",
+  "data": [...],
+  "has_more": true,
+  "cursor": "cur_def456"
+}
+```
+
+## Idempotency
+
+For POST requests, include an idempotency key:
+
+```bash
+curl -X POST https://api.lux.financial/v0/transfers \
+  -H "Api-Key: sk_live_your_api_key" \
+  -H "Idempotency-Key: unique-request-id-123" \
+  -d '{"amount": "10000.00", "currency": "USD", ...}'
+```
+
+## Error Format
+
+```json
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "The amount field is required",
+    "source": {
+      "location": "body",
+      "key": "amount"
+    }
+  }
+}
+```
+
+See [Errors](/api/errors) for complete error code reference.
+
+## LLM Integration
+
+For AI assistants and LLM integration, fetch the complete documentation index:
+
+```
+https://docs.lux.financial/llms.txt
+```
+
+This file provides structured access to all API documentation for Claude, GPT, and other AI models.

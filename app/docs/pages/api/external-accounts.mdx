@@ -1,0 +1,231 @@
+# External Accounts
+
+External accounts represent bank accounts and crypto addresses owned by customers for sending and receiving funds.
+
+## The External Account Object
+
+### Bank Account
+
+```json
+{
+  "id": "ext_abc123",
+  "object": "external_account",
+  "customer_id": "cus_xyz789",
+  "type": "bank_account",
+  "bank_name": "Chase",
+  "account_holder_name": "John Doe",
+  "account_number_last4": "6789",
+  "routing_number": "021000021",
+  "country": "US",
+  "currency": "USD",
+  "status": "verified",
+  "created_at": "2026-01-15T10:00:00.000Z"
+}
+```
+
+### Crypto Address
+
+```json
+{
+  "id": "ext_def456",
+  "object": "external_account",
+  "customer_id": "cus_xyz789",
+  "type": "crypto_address",
+  "chain": "polygon",
+  "address": "0x1234567890abcdef1234567890abcdef12345678",
+  "label": "Personal Wallet",
+  "status": "verified",
+  "created_at": "2026-01-15T10:00:00.000Z"
+}
+```
+
+### Attributes
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Unique identifier (ext_*) |
+| `object` | string | Always "external_account" |
+| `customer_id` | string | Owner customer ID |
+| `type` | string | "bank_account" or "crypto_address" |
+| `status` | string | "pending", "verified", "failed" |
+
+---
+
+## Create Bank Account
+
+```
+POST /v0/external-accounts
+```
+
+### US Bank Account (ACH)
+
+```json
+{
+  "customer_id": "cus_xyz789",
+  "type": "bank_account",
+  "account_holder_name": "John Doe",
+  "account_number": "123456789",
+  "routing_number": "021000021",
+  "account_type": "checking",
+  "country": "US",
+  "currency": "USD"
+}
+```
+
+### International Bank Account (SWIFT)
+
+```json
+{
+  "customer_id": "cus_xyz789",
+  "type": "bank_account",
+  "account_holder_name": "John Doe",
+  "iban": "GB82WEST12345698765432",
+  "swift_code": "WESTGB2L",
+  "country": "GB",
+  "currency": "GBP"
+}
+```
+
+### Mexican Bank Account (SPEI)
+
+```json
+{
+  "customer_id": "cus_xyz789",
+  "type": "bank_account",
+  "account_holder_name": "Maria Garcia",
+  "clabe": "014180605045609201",
+  "country": "MX",
+  "currency": "MXN"
+}
+```
+
+### Response
+
+```json
+{
+  "id": "ext_abc123",
+  "object": "external_account",
+  "type": "bank_account",
+  "status": "pending",
+  "verification_method": "micro_deposits",
+  "created_at": "2026-01-15T10:00:00.000Z"
+}
+```
+
+---
+
+## Create Crypto Address
+
+```
+POST /v0/external-accounts
+```
+
+### Request Body
+
+```json
+{
+  "customer_id": "cus_xyz789",
+  "type": "crypto_address",
+  "chain": "polygon",
+  "address": "0x1234567890abcdef1234567890abcdef12345678",
+  "label": "Personal MetaMask"
+}
+```
+
+### Response
+
+```json
+{
+  "id": "ext_def456",
+  "object": "external_account",
+  "type": "crypto_address",
+  "chain": "polygon",
+  "address": "0x1234...",
+  "status": "verified",
+  "created_at": "2026-01-15T10:00:00.000Z"
+}
+```
+
+---
+
+## Verify Bank Account
+
+Verify ownership with micro-deposits.
+
+```
+POST /v0/external-accounts/{id}/verify
+```
+
+### Request Body
+
+```json
+{
+  "amounts": [0.32, 0.45]
+}
+```
+
+### Response
+
+```json
+{
+  "id": "ext_abc123",
+  "object": "external_account",
+  "status": "verified"
+}
+```
+
+---
+
+## List External Accounts
+
+```
+GET /v0/external-accounts
+```
+
+### Query Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `customer_id` | string | Filter by customer |
+| `type` | string | Filter by type |
+| `status` | string | Filter by status |
+| `country` | string | Filter by country |
+
+---
+
+## Supported Countries
+
+### Bank Accounts
+
+| Country | Rails | Currency |
+|---------|-------|----------|
+| US | ACH, Wire | USD |
+| UK | Faster Payments, CHAPS | GBP |
+| EU | SEPA, SEPA Instant | EUR |
+| Mexico | SPEI | MXN |
+| Brazil | PIX, TED | BRL |
+| Nigeria | NIP | NGN |
+| India | IMPS, UPI | INR |
+| Singapore | FAST, GIRO | SGD |
+| Philippines | InstaPay, PESONet | PHP |
+
+### Crypto Chains
+
+| Chain | Supported Assets |
+|-------|-----------------|
+| Polygon | USDC, USDT, MATIC |
+| Ethereum | USDC, USDT, ETH |
+| Arbitrum | USDC, USDT, ARB |
+| Optimism | USDC, USDT, OP |
+| Base | USDC, USDT |
+| Lux Network | USDC, USDT, LUX |
+
+---
+
+## Delete External Account
+
+```
+DELETE /v0/external-accounts/{id}
+```
+
+Returns 204 No Content on success.

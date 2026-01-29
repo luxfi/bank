@@ -1,0 +1,121 @@
+# Lux Financial API Documentation Index
+
+> Documentation for the Lux Financial API - move into, out of, and between any form of a dollar.
+
+## Base Information
+
+- API Base URL: https://api.lux.financial/v0
+- Documentation URL: https://docs.lux.financial
+- OpenAPI Spec: https://api.lux.financial/openapi.json
+
+## Core API Resources
+
+### Customers
+- Create customers with KYC verification
+- Individual and business customer types
+- GET /v0/customers - List customers
+- POST /v0/customers - Create customer
+- GET /v0/customers/{id} - Get customer
+- PATCH /v0/customers/{id} - Update customer
+- POST /v0/customers/{id}/kyc - Submit KYC documents
+
+### Accounts
+- Multi-currency fiat accounts
+- GET /v0/accounts - List accounts
+- POST /v0/accounts - Create account
+- GET /v0/accounts/{id} - Get account
+- GET /v0/accounts/{id}/balance - Get balance
+- GET /v0/accounts/{id}/transactions - List transactions
+
+### Wallets
+- Custodial and MPC self-custody wallets
+- Multi-chain support (Polygon, Ethereum, Arbitrum, Optimism, Base, Lux)
+- GET /v0/wallets - List wallets
+- POST /v0/wallets - Create wallet
+- GET /v0/wallets/{id} - Get wallet
+- GET /v0/wallets/{id}/balance - Get wallet balance
+
+### Transfers
+- Move funds between accounts and wallets
+- Account to wallet (stablecoin mint)
+- Wallet to account (stablecoin redeem)
+- Wallet to wallet (on-chain transfer)
+- GET /v0/transfers - List transfers
+- POST /v0/transfers - Create transfer
+- GET /v0/transfers/{id} - Get transfer
+
+### Payments
+- Cross-border payments to 150+ countries
+- Local currency payout via SPEI, PIX, UPI, FAST, SEPA
+- GET /v0/payments - List payments
+- POST /v0/payments - Create payment
+- GET /v0/payments/{id} - Get payment
+
+### External Accounts
+- Bank accounts (ACH, SWIFT, SEPA, SPEI, PIX)
+- Crypto addresses (Polygon, Ethereum, Arbitrum)
+- GET /v0/external-accounts - List external accounts
+- POST /v0/external-accounts - Create external account
+- POST /v0/external-accounts/{id}/verify - Verify bank account
+
+### Stablecoins
+- Native USDC, USDT, PYUSD, EURC support
+- Multi-chain deployment
+- GET /v0/stablecoins - List supported stablecoins
+- GET /v0/stablecoins/{asset}/rates - Get conversion rates
+
+### Rewards
+- Yield on stablecoin balances
+- GET /v0/rewards/rates - Get current reward rates
+- GET /v0/wallets/{id}/rewards - Get wallet rewards
+- POST /v0/wallets/{id}/rewards/enable - Enable rewards
+
+### Webhooks
+- Real-time event notifications
+- GET /v0/webhooks - List webhooks
+- POST /v0/webhooks - Create webhook
+- DELETE /v0/webhooks/{id} - Delete webhook
+
+## Authentication
+
+All requests require an API key in the Api-Key header:
+
+```
+Api-Key: sk_live_your_api_key
+```
+
+## Key Features
+
+### Stablecoin Infrastructure
+- Native USDC, USDT, PYUSD support
+- Polygon, Ethereum, Arbitrum, Optimism, Base, Lux chains
+- Real-time settlement (<3 seconds)
+
+### Enterprise Security
+- Lux KMS: HSM-backed key management
+- Lux MPC: Threshold signing (2-of-3, 3-of-5)
+- Post-quantum cryptography (CRYSTALS-Dilithium)
+
+### AI Integration
+- MCP Server for AI-powered operations
+- ZAP Protocol for browser-AI communication
+- Natural language banking queries
+
+## SDKs
+
+```bash
+# TypeScript
+npm install @luxbank/sdk
+
+# Python
+pip install luxbank
+
+# Go
+go get github.com/luxfi/sdk-go
+```
+
+## Support
+
+- Documentation: https://docs.lux.financial
+- API Status: https://status.lux.financial
+- Contact: api-support@lux.financial

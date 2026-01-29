@@ -28,13 +28,13 @@ const IconTextContainer = styled.div<{
 
 const Title = styled.p`
   font-size: 3.2rem;
-  color: #1e3456;
+  color: #FAFAFA;
   font-weight: 700;
 `;
 
 const Text = styled.p`
   font-size: 2.4rem;
-  color: #1e3456;
+  color: #FAFAFA;
 `;
 
 interface IIconText {

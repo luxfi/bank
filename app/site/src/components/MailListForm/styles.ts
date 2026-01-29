@@ -13,7 +13,8 @@ export const MailListFormContainer = styled.div`
   height: 650px;
   padding-block: 80px;
 
-  background-color: #f4f4f4;
+  background-color: #09090B;
+  border-top: 1px solid #27272A;
 `;
 
 export const TextContainer = styled.div`
@@ -26,7 +27,7 @@ export const TextContainer = styled.div`
   height: fit-content;
 
   * {
-    color: #1e3456;
+    color: #FFFFFF;
   }
 
   @media ${DeviceSize.sm} {
@@ -44,7 +45,7 @@ export const InputsContainer = styled.form`
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  color: #1e3456;
+  color: #FFFFFF;
 
   width: 910px;
   height: 100%;

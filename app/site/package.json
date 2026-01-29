@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "export": "GITHUB_PAGES=true next build",
+    "export": "STATIC_EXPORT=true next build",
+    "deploy:cf": "pnpm export && wrangler pages deploy out --project-name=lux-financial",
     "start": "node server.js",
     "lint": "next lint"
   },

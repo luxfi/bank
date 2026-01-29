@@ -5,6 +5,7 @@
  * for global financial services operations.
  */
 
+export * from './global';
 export * from './us';
 export * from './uk';
 export * from './eu';
@@ -14,6 +15,7 @@ export * from './mena';
 
 import type { JurisdictionCode, JurisdictionConfig } from '../types';
 
+import { GLOBAL } from './global';
 import { US_FEDERAL, US_STATE, US_TRUST, US_FUND, US_SPONSORED } from './us';
 import { UK_FCA, UK_IOM, UK_GIB } from './uk';
 import { EU_GENERIC, EU_IRELAND, EU_LITHUANIA, EU_MALTA, EU_CYPRUS } from './eu';
@@ -25,6 +27,9 @@ import { UAE_DFSA, UAE_ADGM } from './mena';
  * All available jurisdictions
  */
 export const JURISDICTIONS: Record<JurisdictionCode, JurisdictionConfig> = {
+  // Global (default - technology provider)
+  GLOBAL,
+
   // United States
   US_FEDERAL,
   US_STATE,
@@ -96,4 +101,4 @@ export function getJurisdictionsByCurrency(currency: string): JurisdictionConfig
  * Default jurisdiction (configurable via environment)
  */
 export const DEFAULT_JURISDICTION: JurisdictionCode =
-  (process.env.DEFAULT_JURISDICTION as JurisdictionCode) || 'UK_IOM';
+  (process.env.DEFAULT_JURISDICTION as JurisdictionCode) || 'GLOBAL';

@@ -1,0 +1,202 @@
+# Rewards
+
+Earn yield on stablecoin balances held in Lux wallets.
+
+## The Reward Rate Object
+
+```json
+{
+  "rate": "0.035",
+  "asset": "USDC",
+  "effective_at": "2026-01-01T00:00:00.000Z",
+  "expires_at": null
+}
+```
+
+### Attributes
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `rate` | string | Annual percentage rate (APR) as decimal |
+| `asset` | string | Stablecoin asset (USDC, USDT) |
+| `effective_at` | string | Rate effective date (ISO8601) |
+| `expires_at` | string | Rate expiration (null if current) |
+
+---
+
+## Get Current Reward Rates
+
+Get the current reward rates for supported stablecoins.
+
+```
+GET /v0/rewards/rates
+```
+
+### Query Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `since` | string | Starting time (ISO8601) for historical rates |
+| `asset` | string | Filter by asset (USDC, USDT) |
+
+### Response
+
+```json
+{
+  "object": "list",
+  "data": [
+    {
+      "rate": "0.035",
+      "asset": "USDC",
+      "effective_at": "2026-01-01T00:00:00.000Z",
+      "expires_at": null
+    },
+    {
+      "rate": "0.032",
+      "asset": "USDT",
+      "effective_at": "2026-01-01T00:00:00.000Z",
+      "expires_at": null
+    }
+  ]
+}
+```
+
+### Example
+
+```typescript
+const rates = await lux.rewards.getRates();
+
+console.log(rates);
+// [
+//   { rate: "0.035", asset: "USDC", ... },
+//   { rate: "0.032", asset: "USDT", ... }
+// ]
+```
+
+---
+
+## Get Wallet Rewards
+
+Get accumulated rewards for a specific wallet.
+
+```
+GET /v0/wallets/{wallet_id}/rewards
+```
+
+### Query Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `since` | string | Start date (ISO8601) |
+| `until` | string | End date (ISO8601) |
+
+### Response
+
+```json
+{
+  "object": "wallet_rewards",
+  "wallet_id": "wal_abc123",
+  "rewards": [
+    {
+      "asset": "USDC",
+      "chain": "polygon",
+      "earned": "125.50",
+      "rate": "0.035",
+      "average_balance": "50000.00",
+      "period_start": "2026-01-01T00:00:00.000Z",
+      "period_end": "2026-01-31T23:59:59.000Z"
+    }
+  ],
+  "total_earned": "125.50"
+}
+```
+
+---
+
+## List Reward Transactions
+
+Get detailed reward accrual history.
+
+```
+GET /v0/rewards/transactions
+```
+
+### Query Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `wallet_id` | string | Filter by wallet |
+| `asset` | string | Filter by asset |
+| `since` | string | Start date (ISO8601) |
+
+### Response
+
+```json
+{
+  "object": "list",
+  "data": [
+    {
+      "id": "rwd_abc123",
+      "object": "reward_transaction",
+      "wallet_id": "wal_xyz789",
+      "asset": "USDC",
+      "chain": "polygon",
+      "amount": "4.15",
+      "balance": "50000.00",
+      "rate": "0.035",
+      "accrued_at": "2026-01-15T00:00:00.000Z"
+    }
+  ],
+  "has_more": true,
+  "cursor": "cur_xyz789"
+}
+```
+
+---
+
+## Enable Rewards
+
+Enable reward accrual for a wallet.
+
+```
+POST /v0/wallets/{wallet_id}/rewards/enable
+```
+
+### Request Body
+
+```json
+{
+  "assets": ["USDC", "USDT"]
+}
+```
+
+### Response
+
+```json
+{
+  "wallet_id": "wal_abc123",
+  "rewards_enabled": true,
+  "enabled_assets": ["USDC", "USDT"],
+  "effective_at": "2026-01-15T10:00:00.000Z"
+}
+```
+
+---
+
+## Reward Calculation
+
+Rewards are calculated daily based on end-of-day balances:
+
+```
+Daily Reward = Balance × (Annual Rate / 365)
+```
+
+For example, with a $50,000 USDC balance at 3.5% APR:
+
+```
+Daily Reward = $50,000 × (0.035 / 365) = $4.79/day
+Monthly Reward ≈ $145.83
+Annual Reward = $1,750
+```
+
+Rewards are credited to your wallet monthly.

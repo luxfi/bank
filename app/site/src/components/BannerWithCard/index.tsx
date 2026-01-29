@@ -63,11 +63,11 @@ export default function BannerWithCard({
         <BannerCard>
           <Text variant="title">{title}</Text>
           {subtitle && (
-            <Text variant="body_lg" color="#1E3456">
+            <Text variant="body_lg" color="#FAFAFA">
               {subtitle}
             </Text>
           )}
-          <Text variant="body" color="#516686">
+          <Text variant="body" color="#A1A1AA">
             {text}
           </Text>
           {buttonText && (

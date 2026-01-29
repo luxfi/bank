@@ -1,0 +1,180 @@
+# Errors
+
+The Lux API uses conventional HTTP response codes to indicate success or failure of requests.
+
+## HTTP Status Codes
+
+| Code | Description |
+|------|-------------|
+| 200 | Success |
+| 201 | Created |
+| 204 | No Content (successful deletion) |
+| 400 | Bad Request - Invalid parameters |
+| 401 | Unauthorized - Invalid API key |
+| 403 | Forbidden - Insufficient permissions |
+| 404 | Not Found - Resource doesn't exist |
+| 409 | Conflict - Resource already exists |
+| 422 | Unprocessable Entity - Valid request but cannot process |
+| 429 | Too Many Requests - Rate limit exceeded |
+| 500 | Internal Server Error |
+
+## Error Response Format
+
+```json
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "The amount field is required",
+    "source": {
+      "location": "body",
+      "key": "amount"
+    }
+  }
+}
+```
+
+### Error Object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `code` | string | Machine-readable error code |
+| `message` | string | Human-readable description |
+| `source` | object | Location of the error (optional) |
+| `source.location` | string | "path", "query", "body", or "header" |
+| `source.key` | string | Name of the problematic parameter |
+
+---
+
+## Error Codes
+
+### Authentication Errors
+
+| Code | HTTP | Description |
+|------|------|-------------|
+| `required` | 401 | Missing Api-Key header |
+| `invalid` | 401 | Invalid API key |
+| `expired` | 401 | API key has expired |
+| `revoked` | 401 | API key has been revoked |
+
+### Request Errors
+
+| Code | HTTP | Description |
+|------|------|-------------|
+| `invalid_request` | 400 | Malformed request body |
+| `missing_parameter` | 400 | Required parameter missing |
+| `invalid_parameter` | 400 | Parameter has invalid value |
+| `parameter_too_long` | 400 | Parameter exceeds max length |
+| `parameter_too_short` | 400 | Parameter below min length |
+
+### Resource Errors
+
+| Code | HTTP | Description |
+|------|------|-------------|
+| `not_found` | 404 | Resource doesn't exist |
+| `already_exists` | 409 | Resource already exists |
+| `conflict` | 409 | Operation conflicts with current state |
+
+### Business Logic Errors
+
+| Code | HTTP | Description |
+|------|------|-------------|
+| `insufficient_funds` | 422 | Not enough balance |
+| `limit_exceeded` | 422 | Transaction limit exceeded |
+| `kyc_required` | 422 | Customer must complete KYC |
+| `kyc_rejected` | 422 | KYC verification failed |
+| `account_suspended` | 422 | Account is suspended |
+| `unsupported_currency` | 422 | Currency not supported |
+| `unsupported_country` | 422 | Country not supported |
+
+### Rate Limit Errors
+
+| Code | HTTP | Description |
+|------|------|-------------|
+| `rate_limit_exceeded` | 429 | Too many requests |
+
+### Server Errors
+
+| Code | HTTP | Description |
+|------|------|-------------|
+| `unexpected` | 500 | Unexpected error occurred |
+| `service_unavailable` | 503 | Service temporarily unavailable |
+
+---
+
+## Handling Errors
+
+### TypeScript
+
+```typescript
+try {
+  const transfer = await lux.transfers.create({
+    amount: '1000.00',
+    // ...
+  });
+} catch (error) {
+  if (error instanceof Lux.errors.InvalidRequestError) {
+    console.log('Invalid request:', error.message);
+    console.log('Field:', error.source?.key);
+  } else if (error instanceof Lux.errors.InsufficientFundsError) {
+    console.log('Not enough balance');
+  } else if (error instanceof Lux.errors.RateLimitError) {
+    // Retry after delay
+    await sleep(error.retryAfter);
+  } else {
+    throw error;
+  }
+}
+```
+
+### Python
+
+```python
+from luxbank import Lux
+from luxbank.errors import InvalidRequestError, InsufficientFundsError
+
+try:
+    transfer = lux.transfers.create(
+        amount="1000.00",
+        # ...
+    )
+except InvalidRequestError as e:
+    print(f"Invalid request: {e.message}")
+    print(f"Field: {e.source.key}")
+except InsufficientFundsError:
+    print("Not enough balance")
+```
+
+---
+
+## Idempotency
+
+Use the `Idempotency-Key` header to safely retry requests:
+
+```bash
+curl -X POST https://api.lux.financial/v0/transfers \
+  -H "Api-Key: sk_live_..." \
+  -H "Idempotency-Key: unique-request-id-123" \
+  -d '{"amount": "1000.00", ...}'
+```
+
+If you retry with the same idempotency key:
+- Within 24 hours: Returns the original response
+- After 24 hours: Processes as new request
+
+---
+
+## Webhook Errors
+
+When webhooks fail, we retry with exponential backoff:
+
+| Attempt | Delay |
+|---------|-------|
+| 1 | Immediate |
+| 2 | 1 minute |
+| 3 | 5 minutes |
+| 4 | 30 minutes |
+| 5 | 2 hours |
+| 6 | 12 hours |
+| 7 | 24 hours |
+
+After 7 failed attempts, the webhook is disabled.

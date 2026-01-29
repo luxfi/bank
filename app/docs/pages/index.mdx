@@ -1,0 +1,94 @@
+# Lux Financial Documentation
+
+Welcome to the Lux Financial platform documentation. Lux Financial provides white-label stablecoin infrastructure for financial institutions, enabling banks, fintechs, and payment companies to offer seamless USDC/USDT payments, international transfers, and AI-powered banking operations.
+
+## Quick Start
+
+<Cards>
+  <Card title="Getting Started" href="/guides/getting-started" />
+  <Card title="API Reference" href="/api" />
+  <Card title="Integration Guide" href="/integration" />
+  <Card title="Customization" href="/customization" />
+</Cards>
+
+## Platform Overview
+
+Lux Financial offers a complete neobank infrastructure stack:
+
+### Core Banking
+- **Native Stablecoin Support**: USDC, USDT, PYUSD, and custom stablecoins
+- **International Payments**: Real-time settlements to 150+ countries
+- **Multi-Currency Support**: USD, EUR, GBP, and 35+ fiat currencies
+- **Multi-Chain Deployment**: Polygon, Ethereum, Arbitrum, Optimism, Base
+
+### Enterprise Infrastructure
+- **Lux KMS**: Enterprise key management with HSM integration
+- **Lux MPC**: Multi-party computation for self-hosted custody
+- **Lux IAM**: Enterprise IdP with SSO and role-based access
+- **Post-Quantum Security**: Future-proof cryptography via Lux Node
+
+### AI-Powered Operations
+- **MCP Server**: Model Context Protocol for AI-powered bank operations
+- **ZAP Protocol**: Browser-to-MCP real-time communication
+- **AI Compliance**: Automated KYC/KYB and transaction monitoring
+- **AI Chat**: Customer support and admin operations via AI
+
+## Architecture
+
+```mermaid
+graph TB
+    Client[Your Application] --> API[Lux API]
+    Client --> MCP[MCP Server]
+    MCP --> AI[AI Operations]
+    MCP --> ZAP[ZAP Protocol]
+    API --> Compliance[Compliance Engine]
+    API --> Payments[Payment Rails]
+    API --> Custody[Lux Custody]
+    Compliance --> KYC[AI KYC/AML]
+    Payments --> Stablecoins[USDC/USDT]
+    Payments --> SWIFT[SWIFT]
+    Payments --> SEPA[SEPA]
+    Custody --> KMS[Lux KMS]
+    Custody --> MPC[Lux MPC]
+    Custody --> HSM[HSM]
+```
+
+## Security Stack
+
+| Component | Description |
+|-----------|-------------|
+| **Lux KMS** | Enterprise key management with HSM integration |
+| **Lux MPC** | Multi-party computation for threshold signing |
+| **Lux IAM** | Enterprise identity and access management |
+| **Post-Quantum** | Future-proof cryptography via Lux Node |
+| **HSM Support** | Hardware security module integration |
+
+## Compliance & Certifications
+
+- **Regulatory Licenses**: UK EMI, US Sponsor Bank (MCB), EU PSD2
+- **SOC 2 Type II** certified infrastructure
+- **PCI DSS Level 1** compliant
+- Real-time transaction monitoring with AI
+- Automated sanctions screening
+
+## Demo: Triangle Bank
+
+Try our demo neobank built on Lux Financial:
+
+```bash
+# Access the demo dashboard
+https://demo.lux.financial
+
+# Demo credentials
+Email: demo@trianglebank.com
+Password: demo123
+```
+
+## Support
+
+- **Email**: support@lux.financial
+- **Enterprise**: enterprise@lux.financial
+- **Documentation Issues**: [GitHub Issues](https://github.com/luxfi/bank/issues)
+- **Discord**: [Join our community](https://discord.gg/luxfinancial)
+
+import { Cards, Card } from 'nextra/components'

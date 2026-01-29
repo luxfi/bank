@@ -36,7 +36,7 @@ export const ImageContainer = styled.div<{ $positionY?: string }>`
   p {
     top: 65px;
     position: absolute;
-    color: #1e3456;
+    color: #FFFFFF;
   }
 
   img {

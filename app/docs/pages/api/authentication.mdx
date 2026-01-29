@@ -1,0 +1,115 @@
+# Authentication
+
+All API requests require authentication using an API key.
+
+## API Keys
+
+API keys are prefixed to indicate their type:
+
+| Prefix | Type | Description |
+|--------|------|-------------|
+| `sk_live_` | Live Secret | Production environment, real funds |
+| `sk_test_` | Test Secret | Sandbox environment, test data |
+| `pk_live_` | Live Publishable | Client-side, limited permissions |
+| `pk_test_` | Test Publishable | Client-side sandbox |
+
+## Using API Keys
+
+Pass your API key in the `Api-Key` header:
+
+```bash
+curl https://api.lux.financial/v0/customers \
+  -H "Api-Key: sk_live_your_api_key"
+```
+
+### TypeScript SDK
+
+```typescript
+import { Lux } from '@luxbank/sdk';
+
+const lux = new Lux({
+  apiKey: process.env.LUX_API_KEY,
+});
+```
+
+### Python SDK
+
+```python
+from luxbank import Lux
+
+lux = Lux(api_key=os.environ.get("LUX_API_KEY"))
+```
+
+## Security Best Practices
+
+1. **Never expose secret keys client-side** - Use publishable keys for browser/mobile
+2. **Use environment variables** - Don't hardcode keys in source code
+3. **Rotate keys regularly** - Generate new keys periodically
+4. **Use separate keys per environment** - Different keys for staging vs production
+
+## API Key Permissions
+
+Keys can be scoped to specific permissions:
+
+| Permission | Description |
+|------------|-------------|
+| `customers:read` | View customer data |
+| `customers:write` | Create/update customers |
+| `accounts:read` | View account balances |
+| `accounts:write` | Create accounts |
+| `transfers:read` | View transfer history |
+| `transfers:write` | Create transfers |
+| `payments:read` | View payment history |
+| `payments:write` | Create payments |
+
+## Error Responses
+
+### Missing API Key
+
+```json
+{
+  "error": {
+    "code": "required",
+    "message": "Missing Api-Key header",
+    "source": {
+      "location": "header",
+      "key": "Api-Key"
+    }
+  }
+}
+```
+
+### Invalid API Key
+
+```json
+{
+  "error": {
+    "code": "invalid",
+    "message": "Invalid Api-Key header",
+    "source": {
+      "location": "header",
+      "key": "Api-Key"
+    }
+  }
+}
+```
+
+## Webhooks Authentication
+
+Webhook payloads are signed using HMAC-SHA256. Verify signatures using your webhook secret:
+
+```typescript
+import crypto from 'crypto';
+
+function verifyWebhook(payload: string, signature: string, secret: string): boolean {
+  const expected = crypto
+    .createHmac('sha256', secret)
+    .update(payload)
+    .digest('hex');
+
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expected)
+  );
+}
+```

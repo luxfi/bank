@@ -1,41 +1,54 @@
-FROM node:16.14.0 as build
+# Build from bank repo root to access workspace packages
+FROM node:20-alpine AS base
 
-# Set the working directory
-ARG ENV
+# Install pnpm
+RUN corepack enable && corepack prepare pnpm@9 --activate
 
-# Install Chromium
-RUN apt-get update && apt-get install -y chromium
-
-# Set the working directory
+FROM base AS deps
 WORKDIR /app
 
-# Copy the package.json and package-lock.json files
-COPY package*.json ./
+# Copy workspace config
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY pkg/brand/package.json ./pkg/brand/
+COPY pkg/ui/package.json ./pkg/ui/
+COPY app/admin/package.json ./app/admin/
 
 # Install dependencies
-RUN npm install
+RUN pnpm install --frozen-lockfile
 
-# Copy the source code into the container
+FROM base AS builder
+WORKDIR /app
+
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/pkg/brand/node_modules ./pkg/brand/node_modules
+COPY --from=deps /app/pkg/ui/node_modules ./pkg/ui/node_modules
+COPY --from=deps /app/app/admin/node_modules ./app/admin/node_modules
 COPY . .
 
-# Set the environment variables
-COPY .env .env
+# Build dependencies
+RUN pnpm --filter @luxbank/brand build
+RUN pnpm --filter @luxbank/ui build
 
-# Build the React app
-RUN npm run build
+# Build the admin dashboard
+RUN pnpm --filter @luxbank/admin build
 
-# Step 2: Serve the React application using Nginx
-FROM nginx:alpine
+FROM base AS runner
+WORKDIR /app
 
-# Copy the built React app from the previous stage
-COPY --from=build /app/build /usr/share/nginx/html
+ENV NODE_ENV=production
 
-# Custom Nginx
-COPY ./deploy/nginx.conf /etc/nginx/nginx.conf
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
 
-EXPOSE 80
+COPY --from=builder /app/app/admin/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/app/admin/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/app/admin/.next/static ./.next/static
 
-# Start Nginx
-CMD ["nginx", "-g", "daemon off;"]
+USER nextjs
 
+EXPOSE 3000
 
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+
+CMD ["node", "server.js"]

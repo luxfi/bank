@@ -35,7 +35,7 @@ export default function PannelWithBackground({
       $responsiveHeight={responsiveHeight}
     >
       <ContentContainer $width={contentWidth}>
-        <Text className="title" variant="title" color="#1E3456" weight="700">
+        <Text className="title" variant="title" color="#FAFAFA" weight="700">
           {title}
         </Text>
         {children}
