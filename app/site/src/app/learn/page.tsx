@@ -130,7 +130,7 @@ export default function LearnPage() {
     <>
       <AnimatedDiv>
         <BannerWithCard
-          image="/images/learn.jpg"
+          image="/images/tablet.jpg"
           showCard={false}
           imageTitle="Learn"
           responsiveHeight="250px"

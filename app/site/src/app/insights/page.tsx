@@ -79,7 +79,7 @@ export default function InsightsPage() {
     <>
       <AnimatedDiv>
         <BannerWithCard
-          image="/images/insights.jpg"
+          image="/images/global.jpg"
           showCard={false}
           imageTitle="Market Insights"
           responsiveHeight="250px"
