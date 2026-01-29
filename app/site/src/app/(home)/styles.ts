@@ -49,18 +49,29 @@ export const PageContainer = styled.main`
   }
 `;
 
-// Hero Section - Full width container
+// Hero Section - Full width container with gradient
 export const HeroSection = styled.section`
   position: relative;
-  padding: 3rem 0 4rem;
+  padding: 4rem 0 6rem;
   min-height: calc(100vh - 64px);
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+  gap: 4rem;
+  background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(212, 175, 55, 0.08), transparent);
+
+  @media ${DeviceSize.lg} {
+    padding: 3rem 0 5rem;
+    gap: 3rem;
+  }
 
   @media ${DeviceSize.md} {
-    padding: 2rem 0 3rem;
+    padding: 2rem 0 4rem;
     min-height: auto;
+    gap: 2.5rem;
+  }
+
+  @media ${DeviceSize.sm} {
+    padding: 1.5rem 0 3rem;
     gap: 2rem;
   }
 `;
@@ -73,22 +84,33 @@ export const HeroContent = styled.div`
   text-align: center;
   max-width: 800px;
   margin: 0 auto;
+  align-items: center;
+
+  @media ${DeviceSize.sm} {
+    gap: 1rem;
+  }
 `;
 
 // Platform Showcase Container
 export const PlatformShowcase = styled.div`
   position: relative;
   display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
-  gap: 1.5rem;
+  grid-template-columns: 1fr 200px;
+  gap: 2rem;
   animation: ${fadeUp} 0.6s ease forwards;
   animation-delay: 0.2s;
   opacity: 0;
   animation-fill-mode: forwards;
+  align-items: start;
+
+  @media ${DeviceSize.lg} {
+    grid-template-columns: 1fr 180px;
+    gap: 1.5rem;
+  }
 
   @media ${DeviceSize.md} {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    gap: 2rem;
   }
 `;
 
@@ -96,19 +118,27 @@ export const PlatformLeft = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+
+  @media ${DeviceSize.sm} {
+    gap: 1rem;
+  }
 `;
 
 export const PlatformRight = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 1rem;
 
   @media ${DeviceSize.md} {
     flex-direction: row;
+    justify-content: center;
+    padding-top: 0;
   }
 
   @media ${DeviceSize.sm} {
-    flex-direction: column;
+    display: none;
   }
 `;
 

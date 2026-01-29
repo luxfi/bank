@@ -53,13 +53,16 @@ interface FooterNavSection {
 }
 
 const footerNav: Record<string, FooterNavSection> = {
-  platform: {
-    title: "Platform",
+  products: {
+    title: "Products",
     items: [
-      { label: "Orchestration", href: "/products/orchestration" },
+      { label: "Mobile App", href: "/products/mobile" },
+      { label: "Exchange", href: "/products/exchange" },
+      { label: "DeFi", href: "/products/defi" },
+      { label: "Digital Securities", href: "/products/issuance" },
+      { label: "Global Payments", href: "/products/cross-border" },
       { label: "Wallets", href: "/products/wallets" },
-      { label: "Cross-Border", href: "/products/cross-border" },
-      { label: "Issuance", href: "/products/issuance" },
+      { label: "Infrastructure", href: "/products/infrastructure" },
     ],
   },
   company: {
@@ -67,11 +70,11 @@ const footerNav: Record<string, FooterNavSection> = {
     items: [
       { label: "About", href: "/about" },
       { label: "News", href: "/news" },
-      { label: "Insights", href: "/insights" },
-      { label: "Contact", href: "/contact" },
+      { label: "Solutions", href: "/solutions" },
+      { label: "Help", href: "/help" },
     ],
   },
-  resources: {
+  developers: {
     title: "Developers",
     items: [
       { label: "Documentation", href: "https://docs.lux.financial", external: true },

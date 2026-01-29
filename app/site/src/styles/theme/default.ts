@@ -14,12 +14,12 @@ export const DeviceSize = {
   lg: `(max-width: ${screens.lg})`,
 };
 
-// Dark theme colors
+// Dark theme colors - Pure black with gold accents
 export const darkColors = {
-  // Base backgrounds
-  background: "#0B0F14",
-  surface: "#0F1620",
-  surfaceHover: "#141C28",
+  // Base backgrounds - Pure black
+  background: "#000000",
+  surface: "#0A0A0A",
+  surfaceHover: "#111111",
   foreground: "rgba(255,255,255,0.92)",
 
   // Text hierarchy
@@ -31,9 +31,9 @@ export const darkColors = {
   border: "rgba(255,255,255,0.08)",
   borderHover: "rgba(255,255,255,0.15)",
 
-  // Accent is white
-  accent: "#FFFFFF",
-  accentForeground: "#0B0F14",
+  // Accent - Gold
+  accent: "#D4AF37",
+  accentForeground: "#000000",
 
   // States
   disabled: "rgba(255,255,255,0.25)",
@@ -44,11 +44,11 @@ export const darkColors = {
   label: "rgba(255,255,255,0.65)",
   borderLabel: "rgba(255,255,255,0.08)",
   placeholder: "rgba(255,255,255,0.45)",
-  gray: "#0F1620",
-  black: "#0B0F14",
+  gray: "#0A0A0A",
+  black: "#000000",
   detail: "rgba(255,255,255,0.45)",
-  sky: "#4DA3FF",
-  card: "#0F1620",
+  sky: "#D4AF37",
+  card: "#0A0A0A",
 };
 
 // Light theme colors

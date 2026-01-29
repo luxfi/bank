@@ -130,10 +130,17 @@ export default function Menu() {
               News
             </MenuItem>
             <MenuItem
-              $active={activePath === "/contact"}
-              href="/contact"
+              $active={activePath === "/help"}
+              href="/help"
             >
-              Contact
+              Help
+            </MenuItem>
+            <MenuItem
+              $active={false}
+              href="https://docs.lux.financial"
+              target="_blank"
+            >
+              Docs
             </MenuItem>
           </DesktopNav>
 
@@ -168,11 +175,19 @@ export default function Menu() {
               News
             </MenuItem>
             <MenuItem
-              $active={activePath === "/contact"}
-              href="/contact"
+              $active={activePath === "/help"}
+              href="/help"
               onClick={() => setOpenMenu(false)}
             >
-              Contact
+              Help
+            </MenuItem>
+            <MenuItem
+              $active={false}
+              href="https://docs.lux.financial"
+              target="_blank"
+              onClick={() => setOpenMenu(false)}
+            >
+              Docs
             </MenuItem>
             <MenuItem
               $active={false}
@@ -206,12 +221,12 @@ export default function Menu() {
 
             <Link
               target="_blank"
-              href={"https://app.lux.financial/registration"}
+              href={"https://cal.com/luxfi/15min"}
               onClick={() => {
                 setOpenMenu(false);
               }}
             >
-              <CustomButton>Get Started</CustomButton>
+              <CustomButton>Contact Sales</CustomButton>
             </Link>
           </RightSection>
         </MenuContainer>

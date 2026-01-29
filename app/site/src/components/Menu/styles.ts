@@ -13,9 +13,9 @@ export const MainContainer = styled.div`
   z-index: 50;
   backdrop-filter: blur(12px);
   background: ${({ theme }) =>
-    theme.colors.background === "#0B0F14"
-      ? "rgba(11, 15, 20, 0.8)"
-      : "rgba(255, 255, 255, 0.8)"
+    theme.colors.background === "#FFFFFF"
+      ? "rgba(255, 255, 255, 0.8)"
+      : "rgba(0, 0, 0, 0.8)"
   };
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   transition: all 0.2s ease;
@@ -82,9 +82,9 @@ export const ItemsContainer = styled.div<{ $open: boolean }>`
     left: 0;
     right: 0;
     background: ${({ theme }) =>
-      theme.colors.background === "#0B0F14"
-        ? "rgba(11, 15, 20, 0.98)"
-        : "rgba(255, 255, 255, 0.98)"
+      theme.colors.background === "#FFFFFF"
+        ? "rgba(255, 255, 255, 0.98)"
+        : "rgba(0, 0, 0, 0.98)"
     };
     backdrop-filter: blur(16px);
     flex-direction: column;
