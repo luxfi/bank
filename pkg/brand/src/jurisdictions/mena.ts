@@ -39,10 +39,10 @@ export const UAE_DFSA: JurisdictionConfig = {
   },
 
   contact: {
-    email: 'hello@lux.finance',
+    email: 'hello@lux.financial',
     phone: '+971 4 123 4567',
-    supportEmail: 'support@lux.finance',
-    complianceEmail: 'compliance@lux.finance',
+    supportEmail: 'support@lux.financial',
+    complianceEmail: 'compliance@lux.financial',
   },
 };
 
@@ -85,10 +85,10 @@ export const UAE_ADGM: JurisdictionConfig = {
   },
 
   contact: {
-    email: 'hello@lux.finance',
+    email: 'hello@lux.financial',
     phone: '+971 2 123 4567',
-    supportEmail: 'support@lux.finance',
-    complianceEmail: 'compliance@lux.finance',
+    supportEmail: 'support@lux.financial',
+    complianceEmail: 'compliance@lux.financial',
   },
 };
 

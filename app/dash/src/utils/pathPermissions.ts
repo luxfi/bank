@@ -33,7 +33,7 @@ const teamMemberRoutes = [
   '/create-payment',
   '/conversion',
   '/balances',
-  'https://lux.finance/help-centre/',
+  'https://lux.financial/help-centre/',
   '/payment',
   APP_PATHS.IN_APPROVAL.ROOT,
 ];
@@ -41,7 +41,7 @@ const teamMemberRoutes = [
 const teamViewerRoutes = [
   '/balances',
   '/wallet',
-  'https://lux.finance/help-centre/',
+  'https://lux.financial/help-centre/',
   '/payment',
   APP_PATHS.IN_APPROVAL.ROOT,
 ];
@@ -52,7 +52,7 @@ const teamManagerRoutes = [
   '/wallet',
   '/invite-users',
   '/balances',
-  'https://lux.finance/help-centre/',
+  'https://lux.financial/help-centre/',
   '/payment',
   APP_PATHS.IN_APPROVAL.ROOT,
 ];
@@ -63,7 +63,7 @@ const adminRoutes = [
   '/wallet',
   '/invite-users',
   '/balances',
-  'https://lux.finance/help-centre/',
+  'https://lux.financial/help-centre/',
   '/payment',
   APP_PATHS.IN_APPROVAL.ROOT,
 ];
@@ -73,7 +73,7 @@ const superAdminRoutes = [
   '/clients',
   '/admin-users',
   '/archived-users',
-  'https://kyc.lux.finance/index.php/login',
+  'https://kyc.lux.financial/index.php/login',
 ];
 
 export function getPaths(type: TPaths): Array<string> {

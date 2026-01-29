@@ -46,7 +46,7 @@ const menuLinks: Array<IMenuLink> = [
   },
   {
     label: "Login",
-    path: "https://app.lux.finance/login",
+    path: "https://app.lux.financial/login",
   },
 ];
 
@@ -94,7 +94,7 @@ export default function Menu() {
         </ItemsContainer>
         <Link
           target="_blank"
-          href={"https://app.lux.finance/registration"}
+          href={"https://app.lux.financial/registration"}
           onClick={() => {
             setOpenMenu(false);
           }}

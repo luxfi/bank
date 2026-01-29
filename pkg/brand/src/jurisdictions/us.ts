@@ -51,10 +51,10 @@ export const US_FEDERAL: JurisdictionConfig = {
   },
 
   contact: {
-    email: 'hello@lux.finance',
+    email: 'hello@lux.financial',
     phone: '+1 (800) 555-0100',
-    supportEmail: 'support@lux.finance',
-    complianceEmail: 'compliance@lux.finance',
+    supportEmail: 'support@lux.financial',
+    complianceEmail: 'compliance@lux.financial',
   },
 };
 
@@ -93,10 +93,10 @@ export const US_STATE: JurisdictionConfig = {
   },
 
   contact: {
-    email: 'hello@lux.finance',
+    email: 'hello@lux.financial',
     phone: '+1 (800) 555-0100',
-    supportEmail: 'support@lux.finance',
-    complianceEmail: 'compliance@lux.finance',
+    supportEmail: 'support@lux.financial',
+    complianceEmail: 'compliance@lux.financial',
   },
 };
 
@@ -136,10 +136,10 @@ export const US_TRUST: JurisdictionConfig = {
   },
 
   contact: {
-    email: 'hello@lux.finance',
+    email: 'hello@lux.financial',
     phone: '+1 (800) 555-0100',
-    supportEmail: 'support@lux.finance',
-    complianceEmail: 'compliance@lux.finance',
+    supportEmail: 'support@lux.financial',
+    complianceEmail: 'compliance@lux.financial',
   },
 };
 
@@ -183,9 +183,9 @@ export const US_FUND: JurisdictionConfig = {
   },
 
   contact: {
-    email: 'hello@lux.finance',
+    email: 'hello@lux.financial',
     phone: '+1 (800) 555-0100',
-    supportEmail: 'support@lux.finance',
-    complianceEmail: 'compliance@lux.finance',
+    supportEmail: 'support@lux.financial',
+    complianceEmail: 'compliance@lux.financial',
   },
 };

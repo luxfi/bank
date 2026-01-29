@@ -9,7 +9,7 @@ export class Migration20240729142902 extends Migration {
     const date = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
     const userId = v4();
-    const AdminEmail = 'eleesha@lux.finance';
+    const AdminEmail = 'eleesha@lux.financial';
     const AdminPassword = await hash('Summer24', 8);
     const firstname = 'Eleesha';
     const lastname = 'Preston';

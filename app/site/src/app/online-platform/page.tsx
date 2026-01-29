@@ -23,7 +23,7 @@ export default function OnlinePlatform() {
           buttonText="Set up an account in minutes"
           onClick={() => {
             const a = document.createElement("a");
-            a.href = "https://app.lux.finance/registration";
+            a.href = "https://app.lux.financial/registration";
             a.target = "_blank";
             a.click();
           }}

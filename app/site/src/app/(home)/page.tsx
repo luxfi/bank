@@ -50,7 +50,7 @@ export default function Home() {
               {`Subject to jurisdiction. We reserve the right to decline any
             application without explanation.`}
             </Text>
-            <Link href="https://app.lux.finance/registration" target="_blank">
+            <Link href="https://app.lux.financial/registration" target="_blank">
               <CustomButton>Set up an account in minutes</CustomButton>
             </Link>
           </TextContainer>
@@ -85,7 +85,7 @@ export default function Home() {
             *Subject to jurisdiction. We reserve the right to decline any
             application without explanation.
           </Text>
-          <Link href="https://app.lux.finance/registration" target="_blank">
+          <Link href="https://app.lux.financial/registration" target="_blank">
             <CustomButton>Set up an account in minutes</CustomButton>
           </Link>
         </TextContainer>

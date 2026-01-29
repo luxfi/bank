@@ -131,11 +131,11 @@ export function createBrandConfig(
 
     // Digital presence
     domains: {
-      primary: 'lux.finance',
-      app: 'app.lux.finance',
-      api: 'api.lux.finance',
-      docs: 'docs.lux.finance',
-      support: 'support.lux.finance',
+      primary: 'lux.financial',
+      app: 'app.lux.financial',
+      api: 'api.lux.financial',
+      docs: 'docs.lux.financial',
+      support: 'support.lux.financial',
     },
 
     // Social

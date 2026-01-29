@@ -40,10 +40,10 @@ export const CA_FINTRAC: JurisdictionConfig = {
   },
 
   contact: {
-    email: 'hello@lux.finance',
+    email: 'hello@lux.financial',
     phone: '+1 (416) 555-0100',
-    supportEmail: 'support@lux.finance',
-    complianceEmail: 'compliance@lux.finance',
+    supportEmail: 'support@lux.financial',
+    complianceEmail: 'compliance@lux.financial',
   },
 };
 
@@ -99,9 +99,9 @@ export const CA_PROVINCIAL: JurisdictionConfig = {
   },
 
   contact: {
-    email: 'hello@lux.finance',
+    email: 'hello@lux.financial',
     phone: '+1 (416) 555-0100',
-    supportEmail: 'support@lux.finance',
-    complianceEmail: 'compliance@lux.finance',
+    supportEmail: 'support@lux.financial',
+    complianceEmail: 'compliance@lux.financial',
   },
 };

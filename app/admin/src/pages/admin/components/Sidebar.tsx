@@ -18,7 +18,7 @@ export default function Sidebar() {
             <SidebarLink text='Clients' icon={faAddressBook} to='/admin/clients' />
             <SidebarLink text='Beneficiaries' icon={faAddressBook} to='/admin/beneficiaries' />
             <SidebarLink text='Users' icon={faAddressBook} to='/admin/users' />
-            <SidebarLink text='Documents' icon={faFolder} onClick={() => window.open('https://luxkycuploads.lux.finance/index.php/')} />
+            <SidebarLink text='Documents' icon={faFolder} onClick={() => window.open('https://luxkycuploads.lux.financial/index.php/')} />
             <SidebarLink text="Search" icon={faSearch} to="/admin/search" />
             {/* <SidebarLink text='Support tickets' icon={faLifeRing} onClick={() => window.open('https://lux.paydirect.io/login')} /> */}
             {/* <SidebarLink text='Notifications' icon={faMessage} to='/admin/dashboard' /> */}

@@ -20,12 +20,12 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "news.dev.lux.finance",
+        hostname: "news.dev.lux.financial",
         port: "",
       },
       {
         protocol: "https",
-        hostname: "www.dev.lux.finance",
+        hostname: "www.dev.lux.financial",
         port: "",
       },
     ],

@@ -498,7 +498,7 @@ export default function PrivacyPage() {
 
 
 
-<ul><li>Do not share your information or provide any opportunities for anyone to gain access to your information through your devices, including tablets, phones, watches or laptops.</li><li>Do not click on any internet link contained in an email or SMS which directs you to a Lux Financial website. Always manually type our address www.lux.finance into your internet browser or use the app.</li><li>Log out and close your browser before visiting other websites once you have completed your transactions.</li><li>Ensure that you use the latest version of your internet browser and that you have up-to-date anti-virus, firewall and other security software installed on your device.</li></ul>
+<ul><li>Do not share your information or provide any opportunities for anyone to gain access to your information through your devices, including tablets, phones, watches or laptops.</li><li>Do not click on any internet link contained in an email or SMS which directs you to a Lux Financial website. Always manually type our address www.lux.financial into your internet browser or use the app.</li><li>Log out and close your browser before visiting other websites once you have completed your transactions.</li><li>Ensure that you use the latest version of your internet browser and that you have up-to-date anti-virus, firewall and other security software installed on your device.</li></ul>
 
 
 
@@ -586,7 +586,7 @@ export default function PrivacyPage() {
 
 
 
-<p>You can do this by checking or unchecking certain boxes on the forms we use to collect your information, or by logging onto your account and managing your contact preferences, or by clicking on the ‘unsubscribe’ link(s) at the foot of every marketing or promotional email. You may exercise any of the above rights by contacting us at <a href="mailto:compliance@lux.finance" target="_blank" rel="noreferrer noopener">compliance@lux.finance</a> or by calling your Account Manager.</p>
+<p>You can do this by checking or unchecking certain boxes on the forms we use to collect your information, or by logging onto your account and managing your contact preferences, or by clicking on the ‘unsubscribe’ link(s) at the foot of every marketing or promotional email. You may exercise any of the above rights by contacting us at <a href="mailto:compliance@lux.financial" target="_blank" rel="noreferrer noopener">compliance@lux.financial</a> or by calling your Account Manager.</p>
 
 
 
@@ -602,7 +602,7 @@ export default function PrivacyPage() {
 
 
 
-<p>If you want to exercise your right to access your information or have any questions about this Privacy Policy, Lux Financial’s information practices, or your dealings with Lux Financial, you can contact us by calling the customer service number located on our website, sending an email to <a href="mailto:compliance@lux.finance" target="_blank" rel="noreferrer noopener">compliance@lux.finance</a> or by writing to us at Lux Limited, 27 Hope Street, Douglas, Isle of Man, IM1 1AR.</p>
+<p>If you want to exercise your right to access your information or have any questions about this Privacy Policy, Lux Financial’s information practices, or your dealings with Lux Financial, you can contact us by calling the customer service number located on our website, sending an email to <a href="mailto:compliance@lux.financial" target="_blank" rel="noreferrer noopener">compliance@lux.financial</a> or by writing to us at Lux Limited, 27 Hope Street, Douglas, Isle of Man, IM1 1AR.</p>
 
 
 
@@ -610,7 +610,7 @@ export default function PrivacyPage() {
 
 
 
-<p>If you believe that we have breached a privacy law with which we should comply, please <a>send an email to </a><a href="mailto:compliance@lux.finance" target="_blank" rel="noreferrer noopener">compliance@lux.finance</a>. We aim to respond in a reasonable time, normally within 30 days. Our Compliance team and Data Protection Officer will look after your complaint and will give you additional information about how it will be managed.</p>
+<p>If you believe that we have breached a privacy law with which we should comply, please <a>send an email to </a><a href="mailto:compliance@lux.financial" target="_blank" rel="noreferrer noopener">compliance@lux.financial</a>. We aim to respond in a reasonable time, normally within 30 days. Our Compliance team and Data Protection Officer will look after your complaint and will give you additional information about how it will be managed.</p>
 
 
 

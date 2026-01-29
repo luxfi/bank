@@ -22,7 +22,7 @@ export default function Account() {
           buttonText="Open an account"
           onClick={() => {
             const a = document.createElement("a");
-            a.href = "https://app.lux.finance/registration";
+            a.href = "https://app.lux.financial/registration";
             a.target = "_blank";
             a.click();
           }}

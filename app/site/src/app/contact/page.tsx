@@ -124,7 +124,7 @@ export default function Contact() {
             <div>
               <Text variant="body">Email us on: </Text>
               <Text variant="body_lg" color="#1E3456">
-                hello@lux.finance
+                hello@lux.financial
               </Text>
             </div>
             <div>

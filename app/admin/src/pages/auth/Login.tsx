@@ -122,7 +122,7 @@ export default function Login() {
             <Container>
                 <FormContainer>
                     <BackButtonContainer>
-                        <Link to={"https://lux.finance/"}>
+                        <Link to={"https://lux.financial/"}>
                             <ArrowLeftOutlined />
                         </Link>
                     </BackButtonContainer>

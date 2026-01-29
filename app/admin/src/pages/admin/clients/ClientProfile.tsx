@@ -620,7 +620,7 @@ export default function ClientProfile() {
                                     return;
                                 }
                                 window.open(
-                                    "https://luxkycuploads.lux.finance/index.php/apps/files/?dir=/" +
+                                    "https://luxkycuploads.lux.financial/index.php/apps/files/?dir=/" +
                                         encodeURIComponent(path)
                                 );
                                 // showDocumentModal(false);

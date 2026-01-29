@@ -41,10 +41,10 @@ export const UK_FCA: JurisdictionConfig = {
   },
 
   contact: {
-    email: 'hello@lux.finance',
+    email: 'hello@lux.financial',
     phone: '+44 20 1234 5678',
-    supportEmail: 'support@lux.finance',
-    complianceEmail: 'compliance@lux.finance',
+    supportEmail: 'support@lux.financial',
+    complianceEmail: 'compliance@lux.financial',
   },
 };
 
@@ -96,10 +96,10 @@ export const UK_IOM: JurisdictionConfig = {
   },
 
   contact: {
-    email: 'hello@lux.finance',
+    email: 'hello@lux.financial',
     phone: '+44 1624 682070',
-    supportEmail: 'support@lux.finance',
-    complianceEmail: 'compliance@lux.finance',
+    supportEmail: 'support@lux.financial',
+    complianceEmail: 'compliance@lux.financial',
   },
 };
 
@@ -142,9 +142,9 @@ export const UK_GIB: JurisdictionConfig = {
   },
 
   contact: {
-    email: 'hello@lux.finance',
+    email: 'hello@lux.financial',
     phone: '+350 200 12345',
-    supportEmail: 'support@lux.finance',
-    complianceEmail: 'compliance@lux.finance',
+    supportEmail: 'support@lux.financial',
+    complianceEmail: 'compliance@lux.financial',
   },
 };

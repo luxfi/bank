@@ -39,10 +39,10 @@ export const SG_MAS: JurisdictionConfig = {
   },
 
   contact: {
-    email: 'hello@lux.finance',
+    email: 'hello@lux.financial',
     phone: '+65 6123 4567',
-    supportEmail: 'support@lux.finance',
-    complianceEmail: 'compliance@lux.finance',
+    supportEmail: 'support@lux.financial',
+    complianceEmail: 'compliance@lux.financial',
   },
 };
 
@@ -85,10 +85,10 @@ export const HK_SFC: JurisdictionConfig = {
   },
 
   contact: {
-    email: 'hello@lux.finance',
+    email: 'hello@lux.financial',
     phone: '+852 2123 4567',
-    supportEmail: 'support@lux.finance',
-    complianceEmail: 'compliance@lux.finance',
+    supportEmail: 'support@lux.financial',
+    complianceEmail: 'compliance@lux.financial',
   },
 };
 
@@ -131,10 +131,10 @@ export const HK_HKMA: JurisdictionConfig = {
   },
 
   contact: {
-    email: 'hello@lux.finance',
+    email: 'hello@lux.financial',
     phone: '+852 2123 4567',
-    supportEmail: 'support@lux.finance',
-    complianceEmail: 'compliance@lux.finance',
+    supportEmail: 'support@lux.financial',
+    complianceEmail: 'compliance@lux.financial',
   },
 };
 
@@ -184,10 +184,10 @@ export const AU_ASIC: JurisdictionConfig = {
   },
 
   contact: {
-    email: 'hello@lux.finance',
+    email: 'hello@lux.financial',
     phone: '+61 2 1234 5678',
-    supportEmail: 'support@lux.finance',
-    complianceEmail: 'compliance@lux.finance',
+    supportEmail: 'support@lux.financial',
+    complianceEmail: 'compliance@lux.financial',
   },
 };
 
