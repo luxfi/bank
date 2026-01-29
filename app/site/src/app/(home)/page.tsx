@@ -102,6 +102,22 @@ import {
   PhoneAssetIcon,
   PhoneAssetName,
   PhoneAssetValue,
+  StatsSection,
+  StatsGrid,
+  StatItem,
+  StatValue,
+  StatLabel,
+  IndustriesSection,
+  IndustriesGrid,
+  IndustryCard,
+  IndustryIcon,
+  IndustryName,
+  ViewAllLink,
+  ComplianceSection,
+  ComplianceGrid,
+  ComplianceCard,
+  ComplianceTitle,
+  ComplianceDescription,
 } from "./styles";
 
 // Icons as inline SVGs
@@ -360,6 +376,47 @@ const securityItems = [
   "End-to-end encryption for all data at rest and in transit",
 ];
 
+const industries = [
+  { slug: "financial-institutions", title: "Financial Institutions", icon: "🏦" },
+  { slug: "fintech", title: "FinTech", icon: "💳" },
+  { slug: "insurance", title: "Insurance", icon: "🛡️" },
+  { slug: "insurtech", title: "InsurTech", icon: "⚡" },
+  { slug: "crypto", title: "Crypto & Web3", icon: "🪙" },
+  { slug: "saas", title: "SaaS Platforms", icon: "☁️" },
+  { slug: "retail", title: "Retail & E-commerce", icon: "🛒" },
+  { slug: "manufacturing", title: "Manufacturing", icon: "🏭" },
+  { slug: "gaming", title: "Gaming & Gambling", icon: "🎮" },
+  { slug: "professional-services", title: "Professional Services", icon: "💼" },
+  { slug: "real-estate", title: "Real Estate", icon: "🏢" },
+  { slug: "ngo", title: "NGOs & Non-Profits", icon: "🤝" },
+];
+
+const stats = [
+  { value: "$2B+", label: "Transaction Volume" },
+  { value: "200+", label: "Countries Supported" },
+  { value: "50+", label: "Blockchain Networks" },
+  { value: "180+", label: "Currencies" },
+];
+
+const complianceFeatures = [
+  {
+    title: "KYC/KYB Verification",
+    description: "Integrated identity verification with Jumio, Onfido, Persona, and 10+ providers.",
+  },
+  {
+    title: "Sanctions Screening",
+    description: "Real-time screening against OFAC, UN, EU, UK sanctions lists with daily updates.",
+  },
+  {
+    title: "Transaction Monitoring",
+    description: "AI-powered AML with Chainalysis, Elliptic, and behavioral analytics.",
+  },
+  {
+    title: "AI Compliance",
+    description: "Natural language compliance queries, automated SAR generation, and smart case management.",
+  },
+];
+
 const codeSnippet = `// Create a stablecoin-enabled account
 const account = await lux.accounts.create({
   type: 'business',
@@ -440,6 +497,18 @@ export default function Home() {
           </MockFrame>
         </HeroMock>
       </HeroSection>
+
+      {/* Stats Section */}
+      <StatsSection>
+        <StatsGrid>
+          {stats.map((stat, index) => (
+            <StatItem key={index}>
+              <StatValue>{stat.value}</StatValue>
+              <StatLabel>{stat.label}</StatLabel>
+            </StatItem>
+          ))}
+        </StatsGrid>
+      </StatsSection>
 
       {/* Feature Grid */}
       <FeatureSection>
@@ -641,6 +710,33 @@ export default function Home() {
         </MobileContent>
       </MobileSection>
 
+      {/* Solutions by Industry */}
+      <IndustriesSection>
+        <SectionHeader>
+          <SectionTitle>Solutions for every industry</SectionTitle>
+          <SectionSubtitle>
+            Complete digital asset infrastructure tailored for your sector. From banks to startups, exchanges to NGOs.
+          </SectionSubtitle>
+        </SectionHeader>
+
+        <IndustriesGrid>
+          {industries.map((industry) => (
+            <Link key={industry.slug} href={`/solutions/${industry.slug}`} passHref legacyBehavior>
+              <IndustryCard>
+                <IndustryIcon>{industry.icon}</IndustryIcon>
+                <IndustryName>{industry.title}</IndustryName>
+              </IndustryCard>
+            </Link>
+          ))}
+        </IndustriesGrid>
+
+        <div style={{ textAlign: 'center' }}>
+          <Link href="/solutions" passHref legacyBehavior>
+            <ViewAllLink>View all solutions →</ViewAllLink>
+          </Link>
+        </div>
+      </IndustriesSection>
+
       {/* Infrastructure Section */}
       <InfraSection>
         <SectionHeader>
@@ -662,6 +758,31 @@ export default function Home() {
           ))}
         </InfraGrid>
       </InfraSection>
+
+      {/* Compliance & AI Section */}
+      <ComplianceSection>
+        <SectionHeader>
+          <SectionTitle>Built-in compliance & AI</SectionTitle>
+          <SectionSubtitle>
+            KYC, AML, sanctions screening, and AI-powered operations. Pluggable integrations with Chainalysis, Jumio, Onfido, and more.
+          </SectionSubtitle>
+        </SectionHeader>
+
+        <ComplianceGrid>
+          {complianceFeatures.map((feature, index) => (
+            <ComplianceCard key={index}>
+              <ComplianceTitle>{feature.title}</ComplianceTitle>
+              <ComplianceDescription>{feature.description}</ComplianceDescription>
+            </ComplianceCard>
+          ))}
+        </ComplianceGrid>
+
+        <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+          <Link href="https://docs.lux.financial/guides/compliance" target="_blank">
+            <SecondaryButton>View Compliance Docs</SecondaryButton>
+          </Link>
+        </div>
+      </ComplianceSection>
 
       {/* Demo Showcase - Triangle Bank */}
       <DemoSection>

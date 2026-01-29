@@ -1059,6 +1059,177 @@ export const PhoneAssetValue = styled.span`
   color: rgba(255, 255, 255, 0.9);
 `;
 
+// Stats Section
+export const StatsSection = styled.section`
+  padding: 4rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+`;
+
+export const StatsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+
+  @media ${DeviceSize.md} {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media ${DeviceSize.sm} {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+`;
+
+export const StatItem = styled.div`
+  text-align: center;
+`;
+
+export const StatValue = styled.div`
+  font-size: 3.6rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.92);
+  letter-spacing: -0.02em;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.7) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+
+  @media ${DeviceSize.sm} {
+    font-size: 2.8rem;
+  }
+`;
+
+export const StatLabel = styled.div`
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 0.5rem;
+`;
+
+// Industries Section
+export const IndustriesSection = styled.section`
+  padding: 6rem 0;
+  background: linear-gradient(180deg, rgba(212, 175, 55, 0.02) 0%, transparent 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+
+  @media ${DeviceSize.sm} {
+    padding: 4rem 0;
+  }
+`;
+
+export const IndustriesGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1rem;
+  margin-top: 3rem;
+
+  @media ${DeviceSize.md} {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @media ${DeviceSize.sm} {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+`;
+
+export const IndustryCard = styled.a`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.25rem 0.75rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: rgba(212, 175, 55, 0.3);
+    transform: translateY(-2px);
+    background: rgba(212, 175, 55, 0.03);
+  }
+`;
+
+export const IndustryIcon = styled.span`
+  font-size: 2rem;
+`;
+
+export const IndustryName = styled.span`
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.75);
+  text-align: center;
+  line-height: 1.3;
+
+  @media ${DeviceSize.sm} {
+    font-size: 1rem;
+  }
+`;
+
+export const ViewAllLink = styled.a`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 2rem;
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: #D4AF37;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.8;
+  }
+`;
+
+// Compliance Section
+export const ComplianceSection = styled.section`
+  padding: 6rem 0;
+  background: linear-gradient(180deg, rgba(59, 130, 246, 0.03) 0%, transparent 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+
+  @media ${DeviceSize.sm} {
+    padding: 4rem 0;
+  }
+`;
+
+export const ComplianceGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-top: 3rem;
+
+  @media ${DeviceSize.sm} {
+    grid-template-columns: 1fr;
+  }
+`;
+
+export const ComplianceCard = styled.div`
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: rgba(59, 130, 246, 0.3);
+  }
+`;
+
+export const ComplianceTitle = styled.h4`
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+  margin-bottom: 0.5rem;
+`;
+
+export const ComplianceDescription = styled.p`
+  font-size: 1.3rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.5);
+`;
+
 // Legacy exports for compatibility
 export const Card = styled.div``;
 export const ImgContainer = styled.div``;
