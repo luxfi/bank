@@ -757,6 +757,308 @@ export const CryptoIcon = styled.span<{ $type: 'usdc' | 'usdt' }>`
   color: white;
 `;
 
+// Mobile App Section
+export const MobileSection = styled.section`
+  padding: 6rem 0;
+  background: linear-gradient(180deg, rgba(34, 197, 94, 0.03) 0%, transparent 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+
+  @media ${DeviceSize.sm} {
+    padding: 4rem 0;
+  }
+`;
+
+export const MobileContent = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+
+  @media ${DeviceSize.md} {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+`;
+
+export const MobileText = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+`;
+
+export const MobileBadge = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: fit-content;
+  padding: 0.5rem 1rem;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #22C55E;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  border-radius: 20px;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+`;
+
+export const MobileTitle = styled.h2`
+  font-size: 3.2rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+  letter-spacing: -0.02em;
+
+  @media ${DeviceSize.sm} {
+    font-size: 2.6rem;
+  }
+`;
+
+export const MobileDescription = styled.p`
+  font-size: 1.6rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.65);
+`;
+
+export const MobileFeatures = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.5rem;
+`;
+
+export const MobileFeature = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.65);
+
+  svg {
+    width: 16px;
+    height: 16px;
+    color: #22C55E;
+  }
+`;
+
+export const MobileButtons = styled.div`
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+
+  @media ${DeviceSize.sm} {
+    flex-direction: column;
+  }
+`;
+
+export const AppStoreBadge = styled.a`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.92);
+  text-decoration: none;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+`;
+
+export const AppStoreText = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const AppStoreLabel = styled.span`
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.5);
+`;
+
+export const AppStoreName = styled.span`
+  font-size: 1.4rem;
+  font-weight: 600;
+`;
+
+export const MobilePhones = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 1.5rem;
+  perspective: 1000px;
+
+  @media ${DeviceSize.md} {
+    order: -1;
+  }
+
+  @media ${DeviceSize.sm} {
+    gap: 0.75rem;
+  }
+`;
+
+export const PhoneMockup = styled.div<{ $position?: string }>`
+  width: 180px;
+  background: linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%);
+  border-radius: 28px;
+  padding: 8px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  transform: ${props => {
+    if (props.$position === 'left') return 'perspective(1000px) rotateY(15deg) scale(0.85)';
+    if (props.$position === 'right') return 'perspective(1000px) rotateY(-15deg) scale(0.85)';
+    return 'scale(1)';
+  }};
+  z-index: ${props => props.$position ? 1 : 2};
+  transition: transform 0.3s ease;
+
+  @media ${DeviceSize.sm} {
+    width: 140px;
+    border-radius: 22px;
+    padding: 6px;
+    display: ${props => props.$position ? 'none' : 'block'};
+  }
+`;
+
+export const PhoneScreen = styled.div`
+  background: #000;
+  border-radius: 22px;
+  overflow: hidden;
+  aspect-ratio: 9/19.5;
+
+  @media ${DeviceSize.sm} {
+    border-radius: 18px;
+  }
+`;
+
+export const PhoneHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1rem 0.5rem;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.6);
+`;
+
+export const PhoneNotch = styled.div`
+  width: 80px;
+  height: 24px;
+  background: #1a1a1a;
+  border-radius: 0 0 12px 12px;
+  margin: 0 auto;
+`;
+
+export const PhoneContent = styled.div`
+  padding: 1rem;
+`;
+
+export const PhoneBalance = styled.div`
+  text-align: center;
+  margin-bottom: 1.5rem;
+`;
+
+export const PhoneBalanceLabel = styled.div`
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 0.25rem;
+`;
+
+export const PhoneBalanceValue = styled.div`
+  font-size: 2rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.95);
+`;
+
+export const PhoneActions = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+`;
+
+export const PhoneAction = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+`;
+
+export const PhoneActionIcon = styled.div<{ $color?: string }>`
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: ${props => props.$color || 'rgba(34, 197, 94, 0.15)'};
+  color: ${props => props.$color ? 'white' : '#22C55E'};
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+`;
+
+export const PhoneActionLabel = styled.span`
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.5);
+`;
+
+export const PhoneAssets = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+`;
+
+export const PhoneAsset = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+`;
+
+export const PhoneAssetInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+export const PhoneAssetIcon = styled.div<{ $color: string }>`
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: ${props => props.$color};
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: white;
+`;
+
+export const PhoneAssetName = styled.span`
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+`;
+
+export const PhoneAssetValue = styled.span`
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+`;
+
 // Legacy exports for compatibility
 export const Card = styled.div``;
 export const ImgContainer = styled.div``;

@@ -38,6 +38,13 @@ const WalletIcon = () => (
   </svg>
 );
 
+const SmartphoneIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+    <line x1="12" y1="18" x2="12.01" y2="18" />
+  </svg>
+);
+
 const GlobeIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
     <circle cx="12" cy="12" r="10" />
@@ -95,6 +102,13 @@ const SecuritiesIcon = () => (
 
 const products = [
   {
+    icon: SmartphoneIcon,
+    title: "Mobile Banking App",
+    description: "White-label mobile app for iOS and Android. Fiat, crypto, stablecoins—beautiful UI with bank-grade security.",
+    href: "/products/mobile",
+    color: "#22C55E",
+  },
+  {
     icon: ExchangeIcon,
     title: "CEX & DEX Platform",
     description: "White-label exchange infrastructure. Launch your own CEX with institutional liquidity or integrate DEX aggregation.",
@@ -106,14 +120,14 @@ const products = [
     title: "DeFi & AMM",
     description: "Deploy AMMs, liquidity pools, and yield products. Full DeFi stack with institutional-grade compliance.",
     href: "/products/defi",
-    color: "#22C55E",
+    color: "#3B82F6",
   },
   {
     icon: SecuritiesIcon,
     title: "Digital Securities",
     description: "Issue, trade, and settle tokenized securities. Compliant infrastructure for STOs, bonds, and equity tokens.",
     href: "/products/issuance",
-    color: "#3B82F6",
+    color: "#F59E0B",
   },
   {
     icon: GlobeIcon,
@@ -127,14 +141,14 @@ const products = [
     title: "Multi-Asset Wallets",
     description: "Custodial and MPC wallets for fiat, crypto, stablecoins, and securities. 50+ chains supported.",
     href: "/products/wallets",
-    color: "#F59E0B",
+    color: "#EC4899",
   },
   {
     icon: ServerIcon,
     title: "Infrastructure",
     description: "KMS, MPC, IAM, HSM, and post-quantum security. Enterprise-grade foundation for any financial product.",
     href: "/products/infrastructure",
-    color: "#EC4899",
+    color: "#666666",
   },
 ];
 

@@ -71,9 +71,73 @@ import {
   CTASection,
   CTATitle,
   CTASubtitle,
+  MobileSection,
+  MobileContent,
+  MobileText,
+  MobileBadge,
+  MobileTitle,
+  MobileDescription,
+  MobileFeatures,
+  MobileFeature,
+  MobileButtons,
+  AppStoreBadge,
+  AppStoreText,
+  AppStoreLabel,
+  AppStoreName,
+  MobilePhones,
+  PhoneMockup,
+  PhoneScreen,
+  PhoneNotch,
+  PhoneContent,
+  PhoneBalance,
+  PhoneBalanceLabel,
+  PhoneBalanceValue,
+  PhoneActions,
+  PhoneAction,
+  PhoneActionIcon,
+  PhoneActionLabel,
+  PhoneAssets,
+  PhoneAsset,
+  PhoneAssetInfo,
+  PhoneAssetIcon,
+  PhoneAssetName,
+  PhoneAssetValue,
 } from "./styles";
 
 // Icons as inline SVGs
+const SmartphoneIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+    <line x1="12" y1="18" x2="12.01" y2="18" />
+  </svg>
+);
+
+const SendIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <line x1="12" y1="19" x2="12" y2="5" />
+    <polyline points="5 12 12 5 19 12" />
+  </svg>
+);
+
+const ReceiveIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <line x1="12" y1="5" x2="12" y2="19" />
+    <polyline points="19 12 12 19 5 12" />
+  </svg>
+);
+
+const AppleIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor">
+    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+  </svg>
+);
+
+const PlayStoreIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor">
+    <path d="M3 20.5V3.5C3 2.91 3.34 2.39 3.84 2.15L13.69 12L3.84 21.85C3.34 21.6 3 21.09 3 20.5ZM16.81 15.12L6.05 21.34L14.54 12.85L16.81 15.12ZM20.16 10.81C20.5 11.08 20.75 11.5 20.75 12C20.75 12.5 20.5 12.92 20.16 13.19L17.89 14.5L15.39 12L17.89 9.5L20.16 10.81ZM6.05 2.66L16.81 8.88L14.54 11.15L6.05 2.66Z"/>
+  </svg>
+);
+
 const WalletIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
     <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4" />
@@ -398,6 +462,184 @@ export default function Home() {
           ))}
         </FeatureGrid>
       </FeatureSection>
+
+      {/* Mobile App Section */}
+      <MobileSection>
+        <MobileContent>
+          <MobileText>
+            <MobileBadge>
+              <SmartphoneIcon />
+              Mobile Banking
+            </MobileBadge>
+            <MobileTitle>
+              Your bank in your pocket
+            </MobileTitle>
+            <MobileDescription>
+              White-label mobile app for iOS and Android. Fiat, crypto, stablecoins, and digital securities—all in a beautiful interface with bank-grade security.
+            </MobileDescription>
+            <MobileFeatures>
+              <MobileFeature>
+                <CheckIcon /> Multi-Asset Wallet
+              </MobileFeature>
+              <MobileFeature>
+                <CheckIcon /> Biometric Security
+              </MobileFeature>
+              <MobileFeature>
+                <CheckIcon /> Instant Transfers
+              </MobileFeature>
+              <MobileFeature>
+                <CheckIcon /> 200+ Countries
+              </MobileFeature>
+              <MobileFeature>
+                <CheckIcon /> Real-Time Alerts
+              </MobileFeature>
+              <MobileFeature>
+                <CheckIcon /> QR Payments
+              </MobileFeature>
+            </MobileFeatures>
+            <MobileButtons>
+              <Link href="/products/mobile">
+                <CustomButton>Learn More</CustomButton>
+              </Link>
+              <AppStoreBadge href="#" target="_blank">
+                <AppleIcon />
+                <AppStoreText>
+                  <AppStoreLabel>Download on the</AppStoreLabel>
+                  <AppStoreName>App Store</AppStoreName>
+                </AppStoreText>
+              </AppStoreBadge>
+              <AppStoreBadge href="#" target="_blank">
+                <PlayStoreIcon />
+                <AppStoreText>
+                  <AppStoreLabel>Get it on</AppStoreLabel>
+                  <AppStoreName>Google Play</AppStoreName>
+                </AppStoreText>
+              </AppStoreBadge>
+            </MobileButtons>
+          </MobileText>
+
+          <MobilePhones>
+            {/* Left Phone - Send Money */}
+            <PhoneMockup $position="left">
+              <PhoneScreen>
+                <PhoneNotch />
+                <PhoneContent>
+                  <PhoneBalance>
+                    <PhoneBalanceLabel>Send Money</PhoneBalanceLabel>
+                    <PhoneBalanceValue>$1,250.00</PhoneBalanceValue>
+                  </PhoneBalance>
+                  <PhoneAssets>
+                    <PhoneAsset>
+                      <PhoneAssetInfo>
+                        <PhoneAssetIcon $color="#22C55E">→</PhoneAssetIcon>
+                        <PhoneAssetName>To: John D.</PhoneAssetName>
+                      </PhoneAssetInfo>
+                    </PhoneAsset>
+                    <PhoneAsset>
+                      <PhoneAssetInfo>
+                        <PhoneAssetIcon $color="#2775CA">$</PhoneAssetIcon>
+                        <PhoneAssetName>Via USDC</PhoneAssetName>
+                      </PhoneAssetInfo>
+                    </PhoneAsset>
+                    <PhoneAsset>
+                      <PhoneAssetInfo>
+                        <PhoneAssetIcon $color="#8B5CF6">₦</PhoneAssetIcon>
+                        <PhoneAssetName>Receives NGN</PhoneAssetName>
+                      </PhoneAssetInfo>
+                    </PhoneAsset>
+                  </PhoneAssets>
+                </PhoneContent>
+              </PhoneScreen>
+            </PhoneMockup>
+
+            {/* Center Phone - Main Dashboard */}
+            <PhoneMockup>
+              <PhoneScreen>
+                <PhoneNotch />
+                <PhoneContent>
+                  <PhoneBalance>
+                    <PhoneBalanceLabel>Total Balance</PhoneBalanceLabel>
+                    <PhoneBalanceValue>$24,850.00</PhoneBalanceValue>
+                  </PhoneBalance>
+                  <PhoneActions>
+                    <PhoneAction>
+                      <PhoneActionIcon>
+                        <SendIcon />
+                      </PhoneActionIcon>
+                      <PhoneActionLabel>Send</PhoneActionLabel>
+                    </PhoneAction>
+                    <PhoneAction>
+                      <PhoneActionIcon $color="rgba(59, 130, 246, 0.15)">
+                        <ReceiveIcon />
+                      </PhoneActionIcon>
+                      <PhoneActionLabel>Receive</PhoneActionLabel>
+                    </PhoneAction>
+                  </PhoneActions>
+                  <PhoneAssets>
+                    <PhoneAsset>
+                      <PhoneAssetInfo>
+                        <PhoneAssetIcon $color="#2775CA">$</PhoneAssetIcon>
+                        <PhoneAssetName>USDC</PhoneAssetName>
+                      </PhoneAssetInfo>
+                      <PhoneAssetValue>$15,000</PhoneAssetValue>
+                    </PhoneAsset>
+                    <PhoneAsset>
+                      <PhoneAssetInfo>
+                        <PhoneAssetIcon $color="#26A17B">₮</PhoneAssetIcon>
+                        <PhoneAssetName>USDT</PhoneAssetName>
+                      </PhoneAssetInfo>
+                      <PhoneAssetValue>$8,500</PhoneAssetValue>
+                    </PhoneAsset>
+                    <PhoneAsset>
+                      <PhoneAssetInfo>
+                        <PhoneAssetIcon $color="#F7931A">₿</PhoneAssetIcon>
+                        <PhoneAssetName>BTC</PhoneAssetName>
+                      </PhoneAssetInfo>
+                      <PhoneAssetValue>$1,350</PhoneAssetValue>
+                    </PhoneAsset>
+                  </PhoneAssets>
+                </PhoneContent>
+              </PhoneScreen>
+            </PhoneMockup>
+
+            {/* Right Phone - Activity */}
+            <PhoneMockup $position="right">
+              <PhoneScreen>
+                <PhoneNotch />
+                <PhoneContent>
+                  <PhoneBalance>
+                    <PhoneBalanceLabel>Recent Activity</PhoneBalanceLabel>
+                    <PhoneBalanceValue style={{ fontSize: '1.6rem' }}>Today</PhoneBalanceValue>
+                  </PhoneBalance>
+                  <PhoneAssets>
+                    <PhoneAsset>
+                      <PhoneAssetInfo>
+                        <PhoneAssetIcon $color="#22C55E">↓</PhoneAssetIcon>
+                        <PhoneAssetName>Received</PhoneAssetName>
+                      </PhoneAssetInfo>
+                      <PhoneAssetValue style={{ color: '#22C55E' }}>+$500</PhoneAssetValue>
+                    </PhoneAsset>
+                    <PhoneAsset>
+                      <PhoneAssetInfo>
+                        <PhoneAssetIcon $color="#EF4444">↑</PhoneAssetIcon>
+                        <PhoneAssetName>Sent</PhoneAssetName>
+                      </PhoneAssetInfo>
+                      <PhoneAssetValue>-$1,250</PhoneAssetValue>
+                    </PhoneAsset>
+                    <PhoneAsset>
+                      <PhoneAssetInfo>
+                        <PhoneAssetIcon $color="#8B5CF6">⟳</PhoneAssetIcon>
+                        <PhoneAssetName>Swap</PhoneAssetName>
+                      </PhoneAssetInfo>
+                      <PhoneAssetValue>$2,000</PhoneAssetValue>
+                    </PhoneAsset>
+                  </PhoneAssets>
+                </PhoneContent>
+              </PhoneScreen>
+            </PhoneMockup>
+          </MobilePhones>
+        </MobileContent>
+      </MobileSection>
 
       {/* Infrastructure Section */}
       <InfraSection>
