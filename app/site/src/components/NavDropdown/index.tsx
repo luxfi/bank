@@ -132,32 +132,31 @@ const platformItems = [
   },
 ];
 
-// Solutions dropdown content
+// Solutions dropdown content - Lux as "Galileo of DeFi"
 const solutionItems = {
-  byBusiness: [
-    { title: "Enterprises", description: "Scale global financial operations", href: "/solutions/enterprises" },
-    { title: "Startups", description: "Launch with modern infrastructure", href: "/solutions/startups" },
-    { title: "Platforms", description: "Monetize with embedded finance", href: "/solutions/platforms" },
-    { title: "Marketplaces", description: "Multi-currency payouts & collections", href: "/solutions/marketplaces" },
-    { title: "SaaS", description: "Automate billing & treasury", href: "/solutions/saas" },
-    { title: "Global businesses", description: "Optimize cross-border payments", href: "/solutions/global" },
+  topCustomers: [
+    { title: "DeFi Protocols", description: "Fiat on/off ramps & stablecoin infrastructure", href: "/solutions/defi" },
+    { title: "Crypto Exchanges", description: "Banking rails, custody & compliance", href: "/solutions/exchanges" },
+    { title: "Neobanks & Fintechs", description: "White-label accounts & card issuing", href: "/solutions/neobanks" },
+    { title: "Stablecoin Issuers", description: "Mint, redeem & reserve management", href: "/solutions/stablecoins" },
+    { title: "Web3 Wallets", description: "Fiat integration & payment rails", href: "/solutions/wallets" },
+    { title: "Cross-Border Platforms", description: "Global payments & FX optimization", href: "/solutions/cross-border" },
   ],
-  byUseCase: [
-    { title: "Embedded finance", description: "Financial products for your users", href: "/solutions/embedded-finance" },
-    { title: "Ecommerce", description: "Global payments & FX optimization", href: "/solutions/ecommerce" },
-    { title: "Finance automation", description: "Streamline treasury operations", href: "/solutions/finance-automation" },
-    { title: "In-app payments", description: "Native payment experiences", href: "/solutions/in-app-payments" },
-    { title: "Agentic commerce", description: "AI-powered financial workflows", href: "/solutions/agentic-commerce" },
-    { title: "Crypto", description: "Fiat-to-crypto rails & custody", href: "/solutions/crypto" },
+  infrastructure: [
+    { title: "Orchestration API", description: "Unified API for all payment rails", href: "/products/orchestration" },
+    { title: "Multi-Chain Wallets", description: "MPC custody across 8+ chains", href: "/products/wallets" },
+    { title: "Stablecoin Rails", description: "USDC, USDT, PYUSD, EURC, USDY", href: "/products/stablecoins" },
+    { title: "Banking-as-a-Service", description: "IBANs, accounts & cards", href: "/products/baas" },
+    { title: "Compliance Suite", description: "KYC, AML & sanctions screening", href: "/products/compliance" },
+    { title: "Treasury Management", description: "FX hedging & yield optimization", href: "/products/treasury" },
   ],
-  byIndustry: [
-    { title: "AI companies", description: "Revenue & billing for AI products", href: "/solutions/ai" },
-    { title: "Creator economy", description: "Global payouts for creators", href: "/solutions/creators" },
-    { title: "Hospitality & Travel", description: "Multi-currency & local payments", href: "/solutions/hospitality" },
-    { title: "Insurance", description: "Claims & premium processing", href: "/solutions/insurance" },
-    { title: "Media & Entertainment", description: "Royalties & subscriptions", href: "/solutions/media" },
-    { title: "Nonprofits", description: "Donation processing & compliance", href: "/solutions/nonprofits" },
-    { title: "Retail", description: "Omnichannel payments", href: "/solutions/retail" },
+  emerging: [
+    { title: "AI & Agents", description: "Autonomous payment infrastructure", href: "/solutions/ai-agents" },
+    { title: "RWA Tokenization", description: "Real-world asset settlement", href: "/solutions/rwa" },
+    { title: "PayFi", description: "Payment financing & yield", href: "/solutions/payfi" },
+    { title: "DAO Treasury", description: "On-chain treasury management", href: "/solutions/dao" },
+    { title: "Gaming & Metaverse", description: "In-game economies & payouts", href: "/solutions/gaming" },
+    { title: "Creator Platforms", description: "Global creator payouts", href: "/solutions/creators" },
   ],
 };
 
@@ -244,8 +243,8 @@ export default function NavDropdown({ label, type, active }: NavDropdownProps) {
           {type === "solutions" && (
             <>
               <DropdownSection>
-                <SectionTitle>By Business</SectionTitle>
-                {solutionItems.byBusiness.map((item) => (
+                <SectionTitle>Top Customers</SectionTitle>
+                {solutionItems.topCustomers.map((item) => (
                   <Link key={item.title} href={item.href}>
                     <DropdownItem>
                       <ItemIcon>
@@ -260,8 +259,8 @@ export default function NavDropdown({ label, type, active }: NavDropdownProps) {
                 ))}
               </DropdownSection>
               <DropdownSection>
-                <SectionTitle>By Use Case</SectionTitle>
-                {solutionItems.byUseCase.map((item) => (
+                <SectionTitle>Infrastructure</SectionTitle>
+                {solutionItems.infrastructure.map((item) => (
                   <Link key={item.title} href={item.href}>
                     <DropdownItem>
                       <ItemIcon>
@@ -276,12 +275,12 @@ export default function NavDropdown({ label, type, active }: NavDropdownProps) {
                 ))}
               </DropdownSection>
               <DropdownSection>
-                <SectionTitle>By Industry</SectionTitle>
-                {solutionItems.byIndustry.map((item) => (
+                <SectionTitle>Emerging</SectionTitle>
+                {solutionItems.emerging.map((item) => (
                   <Link key={item.title} href={item.href}>
                     <DropdownItem>
                       <ItemIcon>
-                        <UsersIcon />
+                        <TrendingIcon />
                       </ItemIcon>
                       <ItemContent>
                         <ItemTitle>{item.title}</ItemTitle>
