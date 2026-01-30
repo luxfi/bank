@@ -122,8 +122,8 @@ export default function OnlinePlatform() {
             <Link href="https://app.lux.financial/registration" target="_blank">
               <CustomButton>Get Started</CustomButton>
             </Link>
-            <Link href="/contact">
-              <SecondaryButton>Contact Sales</SecondaryButton>
+            <Link href="https://cal.com/luxfi" target="_blank">
+              <SecondaryButton>Talk to Sales</SecondaryButton>
             </Link>
           </HeroButtons>
         </HeroContent>
@@ -218,8 +218,8 @@ export default function OnlinePlatform() {
         <CTASubtitle>
           Talk to our team about the right solution for your business.
         </CTASubtitle>
-        <Link href="/contact">
-          <CustomButton>Contact Sales</CustomButton>
+        <Link href="https://cal.com/luxfi" target="_blank">
+          <CustomButton>Talk to Sales</CustomButton>
         </Link>
       </CTASection>
     </PageContainer>

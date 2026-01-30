@@ -96,7 +96,7 @@ const walletTypes = [
     icon: KeyIcon,
     title: "HSM-Backed",
     description: "Hardware security modules for key storage. AWS CloudHSM, Azure, and Thales support.",
-    color: "#F59E0B",
+    color: "#FFFFFF",
   },
 ];
 
@@ -336,8 +336,8 @@ console.<span class="property">log</span>(wallet.<span class="property">addresse
         <CTASubtitle>
           Get started with custodial or self-custody wallets.
         </CTASubtitle>
-        <Link href="/contact">
-          <CustomButton>Contact Sales</CustomButton>
+        <Link href="https://cal.com/luxfi" target="_blank">
+          <CustomButton>Talk to Sales</CustomButton>
         </Link>
       </CTASection>
     </PageContainer>

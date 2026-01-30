@@ -84,10 +84,10 @@ const industries = [
   },
   {
     slug: "ngo",
-    title: "NGOs & Non-Profits",
-    description: "Accept donations globally and disburse grants efficiently. Transparent fund tracking and compliance.",
+    title: "NGOs, DAOs & Non-Profits",
+    description: "DAO treasury management with multi-sig, quadratic voting, and on-chain governance. Global donations and transparent fund tracking.",
     icon: "🤝",
-    features: ["Global donations", "Grant disbursement", "Fund transparency"],
+    features: ["DAO treasury", "Governance voting", "Fund transparency"],
   },
 ];
 
@@ -100,14 +100,14 @@ export default function SolutionsPage() {
           <HeroTitle>Built for your business</HeroTitle>
           <HeroSubtitle>
             Complete digital asset and payment infrastructure tailored for every industry.
-            From banks to startups, exchanges to NGOs.
+            Banks, funds, corporates, and regulated institutions.
           </HeroSubtitle>
           <HeroButtons>
             <Link href="https://app.lux.financial/registration" target="_blank">
               <CustomButton>Get Started</CustomButton>
             </Link>
-            <Link href="/contact">
-              <SecondaryButton>Contact Sales</SecondaryButton>
+            <Link href="https://cal.com/luxfi" target="_blank">
+              <SecondaryButton>Talk to Sales</SecondaryButton>
             </Link>
           </HeroButtons>
         </HeroContent>
@@ -139,8 +139,8 @@ export default function SolutionsPage() {
         <CTASubtitle>
           Talk to our team. We&apos;ll help you find the right infrastructure for your use case.
         </CTASubtitle>
-        <Link href="/contact">
-          <CustomButton>Contact Sales</CustomButton>
+        <Link href="https://cal.com/luxfi" target="_blank">
+          <CustomButton>Talk to Sales</CustomButton>
         </Link>
       </CTASection>
     </PageContainer>
@@ -232,7 +232,7 @@ const IndustryCard = styled(Link)`
   display: flex;
   flex-direction: column;
   &:hover {
-    border-color: rgba(212, 175, 55, 0.3);
+    border-color: rgba(255, 255, 255, 0.2);
     transform: translateY(-2px);
   }
 `;
@@ -270,13 +270,13 @@ const FeatureItem = styled.div`
   gap: 0.5rem;
   font-size: 1.3rem;
   color: rgba(255, 255, 255, 0.65);
-  svg { color: #D4AF37; flex-shrink: 0; }
+  svg { color: #FFFFFF; flex-shrink: 0; }
 `;
 
 const LearnMore = styled.span`
   font-size: 1.4rem;
   font-weight: 500;
-  color: #D4AF37;
+  color: #FFFFFF;
 `;
 
 const CTASection = styled.section`

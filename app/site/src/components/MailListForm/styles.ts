@@ -90,7 +90,7 @@ export const InputsContainer = styled.form`
 
     &:focus {
       outline: none;
-      border-color: #D4AF37;
+      border-color: #FFFFFF;
     }
 
     &::placeholder {

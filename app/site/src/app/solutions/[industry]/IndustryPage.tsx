@@ -9,63 +9,63 @@ import { DeviceSize } from "@/styles/theme/default";
 const industryData: Record<string, IndustryContent> = {
   "financial-institutions": {
     title: "Financial Institutions",
-    subtitle: "Digital Asset Infrastructure for Banks & Credit Unions",
-    description: "Modernize your institution with complete digital asset capabilities. Multi-chain custody, stablecoin payments, tokenization, and compliance—all enterprise-grade.",
+    subtitle: "Enterprise Crypto Infrastructure for Banks",
+    description: "Add crypto to your bank with post-quantum security. Teleport assets across chains, MPC custody with HSM integration, staking yields, and full regulatory compliance.",
     icon: "🏦",
     heroImage: "/images/global.jpg",
     stats: [
-      { value: "50+", label: "Chains Supported" },
-      { value: "$10B+", label: "Assets Secured" },
-      { value: "99.99%", label: "Uptime SLA" },
+      { value: "15+", label: "Chains (Teleport)" },
+      { value: "PQ", label: "Post-Quantum" },
+      { value: "20+", label: "Staking Networks" },
       { value: "SOC 2", label: "Certified" },
     ],
     useCases: [
-      { title: "Digital Asset Custody", description: "HSM-backed and MPC custody for institutional digital asset management." },
-      { title: "Stablecoin Payments", description: "Send and receive USDC, USDT, and other stablecoins with instant settlement." },
-      { title: "Tokenization", description: "Issue security tokens, tokenized deposits, and digital securities." },
-      { title: "Cross-Border Payments", description: "Real-time international payments via stablecoin rails." },
+      { title: "MPC + HSM Custody", description: "Multi-party computation with hardware security modules. Your keys, bank-grade security." },
+      { title: "Teleport Cross-Chain", description: "Instant asset movement across 15+ chains. No bridges, no delays, no risk." },
+      { title: "Staking & Yield", description: "Offer customers institutional staking yields across 20+ PoS networks." },
+      { title: "Post-Quantum Security", description: "CRYSTALS-Dilithium, Kyber, SPHINCS+ ready. Future-proof your infrastructure." },
     ],
     features: [
-      "Multi-chain custody (50+ networks)",
-      "HSM & MPC key management",
-      "Post-quantum security ready",
-      "Regulatory reporting & audit trails",
+      "Teleport instant cross-chain",
+      "MPC custody with HSM integration",
+      "Post-quantum cryptography",
+      "Staking across 20+ networks",
+      "Treasury management & rebalancing",
+      "KMS enterprise key management",
       "White-label client portals",
-      "Core banking integrations",
-      "Real-time settlement",
-      "Multi-currency treasury",
+      "Full regulatory compliance",
     ],
     integrations: ["Core banking systems", "SWIFT/SEPA", "Regulatory reporting", "AML/KYC providers"],
   },
   "fintech": {
     title: "FinTech",
-    subtitle: "Launch Banking Products Without Building From Scratch",
-    description: "White-label banking infrastructure for neobanks, payment apps, and embedded finance. Accounts, cards, wallets, and payment rails—all via API.",
+    subtitle: "Full-Stack Crypto & Banking Infrastructure",
+    description: "White-label infrastructure for neobanks and payment apps. Teleport, MPC custody, staking, and global fiat rails—all via API.",
     icon: "💳",
     heroImage: "/images/tablet.jpg",
     stats: [
-      { value: "200+", label: "Countries" },
-      { value: "180+", label: "Currencies" },
-      { value: "<3s", label: "Settlement" },
-      { value: "24/7", label: "Support" },
+      { value: "15+", label: "Chains (Teleport)" },
+      { value: "40+", label: "Fiat Countries" },
+      { value: "<10s", label: "Cross-Chain" },
+      { value: "MPC", label: "Custody" },
     ],
     useCases: [
-      { title: "Neobank Launch", description: "Launch a full-featured banking app with accounts, cards, and payments." },
-      { title: "Mobile Wallets", description: "Multi-currency mobile wallets with crypto and fiat support." },
-      { title: "Embedded Finance", description: "Add financial services to your platform with embedded APIs." },
-      { title: "Payment Apps", description: "Build P2P, B2B, or cross-border payment applications." },
+      { title: "Crypto Neobank", description: "Launch a banking app with crypto, stablecoins, staking, and fiat rails." },
+      { title: "Omni-Chain Wallets", description: "Unified wallets across 15+ chains with teleport and MPC custody." },
+      { title: "Staking Products", description: "Offer customers staking yields with institutional security." },
+      { title: "Global Payments", description: "Cross-border payments via stablecoins with local fiat conversion." },
     ],
     features: [
-      "White-label account provisioning",
-      "Virtual & physical cards",
-      "Multi-currency wallets",
-      "ACH, wire, SEPA payments",
-      "Crypto on/off ramps",
+      "Teleport instant cross-chain",
+      "MPC self-custody",
+      "Staking & yield products",
+      "Global fiat rails (40+ countries)",
+      "White-label mobile apps",
       "KYC/KYB built-in",
-      "Mobile SDK",
+      "Post-quantum ready",
       "Real-time notifications",
     ],
-    integrations: ["Plaid", "Stripe", "Card networks", "Banking partners"],
+    integrations: ["Banking partners", "Staking networks", "Fiat rails", "AML/KYC providers"],
   },
   "insurance": {
     title: "Insurance",
@@ -128,34 +128,34 @@ const industryData: Record<string, IndustryContent> = {
     integrations: ["Chainlink oracles", "Weather APIs", "Flight data", "IoT sensors"],
   },
   "crypto": {
-    title: "Crypto & Web3",
-    subtitle: "Complete Exchange & DeFi Infrastructure",
-    description: "Launch centralized exchanges, DEX aggregators, DeFi protocols, or NFT marketplaces. Full infrastructure from custody to compliance.",
+    title: "Crypto Funds & Corporates",
+    subtitle: "Treasury, Staking & DeFi Infrastructure",
+    description: "Enterprise infrastructure for crypto hedge funds, VCs, and corporates. Omni-chain treasury, validator operations, DeFi access, and institutional custody.",
     icon: "🪙",
     heroImage: "/images/global.jpg",
     stats: [
-      { value: "100+", label: "DEX Venues" },
-      { value: "<10ms", label: "Execution" },
-      { value: "50+", label: "Chains" },
-      { value: "$0", label: "MEV Loss" },
+      { value: "15+", label: "Chains (Teleport)" },
+      { value: "20+", label: "Staking Networks" },
+      { value: "MPC", label: "Self-Custody" },
+      { value: "PQ", label: "Post-Quantum" },
     ],
     useCases: [
-      { title: "Centralized Exchange", description: "White-label CEX with institutional liquidity and matching engine." },
-      { title: "DEX Aggregation", description: "Smart order routing across 100+ DEX venues with MEV protection." },
-      { title: "DeFi Protocols", description: "Build AMMs, lending protocols, and yield vaults." },
-      { title: "NFT Marketplace", description: "Launch NFT trading with multi-chain support and fiat on-ramps." },
+      { title: "Omni-Chain Treasury", description: "Unified wallet across all chains. Real-time aggregation, automated rebalancing, and FX optimization." },
+      { title: "Staking & Validators", description: "Run validators, stake assets, and earn yields across 20+ PoS networks with institutional controls." },
+      { title: "DeFi Access", description: "Deploy capital to lending, liquidity pools, and yield strategies with risk management." },
+      { title: "MPC Self-Custody", description: "Multi-party computation with HSM integration. Your keys, your control, enterprise security." },
     ],
     features: [
-      "CEX matching engine",
-      "DEX aggregation",
-      "AMM infrastructure",
-      "Lending protocols",
-      "Yield optimization",
-      "MPC custody",
-      "Fiat on/off ramps",
-      "Compliance tools",
+      "Teleport instant cross-chain",
+      "Omni-chain treasury management",
+      "Validator infrastructure",
+      "Staking across 20+ networks",
+      "DeFi protocol access",
+      "MPC + HSM custody",
+      "Post-quantum security",
+      "Compliance & reporting",
     ],
-    integrations: ["0x", "1inch", "Uniswap", "Chainlink"],
+    integrations: ["DeFi protocols", "Validator networks", "Chainlink", "Institutional custodians"],
   },
   "saas": {
     title: "SaaS Platforms",
@@ -189,33 +189,33 @@ const industryData: Record<string, IndustryContent> = {
   },
   "retail": {
     title: "Retail & E-commerce",
-    subtitle: "Omnichannel Crypto & Fiat Payments",
-    description: "Accept payments in crypto and fiat, online and in-store. Instant settlement, treasury management, and global supplier payments.",
+    subtitle: "Crypto Treasury & Cross-Chain Payments",
+    description: "Corporate crypto treasury with staking yields, instant cross-chain payments, and global supplier settlements. MPC custody for enterprise security.",
     icon: "🛒",
     heroImage: "/images/tablet.jpg",
     stats: [
-      { value: "50+", label: "Payment Methods" },
-      { value: "T+0", label: "Settlement" },
-      { value: "200+", label: "Countries" },
-      { value: "0%", label: "Chargebacks" },
+      { value: "<10s", label: "Teleport" },
+      { value: "20+", label: "Staking Networks" },
+      { value: "MPC", label: "Custody" },
+      { value: "40+", label: "Fiat Countries" },
     ],
     useCases: [
-      { title: "Crypto Checkout", description: "Accept Bitcoin, USDC, and 50+ cryptocurrencies." },
-      { title: "Global Supplier Payments", description: "Pay international suppliers with optimal FX rates." },
-      { title: "Treasury Management", description: "Multi-currency accounts with yield on stablecoin holdings." },
-      { title: "Loyalty & Rewards", description: "Issue branded tokens and NFTs for customer loyalty." },
+      { title: "Corporate Treasury", description: "Manage crypto treasury across chains with automated rebalancing and staking yields." },
+      { title: "Teleport Payments", description: "Instant cross-chain payments for suppliers and partners worldwide." },
+      { title: "Staking Yields", description: "Earn institutional yields on idle treasury assets across 20+ networks." },
+      { title: "MPC Self-Custody", description: "Enterprise security with multi-party computation and HSM integration." },
     ],
     features: [
-      "Crypto & fiat checkout",
-      "POS integration",
-      "Instant settlement",
-      "No chargebacks on crypto",
-      "Multi-currency treasury",
+      "Teleport cross-chain",
+      "Omni-chain treasury",
+      "Staking yields",
+      "MPC + HSM custody",
+      "Global fiat rails",
       "Supplier payments",
-      "Loyalty token issuance",
+      "Post-quantum security",
       "Real-time reporting",
     ],
-    integrations: ["Shopify", "WooCommerce", "POS systems", "ERP systems"],
+    integrations: ["ERP systems", "Staking networks", "Fiat rails", "Compliance tools"],
   },
   "manufacturing": {
     title: "Manufacturing",
@@ -249,33 +249,33 @@ const industryData: Record<string, IndustryContent> = {
   },
   "gaming": {
     title: "Gaming & Gambling",
-    subtitle: "Fast Deposits, Withdrawals & In-Game Economies",
-    description: "Instant deposits and withdrawals globally. Multi-currency wallets, in-game token economies, and NFT integration.",
+    subtitle: "Crypto Treasury & In-Game Economies",
+    description: "Enterprise crypto infrastructure for gaming companies. Treasury management, instant settlements, token economies, and player wallets with MPC custody.",
     icon: "🎮",
     heroImage: "/images/tablet.jpg",
     stats: [
-      { value: "<30s", label: "Deposits" },
-      { value: "Instant", label: "Withdrawals" },
-      { value: "200+", label: "Countries" },
-      { value: "50+", label: "Cryptos" },
+      { value: "<10s", label: "Teleport" },
+      { value: "MPC", label: "Custody" },
+      { value: "15+", label: "Chains" },
+      { value: "20+", label: "Staking" },
     ],
     useCases: [
-      { title: "Instant Deposits", description: "Crypto and fiat deposits in under 30 seconds." },
-      { title: "Fast Withdrawals", description: "Same-day payouts in player's preferred method." },
-      { title: "In-Game Currencies", description: "Issue and manage game tokens and virtual items." },
-      { title: "NFT Marketplace", description: "Trade in-game items and collectibles as NFTs." },
+      { title: "Corporate Treasury", description: "Manage crypto treasury across chains with automated rebalancing and staking yields." },
+      { title: "Instant Settlements", description: "Teleport assets across chains in seconds for player deposits and withdrawals." },
+      { title: "Token Economies", description: "Launch and manage in-game tokens with MPC custody and compliance." },
+      { title: "Staking Rewards", description: "Offer players staking yields on idle assets with institutional security." },
     ],
     features: [
-      "Instant crypto deposits",
-      "Fast fiat withdrawals",
-      "Multi-currency wallets",
+      "Teleport cross-chain",
+      "MPC player wallets",
+      "Corporate treasury",
+      "Staking integration",
       "Token issuance",
       "NFT minting & trading",
-      "Age verification",
-      "Geo-blocking",
-      "Responsible gaming tools",
+      "Post-quantum security",
+      "Compliance tools",
     ],
-    integrations: ["Game engines", "NFT marketplaces", "Payment gateways", "KYC providers"],
+    integrations: ["Game engines", "NFT marketplaces", "Staking networks", "KYC providers"],
   },
   "professional-services": {
     title: "Professional Services",
@@ -309,63 +309,63 @@ const industryData: Record<string, IndustryContent> = {
   },
   "real-estate": {
     title: "Real Estate",
-    subtitle: "Property Tokenization & Cross-Border Transactions",
-    description: "Tokenize properties for fractional ownership, manage cross-border transactions, and streamline investor communications.",
+    subtitle: "Tokenization, Treasury & Investor Management",
+    description: "Tokenize properties with MPC custody, manage crypto treasury with staking yields, and teleport distributions to global investors instantly.",
     icon: "🏢",
     heroImage: "/images/tower_full.jpg",
     stats: [
-      { value: "$1B+", label: "Tokenized" },
-      { value: "200+", label: "Countries" },
-      { value: "24/7", label: "Trading" },
-      { value: "100%", label: "Compliant" },
+      { value: "15+", label: "Chains (Teleport)" },
+      { value: "MPC", label: "Custody" },
+      { value: "20+", label: "Staking" },
+      { value: "PQ", label: "Post-Quantum" },
     ],
     useCases: [
-      { title: "Property Tokenization", description: "Issue security tokens representing real estate ownership." },
-      { title: "Fractional Ownership", description: "Enable small investors to own property fractions." },
-      { title: "Cross-Border Transactions", description: "Simplify international property purchases." },
-      { title: "Investor Management", description: "Automated distributions and cap table management." },
+      { title: "Property Tokenization", description: "Issue security tokens with MPC custody and post-quantum security." },
+      { title: "Treasury Management", description: "Manage fund treasury across chains with staking yields and automated rebalancing." },
+      { title: "Teleport Distributions", description: "Instant cross-chain distributions to investors worldwide." },
+      { title: "Investor Staking", description: "Offer investors staking yields on idle assets with institutional controls." },
     ],
     features: [
       "Security token issuance",
-      "Fractional ownership",
-      "Investor portals",
-      "Automated distributions",
+      "MPC + HSM custody",
+      "Omni-chain treasury",
+      "Staking yields",
+      "Teleport distributions",
+      "Post-quantum security",
       "Cap table management",
-      "KYC/AML compliance",
-      "Secondary trading",
-      "Multi-currency support",
+      "Full compliance",
     ],
-    integrations: ["Title companies", "Escrow services", "Legal platforms", "Investor CRMs"],
+    integrations: ["Title companies", "Staking networks", "Legal platforms", "Investor CRMs"],
   },
   "ngo": {
-    title: "NGOs & Non-Profits",
-    subtitle: "Global Donations & Transparent Fund Management",
-    description: "Accept donations in crypto and fiat from 200+ countries. Transparent fund tracking, grant disbursement, and compliance reporting.",
+    title: "NGOs, DAOs & Non-Profits",
+    subtitle: "Lux DAO Treasury & Transparent Governance",
+    description: "Native Lux DAO governance at lux.vote. Multi-sig treasury with MPC custody, token voting, role management, payment streams, and transparent fund tracking across 200+ countries.",
     icon: "🤝",
     heroImage: "/images/working_team2.jpg",
     stats: [
       { value: "200+", label: "Countries" },
-      { value: "0%", label: "Crypto Fees" },
-      { value: "100%", label: "Transparent" },
-      { value: "T+0", label: "Grants" },
+      { value: "5+", label: "Voting Types" },
+      { value: "100%", label: "On-Chain" },
+      { value: "T+0", label: "Execution" },
     ],
     useCases: [
-      { title: "Global Donations", description: "Accept donations in any currency, any payment method." },
-      { title: "Crypto Donations", description: "Receive Bitcoin, Ethereum, and stablecoins tax-efficiently." },
-      { title: "Grant Disbursement", description: "Send grants instantly to recipients worldwide." },
-      { title: "Fund Transparency", description: "On-chain tracking for complete donor visibility." },
+      { title: "DAO Treasury", description: "Multi-sig treasury with MPC custody, timelocks, and spending policies via Lux DAO." },
+      { title: "Token Voting", description: "Token-weighted governance with delegation support." },
+      { title: "Role Management", description: "Granular permissions for treasurers, voters, admins, and contributors." },
+      { title: "Payment Streams", description: "Stream management for vesting, payroll, and grants." },
     ],
     features: [
-      "Multi-currency donations",
-      "Crypto acceptance",
-      "Instant grant payouts",
-      "On-chain transparency",
-      "Donor portals",
-      "Tax receipts",
-      "Compliance reporting",
-      "DAF integration",
+      "Lux DAO (lux.vote)",
+      "Multi-sig treasury (2-of-3, 3-of-5)",
+      "Token-weighted voting",
+      "Role-based permissions",
+      "Payment streams & vesting",
+      "On-chain execution",
+      "Global donations (200+ countries)",
+      "Transparent fund tracking",
     ],
-    integrations: ["CRMs", "Donor platforms", "Accounting", "Blockchain explorers"],
+    integrations: ["Lux DAO (lux.vote)", "Snapshot", "Tally", "Safe", "Donor platforms"],
   },
 };
 
@@ -402,8 +402,8 @@ export default function IndustryPage() {
             <Link href="https://app.lux.financial/registration" target="_blank">
               <CustomButton>Get Started</CustomButton>
             </Link>
-            <Link href="/contact">
-              <SecondaryButton>Contact Sales</SecondaryButton>
+            <Link href="https://cal.com/luxfi" target="_blank">
+              <SecondaryButton>Talk to Sales</SecondaryButton>
             </Link>
           </HeroButtons>
         </HeroContent>
@@ -462,8 +462,8 @@ export default function IndustryPage() {
           <Link href="https://app.lux.financial/registration" target="_blank">
             <CustomButton>Start Free</CustomButton>
           </Link>
-          <Link href="/contact">
-            <SecondaryButton>Contact Sales</SecondaryButton>
+          <Link href="https://cal.com/luxfi" target="_blank">
+            <SecondaryButton>Talk to Sales</SecondaryButton>
           </Link>
         </CTAButtons>
       </CTASection>
@@ -472,7 +472,7 @@ export default function IndustryPage() {
 }
 
 const CheckIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" strokeWidth="2">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2">
     <polyline points="20 6 9 17 4 12" />
   </svg>
 );
@@ -513,9 +513,9 @@ const HeroBadge = styled.span`
   padding: 0.4rem 1rem;
   font-size: 1.2rem;
   font-weight: 500;
-  color: #D4AF37;
-  background: rgba(212, 175, 55, 0.1);
-  border: 1px solid rgba(212, 175, 55, 0.2);
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   margin-bottom: 1.5rem;
 `;
@@ -565,7 +565,7 @@ const StatCard = styled.div`
 const StatValue = styled.div`
   font-size: 3rem;
   font-weight: 700;
-  color: #D4AF37;
+  color: #FFFFFF;
   margin-bottom: 0.25rem;
 `;
 

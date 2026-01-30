@@ -200,7 +200,7 @@ export default function NavDropdown({ label, type, active }: NavDropdownProps) {
               <FeaturedCard>
                 <FeaturedTitle>Lux Financial Platform</FeaturedTitle>
                 <FeaturedDescription>
-                  White-label banking infrastructure for fintechs and financial institutions. Your brand, our technology.
+                  Open-source crypto infrastructure for regulated financial institutions. Institutional-grade.
                 </FeaturedDescription>
                 <FeaturedLink href="/account">
                   Explore Platform →

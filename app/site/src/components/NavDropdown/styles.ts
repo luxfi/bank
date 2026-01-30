@@ -58,9 +58,9 @@ export const DropdownMenu = styled.div<{ $type: "platform" | "solutions" }>`
   transform: translateX(-50%);
   min-width: ${(props) => (props.$type === "platform" ? "380px" : "520px")};
   background: ${({ theme }) =>
-    theme.colors.background === "#0B0F14"
-      ? "rgba(15, 22, 32, 0.95)"
-      : "rgba(255, 255, 255, 0.95)"
+    theme.colors.background === "#000000" || theme.colors.background === "#0B0F14"
+      ? "rgba(10, 10, 10, 0.98)"
+      : "rgba(255, 255, 255, 0.98)"
   };
   backdrop-filter: blur(16px);
   border: 1px solid ${({ theme }) => theme.colors.border};
@@ -75,7 +75,7 @@ export const DropdownMenu = styled.div<{ $type: "platform" | "solutions" }>`
 export const FeaturedCard = styled.div`
   padding: 1.25rem;
   background: ${({ theme }) =>
-    theme.colors.background === "#0B0F14"
+    theme.colors.background === "#000000" || theme.colors.background === "#0B0F14"
       ? "linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)"
       : "linear-gradient(180deg, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.01) 100%)"
   };

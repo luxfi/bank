@@ -78,7 +78,7 @@ const issuanceTypes = [
     icon: CoinIcon,
     title: "Stablecoins",
     description: "Launch fiat-backed stablecoins (USD, EUR, GBP+) with audited reserves and multi-chain deployment.",
-    color: "#F59E0B",
+    color: "#FFFFFF",
   },
   {
     icon: ShieldIcon,
@@ -105,7 +105,7 @@ export default function Issuance() {
     <PageContainer>
       <HeroSection>
         <HeroContent>
-          <ProductBadge $color="#F59E0B">Digital Securities</ProductBadge>
+          <ProductBadge $color="#FFFFFF">Digital Securities</ProductBadge>
           <HeroTitle>
             Issue any digital asset
           </HeroTitle>
@@ -182,7 +182,7 @@ export default function Issuance() {
       {/* Reserve Management */}
       <TwoColumnSection>
         <ContentBlock>
-          <ProductBadge $color="#F59E0B">Reserve Management</ProductBadge>
+          <ProductBadge $color="#FFFFFF">Reserve Management</ProductBadge>
           <BlockTitle>Transparent, Auditable Reserves</BlockTitle>
           <BlockText>
             Your stablecoin's reserves are managed with full transparency.
@@ -191,25 +191,25 @@ export default function Issuance() {
           </BlockText>
           <FeatureList>
             <FeatureItem>
-              <FeatureCheck $color="#F59E0B">
+              <FeatureCheck $color="#FFFFFF">
                 <CheckIcon />
               </FeatureCheck>
               <FeatureText>Real-time proof of reserves dashboard</FeatureText>
             </FeatureItem>
             <FeatureItem>
-              <FeatureCheck $color="#F59E0B">
+              <FeatureCheck $color="#FFFFFF">
                 <CheckIcon />
               </FeatureCheck>
               <FeatureText>Monthly third-party attestations</FeatureText>
             </FeatureItem>
             <FeatureItem>
-              <FeatureCheck $color="#F59E0B">
+              <FeatureCheck $color="#FFFFFF">
                 <CheckIcon />
               </FeatureCheck>
               <FeatureText>Automated mint/burn based on deposits</FeatureText>
             </FeatureItem>
             <FeatureItem>
-              <FeatureCheck $color="#F59E0B">
+              <FeatureCheck $color="#FFFFFF">
                 <CheckIcon />
               </FeatureCheck>
               <FeatureText>Multi-signature treasury controls</FeatureText>
@@ -357,8 +357,8 @@ console.<span class="property">log</span>(reserves);
         <CTASubtitle>
           Talk to our team about launching your digital currency.
         </CTASubtitle>
-        <Link href="/contact">
-          <CustomButton>Contact Sales</CustomButton>
+        <Link href="https://cal.com/luxfi" target="_blank">
+          <CustomButton>Talk to Sales</CustomButton>
         </Link>
       </CTASection>
     </PageContainer>

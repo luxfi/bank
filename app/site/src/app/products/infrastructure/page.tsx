@@ -140,7 +140,7 @@ const infrastructure = [
     icon: ServerIcon,
     title: "Node Infrastructure",
     description: "Full blockchain backend with bootnodes, validators, and archive nodes for complete sovereignty.",
-    color: "#F59E0B",
+    color: "#FFFFFF",
   },
   {
     icon: BrainIcon,
@@ -181,7 +181,7 @@ export default function Infrastructure() {
           </HeroSubtitle>
           <HeroButtons>
             <Link href="/contact">
-              <CustomButton>Contact Sales</CustomButton>
+              <CustomButton>Talk to Sales</CustomButton>
             </Link>
             <Link href="https://docs.lux.financial/guides/infrastructure" target="_blank">
               <SecondaryButton>View Documentation</SecondaryButton>
@@ -473,8 +473,8 @@ export default function Infrastructure() {
         <CTASubtitle>
           Contact us to learn how Lux Infrastructure can power your operations.
         </CTASubtitle>
-        <Link href="/contact">
-          <CustomButton>Contact Sales</CustomButton>
+        <Link href="https://cal.com/luxfi" target="_blank">
+          <CustomButton>Talk to Sales</CustomButton>
         </Link>
       </CTASection>
     </PageContainer>

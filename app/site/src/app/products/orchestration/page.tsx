@@ -321,8 +321,8 @@ console.<span class="property">log</span>(intent.<span class="property">route</s
         <CTASubtitle>
           Get API access and start building with Lux Orchestration.
         </CTASubtitle>
-        <Link href="/contact">
-          <CustomButton>Contact Sales</CustomButton>
+        <Link href="https://cal.com/luxfi" target="_blank">
+          <CustomButton>Talk to Sales</CustomButton>
         </Link>
       </CTASection>
     </PageContainer>

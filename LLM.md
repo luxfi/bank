@@ -6,7 +6,19 @@
 
 ## Project Overview
 
-Lux Financial (formerly CDAX) is a complete digital asset infrastructure platform for financial institutions. The platform provides everything needed to launch exchanges, DeFi protocols, stablecoin issuance, global payments, and multi-asset custody.
+Lux Financial is a technology services provider offering open-source enterprise crypto infrastructure for regulated financial institutions—banks, funds, and corporates. Clients hold their own licenses; Lux provides the technology. Core infrastructure is open source at github.com/luxfi. The platform enables instant cross-chain settlement with no bridges required—the "bridge killer" for institutional payments.
+
+### Corporate History
+- **October 2020**: Zach Kelling joins CDAX as CTO to lead technology development
+- **2020-2023**: Lux Financial develops open banking infrastructure in partnership with CDAX for digital asset services in UK and Isle of Man
+- **January 2024**: Lux Partners Limited established in Isle of Man (IOMFSA regulated)
+- **September 2025**: Lux Industries Inc launched to serve USA market
+- **January 2026**: Platform general availability announced
+
+### Corporate Entities
+- **CDAX**: Partner company (digital asset services in UK/IOM) - Lux Financial is NOT CDAX
+- **Lux Partners Limited**: Isle of Man entity (IOMFSA regulated)
+- **Lux Industries Inc**: USA entity (current operating company)
 
 ### Key Domains
 - **lux.financial** - Marketing site (Cloudflare Pages)
@@ -19,17 +31,47 @@ Note: `lux.finance` is the DeFi frontend (Alchemix UI), NOT the bank.
 
 ## Core Platform Features
 
-### Trading & Exchange
-- **CEX Platform**: White-label centralized exchange with institutional liquidity
+### Teleport: Instant Cross-Chain Settlement
+- **No Bridges Required**: Native multi-chain liquidity eliminates bridge exploits and risk
+- **<10s Settlement**: Move assets across chains in seconds, not hours
+- **15+ Blockchains**: Ethereum, Polygon, Arbitrum, Base, Solana, and more
+- **Zero Slippage**: Direct settlement without third-party bridge contracts
+
+### MPC + KMS + HSM Security Stack
+- **MPC Custody**: Multi-party computation with threshold signing (2-of-3, 3-of-5)
+- **KMS**: Enterprise key management with pluggable backends
+- **HSM Integration**: AWS CloudHSM, Azure HSM, Thales hardware modules
+- **Post-Quantum Ready**: CRYSTALS-Dilithium, ML-KEM, SLH-DSA cryptography
+
+### Omni-Chain Treasury Management
+- **Unified Wallet**: Single view across all chains and assets
+- **Automated Rebalancing**: Optimize liquidity across chains
+- **FX Optimization**: Best execution for currency conversions
+- **Real-Time Aggregation**: Consolidated balance and P&L reporting
+
+### Staking & Validators
+- **20+ PoS Networks**: Stake across Ethereum, Solana, Cosmos, and more
+- **Validator Infrastructure**: Run validators with institutional controls
+- **Liquid Staking**: Maintain liquidity while earning yields
+- **Automated Compounding**: Maximize returns with auto-restaking
+
+### DAO Governance (lux.vote)
+- **Lux DAO Stack**: Native governance platform at lux.vote with full on-chain execution
+- **Multi-Sig Treasury**: MPC-secured treasury with 2-of-3, 3-of-5 threshold signing
+- **Voting Mechanisms**: Token-weighted, quadratic, and conviction voting
+- **Proposal Systems**: On-chain proposals with lifecycle management and timelocks
+- **Role Management**: Granular permission control for treasurers, voters, admins
+- **Payment Streams**: Stream management for vesting, payroll, and grants
+- **Integrations**: Snapshot, Tally, Safe compatibility
+
+### Multi-Asset Exchange
+- **Multi-Asset Trading**: Stocks (10,000+ equities), crypto (200+ assets), forex (50+ pairs), commodities, options, futures
+- **White-Label CEX**: Branded centralized exchange with institutional matching engine
 - **DEX Aggregation**: 100+ DEX venues with smart order routing and MEV protection
+- **Real-Time Market Data**: TradingView integration with advanced charting and analytics
+- **Regulatory Compliance**: SEC, FINRA/SIPC regulated infrastructure
 - **Matching Engine**: Sub-10ms execution with deep order books
 - **Trading APIs**: REST, WebSocket, and FIX protocol support
-
-### DeFi Infrastructure
-- **AMM & Liquidity Pools**: Custom bonding curves, concentrated liquidity
-- **Lending Protocols**: Money markets with isolated risk pools
-- **Yield Vaults**: Auto-compounding yield optimization
-- **Staking**: Liquid staking for 20+ PoS networks
 
 ### Digital Securities
 - **Stablecoin Issuance**: Launch fiat-backed stablecoins with audited reserves
@@ -185,8 +227,8 @@ colors = {
   background: "#000000",
   foreground: "#FFFFFF",
   primary: "#FFFFFF",
-  secondary: "#D4AF37", // Gold accent
-  accent: "#D4AF37",
+  secondary: "#FFFFFF", // White accent
+  accent: "#FFFFFF",
   gray: "#111111",
   card: "#0A0A0A",
   border: "#333333",
@@ -206,17 +248,17 @@ US operations use sponsor bank model:
 
 ## News/Blog Content
 
-Static fallback posts in `/app/site/src/api/ghost.ts` covering 2020-2026:
-1. CDAX Founded (COVID PPE procurement) - April 2020
-2. Series A Funding - June 2021
-3. Government Blockchain Selection - March 2022
-4. UK/IOM Launch - September 2023
-5. MPC Custody Launch - June 2024
-6. Native Stablecoin Support - November 2024
-7. IOMFSA License - March 2025
-8. MCP/ZAP Launch - June 2025
-9. US Trust Company Expansion - September 2025
-10. CDAX → Lux Rebrand - January 2026
+Static posts in `/app/site/src/app/news/page.tsx` covering 2020-2026:
+1. Zach Kelling Joins CDAX as CTO - October 2020
+2. Lux Financial and CDAX Launch Open Banking Infrastructure - March 2021
+3. Lux KMS: Enterprise Secret Management Goes Open Source - November 2022
+4. Lux Partners Limited Established in Isle of Man - January 2024
+5. Native USDC and USDT Support Across 15 Chains - September 2024
+6. Lux MPC: Self-Custody Infrastructure for Institutions - March 2025
+7. Global Fiat Rails: PIX, SPEI, and UPI Now Live - August 2025
+8. Lux Industries Inc Launches to Serve US Market - September 2025
+9. Lux KMS: HSM Provider Support Now Available - December 2025
+10. Platform Launch: Instant Cross-Chain Settlement (Featured) - January 2026
 
 ## Development Workflow
 
@@ -263,9 +305,11 @@ All files reference the same knowledge base. Updates here propagate to all AI sy
 2. **NEVER** commit symlinked files (.AGENTS.md, CLAUDE.md, etc.) - they're in .gitignore
 3. **NEVER** create random summary files - update THIS file
 4. **NEVER** confuse lux.finance (DeFi) with lux.financial (bank)
-5. **ALWAYS** use @luxfi/logo from npm, not workspace package
-6. **ALWAYS** use dark theme (black background, gold accents)
-7. **Triangle Bank** uses △ Unicode symbol (not SVG/custom font)
+5. **NEVER** say Lux Financial is "formerly CDAX" - Lux Financial PARTNERS with CDAX
+6. **ALWAYS** use @luxfi/logo from npm, not workspace package
+7. **ALWAYS** use dark theme (black background, gold accents)
+8. **ALWAYS** position platform as "bridge killer" - instant cross-chain, no bridges
+9. **Triangle Bank** uses △ Unicode symbol (not SVG/custom font)
 
 ---
 

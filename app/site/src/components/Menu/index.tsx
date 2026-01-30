@@ -230,12 +230,12 @@ export default function Menu() {
             </Link>
             <Link
               target="_blank"
-              href={"https://cal.com/luxfi/15min"}
+              href={"https://cal.com/luxfi"}
               onClick={() => {
                 setOpenMenu(false);
               }}
             >
-              <CustomButton>Contact Sales</CustomButton>
+              <CustomButton>Talk to Sales</CustomButton>
             </Link>
           </RightSection>
         </MenuContainer>

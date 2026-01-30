@@ -313,6 +313,13 @@ const UsersIcon = () => (
   </svg>
 );
 
+const VoteIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+    <path d="M6 12v5c3 3 9 3 12 0v-5" />
+  </svg>
+);
+
 const DashboardIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
     <rect x="3" y="3" width="7" height="7" />
@@ -339,34 +346,39 @@ const TriangleSymbol = () => (
 
 const features = [
   {
-    icon: WalletIcon,
-    title: "All Assets, All Chains",
-    description: "Stablecoins, crypto, digital securities, and tokenized assets. Multi-chain support across Ethereum, Polygon, Arbitrum, and 50+ networks.",
-  },
-  {
-    icon: GlobeIcon,
-    title: "200+ Countries & Currencies",
-    description: "Fiat and crypto payments worldwide. Real-time settlement via blockchain rails with local currency conversion.",
-  },
-  {
-    icon: CurrencyIcon,
-    title: "Integrated CEX & DEX",
-    description: "White-label exchange platform with CEX liquidity and DEX access. Launch your own trading venue in weeks.",
+    icon: ZapIcon,
+    title: "Teleport: Instant Cross-Chain",
+    description: "Move assets between Ethereum, Polygon, Arbitrum, Base, Solana, and 15+ chains in seconds. No bridges, no delays, no risk.",
   },
   {
     icon: ShieldIcon,
-    title: "DeFi Infrastructure",
-    description: "Deploy AMMs, liquidity pools, and yield products. Full DeFi stack with institutional-grade security and compliance.",
+    title: "MPC + KMS + HSM Security",
+    description: "Multi-party computation custody with enterprise key management. HSM integration for AWS CloudHSM, Azure, and Thales.",
   },
   {
-    icon: CodeIcon,
-    title: "Developer-first APIs",
-    description: "RESTful APIs with webhooks, SDKs, and comprehensive docs. MCP server for AI-powered bank operations.",
+    icon: WalletIcon,
+    title: "Omni-Chain Treasury",
+    description: "Unified wallet and treasury management across all chains. Real-time balance aggregation, automated rebalancing, and FX optimization.",
   },
   {
-    icon: ZapIcon,
-    title: "Digital Securities",
-    description: "Issue, trade, and settle tokenized securities. Compliant infrastructure for STOs and regulated digital assets.",
+    icon: AtomIcon,
+    title: "Post-Quantum Ready",
+    description: "Future-proof cryptography with CRYSTALS-Dilithium, Kyber, and SPHINCS+. Enterprise banking security for the quantum era.",
+  },
+  {
+    icon: CurrencyIcon,
+    title: "Staking & Validators",
+    description: "Run validators and stake across 20+ PoS networks. Liquid staking, automated compounding, and institutional-grade yields.",
+  },
+  {
+    icon: GlobeIcon,
+    title: "Global Fiat Rails",
+    description: "Convert crypto to local currency in 40+ countries. Real-time settlement via ACH, SEPA, SWIFT, PIX, SPEI, and UPI.",
+  },
+  {
+    icon: VoteIcon,
+    title: "DAO Governance (lux.vote)",
+    description: "Native Lux DAO stack with multi-sig treasury, token voting, role management, and payment streams. Full on-chain proposal execution.",
   },
 ];
 
@@ -424,6 +436,17 @@ const securityItems = [
   "End-to-end encryption for all data at rest and in transit",
 ];
 
+const researchPapers = [
+  { title: "Key Management System (KMS)", lp: "0070", description: "Pluggable key storage with HSM integration" },
+  { title: "Teleport Protocol", lp: "3004", description: "Cross-chain bridge architecture" },
+  { title: "MPC Bridge Security", lp: "3001", description: "Multi-party computation for bridges" },
+  { title: "Threshold Signatures", lp: "5014", description: "CGG+21 UC Non-Interactive ECDSA" },
+  { title: "FROST Signatures", lp: "5104", description: "Flexible Round-Optimized Schnorr Threshold" },
+  { title: "HSM Integration", lp: "5325", description: "Hardware Security Module support" },
+  { title: "Post-Quantum Suite", lp: "2200", description: "ML-DSA, ML-KEM, SLH-DSA cryptography" },
+  { title: "Threshold Crypto Library", lp: "5340", description: "Core threshold cryptography primitives" },
+];
+
 const industries = [
   { slug: "financial-institutions", title: "Financial Institutions", icon: "🏦" },
   { slug: "fintech", title: "FinTech", icon: "💳" },
@@ -436,14 +459,14 @@ const industries = [
   { slug: "gaming", title: "Gaming & Gambling", icon: "🎮" },
   { slug: "professional-services", title: "Professional Services", icon: "💼" },
   { slug: "real-estate", title: "Real Estate", icon: "🏢" },
-  { slug: "ngo", title: "NGOs & Non-Profits", icon: "🤝" },
+  { slug: "ngo", title: "NGOs, DAOs & Non-Profits", icon: "🤝" },
 ];
 
 const stats = [
-  { value: "200+", label: "Countries Supported" },
-  { value: "50+", label: "Blockchain Networks" },
-  { value: "180+", label: "Currencies" },
-  { value: "25+", label: "Payment Rails" },
+  { value: "<10s", label: "Cross-Chain Teleport" },
+  { value: "15+", label: "Blockchain Networks" },
+  { value: "20+", label: "Staking Networks" },
+  { value: "PQ", label: "Post-Quantum Ready" },
 ];
 
 const complianceFeatures = [
@@ -485,11 +508,11 @@ const payment = await lux.payments.create({
 });`;
 
 const demoPayments = [
-  { id: '1234455', date: 'Sep 20, 2025', originator: 'Zoogle', country: 'Nigeria', currency: 'USDC', sent: '3,000.00', received: '₦4,380,000.00', status: 'completed' as const },
-  { id: '6535518', date: 'Sep 20, 2025', originator: 'Lunexa', country: 'Mexico', currency: 'USDC', sent: '45,000.00', received: 'MX$11,54,000.00', status: 'completed' as const },
-  { id: '6515366', date: 'Sep 20, 2025', originator: 'Veridra', country: 'Mexico', currency: 'USDT', sent: '100,000.00', received: 'MX$1,846,000.00', status: 'completed' as const },
-  { id: '5586812', date: 'Sep 20, 2025', originator: 'Nuvanti', country: 'India', currency: 'USDT', sent: '5,124.00', received: '₹889,118.92', status: 'completed' as const },
-  { id: '6535318', date: 'Sep 20, 2025', originator: 'Klyra', country: 'Nigeria', currency: 'USDT', sent: '5,100.00', received: '₦7,461,369.00', status: 'completed' as const },
+  { id: '1234455', date: 'Jan 29, 2026', originator: 'Zoogle', country: 'Nigeria', currency: 'USDC', sent: '3,000.00', received: '₦4,380,000.00', status: 'completed' as const },
+  { id: '6535518', date: 'Jan 29, 2026', originator: 'Lunexa', country: 'Mexico', currency: 'USDC', sent: '45,000.00', received: 'MX$854,000.00', status: 'completed' as const },
+  { id: '6515366', date: 'Jan 28, 2026', originator: 'Veridra', country: 'Brazil', currency: 'USDT', sent: '100,000.00', received: 'R$580,000.00', status: 'completed' as const },
+  { id: '5586812', date: 'Jan 28, 2026', originator: 'Nuvanti', country: 'India', currency: 'USDT', sent: '5,124.00', received: '₹427,118.92', status: 'completed' as const },
+  { id: '6535318', date: 'Jan 27, 2026', originator: 'Klyra', country: 'Philippines', currency: 'USDC', sent: '5,100.00', received: '₱285,600.00', status: 'completed' as const },
 ];
 
 export default function Home() {
@@ -499,25 +522,25 @@ export default function Home() {
       <HeroSection>
         <HeroContent>
           <HeroTitle>
-            The complete financial infrastructure for the digital economy
+            Enterprise crypto infrastructure. Post-quantum secure.
           </HeroTitle>
           <HeroSubtitle>
-            Fiat, crypto, stablecoins, digital securities. CEX, DEX, AMM.
-            200+ countries. All in one platform with post-quantum security.
+            Teleport assets across 15+ chains instantly. MPC custody with HSM integration.
+            Treasury management, staking, and validators. Everything banks, funds, and crypto corporates need.
           </HeroSubtitle>
           <HeroButtons>
             <Link href="https://app.lux.financial/registration" target="_blank">
               <CustomButton>Get Started</CustomButton>
             </Link>
-            <Link href="/contact">
-              <SecondaryButton>Contact Sales</SecondaryButton>
+            <Link href="https://cal.com/luxfi" target="_blank">
+              <SecondaryButton>Talk to Sales</SecondaryButton>
             </Link>
           </HeroButtons>
           <BadgeRow>
-            <Badge>CEX + DEX</Badge>
-            <Badge>AMM + DeFi</Badge>
-            <Badge>Digital Securities</Badge>
-            <Badge>200+ Countries</Badge>
+            <Badge>Teleport</Badge>
+            <Badge>MPC + HSM</Badge>
+            <Badge>Post-Quantum</Badge>
+            <Badge>Staking</Badge>
           </BadgeRow>
         </HeroContent>
 
@@ -528,9 +551,9 @@ export default function Home() {
             <DashboardMock>
               <DashboardBrowser>
                 <BrowserDots>
-                  <BrowserDot $color="#FF5F56" />
-                  <BrowserDot $color="#FFBD2E" />
-                  <BrowserDot $color="#27CA40" />
+                  <BrowserDot $color="rgba(255, 255, 255, 0.4)" />
+                  <BrowserDot $color="rgba(255, 255, 255, 0.25)" />
+                  <BrowserDot $color="rgba(255, 255, 255, 0.15)" />
                 </BrowserDots>
                 <BrowserUrl>
                   <BrowserUrlBox>app.lux.financial</BrowserUrlBox>
@@ -612,19 +635,19 @@ export default function Home() {
                       <span>USDC</span>
                       <span>$1,428,500</span>
                       <span>Polygon</span>
-                      <span style={{ color: '#22C55E' }}>Active</span>
+                      <span style={{ color: 'rgba(255, 255, 255, 0.7)' }}>Active</span>
                     </DashboardTableRow>
                     <DashboardTableRow>
                       <span>USDT</span>
                       <span>$876,293</span>
                       <span>Ethereum</span>
-                      <span style={{ color: '#22C55E' }}>Active</span>
+                      <span style={{ color: 'rgba(255, 255, 255, 0.7)' }}>Active</span>
                     </DashboardTableRow>
                     <DashboardTableRow>
                       <span>BTC</span>
                       <span>$542,500</span>
                       <span>Bitcoin</span>
-                      <span style={{ color: '#22C55E' }}>Active</span>
+                      <span style={{ color: 'rgba(255, 255, 255, 0.7)' }}>Active</span>
                     </DashboardTableRow>
                   </DashboardTable>
                 </DashboardMain>
@@ -635,9 +658,9 @@ export default function Home() {
             <TerminalMock>
               <TerminalHeader>
                 <BrowserDots>
-                  <BrowserDot $color="#FF5F56" />
-                  <BrowserDot $color="#FFBD2E" />
-                  <BrowserDot $color="#27CA40" />
+                  <BrowserDot $color="rgba(255, 255, 255, 0.4)" />
+                  <BrowserDot $color="rgba(255, 255, 255, 0.25)" />
+                  <BrowserDot $color="rgba(255, 255, 255, 0.15)" />
                 </BrowserDots>
                 <TerminalTitle>lux-cli — zsh</TerminalTitle>
               </TerminalHeader>
@@ -733,9 +756,9 @@ export default function Home() {
       {/* Feature Grid */}
       <FeatureSection>
         <SectionHeader>
-          <SectionTitle>Everything you need to build</SectionTitle>
+          <SectionTitle>Full-stack crypto infrastructure</SectionTitle>
           <SectionSubtitle>
-            Banking, trading, DeFi, and digital assets—unified infrastructure for fintechs, neobanks, and financial institutions worldwide.
+            Everything you need to operate in crypto: teleport, custody, treasury, staking, validators, and global fiat rails. Post-quantum secure.
           </SectionSubtitle>
         </SectionHeader>
 
@@ -820,7 +843,7 @@ export default function Home() {
                   <PhoneAssets>
                     <PhoneAsset>
                       <PhoneAssetInfo>
-                        <PhoneAssetIcon $color="#22C55E">→</PhoneAssetIcon>
+                        <PhoneAssetIcon $color="rgba(255, 255, 255, 0.7)">→</PhoneAssetIcon>
                         <PhoneAssetName>To: John D.</PhoneAssetName>
                       </PhoneAssetInfo>
                     </PhoneAsset>
@@ -903,10 +926,10 @@ export default function Home() {
                   <PhoneAssets>
                     <PhoneAsset>
                       <PhoneAssetInfo>
-                        <PhoneAssetIcon $color="#22C55E">↓</PhoneAssetIcon>
+                        <PhoneAssetIcon $color="rgba(255, 255, 255, 0.7)">↓</PhoneAssetIcon>
                         <PhoneAssetName>Received</PhoneAssetName>
                       </PhoneAssetInfo>
-                      <PhoneAssetValue style={{ color: '#22C55E' }}>+$500</PhoneAssetValue>
+                      <PhoneAssetValue style={{ color: 'rgba(255, 255, 255, 0.7)' }}>+$500</PhoneAssetValue>
                     </PhoneAsset>
                     <PhoneAsset>
                       <PhoneAssetInfo>
@@ -935,7 +958,7 @@ export default function Home() {
         <SectionHeader>
           <SectionTitle>Solutions for every industry</SectionTitle>
           <SectionSubtitle>
-            Complete digital asset infrastructure tailored for your sector. From banks to startups, exchanges to NGOs.
+            Institutional-grade digital asset infrastructure. Banks, funds, corporates, and regulated entities.
           </SectionSubtitle>
         </SectionHeader>
 
@@ -1007,9 +1030,9 @@ export default function Home() {
       {/* Demo Showcase - Triangle Bank */}
       <DemoSection>
         <SectionHeader>
-          <SectionTitle>See it in action</SectionTitle>
+          <SectionTitle>Real-time cross-border payments</SectionTitle>
           <SectionSubtitle>
-            Triangle Bank—a demo neobank built on Lux Financial showing real-time stablecoin payments.
+            Watch stablecoins settle in seconds. USDC on Polygon to Naira in Nigeria. No bridges, no delays.
           </SectionSubtitle>
         </SectionHeader>
 
@@ -1146,11 +1169,41 @@ export default function Home() {
         </SecurityGrid>
       </SecuritySection>
 
+      {/* Research Section */}
+      <InfraSection>
+        <SectionHeader>
+          <SectionTitle>Open research & specifications</SectionTitle>
+          <SectionSubtitle>
+            Our infrastructure is built on peer-reviewed cryptographic research. Explore the Lux Protocol Specifications (LPs).
+          </SectionSubtitle>
+        </SectionHeader>
+
+        <InfraGrid>
+          {researchPapers.map((paper, index) => (
+            <Link key={index} href={`https://lps.lux.network/docs/lp-${paper.lp}`} target="_blank" style={{ textDecoration: 'none' }}>
+              <InfraCard style={{ cursor: 'pointer' }}>
+                <InfraIcon>
+                  <CodeIcon />
+                </InfraIcon>
+                <InfraTitle>LP-{paper.lp}</InfraTitle>
+                <InfraDescription>{paper.title}</InfraDescription>
+              </InfraCard>
+            </Link>
+          ))}
+        </InfraGrid>
+
+        <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+          <Link href="https://lps.lux.network" target="_blank">
+            <SecondaryButton>View All Specifications →</SecondaryButton>
+          </Link>
+        </div>
+      </InfraSection>
+
       {/* Final CTA */}
       <CTASection>
-        <CTATitle>Ready to build the future of finance?</CTATitle>
+        <CTATitle>Ready to operate in crypto?</CTATitle>
         <CTASubtitle>
-          Join companies building banks, exchanges, and DeFi products on Lux Financial&apos;s unified infrastructure.
+          Banks adding crypto. Funds deploying to DeFi. Corporates managing treasury. All on post-quantum secure infrastructure.
         </CTASubtitle>
         <Link href="https://app.lux.financial/registration" target="_blank">
           <CustomButton>Start Building</CustomButton>

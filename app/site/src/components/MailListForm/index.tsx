@@ -116,7 +116,7 @@ export default function MailListForm() {
             {feedbackMessage && (
               <Text
                 variant="body"
-                color={feedbackMessage.includes("Thank you") ? "#22C55E" : "#D4AF37"}
+                color={feedbackMessage.includes("Thank you") ? "#22C55E" : "#FFFFFF"}
                 style={{ fontWeight: "500", textAlign: "center" }}
               >
                 {feedbackMessage}

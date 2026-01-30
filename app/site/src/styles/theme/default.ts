@@ -14,7 +14,7 @@ export const DeviceSize = {
   lg: `(max-width: ${screens.lg})`,
 };
 
-// Dark theme colors - Pure black with gold accents
+// Dark theme colors - Pure black with white accents
 export const darkColors = {
   // Base backgrounds - Pure black
   background: "#000000",
@@ -31,8 +31,8 @@ export const darkColors = {
   border: "rgba(255,255,255,0.08)",
   borderHover: "rgba(255,255,255,0.15)",
 
-  // Accent - Gold
-  accent: "#D4AF37",
+  // Accent - White
+  accent: "#FFFFFF",
   accentForeground: "#000000",
 
   // States
@@ -47,7 +47,7 @@ export const darkColors = {
   gray: "#0A0A0A",
   black: "#000000",
   detail: "rgba(255,255,255,0.45)",
-  sky: "#D4AF37",
+  sky: "#FFFFFF",
   card: "#0A0A0A",
 };
 

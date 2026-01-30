@@ -130,7 +130,7 @@ const features = [
     icon: QrCodeIcon,
     title: "QR Payments",
     description: "Scan to pay or receive. Generate payment codes for merchants and P2P transactions.",
-    color: "#F59E0B",
+    color: "#FFFFFF",
   },
   {
     icon: BellIcon,
@@ -452,8 +452,8 @@ export default function Mobile() {
         <CTASubtitle>
           Contact us to launch your own branded mobile banking app.
         </CTASubtitle>
-        <Link href="/contact">
-          <CustomButton>Contact Sales</CustomButton>
+        <Link href="https://cal.com/luxfi" target="_blank">
+          <CustomButton>Talk to Sales</CustomButton>
         </Link>
       </CTASection>
     </PageContainer>

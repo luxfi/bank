@@ -67,15 +67,57 @@ const values = [
   },
 ];
 
+const timeline = [
+  {
+    year: "2020",
+    title: "Technology Partnership Begins",
+    description: "Zach Kelling joins CDAX as CTO. Lux Financial begins developing open banking infrastructure in partnership with CDAX for digital asset services.",
+  },
+  {
+    year: "2022",
+    title: "Lux KMS Open Source",
+    description: "Enterprise key management system released as open source, enabling HSM-backed security for institutions.",
+  },
+  {
+    year: "2024",
+    title: "Isle of Man Establishment",
+    description: "Lux Partners Limited established as IOMFSA-regulated entity, providing compliant digital asset services for UK and Europe.",
+  },
+  {
+    year: "2025",
+    title: "US Market Launch",
+    description: "Lux Industries Inc launched to serve the US market, bringing institutional crypto infrastructure to American banks and funds.",
+  },
+  {
+    year: "2026",
+    title: "Platform General Availability",
+    description: "Full platform launch with instant cross-chain settlement, MPC custody, and post-quantum security.",
+  },
+];
+
+const entities = [
+  {
+    name: "Lux Industries Inc",
+    location: "United States",
+    description: "US parent company serving banks, funds, and corporates in North America.",
+    link: "https://luxindustries.xyz",
+  },
+  {
+    name: "Lux Partners Limited",
+    location: "Isle of Man",
+    description: "IOMFSA-regulated entity for UK and European digital asset services.",
+  },
+];
+
 const capabilities = [
-  "White-label account provisioning",
-  "Multi-currency support (30+ currencies)",
-  "Real-time FX rates API",
-  "Global payment rails (SWIFT, SEPA, ACH)",
-  "Stablecoin integration (USDC, USDT, EURC)",
-  "Compliance tools and workflows",
-  "Webhook-level observability",
-  "Enterprise-grade security",
+  "Instant cross-chain settlement (no bridges)",
+  "Native multi-chain liquidity (15+ networks)",
+  "Global fiat rails (ACH, SEPA, SWIFT, PIX, SPEI)",
+  "Multi-stablecoin support (USDC, USDT, EURC)",
+  "MPC self-custody with HSM integration",
+  "Built-in KYC/AML and sanctions screening",
+  "Full REST/GraphQL APIs with webhooks",
+  "Open-source infrastructure (github.com/luxfi)",
 ];
 
 export default function About() {
@@ -92,12 +134,12 @@ export default function About() {
             We build the infrastructure that powers modern finance
           </HeroTitle>
           <HeroSubtitle>
-            {legalEntity.name} provides white-label banking technology for fintechs,
-            neobanks, and financial institutions. You bring the customers—we provide the platform.
+            Open-source enterprise crypto infrastructure for regulated financial institutions.
+            Banks, funds, and corporates worldwide trust our technology.
           </HeroSubtitle>
           <HeroButtons>
-            <Link href="/contact">
-              <CustomButton>Contact Sales</CustomButton>
+            <Link href="https://cal.com/luxfi" target="_blank">
+              <CustomButton>Talk to Sales</CustomButton>
             </Link>
             <Link href="https://docs.lux.financial" target="_blank">
               <SecondaryButton>Read Documentation</SecondaryButton>
@@ -155,22 +197,72 @@ export default function About() {
       {/* Stats */}
       <StatsSection>
         <StatCard>
-          <StatValue>30+</StatValue>
-          <StatLabel>Currencies Supported</StatLabel>
+          <StatValue>&lt;10s</StatValue>
+          <StatLabel>Cross-Chain Settlement</StatLabel>
         </StatCard>
         <StatCard>
-          <StatValue>99.99%</StatValue>
-          <StatLabel>Platform Uptime</StatLabel>
+          <StatValue>15+</StatValue>
+          <StatLabel>Blockchain Networks</StatLabel>
         </StatCard>
         <StatCard>
-          <StatValue>&lt;2 weeks</StatValue>
-          <StatLabel>Typical Integration Time</StatLabel>
+          <StatValue>200+</StatValue>
+          <StatLabel>Countries Supported</StatLabel>
         </StatCard>
         <StatCard>
-          <StatValue>24/7</StatValue>
-          <StatLabel>Monitoring & Support</StatLabel>
+          <StatValue>6 years</StatValue>
+          <StatLabel>Building Infrastructure</StatLabel>
         </StatCard>
       </StatsSection>
+
+      {/* Corporate Structure */}
+      <Section>
+        <SectionHeader>
+          <SectionTitle>Corporate Structure</SectionTitle>
+          <SectionSubtitle>
+            A global organization built for institutional crypto infrastructure
+          </SectionSubtitle>
+        </SectionHeader>
+
+        <EntitiesGrid>
+          {entities.map((entity, index) => (
+            <EntityCard key={index}>
+              <EntityName>
+                {entity.link ? (
+                  <a href={entity.link} target="_blank" rel="noopener noreferrer">
+                    {entity.name} →
+                  </a>
+                ) : (
+                  entity.name
+                )}
+              </EntityName>
+              <EntityLocation>{entity.location}</EntityLocation>
+              <EntityDescription>{entity.description}</EntityDescription>
+            </EntityCard>
+          ))}
+        </EntitiesGrid>
+      </Section>
+
+      {/* Timeline */}
+      <Section>
+        <SectionHeader>
+          <SectionTitle>Our Journey</SectionTitle>
+          <SectionSubtitle>
+            Building enterprise crypto infrastructure since 2020
+          </SectionSubtitle>
+        </SectionHeader>
+
+        <Timeline>
+          {timeline.map((item, index) => (
+            <TimelineItem key={index}>
+              <TimelineYear>{item.year}</TimelineYear>
+              <TimelineContent>
+                <TimelineTitle>{item.title}</TimelineTitle>
+                <TimelineDescription>{item.description}</TimelineDescription>
+              </TimelineContent>
+            </TimelineItem>
+          ))}
+        </Timeline>
+      </Section>
 
       {/* CTA */}
       <CTASection>
@@ -178,7 +270,7 @@ export default function About() {
         <CTASubtitle>
           Talk to our team about how Lux Financial can power your financial product.
         </CTASubtitle>
-        <Link href="/contact">
+        <Link href="https://cal.com/luxfi" target="_blank">
           <CustomButton>Get in Touch</CustomButton>
         </Link>
       </CTASection>
@@ -435,4 +527,93 @@ const CTASubtitle = styled.p`
   max-width: 500px;
   margin-left: auto;
   margin-right: auto;
+`;
+
+const EntitiesGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+
+  @media ${DeviceSize.sm} {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const EntityCard = styled.div`
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 2rem;
+`;
+
+const EntityName = styled.h3`
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+  margin-bottom: 0.5rem;
+
+  a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #FFFFFF;
+    }
+  }
+`;
+
+const EntityLocation = styled.div`
+  font-size: 1.3rem;
+  color: #FFFFFF;
+  margin-bottom: 1rem;
+`;
+
+const EntityDescription = styled.p`
+  font-size: 1.4rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.45);
+`;
+
+const Timeline = styled.div`
+  max-width: 700px;
+  margin: 0 auto;
+`;
+
+const TimelineItem = styled.div`
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 2rem;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  @media ${DeviceSize.sm} {
+    grid-template-columns: 60px 1fr;
+    gap: 1rem;
+  }
+`;
+
+const TimelineYear = styled.div`
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #FFFFFF;
+`;
+
+const TimelineContent = styled.div``;
+
+const TimelineTitle = styled.h4`
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+  margin-bottom: 0.5rem;
+`;
+
+const TimelineDescription = styled.p`
+  font-size: 1.4rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.45);
 `;

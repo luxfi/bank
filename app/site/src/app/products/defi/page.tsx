@@ -114,7 +114,7 @@ const defiProducts = [
     icon: StakeIcon,
     title: "Staking Infrastructure",
     description: "Liquid staking, restaking, and validator management. Stake ETH, SOL, and 20+ PoS networks.",
-    color: "#F59E0B",
+    color: "#FFFFFF",
   },
 ];
 
@@ -465,8 +465,8 @@ console.<span class="property">log</span>(stats);
         </SectionHeader>
 
         <CardGrid $cols={3}>
-          <Card $accent="#F59E0B">
-            <CardIcon $color="#F59E0B">
+          <Card $accent="#FFFFFF">
+            <CardIcon $color="#FFFFFF">
               <ShieldIcon />
             </CardIcon>
             <CardTitle>Permissioned Pools</CardTitle>
@@ -503,8 +503,8 @@ console.<span class="property">log</span>(stats);
         <CTASubtitle>
           Launch institutional-grade DeFi products with our infrastructure.
         </CTASubtitle>
-        <Link href="/contact">
-          <CustomButton>Contact Sales</CustomButton>
+        <Link href="https://cal.com/luxfi" target="_blank">
+          <CustomButton>Talk to Sales</CustomButton>
         </Link>
       </CTASection>
     </PageContainer>

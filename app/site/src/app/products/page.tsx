@@ -127,7 +127,7 @@ const products = [
     title: "Digital Securities",
     description: "Issue, trade, and settle tokenized securities. Compliant infrastructure for STOs, bonds, and equity tokens.",
     href: "/products/issuance",
-    color: "#F59E0B",
+    color: "#FFFFFF",
   },
   {
     icon: GlobeIcon,
@@ -167,7 +167,7 @@ export default function Products() {
           </HeroSubtitle>
           <HeroButtons>
             <Link href="/contact">
-              <CustomButton>Contact Sales</CustomButton>
+              <CustomButton>Talk to Sales</CustomButton>
             </Link>
             <Link href="https://docs.lux.financial" target="_blank">
               <SecondaryButton>View API Docs</SecondaryButton>
@@ -205,7 +205,7 @@ export default function Products() {
           Talk to our team about building with Lux Financial.
         </CTASubtitle>
         <Link href="/contact">
-          <CustomButton>Contact Sales</CustomButton>
+          <CustomButton>Talk to Sales</CustomButton>
         </Link>
       </CTASection>
     </PageContainer>

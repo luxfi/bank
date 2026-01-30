@@ -274,7 +274,7 @@ const CertStatus = styled.div<{ $active: boolean }>`
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: ${({ $active }) => ($active ? "#22C55E" : "#D4AF37")};
+  color: ${({ $active }) => ($active ? "#22C55E" : "#FFFFFF")};
 `;
 
 const PracticesList = styled.div`
@@ -327,14 +327,14 @@ const BugBountyText = styled.p`
 
 const BugBountyLink = styled.a`
   display: inline-block;
-  color: #D4AF37;
+  color: #FFFFFF;
   font-size: 18px;
   font-weight: 500;
   text-decoration: none;
   transition: color 0.15s ease;
 
   &:hover {
-    color: #e5c04b;
+    color: rgba(255, 255, 255, 0.7);
     text-decoration: underline;
   }
 `;
@@ -362,7 +362,7 @@ const CTAText = styled.p`
 
 const CTAButton = styled.a`
   display: inline-block;
-  background: #D4AF37;
+  background: #FFFFFF;
   color: #000;
   font-size: 14px;
   font-weight: 600;
@@ -372,7 +372,7 @@ const CTAButton = styled.a`
   transition: all 0.2s ease;
 
   &:hover {
-    background: #e5c04b;
+    background: rgba(255, 255, 255, 0.9);
     transform: translateY(-1px);
   }
 `;

@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import styled, { keyframes } from "styled-components";
 import { LuxLogo } from "@/components/Logo";
 
-const BRAND_COLOR = "#D4AF37"; // Gold accent
+const BRAND_COLOR = "#FFFFFF"; // Gold accent
 
 // Page context for AI
 const getPageContext = (pathname: string): string => {
@@ -112,7 +112,7 @@ export default function ChatWidget() {
               content: `You are Lux AI, an assistant for Lux Financial (lux.financial). You help users understand stablecoin infrastructure, payment APIs, and financial services.
 
 Key Information:
-- Lux Financial provides unified financial infrastructure for fintechs and neobanks
+- Lux Financial is a technology services provider offering open-source enterprise crypto infrastructure for regulated financial institutions (github.com/luxfi)
 - Products: Orchestration API, Multi-chain Wallets, Cross-border Payments, Stablecoin Issuance
 - Supported stablecoins: USDC, USDT, PYUSD, EURC, USDY
 - Supported chains: Ethereum, Polygon, Arbitrum, Optimism, Base, Solana, Stellar, Tron

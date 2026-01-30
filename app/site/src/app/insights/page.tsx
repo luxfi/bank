@@ -242,7 +242,7 @@ const PoweredBy = styled.span`
   color: #666;
 
   a {
-    color: #D4AF37;
+    color: #FFFFFF;
     text-decoration: none;
 
     &:hover {
@@ -276,7 +276,7 @@ const StatCard = styled.div`
 const StatValue = styled.div`
   font-size: 32px;
   font-weight: 700;
-  color: #D4AF37;
+  color: #FFFFFF;
   margin-bottom: 8px;
 `;
 
@@ -378,7 +378,7 @@ const InsightCategory = styled.span`
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #D4AF37;
+  color: #FFFFFF;
   margin-bottom: 12px;
 `;
 
@@ -425,7 +425,7 @@ const CTAText = styled.p`
 
 const CTAButton = styled.a`
   display: inline-block;
-  background: #D4AF37;
+  background: #FFFFFF;
   color: #000;
   font-size: 14px;
   font-weight: 600;
@@ -435,7 +435,7 @@ const CTAButton = styled.a`
   transition: all 0.2s ease;
 
   &:hover {
-    background: #e5c04b;
+    background: rgba(255, 255, 255, 0.9);
     transform: translateY(-1px);
   }
 `;

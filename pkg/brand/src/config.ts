@@ -20,8 +20,8 @@ export const LUX_COLORS: BrandColors = {
   secondary: '#1E1E2E',
   secondaryForeground: '#FFFFFF',
 
-  // Accent - Gold/amber for premium feel
-  accent: '#F59E0B',
+  // Accent - White for clean monochrome
+  accent: '#FFFFFF',
   accentForeground: '#000000',
 
   // Backgrounds

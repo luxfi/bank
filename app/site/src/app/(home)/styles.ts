@@ -57,7 +57,7 @@ export const HeroSection = styled.section`
   display: flex;
   flex-direction: column;
   gap: 4rem;
-  background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(212, 175, 55, 0.08), transparent);
+  background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(255, 255, 255, 0.04), transparent);
 
   @media ${DeviceSize.lg} {
     padding: 3rem 0 5rem;
@@ -226,7 +226,7 @@ export const DashboardBrandIcon = styled.div`
   width: 28px;
   height: 28px;
   border-radius: 6px;
-  background: linear-gradient(135deg, #D4AF37 0%, #B8960C 100%);
+  background: linear-gradient(135deg, #FFFFFF 0%, #B8960C 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -253,7 +253,7 @@ export const DashboardNavItem = styled.div<{ $active?: boolean }>`
   border-radius: 8px;
   font-size: 1.2rem;
   color: ${props => props.$active ? 'rgba(255, 255, 255, 0.95)' : 'rgba(255, 255, 255, 0.5)'};
-  background: ${props => props.$active ? 'rgba(212, 175, 55, 0.15)' : 'transparent'};
+  background: ${props => props.$active ? 'rgba(255, 255, 255, 0.08)' : 'transparent'};
   margin-bottom: 0.25rem;
   cursor: pointer;
 
@@ -299,14 +299,14 @@ export const DashboardStatus = styled.div`
   background: rgba(34, 197, 94, 0.1);
   border-radius: 20px;
   font-size: 1rem;
-  color: #22C55E;
+  color: rgba(255, 255, 255, 0.7);
 `;
 
 export const StatusDot = styled.div<{ $color?: string }>`
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: ${props => props.$color || '#22C55E'};
+  background: ${props => props.$color || 'rgba(255, 255, 255, 0.7)'};
 `;
 
 export const DashboardStats = styled.div`
@@ -349,7 +349,7 @@ export const DashboardStatValue = styled.div`
 
 export const DashboardStatChange = styled.div<{ $positive?: boolean }>`
   font-size: 0.95rem;
-  color: ${props => props.$positive ? '#22C55E' : 'rgba(255, 255, 255, 0.45)'};
+  color: ${props => props.$positive ? 'rgba(255, 255, 255, 0.7)' : 'rgba(255, 255, 255, 0.45)'};
 `;
 
 export const DashboardTable = styled.div`
@@ -426,8 +426,8 @@ export const TerminalBody = styled.div`
 export const TerminalLine = styled.div<{ $type?: 'command' | 'success' | 'info' | 'highlight' }>`
   color: ${props => {
     switch(props.$type) {
-      case 'success': return '#22C55E';
-      case 'highlight': return '#D4AF37';
+      case 'success': return 'rgba(255, 255, 255, 0.7)';
+      case 'highlight': return '#FFFFFF';
       case 'info': return 'rgba(255, 255, 255, 0.5)';
       default: return 'rgba(255, 255, 255, 0.75)';
     }
@@ -506,7 +506,7 @@ export const MobileDeviceLogo = styled.div`
   width: 20px;
   height: 20px;
   border-radius: 5px;
-  background: linear-gradient(135deg, #D4AF37 0%, #B8960C 100%);
+  background: linear-gradient(135deg, #FFFFFF 0%, #B8960C 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -563,7 +563,7 @@ export const MobileDeviceActionIcon = styled.div<{ $color?: string }>`
   svg {
     width: 14px;
     height: 14px;
-    color: #22C55E;
+    color: rgba(255, 255, 255, 0.7);
   }
 `;
 
@@ -1299,8 +1299,8 @@ export const StatusBadge = styled.span<{ $status: 'completed' | 'pending' | 'pro
   }};
   color: ${props => {
     switch(props.$status) {
-      case 'completed': return '#22C55E';
-      case 'pending': return '#F59E0B';
+      case 'completed': return 'rgba(255, 255, 255, 0.7)';
+      case 'pending': return '#FFFFFF';
       case 'processing': return '#3B82F6';
     }
   }};
@@ -1362,7 +1362,7 @@ export const MobileBadge = styled.span`
   padding: 0.5rem 1rem;
   font-size: 1.2rem;
   font-weight: 500;
-  color: #22C55E;
+  color: rgba(255, 255, 255, 0.7);
   background: rgba(34, 197, 94, 0.1);
   border: 1px solid rgba(34, 197, 94, 0.2);
   border-radius: 20px;
@@ -1407,7 +1407,7 @@ export const MobileFeature = styled.div`
   svg {
     width: 16px;
     height: 16px;
-    color: #22C55E;
+    color: rgba(255, 255, 255, 0.7);
   }
 `;
 
@@ -1568,7 +1568,7 @@ export const PhoneActionIcon = styled.div<{ $color?: string }>`
   justify-content: center;
   border-radius: 50%;
   background: ${props => props.$color || 'rgba(34, 197, 94, 0.15)'};
-  color: ${props => props.$color ? 'white' : '#22C55E'};
+  color: ${props => props.$color ? 'white' : 'rgba(255, 255, 255, 0.7)'};
 
   svg {
     width: 18px;
@@ -1676,7 +1676,7 @@ export const StatLabel = styled.div`
 // Industries Section
 export const IndustriesSection = styled.section`
   padding: 6rem 0;
-  background: linear-gradient(180deg, rgba(212, 175, 55, 0.02) 0%, transparent 100%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, transparent 100%);
   border-top: 1px solid rgba(255, 255, 255, 0.06);
 
   @media ${DeviceSize.sm} {
@@ -1713,9 +1713,9 @@ export const IndustryCard = styled.a`
   transition: all 0.2s ease;
 
   &:hover {
-    border-color: rgba(212, 175, 55, 0.3);
+    border-color: rgba(255, 255, 255, 0.2);
     transform: translateY(-2px);
-    background: rgba(212, 175, 55, 0.03);
+    background: rgba(255, 255, 255, 0.03);
   }
 `;
 
@@ -1742,7 +1742,7 @@ export const ViewAllLink = styled.a`
   margin-top: 2rem;
   font-size: 1.4rem;
   font-weight: 500;
-  color: #D4AF37;
+  color: #FFFFFF;
   text-decoration: none;
   transition: opacity 0.2s ease;
 

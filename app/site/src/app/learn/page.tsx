@@ -117,7 +117,7 @@ const getLevelColor = (level: string) => {
     case "Beginner":
       return "#22C55E";
     case "Intermediate":
-      return "#D4AF37";
+      return "#FFFFFF";
     case "Advanced":
       return "#EF4444";
     default:
@@ -299,12 +299,12 @@ const ArticleDescription = styled.p`
 const ReadLink = styled(Link)`
   font-size: 14px;
   font-weight: 500;
-  color: #D4AF37;
+  color: #FFFFFF;
   text-decoration: none;
   transition: color 0.15s ease;
 
   &:hover {
-    color: #e5c04b;
+    color: rgba(255, 255, 255, 0.7);
   }
 `;
 
@@ -338,7 +338,7 @@ const CTAButtons = styled.div`
 
 const CTAButton = styled.a`
   display: inline-block;
-  background: #D4AF37;
+  background: #FFFFFF;
   color: #000;
   font-size: 14px;
   font-weight: 600;
@@ -348,7 +348,7 @@ const CTAButton = styled.a`
   transition: all 0.2s ease;
 
   &:hover {
-    background: #e5c04b;
+    background: rgba(255, 255, 255, 0.9);
     transform: translateY(-1px);
   }
 `;

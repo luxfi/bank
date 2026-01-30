@@ -71,7 +71,8 @@ const footerNav: Record<string, FooterNavSection> = {
       { label: "About", href: "/about" },
       { label: "News", href: "/news" },
       { label: "Solutions", href: "/solutions" },
-      { label: "Help", href: "/help" },
+      { label: "Careers", href: "/careers" },
+      { label: "Lux Industries", href: "https://luxindustries.xyz", external: true },
     ],
   },
   developers: {
@@ -81,6 +82,15 @@ const footerNav: Record<string, FooterNavSection> = {
       { label: "API Reference", href: "https://docs.lux.financial/api-reference", external: true },
       { label: "GitHub", href: "https://github.com/luxfi", external: true },
       { label: "Status", href: "https://status.lux.financial", external: true },
+    ],
+  },
+  research: {
+    title: "Research",
+    items: [
+      { label: "Lux Protocol Specs", href: "https://lps.lux.network", external: true },
+      { label: "DAO Governance", href: "https://lps.lux.network/docs/lp-8850", external: true },
+      { label: "KMS Architecture", href: "https://lps.lux.network/docs/lp-0070", external: true },
+      { label: "Post-Quantum Crypto", href: "https://lps.lux.network/docs/lp-2200", external: true },
     ],
   },
   legal: {

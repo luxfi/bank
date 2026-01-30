@@ -19,95 +19,109 @@ const categories: { id: TCategory; label: string }[] = [
 
 // Featured post
 const featuredPost = {
-  id: "post-2026-01-lux-rebrand",
-  title: "CDAX Becomes Lux Financial: A New Era of Bank Infrastructure",
-  slug: "cdax-becomes-lux-financial",
-  excerpt: "After five years of building trusted infrastructure for financial institutions, CDAX officially rebrands to Lux Financial with expanded stablecoin and AI capabilities. Our unified platform now supports fiat, crypto, stablecoins, and digital securities across 200+ countries.",
+  id: "post-2026-01-platform-launch",
+  title: "Lux Financial Platform Now Available: Instant Cross-Chain Settlement for Banks and PSPs",
+  slug: "lux-financial-platform-launch",
+  excerpt: "After 5 years developing open banking infrastructure in partnership with CDAX, Lux Financial announces general availability of its stablecoin payment platform. Instant cross-chain settlement with no bridges required.",
   feature_image: "/images/news.jpg",
-  published_at: "2026-01-15T10:00:00.000Z",
+  published_at: "2026-01-28T10:00:00.000Z",
   category: "company",
-  reading_time: "5 min read",
+  reading_time: "4 min read",
 };
 
-// All posts
+// Company History:
+// - Oct 2020: Zach Kelling joins CDAX as CTO
+// - 2020-2023: Lux Financial develops open banking infrastructure in partnership with CDAX
+// - Lux Partners Limited: Isle of Man entity
+// - Lux Industries Inc: USA entity (current)
 const POSTS = [
   {
-    id: "post-2025-09-us-expansion",
-    title: "Lux Financial Expands US Operations with Trust Company Partnerships",
-    slug: "us-trust-company-expansion",
-    excerpt: "Strategic partnerships with US trust companies enable compliant stablecoin services for American fintechs and neobanks.",
-    feature_image: "/images/global.jpg",
-    published_at: "2025-09-20T10:00:00.000Z",
+    id: "post-2025-12-kms-hsm",
+    title: "Lux KMS: HSM Provider Support Now Available",
+    slug: "kms-hsm-support",
+    excerpt: "Enterprise Hardware Security Module integration added to our open-source secret management platform for bank-grade key security.",
+    feature_image: "/images/working.jpg",
+    published_at: "2025-12-31T10:00:00.000Z",
+    category: "product",
+    reading_time: "4 min read",
+  },
+  {
+    id: "post-2025-09-lux-industries-usa",
+    title: "Lux Industries Inc Launches to Serve US Market",
+    slug: "lux-industries-usa-launch",
+    excerpt: "Lux Industries Inc established to bring stablecoin payment infrastructure to US banks and fintechs, operating under US regulatory framework.",
+    feature_image: "/images/tower_full.jpg",
+    published_at: "2025-09-01T10:00:00.000Z",
     category: "company",
     reading_time: "4 min read",
   },
   {
-    id: "post-2025-06-mcp-zap",
-    title: "Introducing MCP Server and ZAP Protocol for AI-Powered Banking",
-    slug: "mcp-server-zap-protocol",
-    excerpt: "New AI infrastructure enables intelligent automation of bank operations, customer support, and compliance workflows.",
-    feature_image: "/images/working.jpg",
-    published_at: "2025-06-01T10:00:00.000Z",
-    category: "product",
-    reading_time: "6 min read",
-  },
-  {
-    id: "post-2025-03-iomfsa",
-    title: "IOMFSA License Approval: Strengthening UK Regulatory Position",
-    slug: "iomfsa-license-approval",
-    excerpt: "IOMFSA license approval strengthens our UK regulatory position and enables expanded institutional services.",
-    feature_image: "/images/tower_full.jpg",
-    published_at: "2025-03-10T10:00:00.000Z",
-    category: "compliance",
-    reading_time: "3 min read",
-  },
-  {
-    id: "post-2024-11-stablecoins",
-    title: "Native USDC and USDT Support Now Available",
-    slug: "native-usdc-usdt-support",
-    excerpt: "Multi-chain USDC/USDT support enables instant global payments with automatic local currency conversion.",
-    feature_image: "/images/hand_currency.jpg",
-    published_at: "2024-11-15T10:00:00.000Z",
+    id: "post-2025-08-fiat-rails",
+    title: "Global Fiat Rails: PIX, SPEI, and UPI Now Live",
+    slug: "global-fiat-rails-expansion",
+    excerpt: "Expanded payment rail coverage to 40+ countries with direct integrations for Brazil (PIX), Mexico (SPEI), and India (UPI).",
+    feature_image: "/images/global.jpg",
+    published_at: "2025-08-15T10:00:00.000Z",
     category: "product",
     reading_time: "4 min read",
   },
   {
-    id: "post-2024-06-mpc-custody",
-    title: "Lux MPC: Self-Hosted Custody with Multi-Party Computation",
-    slug: "lux-mpc-custody-launch",
-    excerpt: "Enterprise multi-party computation enables secure self-hosted custody with threshold signing.",
+    id: "post-2025-03-mpc-custody",
+    title: "Lux MPC: Self-Custody Infrastructure for Institutions",
+    slug: "mpc-custody-launch",
+    excerpt: "Multi-party computation custody launches with 2-of-3 threshold signing. Your keys, your control, with enterprise HSM integration.",
     feature_image: "/images/security.jpg",
-    published_at: "2024-06-20T10:00:00.000Z",
+    published_at: "2025-03-20T10:00:00.000Z",
     category: "product",
     reading_time: "5 min read",
   },
   {
-    id: "post-2023-09-uk-launch",
-    title: "CDAX Platform V1 Launches in UK and Isle of Man",
-    slug: "cdax-v1-uk-iom-launch",
-    excerpt: "General availability of CDAX Platform V1 for UK and IOM institutions with full regulatory compliance.",
-    feature_image: "/images/laptop.png",
-    published_at: "2023-09-01T10:00:00.000Z",
+    id: "post-2024-09-stablecoin-support",
+    title: "Native USDC and USDT Support Across 15 Chains",
+    slug: "native-stablecoin-support",
+    excerpt: "Multi-chain stablecoin support enables instant global payments with automatic local currency conversion in 40+ countries.",
+    feature_image: "/images/hand_currency.jpg",
+    published_at: "2024-09-10T10:00:00.000Z",
+    category: "product",
+    reading_time: "4 min read",
+  },
+  {
+    id: "post-2024-01-lux-partners-iom",
+    title: "Lux Partners Limited Established in Isle of Man",
+    slug: "lux-partners-iom",
+    excerpt: "Lux Partners Limited launches in Isle of Man to provide regulated fintech infrastructure services to banks and PSPs across Europe and UK.",
+    feature_image: "/images/global_2.jpg",
+    published_at: "2024-01-15T10:00:00.000Z",
     category: "company",
     reading_time: "4 min read",
   },
   {
-    id: "post-2022-03-blockchain",
-    title: "CDAX Selected as Blockchain Exchange Platform for Government Initiative",
-    slug: "cdax-government-blockchain-selection",
-    excerpt: "CDAX chosen to power blockchain transactions for major government digitization initiative.",
-    feature_image: "/images/global_2.jpg",
-    published_at: "2022-03-15T10:00:00.000Z",
-    category: "company",
-    reading_time: "3 min read",
+    id: "post-2022-11-kms-launch",
+    title: "Lux KMS: Enterprise Secret Management Goes Open Source",
+    slug: "kms-open-source-launch",
+    excerpt: "Enterprise secret management platform developed in collaboration with CDAX goes open source with native cloud integrations.",
+    feature_image: "/images/working.jpg",
+    published_at: "2022-11-17T10:00:00.000Z",
+    category: "product",
+    reading_time: "4 min read",
   },
   {
-    id: "post-2021-06-funding",
-    title: "CDAX Raises Series A to Accelerate White-Label Platform Development",
-    slug: "cdax-series-a-funding",
-    excerpt: "Series A funding will accelerate platform development and regulatory expansion.",
+    id: "post-2021-03-open-banking",
+    title: "Lux Financial and CDAX Launch Open Banking Infrastructure",
+    slug: "open-banking-infrastructure",
+    excerpt: "Joint development initiative delivers open banking APIs and payment infrastructure for digital asset services in UK and Isle of Man.",
+    feature_image: "/images/laptop.png",
+    published_at: "2021-03-01T10:00:00.000Z",
+    category: "product",
+    reading_time: "5 min read",
+  },
+  {
+    id: "post-2020-10-cto-joins",
+    title: "Zach Kelling Joins CDAX as CTO to Lead Technology Development",
+    slug: "zach-kelling-joins-cdax",
+    excerpt: "Zach Kelling joins CDAX as Chief Technology Officer, bringing expertise in distributed systems and blockchain infrastructure to accelerate platform development.",
     feature_image: "/images/working_team.jpg",
-    published_at: "2021-06-10T10:00:00.000Z",
+    published_at: "2020-10-15T10:00:00.000Z",
     category: "company",
     reading_time: "3 min read",
   },
@@ -240,7 +254,7 @@ const HeroSection = styled.section`
 const HeroBackground = styled.div`
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse 800px 400px at 50% 100%, rgba(212, 175, 55, 0.08), transparent);
+  background: radial-gradient(ellipse 800px 400px at 50% 100%, rgba(255, 255, 255, 0.04), transparent);
 `;
 
 const HeroContent = styled.div`
@@ -256,9 +270,9 @@ const HeroBadge = styled.span`
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: #D4AF37;
-  background: rgba(212, 175, 55, 0.1);
-  border: 1px solid rgba(212, 175, 55, 0.2);
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 8px 16px;
   border-radius: 24px;
   margin-bottom: 24px;
@@ -327,7 +341,7 @@ const FeaturedBadge = styled.span`
   position: absolute;
   top: 16px;
   left: 16px;
-  background: #D4AF37;
+  background: #FFFFFF;
   color: #000;
   font-size: 11px;
   font-weight: 600;
@@ -359,7 +373,7 @@ const FeaturedMeta = styled.div`
 
 const CategoryTag = styled.span`
   text-transform: capitalize;
-  color: #D4AF37;
+  color: #FFFFFF;
 `;
 
 const FeaturedTitle = styled.h2`
@@ -384,7 +398,7 @@ const FeaturedExcerpt = styled.p`
 const ReadMore = styled.span`
   font-size: 14px;
   font-weight: 500;
-  color: #D4AF37;
+  color: #FFFFFF;
 `;
 
 const FilterSection = styled.section`
@@ -402,15 +416,15 @@ const FilterTab = styled.button<{ $active: boolean }>`
   font-weight: 500;
   padding: 8px 16px;
   border-radius: 24px;
-  border: 1px solid ${({ $active }) => ($active ? "#D4AF37" : "#333")};
-  background: ${({ $active }) => ($active ? "rgba(212, 175, 55, 0.1)" : "transparent")};
-  color: ${({ $active }) => ($active ? "#D4AF37" : "#888")};
+  border: 1px solid ${({ $active }) => ($active ? "#FFFFFF" : "#333")};
+  background: ${({ $active }) => ($active ? "rgba(255, 255, 255, 0.05)" : "transparent")};
+  color: ${({ $active }) => ($active ? "#FFFFFF" : "#888")};
   cursor: pointer;
   transition: all 0.15s ease;
 
   &:hover {
-    border-color: ${({ $active }) => ($active ? "#D4AF37" : "#444")};
-    color: ${({ $active }) => ($active ? "#D4AF37" : "#FAFAFA")};
+    border-color: ${({ $active }) => ($active ? "#FFFFFF" : "#444")};
+    color: ${({ $active }) => ($active ? "#FFFFFF" : "#FAFAFA")};
   }
 `;
 
@@ -562,7 +576,7 @@ const NewsletterInput = styled.input`
 `;
 
 const NewsletterButton = styled.button`
-  background: #D4AF37;
+  background: #FFFFFF;
   color: #000;
   font-size: 14px;
   font-weight: 600;
@@ -573,6 +587,6 @@ const NewsletterButton = styled.button`
   transition: all 0.15s ease;
 
   &:hover {
-    background: #e5c04b;
+    background: rgba(255, 255, 255, 0.9);
   }
 `;

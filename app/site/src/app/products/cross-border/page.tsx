@@ -106,7 +106,7 @@ const features = [
     icon: ShieldIcon,
     title: "Compliance Built-In",
     description: "Automatic sanctions screening, KYC verification, and regulatory reporting.",
-    color: "#F59E0B",
+    color: "#FFFFFF",
   },
 ];
 
@@ -300,7 +300,7 @@ console.<span class="property">log</span>(payment);
         </CodeBlock>
 
         <ContentBlock>
-          <ProductBadge $color="#F59E0B">Compliance</ProductBadge>
+          <ProductBadge $color="#FFFFFF">Compliance</ProductBadge>
           <BlockTitle>Built-In Regulatory Compliance</BlockTitle>
           <BlockText>
             Every payment is automatically screened against global sanctions lists,
@@ -309,25 +309,25 @@ console.<span class="property">log</span>(payment);
           </BlockText>
           <FeatureList>
             <FeatureItem>
-              <FeatureCheck $color="#F59E0B">
+              <FeatureCheck $color="#FFFFFF">
                 <CheckIcon />
               </FeatureCheck>
               <FeatureText>OFAC, EU, UN sanctions screening</FeatureText>
             </FeatureItem>
             <FeatureItem>
-              <FeatureCheck $color="#F59E0B">
+              <FeatureCheck $color="#FFFFFF">
                 <CheckIcon />
               </FeatureCheck>
               <FeatureText>Politically Exposed Person (PEP) checks</FeatureText>
             </FeatureItem>
             <FeatureItem>
-              <FeatureCheck $color="#F59E0B">
+              <FeatureCheck $color="#FFFFFF">
                 <CheckIcon />
               </FeatureCheck>
               <FeatureText>Transaction monitoring and alerts</FeatureText>
             </FeatureItem>
             <FeatureItem>
-              <FeatureCheck $color="#F59E0B">
+              <FeatureCheck $color="#FFFFFF">
                 <CheckIcon />
               </FeatureCheck>
               <FeatureText>Regulatory reporting and audit trails</FeatureText>
@@ -341,8 +341,8 @@ console.<span class="property">log</span>(payment);
         <CTASubtitle>
           Get API access and start processing cross-border payments.
         </CTASubtitle>
-        <Link href="/contact">
-          <CustomButton>Contact Sales</CustomButton>
+        <Link href="https://cal.com/luxfi" target="_blank">
+          <CustomButton>Talk to Sales</CustomButton>
         </Link>
       </CTASection>
     </PageContainer>

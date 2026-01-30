@@ -85,37 +85,37 @@ const BoltIcon = () => (
 const features = [
   {
     icon: ExchangeIcon,
-    title: "White-Label CEX",
-    description: "Launch your own branded centralized exchange with institutional matching engine, order books, and liquidity.",
+    title: "Multi-Asset Trading",
+    description: "Stocks, crypto, forex, commodities, options, and futures. 10,000+ equities, 200+ crypto assets, 50+ FX pairs from one platform.",
     color: "#8B5CF6",
   },
   {
     icon: LayersIcon,
-    title: "DEX Aggregation",
-    description: "Connect to 100+ DEXs across all major chains. Best execution routing with MEV protection.",
+    title: "White-Label Exchange",
+    description: "Launch your branded CEX with institutional matching engine. DEX aggregation across 100+ venues with MEV protection.",
     color: "#22C55E",
   },
   {
     icon: ChartIcon,
-    title: "Institutional Liquidity",
-    description: "Access deep liquidity from top market makers. Tight spreads on 500+ trading pairs.",
+    title: "Real-Time Market Data",
+    description: "TradingView integration with advanced charting, technical indicators, and professional analytics tools.",
     color: "#3B82F6",
   },
   {
     icon: ShieldIcon,
-    title: "Compliance Built-In",
-    description: "AML/KYC, transaction monitoring, and regulatory reporting. Licensed in 50+ jurisdictions.",
-    color: "#F59E0B",
+    title: "SEC & FINRA Regulated",
+    description: "Full regulatory compliance. SIPC protected. AML/KYC, transaction monitoring, and reporting built in.",
+    color: "#FFFFFF",
   },
 ];
 
 const tradingPairs = [
-  { pair: "BTC/USD", volume: "$2.1B", spread: "0.01%" },
-  { pair: "ETH/USD", volume: "$1.8B", spread: "0.02%" },
-  { pair: "BTC/EUR", volume: "$890M", spread: "0.02%" },
-  { pair: "ETH/BTC", volume: "$650M", spread: "0.01%" },
-  { pair: "SOL/USD", volume: "$420M", spread: "0.03%" },
-  { pair: "USDC/EUR", volume: "$380M", spread: "0.005%" },
+  { pair: "AAPL", volume: "$8.2B", spread: "0.01%", type: "Stock" },
+  { pair: "BTC/USD", volume: "$2.1B", spread: "0.01%", type: "Crypto" },
+  { pair: "EUR/USD", volume: "$1.4B", spread: "0.001%", type: "Forex" },
+  { pair: "ETH/USD", volume: "$1.8B", spread: "0.02%", type: "Crypto" },
+  { pair: "Gold", volume: "$920M", spread: "0.02%", type: "Commodity" },
+  { pair: "SPY", volume: "$12.5B", spread: "0.005%", type: "ETF" },
 ];
 
 export default function Exchange() {
@@ -123,13 +123,13 @@ export default function Exchange() {
     <PageContainer>
       <HeroSection>
         <HeroContent>
-          <ProductBadge $color="#8B5CF6">CEX & DEX</ProductBadge>
+          <ProductBadge $color="#8B5CF6">Multi-Asset Exchange</ProductBadge>
           <HeroTitle>
-            Launch your exchange
+            Trade everything
           </HeroTitle>
           <HeroSubtitle>
-            White-label CEX with institutional liquidity. DEX aggregation across
-            100+ venues. Everything to build a world-class trading platform.
+            Stocks, crypto, forex, commodities—all markets, one platform.
+            White-label exchange infrastructure with SEC/FINRA compliance.
           </HeroSubtitle>
           <HeroButtons>
             <Link href="/contact">
@@ -145,20 +145,20 @@ export default function Exchange() {
       {/* Stats */}
       <StatsRow>
         <StatCard>
-          <StatValue $color="#8B5CF6">500+</StatValue>
-          <StatLabel>Trading Pairs</StatLabel>
+          <StatValue $color="#8B5CF6">10,000+</StatValue>
+          <StatLabel>Equities</StatLabel>
         </StatCard>
         <StatCard>
-          <StatValue>100+</StatValue>
-          <StatLabel>DEX Venues</StatLabel>
+          <StatValue>200+</StatValue>
+          <StatLabel>Crypto Assets</StatLabel>
+        </StatCard>
+        <StatCard>
+          <StatValue>50+</StatValue>
+          <StatLabel>FX Pairs</StatLabel>
         </StatCard>
         <StatCard>
           <StatValue>{"<"}10ms</StatValue>
           <StatLabel>Latency</StatLabel>
-        </StatCard>
-        <StatCard>
-          <StatValue>$50B+</StatValue>
-          <StatLabel>Daily Volume</StatLabel>
         </StatCard>
       </StatsRow>
 
@@ -352,9 +352,9 @@ console.<span class="property">log</span>(quote);
       {/* Liquidity */}
       <Section>
         <SectionHeader>
-          <SectionTitle>Deep Liquidity</SectionTitle>
+          <SectionTitle>Multi-Asset Liquidity</SectionTitle>
           <SectionSubtitle>
-            Top trading pairs with institutional market makers
+            Deep liquidity across all asset classes
           </SectionSubtitle>
         </SectionHeader>
 
@@ -363,6 +363,9 @@ console.<span class="property">log</span>(quote);
             <Card key={index}>
               <CardTitle>{pair.pair}</CardTitle>
               <CardDescription>
+                <div style={{ marginBottom: '0.25rem', fontSize: '1.1rem', color: '#8B5CF6' }}>
+                  {pair.type}
+                </div>
                 <div style={{ marginBottom: '0.5rem' }}>
                   <strong>24h Volume:</strong> {pair.volume}
                 </div>
@@ -379,10 +382,10 @@ console.<span class="property">log</span>(quote);
       <CTASection>
         <CTATitle>Ready to launch your exchange?</CTATitle>
         <CTASubtitle>
-          Get started with our white-label exchange platform.
+          Multi-asset trading infrastructure for banks, funds, and fintechs.
         </CTASubtitle>
-        <Link href="/contact">
-          <CustomButton>Contact Sales</CustomButton>
+        <Link href="https://cal.com/luxfi" target="_blank">
+          <CustomButton>Talk to Sales</CustomButton>
         </Link>
       </CTASection>
     </PageContainer>
