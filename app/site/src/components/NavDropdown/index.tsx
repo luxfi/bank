@@ -134,17 +134,30 @@ const platformItems = [
 
 // Solutions dropdown content
 const solutionItems = {
-  industries: [
-    { title: "Fintechs & Neobanks", description: "Launch financial products faster", href: "/online-platform" },
-    { title: "Marketplaces", description: "Multi-currency payouts & collections", href: "/online-platform" },
-    { title: "SaaS Platforms", description: "Embedded finance for your users", href: "/online-platform" },
-    { title: "E-commerce", description: "Global payments & FX optimization", href: "/online-platform" },
+  byBusiness: [
+    { title: "Enterprises", description: "Scale global financial operations", href: "/solutions/enterprises" },
+    { title: "Startups", description: "Launch with modern infrastructure", href: "/solutions/startups" },
+    { title: "Platforms", description: "Monetize with embedded finance", href: "/solutions/platforms" },
+    { title: "Marketplaces", description: "Multi-currency payouts & collections", href: "/solutions/marketplaces" },
+    { title: "SaaS", description: "Automate billing & treasury", href: "/solutions/saas" },
+    { title: "Global businesses", description: "Optimize cross-border payments", href: "/solutions/global" },
   ],
-  capabilities: [
-    { title: "Account Provisioning", description: "IBANs, sort codes, routing numbers", href: "/online-platform" },
-    { title: "Payment Orchestration", description: "Unified API for global transfers", href: "/online-platform" },
-    { title: "FX Management", description: "Rate locking & hedging tools", href: "/online-platform" },
-    { title: "Compliance Tools", description: "KYC, AML, sanctions screening", href: "/online-platform" },
+  byUseCase: [
+    { title: "Embedded finance", description: "Financial products for your users", href: "/solutions/embedded-finance" },
+    { title: "Ecommerce", description: "Global payments & FX optimization", href: "/solutions/ecommerce" },
+    { title: "Finance automation", description: "Streamline treasury operations", href: "/solutions/finance-automation" },
+    { title: "In-app payments", description: "Native payment experiences", href: "/solutions/in-app-payments" },
+    { title: "Agentic commerce", description: "AI-powered financial workflows", href: "/solutions/agentic-commerce" },
+    { title: "Crypto", description: "Fiat-to-crypto rails & custody", href: "/solutions/crypto" },
+  ],
+  byIndustry: [
+    { title: "AI companies", description: "Revenue & billing for AI products", href: "/solutions/ai" },
+    { title: "Creator economy", description: "Global payouts for creators", href: "/solutions/creators" },
+    { title: "Hospitality & Travel", description: "Multi-currency & local payments", href: "/solutions/hospitality" },
+    { title: "Insurance", description: "Claims & premium processing", href: "/solutions/insurance" },
+    { title: "Media & Entertainment", description: "Royalties & subscriptions", href: "/solutions/media" },
+    { title: "Nonprofits", description: "Donation processing & compliance", href: "/solutions/nonprofits" },
+    { title: "Retail", description: "Omnichannel payments", href: "/solutions/retail" },
   ],
 };
 
@@ -231,8 +244,8 @@ export default function NavDropdown({ label, type, active }: NavDropdownProps) {
           {type === "solutions" && (
             <>
               <DropdownSection>
-                <SectionTitle>By Industry</SectionTitle>
-                {solutionItems.industries.map((item) => (
+                <SectionTitle>By Business</SectionTitle>
+                {solutionItems.byBusiness.map((item) => (
                   <Link key={item.title} href={item.href}>
                     <DropdownItem>
                       <ItemIcon>
@@ -247,12 +260,28 @@ export default function NavDropdown({ label, type, active }: NavDropdownProps) {
                 ))}
               </DropdownSection>
               <DropdownSection>
-                <SectionTitle>By Capability</SectionTitle>
-                {solutionItems.capabilities.map((item) => (
+                <SectionTitle>By Use Case</SectionTitle>
+                {solutionItems.byUseCase.map((item) => (
                   <Link key={item.title} href={item.href}>
                     <DropdownItem>
                       <ItemIcon>
                         <ApiIcon />
+                      </ItemIcon>
+                      <ItemContent>
+                        <ItemTitle>{item.title}</ItemTitle>
+                        <ItemDescription>{item.description}</ItemDescription>
+                      </ItemContent>
+                    </DropdownItem>
+                  </Link>
+                ))}
+              </DropdownSection>
+              <DropdownSection>
+                <SectionTitle>By Industry</SectionTitle>
+                {solutionItems.byIndustry.map((item) => (
+                  <Link key={item.title} href={item.href}>
+                    <DropdownItem>
+                      <ItemIcon>
+                        <UsersIcon />
                       </ItemIcon>
                       <ItemContent>
                         <ItemTitle>{item.title}</ItemTitle>

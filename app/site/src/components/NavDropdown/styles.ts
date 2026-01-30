@@ -55,7 +55,7 @@ export const DropdownMenu = styled.div<{ $type: "platform" | "solutions" }>`
   position: absolute;
   top: calc(100% + 0.5rem);
   left: 0;
-  min-width: ${(props) => (props.$type === "platform" ? "380px" : "520px")};
+  min-width: ${(props) => (props.$type === "platform" ? "380px" : "720px")};
   background: #0a0a0a;
   backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -65,7 +65,7 @@ export const DropdownMenu = styled.div<{ $type: "platform" | "solutions" }>`
   box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1);
   animation: ${fadeIn} 0.15s ease;
   display: ${(props) => (props.$type === "solutions" ? "grid" : "block")};
-  grid-template-columns: ${(props) => (props.$type === "solutions" ? "1fr 1fr" : "1fr")};
+  grid-template-columns: ${(props) => (props.$type === "solutions" ? "1fr 1fr 1fr" : "1fr")};
 
   /* Bridge the gap to prevent mouseout when moving to dropdown */
   &::before {
