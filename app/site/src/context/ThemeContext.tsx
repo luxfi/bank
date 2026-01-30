@@ -21,11 +21,9 @@ export function ThemeContextProvider({ children }: { children: ReactNode }) {
     const saved = localStorage.getItem("theme-mode") as ThemeMode;
     if (saved && (saved === "dark" || saved === "light")) {
       setMode(saved);
-    } else {
-      // Check system preference
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      setMode(prefersDark ? "dark" : "light");
     }
+    // Default to dark mode if no preference saved (brand preference)
+    // Users can switch to light mode via toggle, which saves to localStorage
   }, []);
 
   // Save preference when changed
