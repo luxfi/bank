@@ -43,6 +43,7 @@ export const HeroContent = styled.div`
 
 export const ProductBadge = styled.span<{ $color?: string }>`
   display: inline-block;
+  align-self: flex-start;
   padding: 0.4rem 1rem;
   font-size: 1.2rem;
   font-weight: 500;
@@ -50,7 +51,6 @@ export const ProductBadge = styled.span<{ $color?: string }>`
   background: ${props => props.$color ? `${props.$color}15` : 'rgba(255, 255, 255, 0.05)'};
   border: 1px solid ${props => props.$color ? `${props.$color}30` : 'rgba(255, 255, 255, 0.08)'};
   border-radius: 20px;
-  margin-bottom: 1.5rem;
 `;
 
 export const HeroTitle = styled.h1`

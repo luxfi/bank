@@ -66,7 +66,8 @@ export const DropdownMenu = styled.div<{ $type: "platform" | "solutions" }>`
   border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 12px;
   overflow: hidden;
-  z-index: 100;
+  z-index: 1000;
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
   animation: ${fadeIn} 0.15s ease;
   display: ${(props) => (props.$type === "solutions" ? "grid" : "block")};
   grid-template-columns: ${(props) => (props.$type === "solutions" ? "1fr 1fr" : "1fr")};
