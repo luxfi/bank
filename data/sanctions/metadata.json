@@ -1,0 +1,43 @@
+{
+  "lastSync": "2026-01-30T00:49:34Z",
+  "sources": [
+    {
+      "code": "SDN",
+      "name": "OFAC SDN List",
+      "country": "US",
+      "file": "sdn.xml",
+      "url": "https://www.treasury.gov/ofac/downloads/sdn.xml"
+    },
+    {
+      "code": "OFAC",
+      "name": "OFAC Consolidated List",
+      "country": "US",
+      "file": "ofac_consolidated.csv",
+      "url": "https://www.treasury.gov/ofac/downloads/consolidated/cons_prim.csv"
+    },
+    {
+      "code": "UN",
+      "name": "UN Security Council Sanctions",
+      "country": "UN",
+      "file": "un_consolidated.xml",
+      "url": "https://scsanctions.un.org/resources/xml/en/consolidated.xml"
+    },
+    {
+      "code": "EU",
+      "name": "EU Financial Sanctions",
+      "country": "EU",
+      "file": "eu_sanctions.xml",
+      "url": "https://webgate.ec.europa.eu/fsd/fsf/public/files/xmlFullSanctionsList_1_1/content"
+    },
+    {
+      "code": "OFSI",
+      "name": "UK OFSI Consolidated List",
+      "country": "GB",
+      "file": "uk_ofsi.csv",
+      "url": "https://assets.publishing.service.gov.uk"
+    }
+  ],
+  "totalSources": 5,
+  "syncTriggeredBy": "schedule",
+  "forceRefresh": false
+}
