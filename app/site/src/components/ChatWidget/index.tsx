@@ -287,22 +287,24 @@ const FloatingButton = styled.button`
   position: fixed;
   bottom: 24px;
   right: 24px;
-  z-index: 1000;
+  z-index: 9999;
   width: 56px;
   height: 56px;
   border-radius: 50%;
   background: #000000;
-  border: 1px solid #333;
+  border: 2px solid rgba(255, 255, 255, 0.2);
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 
   &:hover {
     transform: scale(1.05);
     border-color: ${BRAND_COLOR};
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
   }
 `;
 
@@ -318,13 +320,13 @@ const ChatWindow = styled.div`
   position: fixed;
   bottom: 24px;
   right: 24px;
-  z-index: 1000;
+  z-index: 9999;
   width: 380px;
   max-width: calc(100vw - 48px);
   height: 520px;
   max-height: 80vh;
   background: #000000;
-  border: 1px solid #333;
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 16px;
   display: flex;
   flex-direction: column;
@@ -351,7 +353,8 @@ const LogoWrapper = styled.div`
   width: 32px;
   height: 32px;
   border-radius: 8px;
-  background: ${BRAND_COLOR};
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
