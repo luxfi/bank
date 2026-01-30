@@ -26,15 +26,15 @@ export const DropdownTrigger = styled.button<{ $active: boolean; $open: boolean 
   background: none;
   border: none;
   border-radius: 8px;
-  color: ${({ theme, $active, $open }) => ($active || $open ? theme.colors.primary : theme.colors.secondary)};
+  color: ${({ $active, $open }) => ($active || $open ? 'rgba(255, 255, 255, 0.92)' : 'rgba(255, 255, 255, 0.65)')};
   font-size: 1.4rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.15s ease;
 
   &:hover {
-    color: ${({ theme }) => theme.colors.primary};
-    background: ${({ theme }) => theme.colors.surface};
+    color: rgba(255, 255, 255, 0.92);
+    background: rgba(255, 255, 255, 0.05);
   }
 `;
 
@@ -53,21 +53,17 @@ export const ChevronIcon = styled.span<{ $open: boolean }>`
 
 export const DropdownMenu = styled.div<{ $type: "platform" | "solutions" }>`
   position: absolute;
-  top: calc(100% + 0.5rem);
-  left: 50%;
-  transform: translateX(-50%);
+  top: 100%;
+  left: 0;
+  margin-top: 0.5rem;
   min-width: ${(props) => (props.$type === "platform" ? "380px" : "520px")};
-  background: ${({ theme }) =>
-    theme.colors.background === "#000000" || theme.colors.background === "#0B0F14"
-      ? "rgba(10, 10, 10, 0.98)"
-      : "rgba(255, 255, 255, 0.98)"
-  };
+  background: #0a0a0a;
   backdrop-filter: blur(16px);
-  border: 1px solid ${({ theme }) => theme.colors.border};
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
   overflow: hidden;
-  z-index: 1000;
-  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1);
   animation: ${fadeIn} 0.15s ease;
   display: ${(props) => (props.$type === "solutions" ? "grid" : "block")};
   grid-template-columns: ${(props) => (props.$type === "solutions" ? "1fr 1fr" : "1fr")};
@@ -75,24 +71,20 @@ export const DropdownMenu = styled.div<{ $type: "platform" | "solutions" }>`
 
 export const FeaturedCard = styled.div`
   padding: 1.25rem;
-  background: ${({ theme }) =>
-    theme.colors.background === "#000000" || theme.colors.background === "#0B0F14"
-      ? "linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)"
-      : "linear-gradient(180deg, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.01) 100%)"
-  };
-  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+  background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 `;
 
 export const FeaturedTitle = styled.h3`
   font-size: 1.4rem;
   font-weight: 600;
-  color: ${({ theme }) => theme.colors.primary};
+  color: rgba(255, 255, 255, 0.92);
   margin-bottom: 0.5rem;
 `;
 
 export const FeaturedDescription = styled.p`
   font-size: 1.2rem;
-  color: ${({ theme }) => theme.colors.secondary};
+  color: rgba(255, 255, 255, 0.65);
   line-height: 1.5;
   margin-bottom: 0.75rem;
 `;
@@ -102,7 +94,7 @@ export const FeaturedLink = styled.a`
   align-items: center;
   font-size: 1.2rem;
   font-weight: 500;
-  color: ${({ theme }) => theme.colors.accent};
+  color: #FFFFFF;
   text-decoration: none;
   transition: opacity 0.15s ease;
 
@@ -121,7 +113,7 @@ export const SectionTitle = styled.div`
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: ${({ theme }) => theme.colors.muted};
+  color: rgba(255, 255, 255, 0.45);
 `;
 
 export const DropdownItem = styled.div`
@@ -134,7 +126,7 @@ export const DropdownItem = styled.div`
   transition: all 0.15s ease;
 
   &:hover {
-    background: ${({ theme }) => theme.colors.surface};
+    background: rgba(255, 255, 255, 0.05);
   }
 `;
 
@@ -145,16 +137,16 @@ export const ItemIcon = styled.div`
   width: 2rem;
   height: 2rem;
   border-radius: 6px;
-  background: ${({ theme }) => theme.colors.surface};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  color: ${({ theme }) => theme.colors.secondary};
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.65);
   flex-shrink: 0;
   transition: all 0.15s ease;
 
   ${DropdownItem}:hover & {
-    background: ${({ theme }) => theme.colors.surfaceHover || theme.colors.surface};
-    border-color: ${({ theme }) => theme.colors.borderHover || theme.colors.border};
-    color: ${({ theme }) => theme.colors.primary};
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.92);
   }
 
   svg {
@@ -171,12 +163,12 @@ export const ItemContent = styled.div`
 export const ItemTitle = styled.div`
   font-size: 1.3rem;
   font-weight: 500;
-  color: ${({ theme }) => theme.colors.primary};
+  color: rgba(255, 255, 255, 0.92);
   margin-bottom: 0.125rem;
 `;
 
 export const ItemDescription = styled.div`
   font-size: 1.15rem;
-  color: ${({ theme }) => theme.colors.muted};
+  color: rgba(255, 255, 255, 0.45);
   line-height: 1.4;
 `;
