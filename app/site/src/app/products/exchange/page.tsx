@@ -1,5 +1,7 @@
 "use client";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
+import styled from "styled-components";
 import { CustomButton, SecondaryButton } from "@/components/Button";
 import {
   PageContainer,
@@ -26,21 +28,10 @@ import {
   CardIcon,
   CardTitle,
   CardDescription,
-  CodeBlock,
-  CodeHeader,
-  CodeTab,
-  CodeContent,
   StatsRow,
   StatCard,
   StatValue,
   StatLabel,
-  DiagramContainer,
-  DiagramRow,
-  DiagramNode,
-  DiagramArrow,
-  CTASection,
-  CTATitle,
-  CTASubtitle,
 } from "../styles";
 
 const CheckIcon = () => (
@@ -76,12 +67,6 @@ const LayersIcon = () => (
   </svg>
 );
 
-const BoltIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-  </svg>
-);
-
 const features = [
   {
     icon: ExchangeIcon,
@@ -109,18 +94,197 @@ const features = [
   },
 ];
 
-const tradingPairs = [
-  { pair: "AAPL", volume: "$8.2B", spread: "0.01%", type: "Stock" },
-  { pair: "BTC/USD", volume: "$2.1B", spread: "0.01%", type: "Crypto" },
-  { pair: "EUR/USD", volume: "$1.4B", spread: "0.001%", type: "Forex" },
-  { pair: "ETH/USD", volume: "$1.8B", spread: "0.02%", type: "Crypto" },
-  { pair: "Gold", volume: "$920M", spread: "0.02%", type: "Commodity" },
-  { pair: "SPY", volume: "$12.5B", spread: "0.005%", type: "ETF" },
-];
+// TradingView Ticker Tape Component
+function TickerTape() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    containerRef.current.innerHTML = '';
+
+    const script = document.createElement('script');
+    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js';
+    script.async = true;
+    script.innerHTML = JSON.stringify({
+      symbols: [
+        { proName: "NASDAQ:AAPL", title: "Apple" },
+        { proName: "NASDAQ:GOOGL", title: "Google" },
+        { proName: "NASDAQ:MSFT", title: "Microsoft" },
+        { proName: "BITSTAMP:BTCUSD", title: "Bitcoin" },
+        { proName: "BITSTAMP:ETHUSD", title: "Ethereum" },
+        { proName: "FX:EURUSD", title: "EUR/USD" },
+        { proName: "COMEX:GC1!", title: "Gold" },
+        { proName: "NASDAQ:NVDA", title: "NVIDIA" },
+        { proName: "NYSE:JPM", title: "JPMorgan" },
+        { proName: "BINANCE:SOLUSDT", title: "Solana" },
+      ],
+      showSymbolLogo: true,
+      colorTheme: "dark",
+      isTransparent: true,
+      displayMode: "adaptive",
+      locale: "en",
+    });
+    containerRef.current.appendChild(script);
+  }, []);
+
+  return (
+    <TickerContainer>
+      <div className="tradingview-widget-container" ref={containerRef}>
+        <div className="tradingview-widget-container__widget"></div>
+      </div>
+    </TickerContainer>
+  );
+}
+
+// TradingView Advanced Chart Component
+function AdvancedChart() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    containerRef.current.innerHTML = '';
+
+    const script = document.createElement('script');
+    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+    script.async = true;
+    script.innerHTML = JSON.stringify({
+      autosize: true,
+      symbol: "NASDAQ:AAPL",
+      interval: "D",
+      timezone: "Etc/UTC",
+      theme: "dark",
+      style: "1",
+      locale: "en",
+      allow_symbol_change: true,
+      calendar: false,
+      support_host: "https://www.tradingview.com",
+    });
+    containerRef.current.appendChild(script);
+  }, []);
+
+  return (
+    <ChartContainer>
+      <div className="tradingview-widget-container" ref={containerRef} style={{ height: '100%', width: '100%' }}>
+        <div className="tradingview-widget-container__widget" style={{ height: 'calc(100% - 32px)', width: '100%' }}></div>
+      </div>
+    </ChartContainer>
+  );
+}
+
+// TradingView Market Overview Component
+function MarketOverview() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    containerRef.current.innerHTML = '';
+
+    const script = document.createElement('script');
+    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js';
+    script.async = true;
+    script.innerHTML = JSON.stringify({
+      width: "100%",
+      height: "100%",
+      symbolsGroups: [
+        {
+          name: "Equities",
+          symbols: [
+            { name: "NASDAQ:AAPL", displayName: "Apple" },
+            { name: "NASDAQ:GOOGL", displayName: "Google" },
+            { name: "NASDAQ:MSFT", displayName: "Microsoft" },
+            { name: "NASDAQ:NVDA", displayName: "NVIDIA" },
+            { name: "NYSE:JPM", displayName: "JPMorgan" },
+          ]
+        },
+        {
+          name: "Crypto",
+          symbols: [
+            { name: "BITSTAMP:BTCUSD", displayName: "Bitcoin" },
+            { name: "BITSTAMP:ETHUSD", displayName: "Ethereum" },
+            { name: "BINANCE:SOLUSDT", displayName: "Solana" },
+            { name: "BINANCE:AVAXUSDT", displayName: "Avalanche" },
+          ]
+        },
+        {
+          name: "Forex",
+          symbols: [
+            { name: "FX:EURUSD", displayName: "EUR/USD" },
+            { name: "FX:GBPUSD", displayName: "GBP/USD" },
+            { name: "FX:USDJPY", displayName: "USD/JPY" },
+          ]
+        },
+        {
+          name: "Commodities",
+          symbols: [
+            { name: "COMEX:GC1!", displayName: "Gold" },
+            { name: "NYMEX:CL1!", displayName: "Crude Oil" },
+            { name: "COMEX:SI1!", displayName: "Silver" },
+          ]
+        },
+      ],
+      showSymbolLogo: true,
+      colorTheme: "dark",
+      isTransparent: false,
+      backgroundColor: "#0a0a0a",
+      locale: "en",
+    });
+    containerRef.current.appendChild(script);
+  }, []);
+
+  return (
+    <MarketContainer>
+      <div className="tradingview-widget-container" ref={containerRef} style={{ height: '100%', width: '100%' }}>
+        <div className="tradingview-widget-container__widget"></div>
+      </div>
+    </MarketContainer>
+  );
+}
+
+// Cal.com Embed Component
+function CalEmbed() {
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://app.cal.com/embed/embed.js';
+    script.async = true;
+    document.body.appendChild(script);
+
+    script.onload = () => {
+      // @ts-ignore
+      if (window.Cal) {
+        // @ts-ignore
+        window.Cal("init", { origin: "https://cal.com" });
+        // @ts-ignore
+        window.Cal("inline", {
+          elementOrSelector: "#cal-embed",
+          calLink: "luxfi",
+          layout: "month_view",
+        });
+        // @ts-ignore
+        window.Cal("ui", {
+          theme: "dark",
+          styles: { branding: { brandColor: "#FFFFFF" } },
+          hideEventTypeDetails: false,
+          layout: "month_view",
+        });
+      }
+    };
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  return (
+    <CalContainer id="cal-embed" />
+  );
+}
 
 export default function Exchange() {
   return (
     <PageContainer>
+      {/* Ticker Tape */}
+      <TickerTape />
+
       <HeroSection>
         <HeroContent>
           <ProductBadge $color="#8B5CF6">Multi-Asset Exchange</ProductBadge>
@@ -132,8 +296,8 @@ export default function Exchange() {
             White-label exchange infrastructure with SEC/FINRA compliance.
           </HeroSubtitle>
           <HeroButtons>
-            <Link href="/contact">
-              <CustomButton>Get Started</CustomButton>
+            <Link href="#book-demo">
+              <CustomButton>Book a Demo</CustomButton>
             </Link>
             <Link href="https://docs.lux.financial/guides/exchange" target="_blank">
               <SecondaryButton>View API Docs</SecondaryButton>
@@ -162,37 +326,26 @@ export default function Exchange() {
         </StatCard>
       </StatsRow>
 
-      {/* Architecture */}
+      {/* Live Chart Demo */}
       <Section>
         <SectionHeader>
-          <SectionTitle>Exchange Architecture</SectionTitle>
+          <SectionTitle>Live Market Data</SectionTitle>
           <SectionSubtitle>
-            Unified trading infrastructure for CEX and DEX
+            Real-time charting powered by TradingView
           </SectionSubtitle>
         </SectionHeader>
+        <AdvancedChart />
+      </Section>
 
-        <DiagramContainer>
-          <DiagramRow>
-            <DiagramNode>Your Users</DiagramNode>
-            <DiagramNode>Institutions</DiagramNode>
-            <DiagramNode>API Traders</DiagramNode>
-          </DiagramRow>
-          <DiagramArrow>↓</DiagramArrow>
-          <DiagramRow $center>
-            <DiagramNode $type="primary">Your Branded Exchange</DiagramNode>
-          </DiagramRow>
-          <DiagramArrow>↓</DiagramArrow>
-          <DiagramRow $center>
-            <DiagramNode $type="secondary">Lux Matching Engine</DiagramNode>
-          </DiagramRow>
-          <DiagramArrow>↓</DiagramArrow>
-          <DiagramRow>
-            <DiagramNode $type="highlight">CEX Liquidity</DiagramNode>
-            <DiagramNode $type="highlight">DEX Aggregation</DiagramNode>
-            <DiagramNode $type="highlight">Market Makers</DiagramNode>
-            <DiagramNode $type="highlight">OTC Desk</DiagramNode>
-          </DiagramRow>
-        </DiagramContainer>
+      {/* Market Overview */}
+      <Section>
+        <SectionHeader>
+          <SectionTitle>Multi-Asset Markets</SectionTitle>
+          <SectionSubtitle>
+            Equities, crypto, forex, and commodities in one view
+          </SectionSubtitle>
+        </SectionHeader>
+        <MarketOverview />
       </Section>
 
       {/* Features */}
@@ -255,63 +408,6 @@ export default function Exchange() {
           </FeatureList>
         </ContentBlock>
 
-        <CodeBlock>
-          <CodeHeader>
-            <CodeTab $active>create-order.ts</CodeTab>
-          </CodeHeader>
-          <CodeContent>{`<span class="keyword">const</span> order = <span class="keyword">await</span> lux.exchange.<span class="property">createOrder</span>({
-  <span class="property">symbol</span>: <span class="string">"BTC/USD"</span>,
-  <span class="property">side</span>: <span class="string">"buy"</span>,
-  <span class="property">type</span>: <span class="string">"limit"</span>,
-  <span class="property">quantity</span>: <span class="string">"1.5"</span>,
-  <span class="property">price</span>: <span class="string">"42500.00"</span>,
-});
-
-console.<span class="property">log</span>(order);
-<span class="comment">// {</span>
-<span class="comment">//   id: "ord_abc123",</span>
-<span class="comment">//   status: "open",</span>
-<span class="comment">//   filled: "0.00",</span>
-<span class="comment">//   remaining: "1.5",</span>
-<span class="comment">//   avgPrice: null</span>
-<span class="comment">// }</span>
-
-<span class="comment">// Subscribe to order updates</span>
-lux.exchange.<span class="property">onOrderUpdate</span>((update) => {
-  console.<span class="property">log</span>(<span class="string">\`Order \${update.id}: \${update.status}\`</span>);
-});`}</CodeContent>
-        </CodeBlock>
-      </TwoColumnSection>
-
-      {/* DEX Aggregation */}
-      <TwoColumnSection>
-        <CodeBlock>
-          <CodeHeader>
-            <CodeTab $active>dex-swap.ts</CodeTab>
-          </CodeHeader>
-          <CodeContent>{`<span class="comment">// Get best route across 100+ DEXs</span>
-<span class="keyword">const</span> quote = <span class="keyword">await</span> lux.dex.<span class="property">getQuote</span>({
-  <span class="property">fromToken</span>: <span class="string">"ETH"</span>,
-  <span class="property">toToken</span>: <span class="string">"USDC"</span>,
-  <span class="property">amount</span>: <span class="string">"10.0"</span>,
-  <span class="property">slippage</span>: <span class="string">"0.5"</span>, <span class="comment">// 0.5%</span>
-});
-
-console.<span class="property">log</span>(quote);
-<span class="comment">// {</span>
-<span class="comment">//   route: ["Uniswap V3", "Curve"],</span>
-<span class="comment">//   expectedOutput: "25420.50",</span>
-<span class="comment">//   priceImpact: "0.02%",</span>
-<span class="comment">//   gasEstimate: "0.005 ETH"</span>
-<span class="comment">// }</span>
-
-<span class="comment">// Execute with MEV protection</span>
-<span class="keyword">const</span> swap = <span class="keyword">await</span> lux.dex.<span class="property">executeSwap</span>(quote, {
-  <span class="property">mevProtection</span>: <span class="keyword">true</span>,
-  <span class="property">deadline</span>: <span class="number">300</span>, <span class="comment">// 5 minutes</span>
-});`}</CodeContent>
-        </CodeBlock>
-
         <ContentBlock>
           <ProductBadge $color="#22C55E">DEX Aggregation</ProductBadge>
           <BlockTitle>Best Execution Across All DEXs</BlockTitle>
@@ -349,45 +445,56 @@ console.<span class="property">log</span>(quote);
         </ContentBlock>
       </TwoColumnSection>
 
-      {/* Liquidity */}
-      <Section>
+      {/* Book Demo - Embedded Cal.com */}
+      <BookDemoSection id="book-demo">
         <SectionHeader>
-          <SectionTitle>Multi-Asset Liquidity</SectionTitle>
+          <SectionTitle>Book a Demo</SectionTitle>
           <SectionSubtitle>
-            Deep liquidity across all asset classes
+            Schedule a call to see the platform in action
           </SectionSubtitle>
         </SectionHeader>
-
-        <CardGrid $cols={3}>
-          {tradingPairs.map((pair, index) => (
-            <Card key={index}>
-              <CardTitle>{pair.pair}</CardTitle>
-              <CardDescription>
-                <div style={{ marginBottom: '0.25rem', fontSize: '1.1rem', color: '#8B5CF6' }}>
-                  {pair.type}
-                </div>
-                <div style={{ marginBottom: '0.5rem' }}>
-                  <strong>24h Volume:</strong> {pair.volume}
-                </div>
-                <div>
-                  <strong>Spread:</strong>{" "}
-                  <span style={{ color: '#22C55E' }}>{pair.spread}</span>
-                </div>
-              </CardDescription>
-            </Card>
-          ))}
-        </CardGrid>
-      </Section>
-
-      <CTASection>
-        <CTATitle>Ready to launch your exchange?</CTATitle>
-        <CTASubtitle>
-          Multi-asset trading infrastructure for banks, funds, and fintechs.
-        </CTASubtitle>
-        <Link href="https://cal.com/luxfi" target="_blank">
-          <CustomButton>Talk to Sales</CustomButton>
-        </Link>
-      </CTASection>
+        <CalEmbed />
+      </BookDemoSection>
     </PageContainer>
   );
 }
+
+// Styled Components
+const TickerContainer = styled.div`
+  width: 100%;
+  height: 46px;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+`;
+
+const ChartContainer = styled.div`
+  width: 100%;
+  height: 500px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #0a0a0a;
+`;
+
+const MarketContainer = styled.div`
+  width: 100%;
+  height: 450px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #0a0a0a;
+`;
+
+const BookDemoSection = styled.section`
+  padding: 4rem 0;
+  scroll-margin-top: 100px;
+`;
+
+const CalContainer = styled.div`
+  width: 100%;
+  height: 700px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #0a0a0a;
+`;

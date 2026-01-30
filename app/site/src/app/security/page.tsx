@@ -150,7 +150,7 @@ export default function SecurityPage() {
           <CTAText>
             Our security team is available to discuss your specific requirements.
           </CTAText>
-          <CTAButton href="/contact">Contact Us</CTAButton>
+          <CTAButton href="https://cal.com/luxfi" target="_blank">Talk to Sales</CTAButton>
         </CTASection>
       </Container>
     </>

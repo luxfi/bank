@@ -198,9 +198,14 @@ export default function InsightsPage() {
           <CTAText>
             Access our full market data API for real-time stablecoin analytics.
           </CTAText>
-          <CTAButton href="https://docs.lux.financial" target="_blank" rel="noopener noreferrer">
-            View API Docs
-          </CTAButton>
+          <CTAButtons>
+            <CTAButton href="https://docs.lux.financial" target="_blank" rel="noopener noreferrer">
+              View API Docs
+            </CTAButton>
+            <CTAButtonSecondary href="https://cal.com/luxfi" target="_blank">
+              Talk to Sales
+            </CTAButtonSecondary>
+          </CTAButtons>
         </CTASection>
       </Container>
     </>
@@ -423,6 +428,13 @@ const CTAText = styled.p`
   margin-bottom: 24px;
 `;
 
+const CTAButtons = styled.div`
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+`;
+
 const CTAButton = styled.a`
   display: inline-block;
   background: #FFFFFF;
@@ -437,5 +449,23 @@ const CTAButton = styled.a`
   &:hover {
     background: rgba(255, 255, 255, 0.9);
     transform: translateY(-1px);
+  }
+`;
+
+const CTAButtonSecondary = styled.a`
+  display: inline-block;
+  background: transparent;
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 32px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  text-decoration: none;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.3);
   }
 `;

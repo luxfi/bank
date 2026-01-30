@@ -179,7 +179,7 @@ export default function LearnPage() {
             <CTAButton href="https://docs.lux.financial" target="_blank" rel="noopener noreferrer">
               API Documentation
             </CTAButton>
-            <CTAButtonSecondary href="/contact">
+            <CTAButtonSecondary href="https://cal.com/luxfi" target="_blank">
               Talk to Sales
             </CTAButtonSecondary>
           </CTAButtons>
