@@ -33,7 +33,7 @@ const nextConfig = {
   // Use 'export' for static deployment (Cloudflare Pages, GitHub Pages)
   // Set to 'standalone' for Node.js server deployment
   output: process.env.STATIC_EXPORT ? "export" : "standalone",
-  basePath: process.env.GITHUB_PAGES ? "/bank" : "",
+  // basePath removed - site deploys to root of custom domain (lux.financial)
   compress: true,
 };
 
