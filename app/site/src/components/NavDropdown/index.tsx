@@ -184,13 +184,29 @@ export default function NavDropdown({ label, type, active }: NavDropdownProps) {
     }, 150);
   };
 
+  const handleClick = () => {
+    setIsOpen(!isOpen);
+  };
+
+  // Close on click outside
   useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
     return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
     };
-  }, []);
+  }, [isOpen]);
 
   return (
     <DropdownContainer
@@ -198,7 +214,7 @@ export default function NavDropdown({ label, type, active }: NavDropdownProps) {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <DropdownTrigger $active={active || false} $open={isOpen}>
+      <DropdownTrigger $active={active || false} $open={isOpen} onClick={handleClick}>
         {label}
         <ChevronIcon $open={isOpen}>
           <ChevronDownIcon />

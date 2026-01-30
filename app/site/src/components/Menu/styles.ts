@@ -66,6 +66,8 @@ export const DesktopNav = styled.div`
   display: flex;
   align-items: center;
   gap: 0.25rem;
+  position: relative;
+  z-index: 1;
 
   @media ${DeviceSize.sm} {
     display: none;

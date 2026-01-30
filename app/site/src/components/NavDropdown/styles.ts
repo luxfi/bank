@@ -16,6 +16,7 @@ export const DropdownContainer = styled.div`
   position: relative;
   display: flex;
   align-items: center;
+  z-index: 100;
 `;
 
 export const DropdownTrigger = styled.button<{ $active: boolean; $open: boolean }>`
