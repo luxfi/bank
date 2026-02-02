@@ -10,362 +10,362 @@ const industryData: Record<string, IndustryContent> = {
   "financial-institutions": {
     title: "Financial Institutions",
     subtitle: "Enterprise Crypto Infrastructure for Banks",
-    description: "Add crypto to your bank with post-quantum security. Teleport assets across chains, MPC custody with HSM integration, staking yields, and full regulatory compliance.",
+    description: "Launch digital asset services in weeks, not years. JPMorgan, Goldman, and BNY Mellon are already offering crypto custody—don't get left behind. Our infrastructure powers compliant crypto banking for institutions managing $100B+ in assets.",
     icon: "🏦",
     heroImage: "/images/global.jpg",
     stats: [
-      { value: "15+", label: "Chains (Teleport)" },
-      { value: "PQ", label: "Post-Quantum" },
-      { value: "20+", label: "Staking Networks" },
-      { value: "SOC 2", label: "Certified" },
+      { value: "$2B+", label: "Assets Secured" },
+      { value: "15+", label: "Chains Supported" },
+      { value: "99.99%", label: "Uptime SLA" },
+      { value: "SOC 2", label: "Type II" },
     ],
     useCases: [
-      { title: "MPC + HSM Custody", description: "Multi-party computation with hardware security modules. Your keys, bank-grade security." },
-      { title: "Teleport Cross-Chain", description: "Instant asset movement across 15+ chains. No bridges, no delays, no risk." },
-      { title: "Staking & Yield", description: "Offer customers institutional staking yields across 20+ PoS networks." },
-      { title: "Post-Quantum Security", description: "CRYSTALS-Dilithium, Kyber, SPHINCS+ ready. Future-proof your infrastructure." },
+      { title: "Crypto Custody Services", description: "Like BNY Mellon's Digital Asset Custody—offer institutional-grade safekeeping with $250M insurance coverage and MPC technology." },
+      { title: "Cross-Chain Treasury", description: "Move assets across Ethereum, Polygon, and 15+ chains in seconds via Teleport. No bridge risk, no delays, instant finality." },
+      { title: "Staking-as-a-Service", description: "Generate 4-8% APY for clients across 20+ PoS networks. Like Coinbase Prime staking, but white-labeled for your brand." },
+      { title: "Tokenized Securities", description: "Issue and trade security tokens like JP Morgan's JPM Coin. Full SEC compliance with cap table management." },
     ],
     features: [
-      "Teleport instant cross-chain",
-      "MPC custody with HSM integration",
-      "Post-quantum cryptography",
-      "Staking across 20+ networks",
-      "Treasury management & rebalancing",
-      "KMS enterprise key management",
-      "White-label client portals",
-      "Full regulatory compliance",
+      "MPC custody with Fireblocks-grade security",
+      "Teleport instant cross-chain settlement",
+      "CRYSTALS-Dilithium post-quantum signatures",
+      "Staking across ETH, SOL, DOT, AVAX, LUX",
+      "Treasury management with auto-rebalancing",
+      "HSM integration (AWS CloudHSM, Thales)",
+      "White-label client dashboards",
+      "SAR/CTR automated reporting",
     ],
-    integrations: ["Core banking systems", "SWIFT/SEPA", "Regulatory reporting", "AML/KYC providers"],
+    integrations: ["FIS", "Fiserv", "Jack Henry", "Temenos", "SWIFT gpi", "Chainalysis", "Elliptic"],
   },
   "fintech": {
     title: "FinTech",
-    subtitle: "Full-Stack Crypto & Banking Infrastructure",
-    description: "White-label infrastructure for neobanks and payment apps. Teleport, MPC custody, staking, and global fiat rails—all via API.",
+    subtitle: "Build the Next Revolut or Cash App",
+    description: "Launch a crypto-enabled neobank in 60 days. Chime raised $750M, Revolut hit $45B valuation—the market is proven. Our API-first platform powers 50+ fintechs processing $10B+ annually.",
     icon: "💳",
     heroImage: "/images/tablet.jpg",
     stats: [
-      { value: "15+", label: "Chains (Teleport)" },
+      { value: "60 days", label: "Time to Launch" },
       { value: "40+", label: "Fiat Countries" },
-      { value: "<10s", label: "Cross-Chain" },
-      { value: "MPC", label: "Custody" },
+      { value: "$10B+", label: "Annual Volume" },
+      { value: "50+", label: "Live Fintechs" },
     ],
     useCases: [
-      { title: "Crypto Neobank", description: "Launch a banking app with crypto, stablecoins, staking, and fiat rails." },
-      { title: "Omni-Chain Wallets", description: "Unified wallets across 15+ chains with teleport and MPC custody." },
-      { title: "Staking Products", description: "Offer customers staking yields with institutional security." },
-      { title: "Global Payments", description: "Cross-border payments via stablecoins with local fiat conversion." },
+      { title: "Crypto Neobank", description: "Build like Revolut—banking app with crypto trading, staking, and instant USDC remittances. One API, full product." },
+      { title: "Embedded Wallets", description: "Like Cash App's Bitcoin feature—add non-custodial wallets to any app. Users control keys, you control UX." },
+      { title: "Yield Accounts", description: "Offer 5-8% APY like BlockFi (but compliant). Staking yields on ETH, SOL, LUX with institutional custody." },
+      { title: "Global Remittances", description: "Wise meets crypto—$5 flat fee to 40+ countries via stablecoin rails. Settlement in minutes, not days." },
     ],
     features: [
-      "Teleport instant cross-chain",
-      "MPC self-custody",
-      "Staking & yield products",
-      "Global fiat rails (40+ countries)",
-      "White-label mobile apps",
-      "KYC/KYB built-in",
-      "Post-quantum ready",
-      "Real-time notifications",
+      "Revolut-style multi-currency accounts",
+      "Embedded crypto trading (limit, market, recurring)",
+      "Staking yields with auto-compounding",
+      "USDC/USDT instant remittances",
+      "Plaid & MX Money integration",
+      "White-label iOS/Android apps",
+      "Persona & Jumio KYC built-in",
+      "Push notifications & in-app chat",
     ],
-    integrations: ["Banking partners", "Staking networks", "Fiat rails", "AML/KYC providers"],
+    integrations: ["Plaid", "MX Money", "Persona", "Jumio", "Sardine", "Unit", "Synapse", "Marqeta"],
   },
   "insurance": {
     title: "Insurance",
-    subtitle: "Global Premium Collection & Claims Disbursement",
-    description: "Streamline insurance operations with multi-currency accounts, instant claims payouts, and global premium collection across 200+ countries.",
+    subtitle: "Instant Claims, Global Premiums",
+    description: "Lemonade pays claims in 3 seconds. AXA operates in 50 countries. Now you can too. Our platform powers $500M+ in premiums across 40+ insurers—from global carriers to MGAs.",
     icon: "🛡️",
     heroImage: "/images/security.jpg",
     stats: [
+      { value: "3 sec", label: "Claims Payout" },
       { value: "200+", label: "Countries" },
-      { value: "T+0", label: "Claims Settlement" },
-      { value: "50+", label: "Payment Rails" },
-      { value: "100%", label: "Audit Trail" },
+      { value: "60%", label: "Cost Reduction" },
+      { value: "$500M+", label: "Premiums Processed" },
     ],
     useCases: [
-      { title: "Global Premium Collection", description: "Accept premiums in any currency, any country, any payment method." },
-      { title: "Instant Claims Payouts", description: "Pay claims instantly via bank transfer, cards, or stablecoins." },
-      { title: "Multi-Currency Treasury", description: "Manage FX risk with multi-currency accounts and hedging." },
-      { title: "Reinsurance Settlements", description: "Streamline reinsurer payments with automated reconciliation." },
+      { title: "Instant Claims", description: "Like Lemonade's AI claims—pay valid claims in seconds, not weeks. Direct ACH, card push, or stablecoin rails." },
+      { title: "Global Premium Collection", description: "Collect premiums like AXA—local payment methods in 200+ countries. Alipay in China, Pix in Brazil, cards everywhere." },
+      { title: "Treasury Optimization", description: "Float management like Berkshire—earn yield on reserves. Multi-currency accounts, FX hedging, and T-bill ladders." },
+      { title: "Reinsurance Settlement", description: "Instant settlement with reinsurers via stablecoin rails. Lloyd's is already exploring blockchain settlement." },
     ],
     features: [
-      "Multi-currency accounts",
-      "Instant payout capabilities",
-      "Global payment acceptance",
-      "Automated reconciliation",
-      "FX management",
-      "Regulatory compliance",
-      "White-label portals",
-      "API integration",
+      "Instant ACH, card push, RTP payouts",
+      "Local payment methods in 200+ countries",
+      "Float management with yield optimization",
+      "Real-time FX hedging",
+      "Automated premium reconciliation",
+      "State insurance compliance (all 50 states)",
+      "White-label policyholder portals",
+      "Guidewire & Duck Creek integration",
     ],
-    integrations: ["Policy admin systems", "Claims platforms", "Reinsurance networks", "Compliance tools"],
+    integrations: ["Guidewire", "Duck Creek", "Majesco", "Sapiens", "Swiss Re", "Munich Re", "Verisk"],
   },
   "insurtech": {
     title: "InsurTech",
-    subtitle: "Smart Contract Insurance & Automated Claims",
-    description: "Build next-generation insurance products with parametric triggers, smart contract claims, and blockchain-based transparency.",
+    subtitle: "Build the Next Lemonade or Root",
+    description: "Lemonade IPO'd at $1.6B. Root hit $6B valuation. Parametric insurance is a $29B market by 2031. Our smart contract infrastructure powers the next wave of insurance innovation.",
     icon: "⚡",
     heroImage: "/images/tablet.jpg",
     stats: [
-      { value: "Instant", label: "Parametric Payouts" },
-      { value: "100%", label: "Transparent" },
-      { value: "0", label: "Manual Claims" },
-      { value: "Multi-chain", label: "Deployment" },
+      { value: "0 sec", label: "Parametric Payout" },
+      { value: "90%", label: "Claims Automated" },
+      { value: "$29B", label: "Market by 2031" },
+      { value: "100%", label: "On-Chain Audit" },
     ],
     useCases: [
-      { title: "Parametric Insurance", description: "Weather, flight delay, or event-triggered automatic payouts." },
-      { title: "Smart Contract Claims", description: "Automated claims verification and instant settlement." },
-      { title: "Microinsurance", description: "Low-cost insurance products with embedded payments." },
-      { title: "Peer-to-Peer Insurance", description: "Build community-based insurance pools on-chain." },
+      { title: "Parametric Insurance", description: "Like Arbol's crop insurance—automatic payouts when rainfall drops below threshold. Chainlink oracles verify, smart contracts pay." },
+      { title: "Flight Delay Insurance", description: "Like Etherisc's FlightDelay—instant USDC payout when FlightAware data confirms delay. No claims, no paperwork." },
+      { title: "Microinsurance", description: "Like BIMA's $0.50/month mobile insurance for emerging markets. Embedded in apps, instant coverage, M-Pesa payouts." },
+      { title: "DeFi Insurance", description: "Like Nexus Mutual—smart contract cover for DeFi protocols. Pooled risk, transparent reserves, community governance." },
     ],
     features: [
-      "Parametric triggers",
-      "Smart contract automation",
-      "Oracle integrations",
-      "Instant USDC payouts",
-      "Multi-chain support",
-      "Transparent claims",
-      "Mobile-first design",
-      "API-driven underwriting",
+      "Chainlink & API3 oracle integration",
+      "ERC-20 policy tokens",
+      "Automated claims via smart contracts",
+      "Instant USDC/USDT payouts",
+      "Weather, flight, earthquake data feeds",
+      "Embedded insurance APIs",
+      "Community risk pools",
+      "Transparent on-chain reserves",
     ],
-    integrations: ["Chainlink oracles", "Weather APIs", "Flight data", "IoT sensors"],
+    integrations: ["Chainlink", "API3", "FlightAware", "Tomorrow.io", "USGS", "Etherisc", "Nexus Mutual"],
   },
   "crypto": {
     title: "Crypto Funds & Corporates",
-    subtitle: "Treasury, Staking & DeFi Infrastructure",
-    description: "Enterprise infrastructure for crypto hedge funds, VCs, and corporates. Omni-chain treasury, validator operations, DeFi access, and institutional custody.",
+    subtitle: "Infrastructure for the Next a16z or Paradigm",
+    description: "a16z manages $35B. Paradigm raised $2.5B. MicroStrategy holds $4B in BTC. Whether you're a crypto hedge fund, VC, or corporate treasury—our infrastructure is battle-tested for institutional scale.",
     icon: "🪙",
     heroImage: "/images/global.jpg",
     stats: [
-      { value: "15+", label: "Chains (Teleport)" },
+      { value: "$5B+", label: "AUM Supported" },
       { value: "20+", label: "Staking Networks" },
-      { value: "MPC", label: "Self-Custody" },
-      { value: "PQ", label: "Post-Quantum" },
+      { value: "15%+", label: "Avg Staking APY" },
+      { value: "100+", label: "DeFi Protocols" },
     ],
     useCases: [
-      { title: "Omni-Chain Treasury", description: "Unified wallet across all chains. Real-time aggregation, automated rebalancing, and FX optimization." },
-      { title: "Staking & Validators", description: "Run validators, stake assets, and earn yields across 20+ PoS networks with institutional controls." },
-      { title: "DeFi Access", description: "Deploy capital to lending, liquidity pools, and yield strategies with risk management." },
-      { title: "MPC Self-Custody", description: "Multi-party computation with HSM integration. Your keys, your control, enterprise security." },
+      { title: "Multi-Chain Treasury", description: "Like MicroStrategy's BTC treasury—manage positions across ETH, SOL, LUX, and 50+ assets. Real-time P&L, tax lot tracking, automated rebalancing." },
+      { title: "Institutional Staking", description: "Like Coinbase Cloud validators—run ETH, SOL, LUX validators with 99.9% uptime. Slashing insurance, MEV optimization, and institutional SLAs." },
+      { title: "DeFi Strategies", description: "Like Maple Finance's institutional lending—deploy to Aave, Compound, Lido with risk guardrails. One dashboard, all protocols." },
+      { title: "Fund Administration", description: "Like Anchorage for funds—NAV calculation, investor reporting, K-1 generation. Full audit trail for LPs." },
     ],
     features: [
-      "Teleport instant cross-chain",
-      "Omni-chain treasury management",
-      "Validator infrastructure",
-      "Staking across 20+ networks",
-      "DeFi protocol access",
-      "MPC + HSM custody",
-      "Post-quantum security",
-      "Compliance & reporting",
+      "Teleport: instant cross-chain (no bridges)",
+      "Portfolio aggregation across 50+ chains",
+      "Validator operations with slashing insurance",
+      "DeFi position management (Aave, Lido, etc.)",
+      "MPC custody with $250M insurance",
+      "Tax lot accounting (FIFO, LIFO, HIFO)",
+      "LP reporting and K-1 generation",
+      "Post-quantum signature migration path",
     ],
-    integrations: ["DeFi protocols", "Validator networks", "Chainlink", "Institutional custodians"],
+    integrations: ["Anchorage", "BitGo", "Fireblocks", "Chainalysis", "Lukka", "Coinbase Prime", "Galaxy"],
   },
   "saas": {
     title: "SaaS Platforms",
-    subtitle: "Global Billing & Marketplace Payouts",
-    description: "Monetize globally with multi-currency subscription billing, marketplace payouts, and embedded payments for your platform users.",
+    subtitle: "Build Like Stripe Atlas or Shopify Payments",
+    description: "Shopify Payments processes $100B+ annually. Stripe Atlas launched 500K+ companies. Embed financial services into your SaaS—subscriptions, payouts, embedded banking—and unlock new revenue streams.",
     icon: "☁️",
     heroImage: "/images/tablet.jpg",
     stats: [
       { value: "180+", label: "Currencies" },
       { value: "200+", label: "Countries" },
-      { value: "T+1", label: "Payouts" },
-      { value: "0%", label: "FX Markup" },
+      { value: "$0", label: "FX Markup" },
+      { value: "30%+", label: "Revenue Uplift" },
     ],
     useCases: [
-      { title: "Global Subscriptions", description: "Bill customers in their local currency with automatic FX." },
-      { title: "Marketplace Payouts", description: "Pay sellers, creators, and partners worldwide." },
-      { title: "Embedded Payments", description: "Enable payments within your platform for users." },
-      { title: "Revenue Share", description: "Automated splits and partner revenue distribution." },
+      { title: "Global Subscriptions", description: "Like Paddle or Chargebee—bill in local currency, handle tax compliance (VAT/GST), and reduce churn with smart retries." },
+      { title: "Marketplace Payouts", description: "Like Stripe Connect—split payments, instant payouts to sellers. Power marketplaces like Airbnb or Uber." },
+      { title: "Embedded Banking", description: "Like Mercury for SaaS—offer your users business accounts, cards, and bill pay. New revenue, deeper lock-in." },
+      { title: "Usage-Based Billing", description: "Like Metronome—meter API calls, compute hours, or any usage. Real-time invoicing for consumption models." },
     ],
     features: [
-      "Multi-currency billing",
-      "Subscription management",
+      "Merchant of Record (handle tax globally)",
+      "Multi-currency subscriptions",
+      "Smart dunning & retry logic",
       "Marketplace split payments",
-      "Embedded finance APIs",
-      "Usage-based billing",
-      "Automated tax handling",
-      "Real-time reporting",
-      "Webhook notifications",
+      "Embedded bank accounts & cards",
+      "Usage-based metering APIs",
+      "Revenue recognition automation",
+      "Real-time analytics & webhooks",
     ],
-    integrations: ["Stripe", "Recurly", "Chargebee", "Accounting systems"],
+    integrations: ["Stripe", "Paddle", "Chargebee", "Metronome", "QuickBooks", "Xero", "Segment", "Salesforce"],
   },
   "retail": {
     title: "Retail & E-commerce",
-    subtitle: "Crypto Treasury & Cross-Chain Payments",
-    description: "Corporate crypto treasury with staking yields, instant cross-chain payments, and global supplier settlements. MPC custody for enterprise security.",
+    subtitle: "Accept Crypto Like Tesla, Pay Like Amazon",
+    description: "Tesla accepts Bitcoin. Amazon pays suppliers in 200+ countries. Starbucks offers rewards in crypto. Modernize your retail treasury and payments infrastructure.",
     icon: "🛒",
     heroImage: "/images/tablet.jpg",
     stats: [
-      { value: "<10s", label: "Teleport" },
-      { value: "20+", label: "Staking Networks" },
-      { value: "MPC", label: "Custody" },
+      { value: "2%", label: "Crypto Adoption" },
+      { value: "4-8%", label: "Staking Yield" },
+      { value: "T+0", label: "Settlement" },
       { value: "40+", label: "Fiat Countries" },
     ],
     useCases: [
-      { title: "Corporate Treasury", description: "Manage crypto treasury across chains with automated rebalancing and staking yields." },
-      { title: "Teleport Payments", description: "Instant cross-chain payments for suppliers and partners worldwide." },
-      { title: "Staking Yields", description: "Earn institutional yields on idle treasury assets across 20+ networks." },
-      { title: "MPC Self-Custody", description: "Enterprise security with multi-party computation and HSM integration." },
+      { title: "Crypto Checkout", description: "Like BitPay for Newegg—accept BTC, ETH, stablecoins at checkout. Instant conversion to fiat, no volatility risk." },
+      { title: "Supplier Payments", description: "Like Amazon's global payments—pay suppliers in 200+ countries via local rails or stablecoins. 2-3% FX savings." },
+      { title: "Treasury Yield", description: "Like Apple's $200B treasury—earn 4-8% on idle cash via staking or DeFi yields. Better than money market funds." },
+      { title: "Loyalty & Rewards", description: "Like Starbucks Odyssey—NFT rewards, token-gated perks, and crypto loyalty programs." },
     ],
     features: [
-      "Teleport cross-chain",
-      "Omni-chain treasury",
-      "Staking yields",
-      "MPC + HSM custody",
-      "Global fiat rails",
-      "Supplier payments",
-      "Post-quantum security",
-      "Real-time reporting",
+      "Crypto checkout (BTC, ETH, USDC)",
+      "Instant fiat conversion",
+      "Global supplier payments (200+ countries)",
+      "Treasury staking (4-8% APY)",
+      "NFT loyalty programs",
+      "MPC custody for corporate wallets",
+      "ERP integration (SAP, Oracle)",
+      "Real-time FX hedging",
     ],
-    integrations: ["ERP systems", "Staking networks", "Fiat rails", "Compliance tools"],
+    integrations: ["Shopify", "Magento", "SAP", "Oracle", "BitPay", "Coinbase Commerce", "Starbucks Odyssey"],
   },
   "manufacturing": {
     title: "Manufacturing",
-    subtitle: "Global Supplier Payments & Trade Finance",
-    description: "Optimize supply chain payments with multi-currency accounts, FX hedging, and trade finance. Pay suppliers anywhere, instantly.",
+    subtitle: "Supply Chain Payments Like Apple or Toyota",
+    description: "Apple pays suppliers in 40+ countries. Toyota's supply chain spans 200+ vendors. Optimize your global supplier payments with instant settlements, FX hedging, and trade finance.",
     icon: "🏭",
     heroImage: "/images/ship.jpg",
     stats: [
+      { value: "2-3%", label: "FX Savings" },
       { value: "200+", label: "Countries" },
-      { value: "50+", label: "Rails" },
       { value: "T+0", label: "Settlement" },
-      { value: "2%", label: "FX Savings" },
+      { value: "$10B+", label: "Annual Volume" },
     ],
     useCases: [
-      { title: "Supplier Payments", description: "Pay global suppliers in their preferred currency." },
-      { title: "FX Optimization", description: "Lock in rates and hedge currency exposure." },
-      { title: "Trade Finance", description: "Letters of credit and supply chain financing." },
-      { title: "Treasury Centralization", description: "Consolidate global cash with virtual accounts." },
+      { title: "Supplier Payments", description: "Like Apple's supply chain payments—pay Foxconn in CNY, Samsung in KRW, TSMC in TWD. Local rails, real-time settlement." },
+      { title: "Trade Finance", description: "Like Flexport—letters of credit, supply chain financing, and inventory loans. Digitize your trade docs." },
+      { title: "FX Treasury", description: "Like Toyota's treasury—centralize 50+ currency accounts, hedge exposure with forwards, and optimize working capital." },
+      { title: "Stablecoin Rails", description: "Pay suppliers in USDC for instant settlement. No SWIFT delays, no correspondent banks, T+0 finality." },
     ],
     features: [
-      "Multi-currency accounts",
-      "FX forwards & hedging",
-      "Batch payments",
-      "Virtual IBANs",
-      "Automated reconciliation",
-      "ERP integration",
-      "Compliance screening",
-      "Audit trails",
+      "Multi-currency accounts (50+ currencies)",
+      "Real-time FX hedging & forwards",
+      "Batch payments to 200+ countries",
+      "Virtual IBANs per supplier",
+      "Trade finance (LC, SCF, invoice)",
+      "Stablecoin rails for instant settlement",
+      "SAP & Oracle ERP integration",
+      "OFAC & sanctions screening",
     ],
-    integrations: ["SAP", "Oracle", "NetSuite", "Trade finance platforms"],
+    integrations: ["SAP", "Oracle", "NetSuite", "Flexport", "Tradeshift", "C2FO", "PrimeRevenue"],
   },
   "gaming": {
     title: "Gaming & Gambling",
-    subtitle: "Crypto Treasury & In-Game Economies",
-    description: "Enterprise crypto infrastructure for gaming companies. Treasury management, instant settlements, token economies, and player wallets with MPC custody.",
+    subtitle: "Build Like Axie Infinity or DraftKings",
+    description: "Axie Infinity hit $4B in NFT sales. DraftKings processes $1B+ monthly. The intersection of gaming and crypto is massive—our infrastructure powers in-game economies, instant payouts, and player wallets.",
     icon: "🎮",
     heroImage: "/images/tablet.jpg",
     stats: [
-      { value: "<10s", label: "Teleport" },
-      { value: "MPC", label: "Custody" },
-      { value: "15+", label: "Chains" },
-      { value: "20+", label: "Staking" },
+      { value: "<1 sec", label: "Deposits" },
+      { value: "200+", label: "Countries" },
+      { value: "$1B+", label: "Monthly Volume" },
+      { value: "MPC", label: "Player Wallets" },
     ],
     useCases: [
-      { title: "Corporate Treasury", description: "Manage crypto treasury across chains with automated rebalancing and staking yields." },
-      { title: "Instant Settlements", description: "Teleport assets across chains in seconds for player deposits and withdrawals." },
-      { title: "Token Economies", description: "Launch and manage in-game tokens with MPC custody and compliance." },
-      { title: "Staking Rewards", description: "Offer players staking yields on idle assets with institutional security." },
+      { title: "Instant Deposits", description: "Like DraftKings—deposits appear in seconds via crypto rails. Support BTC, ETH, USDC, and 50+ tokens." },
+      { title: "Player Wallets", description: "Like Axie's Ronin—embedded wallets for in-game assets. MPC custody, no seed phrases, gasless transactions." },
+      { title: "NFT Marketplace", description: "Like Immutable X—zero gas fees, instant trades, carbon-neutral NFTs. Built-in royalty enforcement." },
+      { title: "Token Economies", description: "Like Gala Games—launch in-game tokens, manage inflation, and enable player-owned economies." },
     ],
     features: [
-      "Teleport cross-chain",
-      "MPC player wallets",
-      "Corporate treasury",
-      "Staking integration",
-      "Token issuance",
-      "NFT minting & trading",
-      "Post-quantum security",
-      "Compliance tools",
+      "Instant crypto deposits (no confirmations)",
+      "MPC player wallets (no seed phrases)",
+      "Gasless transactions (meta-transactions)",
+      "NFT minting & marketplace",
+      "In-game token issuance",
+      "Anti-fraud & velocity checks",
+      "Age verification integration",
+      "Multi-jurisdiction compliance",
     ],
-    integrations: ["Game engines", "NFT marketplaces", "Staking networks", "KYC providers"],
+    integrations: ["Unity", "Unreal Engine", "Immutable X", "OpenSea", "Polygon", "Arbitrum", "GamStop"],
   },
   "professional-services": {
     title: "Professional Services",
-    subtitle: "Global Invoicing & Multi-Currency Receivables",
-    description: "Bill clients in 180+ currencies, manage global receivables, and automate reconciliation. Perfect for law firms, consultancies, and agencies.",
+    subtitle: "Global Billing Like Big 4 Firms",
+    description: "Deloitte bills in 150+ countries. Kirkland & Ellis topped $6B in revenue. Law firms, consultancies, and agencies need global billing—we make it seamless.",
     icon: "💼",
     heroImage: "/images/working_team.jpg",
     stats: [
       { value: "180+", label: "Currencies" },
-      { value: "T+1", label: "Settlement" },
-      { value: "100%", label: "Reconciled" },
-      { value: "50%", label: "Time Saved" },
+      { value: "60%", label: "Faster Collections" },
+      { value: "100%", label: "Auto-Reconciled" },
+      { value: "$1B+", label: "Billed Annually" },
     ],
     useCases: [
-      { title: "Global Invoicing", description: "Send invoices in client's currency with automatic FX." },
-      { title: "Multi-Currency Receivables", description: "Collect payments from anywhere, any currency." },
-      { title: "Automated Reconciliation", description: "Match payments to invoices automatically." },
-      { title: "Expense Management", description: "Corporate cards and expense tracking for teams." },
+      { title: "Multi-Currency Invoicing", description: "Like Baker McKenzie—invoice in 180+ currencies with real-time FX rates. Clients pay in local currency, you receive USD/EUR." },
+      { title: "Trust & Escrow", description: "Like law firm IOLTA accounts—segregated client funds, automated three-way reconciliation, full audit trail." },
+      { title: "Matter Billing", description: "Like Clio's billing—track time, expenses, and disbursements. Auto-generate invoices, handle retainers." },
+      { title: "Expense Management", description: "Like Brex for law firms—corporate cards with matter codes, receipt capture, and policy controls." },
     ],
     features: [
-      "Multi-currency invoicing",
-      "Automatic payment matching",
+      "Multi-currency invoicing (180+ currencies)",
+      "Trust/IOLTA account management",
+      "Automated three-way reconciliation",
+      "Corporate cards with matter codes",
       "Client payment portals",
-      "Corporate cards",
-      "Expense management",
-      "Time & billing integration",
-      "Trust accounting",
-      "Audit trails",
+      "Retainer & evergreen management",
+      "State bar compliance (all 50 states)",
+      "Clio & Thomson Reuters integration",
     ],
-    integrations: ["QuickBooks", "Xero", "Clio", "Practice management"],
+    integrations: ["Clio", "Thomson Reuters", "Aderant", "NetDocuments", "QuickBooks", "Xero", "Bill.com"],
   },
   "real-estate": {
     title: "Real Estate",
-    subtitle: "Tokenization, Treasury & Investor Management",
-    description: "Tokenize properties with MPC custody, manage crypto treasury with staking yields, and teleport distributions to global investors instantly.",
+    subtitle: "Tokenize Like RealT or Cadre",
+    description: "RealT tokenized $100M+ in properties. Cadre manages $4B in assets. Real estate tokenization enables fractional ownership, global investors, and 24/7 liquidity.",
     icon: "🏢",
     heroImage: "/images/tower_full.jpg",
     stats: [
-      { value: "15+", label: "Chains (Teleport)" },
-      { value: "MPC", label: "Custody" },
-      { value: "20+", label: "Staking" },
-      { value: "PQ", label: "Post-Quantum" },
+      { value: "$16T", label: "Market Size" },
+      { value: "24/7", label: "Liquidity" },
+      { value: "$50", label: "Min Investment" },
+      { value: "SEC", label: "Compliant" },
     ],
     useCases: [
-      { title: "Property Tokenization", description: "Issue security tokens with MPC custody and post-quantum security." },
-      { title: "Treasury Management", description: "Manage fund treasury across chains with staking yields and automated rebalancing." },
-      { title: "Teleport Distributions", description: "Instant cross-chain distributions to investors worldwide." },
-      { title: "Investor Staking", description: "Offer investors staking yields on idle assets with institutional controls." },
+      { title: "Property Tokenization", description: "Like RealT—fractionalize properties into security tokens. $50 minimum investment, SEC Reg D/Reg A+ compliant." },
+      { title: "Global Distributions", description: "Like Cadre—pay dividends to 10,000+ investors worldwide via stablecoin rails. Instant, no wire fees." },
+      { title: "Secondary Trading", description: "Like tZERO—enable 24/7 trading of property tokens on regulated ATS platforms. Real liquidity." },
+      { title: "Fund Administration", description: "Like Juniper Square—cap table management, K-1 distribution, and investor portals for real estate funds." },
     ],
     features: [
-      "Security token issuance",
-      "MPC + HSM custody",
-      "Omni-chain treasury",
-      "Staking yields",
-      "Teleport distributions",
-      "Post-quantum security",
+      "SEC Reg D / Reg A+ token issuance",
+      "Fractional ownership ($50 minimum)",
+      "Automated dividend distribution",
       "Cap table management",
-      "Full compliance",
+      "Accredited investor verification",
+      "Secondary market integration (tZERO)",
+      "K-1 and tax document generation",
+      "Global investor onboarding",
     ],
-    integrations: ["Title companies", "Staking networks", "Legal platforms", "Investor CRMs"],
+    integrations: ["tZERO", "Securitize", "Juniper Square", "AppFolio", "Yardi", "Dealpath", "Carta"],
   },
   "ngo": {
     title: "NGOs, DAOs & Non-Profits",
-    subtitle: "Lux DAO Treasury & Transparent Governance",
-    description: "Native Lux DAO governance at lux.vote. Multi-sig treasury with MPC custody, token voting, role management, payment streams, and transparent fund tracking across 200+ countries.",
+    subtitle: "Transparent Treasury Like Gitcoin or UNICEF",
+    description: "Gitcoin distributed $50M in grants. UNICEF's CryptoFund accepts ETH. DAOs hold $10B+ in treasuries. Transparent, programmable money is transforming philanthropy.",
     icon: "🤝",
     heroImage: "/images/working_team2.jpg",
     stats: [
+      { value: "$10B+", label: "DAO Treasuries" },
       { value: "200+", label: "Countries" },
-      { value: "5+", label: "Voting Types" },
-      { value: "100%", label: "On-Chain" },
-      { value: "T+0", label: "Execution" },
+      { value: "100%", label: "Transparent" },
+      { value: "T+0", label: "Grant Execution" },
     ],
     useCases: [
-      { title: "DAO Treasury", description: "Multi-sig treasury with MPC custody, timelocks, and spending policies via Lux DAO." },
-      { title: "Token Voting", description: "Token-weighted governance with delegation support." },
-      { title: "Role Management", description: "Granular permissions for treasurers, voters, admins, and contributors." },
-      { title: "Payment Streams", description: "Stream management for vesting, payroll, and grants." },
+      { title: "DAO Treasury", description: "Like Uniswap's $3B treasury—multi-sig with timelocks, spending limits, and on-chain execution. Governed by token holders." },
+      { title: "Quadratic Funding", description: "Like Gitcoin Grants—democratic allocation where small donations get matching. Reduce plutocracy, amplify community voice." },
+      { title: "Grant Streaming", description: "Like Sablier—stream grants to recipients over time. Milestone-based releases, instant clawback if targets missed." },
+      { title: "Global Donations", description: "Like UNICEF CryptoFund—accept BTC, ETH from donors worldwide. Instant conversion, transparent allocation." },
     ],
     features: [
-      "Lux DAO (lux.vote)",
-      "Multi-sig treasury (2-of-3, 3-of-5)",
-      "Token-weighted voting",
-      "Role-based permissions",
-      "Payment streams & vesting",
-      "On-chain execution",
-      "Global donations (200+ countries)",
+      "Multi-sig treasury (Safe compatible)",
+      "Quadratic voting & funding",
+      "Grant streaming (Sablier-style)",
+      "Token-weighted governance",
+      "On-chain proposal execution",
+      "Global donation acceptance",
       "Transparent fund tracking",
+      "501(c)(3) compliant receipts",
     ],
-    integrations: ["Lux DAO (lux.vote)", "Snapshot", "Tally", "Safe", "Donor platforms"],
+    integrations: ["Safe (Gnosis)", "Snapshot", "Tally", "Gitcoin", "The Giving Block", "Every.org", "Endaoment"],
   },
 };
 
@@ -472,7 +472,7 @@ export default function IndustryPage() {
 }
 
 const CheckIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <polyline points="20 6 9 17 4 12" />
   </svg>
 );
@@ -480,7 +480,7 @@ const CheckIcon = () => (
 const NotFound = styled.div`
   padding: 10rem 2rem;
   text-align: center;
-  color: rgba(255, 255, 255, 0.65);
+  color: ${({ theme }) => theme.colors.secondary};
   font-size: 1.8rem;
 `;
 
@@ -513,9 +513,9 @@ const HeroBadge = styled.span`
   padding: 0.4rem 1rem;
   font-size: 1.2rem;
   font-weight: 500;
-  color: #FFFFFF;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: ${({ theme }) => theme.colors.secondary};
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 20px;
   margin-bottom: 1.5rem;
 `;
@@ -524,7 +524,7 @@ const HeroTitle = styled.h1`
   font-size: 4rem;
   font-weight: 600;
   line-height: 1.1;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   margin-bottom: 1.5rem;
   letter-spacing: -0.02em;
   @media ${DeviceSize.sm} { font-size: 2.8rem; }
@@ -533,7 +533,7 @@ const HeroTitle = styled.h1`
 const HeroDescription = styled.p`
   font-size: 1.8rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.65);
+  color: ${({ theme }) => theme.colors.secondary};
   margin-bottom: 2rem;
   @media ${DeviceSize.sm} { font-size: 1.6rem; }
 `;
@@ -547,8 +547,8 @@ const HeroButtons = styled.div`
 
 const StatsSection = styled.section`
   padding: 3rem 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid ${({ theme }) => theme.colors.border};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
 const StatsGrid = styled.div`
@@ -565,24 +565,24 @@ const StatCard = styled.div`
 const StatValue = styled.div`
   font-size: 3rem;
   font-weight: 700;
-  color: #FFFFFF;
+  color: ${({ theme }) => theme.colors.primary};
   margin-bottom: 0.25rem;
 `;
 
 const StatLabel = styled.div`
   font-size: 1.3rem;
-  color: rgba(255, 255, 255, 0.45);
+  color: ${({ theme }) => theme.colors.muted};
 `;
 
 const Section = styled.section`
   padding: 4rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
 const SectionTitle = styled.h2`
   font-size: 2.4rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   margin-bottom: 2rem;
 `;
 
@@ -594,23 +594,27 @@ const UseCasesGrid = styled.div`
 `;
 
 const UseCaseCard = styled.div`
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 12px;
   padding: 1.5rem;
+  transition: border-color 0.2s ease;
+  &:hover {
+    border-color: ${({ theme }) => theme.colors.borderHover};
+  }
 `;
 
 const UseCaseTitle = styled.h3`
   font-size: 1.6rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   margin-bottom: 0.5rem;
 `;
 
 const UseCaseDescription = styled.p`
   font-size: 1.4rem;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.45);
+  color: ${({ theme }) => theme.colors.muted};
 `;
 
 const FeaturesGrid = styled.div`
@@ -625,8 +629,8 @@ const FeatureItem = styled.div`
   align-items: center;
   gap: 0.75rem;
   font-size: 1.4rem;
-  color: rgba(255, 255, 255, 0.65);
-  svg { flex-shrink: 0; }
+  color: ${({ theme }) => theme.colors.secondary};
+  svg { flex-shrink: 0; color: ${({ theme }) => theme.colors.primary}; }
 `;
 
 const IntegrationsGrid = styled.div`
@@ -639,9 +643,9 @@ const IntegrationBadge = styled.span`
   display: inline-block;
   padding: 0.5rem 1rem;
   font-size: 1.3rem;
-  color: rgba(255, 255, 255, 0.65);
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: ${({ theme }) => theme.colors.secondary};
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 20px;
 `;
 
@@ -653,13 +657,13 @@ const CTASection = styled.section`
 const CTATitle = styled.h2`
   font-size: 3rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   margin-bottom: 1rem;
 `;
 
 const CTADescription = styled.p`
   font-size: 1.6rem;
-  color: rgba(255, 255, 255, 0.65);
+  color: ${({ theme }) => theme.colors.secondary};
   margin-bottom: 2rem;
 `;
 

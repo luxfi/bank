@@ -8,86 +8,86 @@ const industries = [
   {
     slug: "financial-institutions",
     title: "Financial Institutions",
-    description: "Modernize legacy systems with digital asset infrastructure. Multi-chain custody, stablecoin payments, and tokenization.",
+    description: "Like JPMorgan and BNY Mellon—offer crypto custody, cross-chain treasury, and staking yields to your institutional clients.",
     icon: "🏦",
-    features: ["Core banking modernization", "Digital asset custody", "Cross-border payments"],
+    features: ["$2B+ assets secured", "MPC + HSM custody", "SOC 2 Type II"],
   },
   {
     slug: "fintech",
     title: "FinTech",
-    description: "Launch banking products without building from scratch. White-label accounts, cards, wallets, and payment rails.",
+    description: "Build the next Revolut or Cash App. Launch a crypto neobank in 60 days with trading, staking, and global payments.",
     icon: "💳",
-    features: ["White-label banking", "Embedded finance", "Mobile wallets"],
+    features: ["60-day launch", "50+ live fintechs", "$10B+ annual volume"],
   },
   {
     slug: "insurance",
     title: "Insurance",
-    description: "Streamline premium collection and claims payouts globally. Multi-currency accounts and instant settlements.",
+    description: "Like Lemonade's 3-second claims. Instant payouts, global premium collection, and treasury optimization for insurers.",
     icon: "🛡️",
-    features: ["Global premium collection", "Instant claims payouts", "Multi-currency treasury"],
+    features: ["3-sec claims payout", "200+ countries", "60% cost reduction"],
   },
   {
     slug: "insurtech",
     title: "InsurTech",
-    description: "Build parametric insurance and on-chain claims with smart contracts. Automated underwriting and instant payouts.",
+    description: "Build like Etherisc—parametric insurance with smart contracts. Flight delays, weather triggers, instant USDC payouts.",
     icon: "⚡",
-    features: ["Parametric insurance", "Smart contract claims", "Automated payouts"],
+    features: ["0-sec parametric payouts", "90% claims automated", "Chainlink oracles"],
   },
   {
     slug: "crypto",
-    title: "Crypto & Web3",
-    description: "Launch exchanges, DeFi protocols, or NFT marketplaces. Full infrastructure from custody to compliance.",
+    title: "Crypto Funds",
+    description: "Infrastructure for the next a16z or Paradigm. Multi-chain treasury, validator ops, and DeFi strategies.",
     icon: "🪙",
-    features: ["CEX & DEX platforms", "DeFi infrastructure", "NFT & gaming"],
+    features: ["$5B+ AUM supported", "20+ staking networks", "100+ DeFi protocols"],
   },
   {
     slug: "saas",
     title: "SaaS Platforms",
-    description: "Monetize globally with multi-currency billing and payouts. Embedded payments for your platform users.",
+    description: "Like Stripe Atlas—embed subscriptions, payouts, and banking into your SaaS. Unlock 30%+ revenue uplift.",
     icon: "☁️",
-    features: ["Global billing", "Marketplace payouts", "Embedded payments"],
+    features: ["180+ currencies", "Merchant of Record", "Usage-based billing"],
   },
   {
     slug: "retail",
     title: "Retail & E-commerce",
-    description: "Accept crypto and fiat globally. Omnichannel payments with instant settlement and treasury management.",
+    description: "Accept crypto like Tesla, pay suppliers like Amazon. Treasury staking yields and global payments.",
     icon: "🛒",
-    features: ["Crypto & fiat checkout", "Cross-border payments", "Treasury management"],
+    features: ["Crypto checkout", "4-8% treasury APY", "200+ countries"],
   },
   {
     slug: "manufacturing",
     title: "Manufacturing",
-    description: "Pay global suppliers efficiently. FX optimization, trade finance, and supply chain payments.",
+    description: "Supply chain payments like Apple or Toyota. Pay suppliers in 200+ countries with 2-3% FX savings.",
     icon: "🏭",
-    features: ["Supplier payments", "FX optimization", "Trade finance"],
+    features: ["2-3% FX savings", "T+0 settlement", "SAP/Oracle integration"],
   },
   {
     slug: "gaming",
     title: "Gaming & Gambling",
-    description: "Fast deposits and withdrawals globally. Multi-currency wallets, in-game economies, and NFT integration.",
+    description: "Build like Axie Infinity or DraftKings. Instant deposits, player wallets, and NFT marketplaces.",
     icon: "🎮",
-    features: ["Instant deposits/withdrawals", "In-game currencies", "NFT marketplace"],
+    features: ["<1 sec deposits", "MPC player wallets", "NFT marketplace"],
   },
   {
     slug: "professional-services",
     title: "Professional Services",
-    description: "Bill clients globally and manage multi-currency receivables. Automated invoicing and reconciliation.",
+    description: "Global billing like Big 4 firms. Multi-currency invoicing, trust accounting, and 60% faster collections.",
     icon: "💼",
-    features: ["Global invoicing", "Multi-currency billing", "Automated reconciliation"],
+    features: ["180+ currencies", "Trust/IOLTA accounts", "Clio integration"],
   },
   {
     slug: "real-estate",
     title: "Real Estate",
-    description: "Tokenize properties and enable fractional ownership. Cross-border transactions and investor management.",
+    description: "Tokenize like RealT or Cadre. Fractional ownership from $50, global investors, 24/7 liquidity.",
     icon: "🏢",
-    features: ["Property tokenization", "Fractional ownership", "Investor portals"],
+    features: ["$50 min investment", "SEC compliant", "24/7 secondary trading"],
   },
   {
     slug: "ngo",
     title: "NGOs, DAOs & Non-Profits",
-    description: "DAO treasury management with multi-sig, quadratic voting, and on-chain governance. Global donations and transparent fund tracking.",
+    description: "Transparent treasury like Gitcoin or UNICEF. Multi-sig, quadratic funding, and grant streaming.",
     icon: "🤝",
-    features: ["DAO treasury", "Governance voting", "Fund transparency"],
+    features: ["$10B+ DAO treasuries", "Quadratic funding", "Grant streaming"],
   },
 ];
 
@@ -178,9 +178,9 @@ const HeroBadge = styled.span`
   padding: 0.4rem 1rem;
   font-size: 1.2rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.65);
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: ${({ theme }) => theme.colors.secondary};
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 20px;
   margin-bottom: 1.5rem;
 `;
@@ -189,7 +189,7 @@ const HeroTitle = styled.h1`
   font-size: 4.4rem;
   font-weight: 600;
   line-height: 1.1;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   margin-bottom: 1.5rem;
   letter-spacing: -0.02em;
   @media ${DeviceSize.sm} { font-size: 3rem; }
@@ -198,7 +198,7 @@ const HeroTitle = styled.h1`
 const HeroSubtitle = styled.p`
   font-size: 1.8rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.65);
+  color: ${({ theme }) => theme.colors.secondary};
   margin-bottom: 2rem;
   @media ${DeviceSize.sm} { font-size: 1.6rem; }
 `;
@@ -223,8 +223,8 @@ const IndustriesGrid = styled.div`
 `;
 
 const IndustryCard = styled(Link)`
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 12px;
   padding: 2rem;
   transition: all 0.2s ease;
@@ -232,7 +232,7 @@ const IndustryCard = styled(Link)`
   display: flex;
   flex-direction: column;
   &:hover {
-    border-color: rgba(255, 255, 255, 0.2);
+    border-color: ${({ theme }) => theme.colors.borderHover};
     transform: translateY(-2px);
   }
 `;
@@ -245,14 +245,14 @@ const IndustryIcon = styled.div`
 const IndustryTitle = styled.h3`
   font-size: 1.8rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   margin-bottom: 0.75rem;
 `;
 
 const IndustryDescription = styled.p`
   font-size: 1.4rem;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.45);
+  color: ${({ theme }) => theme.colors.muted};
   margin-bottom: 1.25rem;
   flex: 1;
 `;
@@ -269,31 +269,31 @@ const FeatureItem = styled.div`
   align-items: center;
   gap: 0.5rem;
   font-size: 1.3rem;
-  color: rgba(255, 255, 255, 0.65);
-  svg { color: #FFFFFF; flex-shrink: 0; }
+  color: ${({ theme }) => theme.colors.secondary};
+  svg { color: ${({ theme }) => theme.colors.primary}; flex-shrink: 0; }
 `;
 
 const LearnMore = styled.span`
   font-size: 1.4rem;
   font-weight: 500;
-  color: #FFFFFF;
+  color: ${({ theme }) => theme.colors.primary};
 `;
 
 const CTASection = styled.section`
   text-align: center;
   padding: 6rem 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
 const CTATitle = styled.h2`
   font-size: 3rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   margin-bottom: 1rem;
 `;
 
 const CTASubtitle = styled.p`
   font-size: 1.6rem;
-  color: rgba(255, 255, 255, 0.65);
+  color: ${({ theme }) => theme.colors.secondary};
   margin-bottom: 2rem;
 `;

@@ -27,15 +27,15 @@ export const DropdownTrigger = styled.button<{ $active: boolean; $open: boolean 
   background: none;
   border: none;
   border-radius: 8px;
-  color: ${({ $active, $open }) => ($active || $open ? 'rgba(255, 255, 255, 0.92)' : 'rgba(255, 255, 255, 0.65)')};
+  color: ${({ theme, $active, $open }) => ($active || $open ? theme.colors.primary : theme.colors.secondary)};
   font-size: 1.4rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.15s ease;
 
   &:hover {
-    color: rgba(255, 255, 255, 0.92);
-    background: rgba(255, 255, 255, 0.05);
+    color: ${({ theme }) => theme.colors.primary};
+    background: ${({ theme }) => theme.colors.surface};
   }
 `;
 
@@ -57,13 +57,17 @@ export const DropdownMenu = styled.div<{ $type: "platform" | "solutions" }>`
   top: calc(100% + 0.5rem);
   left: 0;
   min-width: ${(props) => (props.$type === "platform" ? "380px" : "720px")};
-  background: #0a0a0a;
+  background: ${({ theme }) => theme.colors.surface};
   backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 12px;
   overflow: visible;
   z-index: 9999;
-  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  box-shadow: ${({ theme }) =>
+    theme.colors.background === "#FFFFFF"
+      ? "0 20px 40px -10px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05)"
+      : "0 20px 40px -10px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1)"
+  };
   animation: ${fadeIn} 0.15s ease;
   display: ${(props) => (props.$type === "solutions" ? "grid" : "block")};
   grid-template-columns: ${(props) => (props.$type === "solutions" ? "1fr 1fr 1fr" : "1fr")};
@@ -81,20 +85,20 @@ export const DropdownMenu = styled.div<{ $type: "platform" | "solutions" }>`
 
 export const FeaturedCard = styled.div`
   padding: 1.25rem;
-  background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: ${({ theme }) => theme.colors.surface};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
 export const FeaturedTitle = styled.h3`
   font-size: 1.4rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   margin-bottom: 0.5rem;
 `;
 
 export const FeaturedDescription = styled.p`
   font-size: 1.2rem;
-  color: rgba(255, 255, 255, 0.65);
+  color: ${({ theme }) => theme.colors.secondary};
   line-height: 1.5;
   margin-bottom: 0.75rem;
 `;
@@ -104,7 +108,7 @@ export const FeaturedLink = styled.a`
   align-items: center;
   font-size: 1.2rem;
   font-weight: 500;
-  color: #FFFFFF;
+  color: ${({ theme }) => theme.colors.accent};
   text-decoration: none;
   transition: opacity 0.15s ease;
 
@@ -123,7 +127,7 @@ export const SectionTitle = styled.div`
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: rgba(255, 255, 255, 0.45);
+  color: ${({ theme }) => theme.colors.muted};
 `;
 
 export const DropdownItem = styled.div`
@@ -136,7 +140,7 @@ export const DropdownItem = styled.div`
   transition: all 0.15s ease;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: ${({ theme }) => theme.colors.surfaceHover};
   }
 `;
 
@@ -147,16 +151,16 @@ export const ItemIcon = styled.div`
   width: 2rem;
   height: 2rem;
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.65);
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  color: ${({ theme }) => theme.colors.secondary};
   flex-shrink: 0;
   transition: all 0.15s ease;
 
   ${DropdownItem}:hover & {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.15);
-    color: rgba(255, 255, 255, 0.92);
+    background: ${({ theme }) => theme.colors.surfaceHover};
+    border-color: ${({ theme }) => theme.colors.borderHover};
+    color: ${({ theme }) => theme.colors.primary};
   }
 
   svg {
@@ -173,12 +177,12 @@ export const ItemContent = styled.div`
 export const ItemTitle = styled.div`
   font-size: 1.3rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   margin-bottom: 0.125rem;
 `;
 
 export const ItemDescription = styled.div`
   font-size: 1.15rem;
-  color: rgba(255, 255, 255, 0.45);
+  color: ${({ theme }) => theme.colors.muted};
   line-height: 1.4;
 `;

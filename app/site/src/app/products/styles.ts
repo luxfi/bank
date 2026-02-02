@@ -47,9 +47,9 @@ export const ProductBadge = styled.span<{ $color?: string }>`
   padding: 0.4rem 1rem;
   font-size: 1.2rem;
   font-weight: 500;
-  color: ${props => props.$color || 'rgba(255, 255, 255, 0.65)'};
-  background: ${props => props.$color ? `${props.$color}15` : 'rgba(255, 255, 255, 0.05)'};
-  border: 1px solid ${props => props.$color ? `${props.$color}30` : 'rgba(255, 255, 255, 0.08)'};
+  color: ${({ theme, $color }) => $color || theme.colors.secondary};
+  background: ${({ theme, $color }) => $color ? `${$color}15` : theme.colors.surface};
+  border: 1px solid ${({ theme, $color }) => $color ? `${$color}30` : theme.colors.border};
   border-radius: 20px;
 `;
 
@@ -57,7 +57,7 @@ export const HeroTitle = styled.h1`
   font-size: 4.4rem;
   font-weight: 600;
   line-height: 1.1;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   margin-bottom: 1.5rem;
   letter-spacing: -0.02em;
 
@@ -73,7 +73,7 @@ export const HeroTitle = styled.h1`
 export const HeroSubtitle = styled.p`
   font-size: 1.8rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.65);
+  color: ${({ theme }) => theme.colors.secondary};
   margin-bottom: 2rem;
   max-width: 640px;
   margin-left: auto;
@@ -101,7 +101,7 @@ export const TwoColumnSection = styled.section<{ $reverse?: boolean }>`
   gap: 4rem;
   align-items: center;
   padding: 6rem 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid ${({ theme }) => theme.colors.border};
 
   @media ${DeviceSize.md} {
     grid-template-columns: 1fr;
@@ -118,7 +118,7 @@ export const ContentBlock = styled.div`
 export const BlockTitle = styled.h2`
   font-size: 2.8rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   letter-spacing: -0.02em;
 
   @media ${DeviceSize.sm} {
@@ -129,7 +129,7 @@ export const BlockTitle = styled.h2`
 export const BlockText = styled.p`
   font-size: 1.6rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.65);
+  color: ${({ theme }) => theme.colors.secondary};
 `;
 
 // Feature List
@@ -161,14 +161,14 @@ export const FeatureCheck = styled.div<{ $color?: string }>`
 
 export const FeatureText = styled.span`
   font-size: 1.4rem;
-  color: rgba(255, 255, 255, 0.65);
+  color: ${({ theme }) => theme.colors.secondary};
   line-height: 1.4;
 `;
 
 // Visual Block (for diagrams/mockups)
 export const VisualBlock = styled.div`
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 16px;
   padding: 2rem;
   min-height: 300px;
@@ -180,7 +180,7 @@ export const VisualBlock = styled.div`
 // Grid Section
 export const Section = styled.section`
   padding: 6rem 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid ${({ theme }) => theme.colors.border};
 
   @media ${DeviceSize.sm} {
     padding: 4rem 0;
@@ -195,7 +195,7 @@ export const SectionHeader = styled.div`
 export const SectionTitle = styled.h2`
   font-size: 3rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   margin-bottom: 1rem;
   letter-spacing: -0.02em;
 
@@ -206,7 +206,7 @@ export const SectionTitle = styled.h2`
 
 export const SectionSubtitle = styled.p`
   font-size: 1.6rem;
-  color: rgba(255, 255, 255, 0.65);
+  color: ${({ theme }) => theme.colors.secondary};
   max-width: 600px;
   margin: 0 auto;
 `;
@@ -227,14 +227,14 @@ export const CardGrid = styled.div<{ $cols?: number }>`
 `;
 
 export const Card = styled.div<{ $accent?: string }>`
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 12px;
   padding: 2rem;
   transition: all 0.2s ease;
 
   &:hover {
-    border-color: ${props => props.$accent ? `${props.$accent}50` : 'rgba(255, 255, 255, 0.15)'};
+    border-color: ${({ theme, $accent }) => $accent ? `${$accent}50` : theme.colors.borderHover};
     transform: translateY(-2px);
   }
 `;
@@ -243,12 +243,12 @@ export const CardIcon = styled.div<{ $color?: string }>`
   width: 3rem;
   height: 3rem;
   border-radius: 10px;
-  background: ${props => props.$color ? `${props.$color}15` : 'rgba(255, 255, 255, 0.05)'};
-  border: 1px solid ${props => props.$color ? `${props.$color}30` : 'rgba(255, 255, 255, 0.08)'};
+  background: ${({ theme, $color }) => $color ? `${$color}15` : theme.colors.surface};
+  border: 1px solid ${({ theme, $color }) => $color ? `${$color}30` : theme.colors.border};
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${props => props.$color || 'rgba(255, 255, 255, 0.65)'};
+  color: ${({ theme, $color }) => $color || theme.colors.secondary};
   margin-bottom: 1.25rem;
 
   svg {
@@ -260,20 +260,20 @@ export const CardIcon = styled.div<{ $color?: string }>`
 export const CardTitle = styled.h3`
   font-size: 1.6rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   margin-bottom: 0.5rem;
 `;
 
 export const CardDescription = styled.p`
   font-size: 1.4rem;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.45);
+  color: ${({ theme }) => theme.colors.muted};
 `;
 
 // Code Block
 export const CodeBlock = styled.div`
-  background: rgba(15, 22, 32, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 12px;
   overflow: hidden;
 `;
@@ -282,16 +282,16 @@ export const CodeHeader = styled.div`
   display: flex;
   gap: 0.5rem;
   padding: 1rem 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+  background: ${({ theme }) => theme.colors.surface};
 `;
 
 export const CodeTab = styled.span<{ $active?: boolean }>`
   padding: 0.4rem 0.8rem;
   font-size: 1.2rem;
   font-family: ui-monospace, monospace;
-  color: ${props => props.$active ? 'rgba(255,255,255,0.92)' : 'rgba(255,255,255,0.45)'};
-  background: ${props => props.$active ? 'rgba(255,255,255,0.08)' : 'transparent'};
+  color: ${({ theme, $active }) => $active ? theme.colors.primary : theme.colors.muted};
+  background: ${({ theme, $active }) => $active ? theme.colors.surfaceHover : 'transparent'};
   border-radius: 6px;
 `;
 
@@ -300,14 +300,14 @@ export const CodeContent = styled.pre`
   margin: 0;
   font-size: 1.25rem;
   font-family: ui-monospace, SFMono-Regular, monospace;
-  color: rgba(255, 255, 255, 0.85);
+  color: ${({ theme }) => theme.colors.primary};
   line-height: 1.7;
   overflow-x: auto;
 
   .keyword { color: #C792EA; }
   .string { color: #C3E88D; }
   .property { color: #82AAFF; }
-  .comment { color: rgba(255,255,255,0.35); }
+  .comment { color: ${({ theme }) => theme.colors.muted}; }
   .number { color: #F78C6C; }
 `;
 
@@ -330,40 +330,40 @@ export const StatsRow = styled.div`
 export const StatCard = styled.div`
   text-align: center;
   padding: 2rem;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 12px;
 `;
 
 export const StatValue = styled.div<{ $color?: string }>`
   font-size: 3rem;
   font-weight: 600;
-  color: ${props => props.$color || 'rgba(255, 255, 255, 0.92)'};
+  color: ${({ theme, $color }) => $color || theme.colors.primary};
   margin-bottom: 0.5rem;
 `;
 
 export const StatLabel = styled.div`
   font-size: 1.3rem;
-  color: rgba(255, 255, 255, 0.45);
+  color: ${({ theme }) => theme.colors.muted};
 `;
 
 // CTA Section
 export const CTASection = styled.section`
   text-align: center;
   padding: 6rem 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
 export const CTATitle = styled.h2`
   font-size: 3rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   margin-bottom: 1rem;
 `;
 
 export const CTASubtitle = styled.p`
   font-size: 1.6rem;
-  color: rgba(255, 255, 255, 0.65);
+  color: ${({ theme }) => theme.colors.secondary};
   margin-bottom: 2rem;
   max-width: 500px;
   margin-left: auto;
@@ -372,8 +372,8 @@ export const CTASubtitle = styled.p`
 
 // Architecture Diagram
 export const DiagramContainer = styled.div`
-  background: rgba(15, 22, 32, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 16px;
   padding: 2.5rem;
   display: flex;
@@ -401,8 +401,8 @@ export const DiagramNode = styled.div<{ $type?: 'primary' | 'secondary' | 'highl
   text-align: center;
   min-width: 120px;
 
-  ${props => {
-    switch (props.$type) {
+  ${({ theme, $type }) => {
+    switch ($type) {
       case 'primary':
         return `
           background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(34, 211, 238, 0.2) 100%);
@@ -417,9 +417,9 @@ export const DiagramNode = styled.div<{ $type?: 'primary' | 'secondary' | 'highl
         `;
       default:
         return `
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          color: rgba(255, 255, 255, 0.75);
+          background: ${theme.colors.surface};
+          border: 1px solid ${theme.colors.border};
+          color: ${theme.colors.secondary};
         `;
     }
   }}
@@ -428,14 +428,14 @@ export const DiagramNode = styled.div<{ $type?: 'primary' | 'secondary' | 'highl
 export const DiagramArrow = styled.div`
   display: flex;
   justify-content: center;
-  color: rgba(255, 255, 255, 0.25);
+  color: ${({ theme }) => theme.colors.muted};
   font-size: 1.5rem;
 `;
 
 // Technical Specs Table
 export const SpecsTable = styled.div`
-  background: rgba(15, 22, 32, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 12px;
   overflow: hidden;
 `;
@@ -445,8 +445,8 @@ export const SpecsRow = styled.div<{ $header?: boolean }>`
   grid-template-columns: 1fr 2fr;
   gap: 1rem;
   padding: 1rem 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  background: ${props => props.$header ? 'rgba(255, 255, 255, 0.02)' : 'transparent'};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+  background: ${({ theme, $header }) => $header ? theme.colors.surface : 'transparent'};
 
   &:last-child {
     border-bottom: none;
@@ -458,12 +458,12 @@ export const SpecsRow = styled.div<{ $header?: boolean }>`
 `;
 
 export const SpecsLabel = styled.span<{ $header?: boolean }>`
-  font-size: ${props => props.$header ? '1.2rem' : '1.3rem'};
-  font-weight: ${props => props.$header ? '600' : '500'};
-  color: ${props => props.$header ? 'rgba(255, 255, 255, 0.45)' : 'rgba(255, 255, 255, 0.65)'};
+  font-size: ${({ $header }) => $header ? '1.2rem' : '1.3rem'};
+  font-weight: ${({ $header }) => $header ? '600' : '500'};
+  color: ${({ theme, $header }) => $header ? theme.colors.muted : theme.colors.secondary};
 `;
 
 export const SpecsValue = styled.span`
   font-size: 1.3rem;
-  color: rgba(255, 255, 255, 0.85);
+  color: ${({ theme }) => theme.colors.primary};
 `;

@@ -144,11 +144,15 @@ export const PlatformRight = styled.div`
 
 // Dashboard Mockup
 export const DashboardMock = styled.div`
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  box-shadow: ${({ theme }) =>
+    theme.colors.background === "#FFFFFF"
+      ? "0 25px 50px -12px rgba(0, 0, 0, 0.15)"
+      : "0 25px 50px -12px rgba(0, 0, 0, 0.5)"
+  };
 `;
 
 export const DashboardBrowser = styled.div`
@@ -156,8 +160,8 @@ export const DashboardBrowser = styled.div`
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
-  background: rgba(255, 255, 255, 0.02);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: ${({ theme }) => theme.colors.surface};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
 export const BrowserDots = styled.div`
@@ -169,7 +173,7 @@ export const BrowserDot = styled.div<{ $color?: string }>`
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: ${props => props.$color || 'rgba(255, 255, 255, 0.15)'};
+  background: ${({ theme, $color }) => $color || theme.colors.border};
 `;
 
 export const BrowserUrl = styled.div`
@@ -179,11 +183,11 @@ export const BrowserUrl = styled.div`
 `;
 
 export const BrowserUrlBox = styled.div`
-  background: rgba(255, 255, 255, 0.05);
+  background: ${({ theme }) => theme.colors.surfaceHover};
   border-radius: 6px;
   padding: 0.35rem 1rem;
   font-size: 1.1rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: ${({ theme }) => theme.colors.muted};
   font-family: ui-monospace, monospace;
 `;
 
@@ -198,8 +202,8 @@ export const DashboardBody = styled.div`
 
 export const DashboardSidebar = styled.div`
   width: 180px;
-  background: rgba(0, 0, 0, 0.3);
-  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  background: ${({ theme }) => theme.colors.surface};
+  border-right: 1px solid ${({ theme }) => theme.colors.border};
   padding: 1rem;
 
   @media ${DeviceSize.sm} {
@@ -214,7 +218,7 @@ export const DashboardBrand = styled.div`
   gap: 0.75rem;
   padding-bottom: 1rem;
   margin-bottom: 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
 
   @media ${DeviceSize.sm} {
     justify-content: center;
@@ -238,7 +242,7 @@ export const DashboardBrandIcon = styled.div`
 export const DashboardBrandText = styled.span`
   font-size: 1.3rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
+  color: ${({ theme }) => theme.colors.primary};
 
   @media ${DeviceSize.sm} {
     display: none;
@@ -252,8 +256,8 @@ export const DashboardNavItem = styled.div<{ $active?: boolean }>`
   padding: 0.6rem 0.75rem;
   border-radius: 8px;
   font-size: 1.2rem;
-  color: ${props => props.$active ? 'rgba(255, 255, 255, 0.95)' : 'rgba(255, 255, 255, 0.5)'};
-  background: ${props => props.$active ? 'rgba(255, 255, 255, 0.08)' : 'transparent'};
+  color: ${({ theme, $active }) => $active ? theme.colors.primary : theme.colors.secondary};
+  background: ${({ theme, $active }) => $active ? theme.colors.surfaceHover : 'transparent'};
   margin-bottom: 0.25rem;
   cursor: pointer;
 
@@ -275,7 +279,7 @@ export const DashboardNavItem = styled.div<{ $active?: boolean }>`
 export const DashboardMain = styled.div`
   flex: 1;
   padding: 1.25rem;
-  background: #0a0a0a;
+  background: ${({ theme }) => theme.colors.background};
 `;
 
 export const DashboardTopBar = styled.div`
@@ -288,7 +292,7 @@ export const DashboardTopBar = styled.div`
 export const DashboardPageTitle = styled.h3`
   font-size: 1.4rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
 `;
 
 export const DashboardStatus = styled.div`
@@ -299,14 +303,14 @@ export const DashboardStatus = styled.div`
   background: rgba(34, 197, 94, 0.1);
   border-radius: 20px;
   font-size: 1rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: ${({ theme }) => theme.colors.secondary};
 `;
 
 export const StatusDot = styled.div<{ $color?: string }>`
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: ${props => props.$color || 'rgba(255, 255, 255, 0.7)'};
+  background: ${({ theme, $color }) => $color || theme.colors.secondary};
 `;
 
 export const DashboardStats = styled.div`
@@ -321,15 +325,15 @@ export const DashboardStats = styled.div`
 `;
 
 export const DashboardStat = styled.div`
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 10px;
   padding: 0.75rem;
 `;
 
 export const DashboardStatLabel = styled.div`
   font-size: 1rem;
-  color: rgba(255, 255, 255, 0.45);
+  color: ${({ theme }) => theme.colors.muted};
   margin-bottom: 0.25rem;
   display: flex;
   align-items: center;
@@ -344,17 +348,17 @@ export const DashboardStatLabel = styled.div`
 export const DashboardStatValue = styled.div`
   font-size: 1.6rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
 `;
 
 export const DashboardStatChange = styled.div<{ $positive?: boolean }>`
   font-size: 0.95rem;
-  color: ${props => props.$positive ? 'rgba(255, 255, 255, 0.7)' : 'rgba(255, 255, 255, 0.45)'};
+  color: ${({ theme, $positive }) => $positive ? theme.colors.secondary : theme.colors.muted};
 `;
 
 export const DashboardTable = styled.div`
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 10px;
   overflow: hidden;
 `;
@@ -365,9 +369,9 @@ export const DashboardTableRow = styled.div<{ $header?: boolean }>`
   gap: 0.5rem;
   padding: 0.65rem 0.75rem;
   font-size: 1.05rem;
-  color: ${props => props.$header ? 'rgba(255, 255, 255, 0.45)' : 'rgba(255, 255, 255, 0.75)'};
-  background: ${props => props.$header ? 'rgba(255, 255, 255, 0.02)' : 'transparent'};
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  color: ${({ theme, $header }) => $header ? theme.colors.muted : theme.colors.secondary};
+  background: ${({ theme, $header }) => $header ? theme.colors.surface : 'transparent'};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
 
   &:last-child {
     border-bottom: none;
@@ -384,11 +388,15 @@ export const DashboardTableRow = styled.div<{ $header?: boolean }>`
 
 // Terminal Mockup
 export const TerminalMock = styled.div`
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  box-shadow: ${({ theme }) =>
+    theme.colors.background === "#FFFFFF"
+      ? "0 25px 50px -12px rgba(0, 0, 0, 0.15)"
+      : "0 25px 50px -12px rgba(0, 0, 0, 0.5)"
+  };
   flex: 1;
 
   @media ${DeviceSize.md} {
@@ -401,15 +409,15 @@ export const TerminalHeader = styled.div`
   align-items: center;
   gap: 0.5rem;
   padding: 0.6rem 1rem;
-  background: rgba(255, 255, 255, 0.02);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: ${({ theme }) => theme.colors.surface};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
 export const TerminalTitle = styled.span`
   margin-left: 0.5rem;
   font-size: 1rem;
   font-family: ui-monospace, monospace;
-  color: rgba(255, 255, 255, 0.45);
+  color: ${({ theme }) => theme.colors.muted};
 `;
 
 export const TerminalBody = styled.div`
@@ -417,19 +425,19 @@ export const TerminalBody = styled.div`
   font-family: ui-monospace, SFMono-Regular, monospace;
   font-size: 1.1rem;
   line-height: 1.6;
-  background: #0a0a0a;
+  background: ${({ theme }) => theme.colors.background};
   min-height: 180px;
   max-height: 220px;
   overflow-y: auto;
 `;
 
 export const TerminalLine = styled.div<{ $type?: 'command' | 'success' | 'info' | 'highlight' }>`
-  color: ${props => {
-    switch(props.$type) {
-      case 'success': return 'rgba(255, 255, 255, 0.7)';
-      case 'highlight': return '#FFFFFF';
-      case 'info': return 'rgba(255, 255, 255, 0.5)';
-      default: return 'rgba(255, 255, 255, 0.75)';
+  color: ${({ theme, $type }) => {
+    switch($type) {
+      case 'success': return theme.colors.secondary;
+      case 'highlight': return theme.colors.primary;
+      case 'info': return theme.colors.muted;
+      default: return theme.colors.secondary;
     }
   }};
   margin-bottom: 0.25rem;
@@ -439,7 +447,7 @@ export const TerminalCursor = styled.span`
   display: inline-block;
   width: 8px;
   height: 14px;
-  background: rgba(255, 255, 255, 0.8);
+  background: ${({ theme }) => theme.colors.primary};
   margin-left: 4px;
   animation: ${pulse} 1s infinite;
 `;
@@ -447,10 +455,18 @@ export const TerminalCursor = styled.span`
 // Mobile Device Mockup
 export const MobileDeviceMock = styled.div`
   width: 160px;
-  background: linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%);
+  background: ${({ theme }) =>
+    theme.colors.background === "#FFFFFF"
+      ? "linear-gradient(180deg, #e5e5e5 0%, #f5f5f5 100%)"
+      : "linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%)"
+  };
   border-radius: 32px;
   padding: 8px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  box-shadow: ${({ theme }) =>
+    theme.colors.background === "#FFFFFF"
+      ? "0 25px 50px -12px rgba(0, 0, 0, 0.15)"
+      : "0 25px 50px -12px rgba(0, 0, 0, 0.5)"
+  };
   flex-shrink: 0;
   align-self: center;
 
@@ -465,14 +481,14 @@ export const MobileDeviceMock = styled.div`
 `;
 
 export const MobileDeviceScreen = styled.div`
-  background: #000;
+  background: ${({ theme }) => theme.colors.background};
   border-radius: 26px;
   overflow: hidden;
   aspect-ratio: 9 / 19.5;
 `;
 
 export const MobileDeviceNotch = styled.div`
-  background: #000;
+  background: ${({ theme }) => theme.colors.background};
   padding-top: 0.5rem;
   display: flex;
   justify-content: center;
@@ -481,7 +497,7 @@ export const MobileDeviceNotch = styled.div`
 export const MobileDeviceNotchInner = styled.div`
   width: 60px;
   height: 20px;
-  background: #1a1a1a;
+  background: ${({ theme }) => theme.colors.surface};
   border-radius: 0 0 12px 12px;
 `;
 
@@ -518,7 +534,7 @@ export const MobileDeviceLogo = styled.div`
 export const MobileDeviceName = styled.span`
   font-size: 0.9rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
+  color: ${({ theme }) => theme.colors.primary};
 `;
 
 export const MobileDeviceBalance = styled.div`
@@ -528,13 +544,13 @@ export const MobileDeviceBalance = styled.div`
 
 export const MobileDeviceBalanceLabel = styled.div`
   font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: ${({ theme }) => theme.colors.muted};
 `;
 
 export const MobileDeviceBalanceValue = styled.div`
   font-size: 1.6rem;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.95);
+  color: ${({ theme }) => theme.colors.primary};
 `;
 
 export const MobileDeviceActions = styled.div`
@@ -563,13 +579,13 @@ export const MobileDeviceActionIcon = styled.div<{ $color?: string }>`
   svg {
     width: 14px;
     height: 14px;
-    color: rgba(255, 255, 255, 0.7);
+    color: ${({ theme }) => theme.colors.secondary};
   }
 `;
 
 export const MobileDeviceActionLabel = styled.span`
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: ${({ theme }) => theme.colors.muted};
 `;
 
 export const MobileDeviceAsset = styled.div`
@@ -577,7 +593,7 @@ export const MobileDeviceAsset = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 0.5rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: ${({ theme }) => theme.colors.surface};
   border-radius: 8px;
   margin-bottom: 0.4rem;
 `;
@@ -604,13 +620,13 @@ export const MobileDeviceAssetIcon = styled.div<{ $color: string }>`
 export const MobileDeviceAssetName = styled.span`
   font-size: 0.9rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.9);
+  color: ${({ theme }) => theme.colors.primary};
 `;
 
 export const MobileDeviceAssetValue = styled.span`
   font-size: 0.9rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
+  color: ${({ theme }) => theme.colors.primary};
 `;
 
 export const MobileDeviceHomeBar = styled.div`
@@ -622,7 +638,7 @@ export const MobileDeviceHomeBar = styled.div`
 export const MobileDeviceHomeBarInner = styled.div`
   width: 40px;
   height: 4px;
-  background: rgba(255, 255, 255, 0.3);
+  background: ${({ theme }) => theme.colors.muted};
   border-radius: 2px;
 `;
 
@@ -630,7 +646,7 @@ export const HeroTitle = styled.h1`
   font-size: 5.2rem;
   font-weight: 600;
   line-height: 1.1;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   letter-spacing: -0.02em;
 
   @media ${DeviceSize.md} {
@@ -645,7 +661,7 @@ export const HeroTitle = styled.h1`
 export const HeroSubtitle = styled.p`
   font-size: 1.8rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.65);
+  color: ${({ theme }) => theme.colors.secondary};
   max-width: 480px;
 
   @media ${DeviceSize.sm} {
@@ -680,9 +696,9 @@ export const Badge = styled.span`
   padding: 0.4rem 0.8rem;
   font-size: 1.1rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.65);
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: ${({ theme }) => theme.colors.secondary};
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 6px;
 `;
 
@@ -699,16 +715,16 @@ export const HeroMock = styled.div`
 `;
 
 export const MockFrame = styled.div`
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 16px;
   padding: 1.5rem;
   overflow: hidden;
 `;
 
 export const MockScreen = styled.div`
-  background: #0B0F14;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 12px;
   padding: 1.5rem;
   min-height: 320px;
@@ -720,14 +736,14 @@ export const MockHeader = styled.div`
   gap: 0.5rem;
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
 export const MockDot = styled.div`
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
+  background: ${({ theme }) => theme.colors.muted};
 `;
 
 export const MockMetric = styled.div`
@@ -735,7 +751,7 @@ export const MockMetric = styled.div`
   flex-direction: column;
   gap: 0.25rem;
   padding: 1rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
 
   &:last-child {
     border-bottom: none;
@@ -744,13 +760,13 @@ export const MockMetric = styled.div`
 
 export const MockLabel = styled.span`
   font-size: 1.1rem;
-  color: rgba(255, 255, 255, 0.45);
+  color: ${({ theme }) => theme.colors.muted};
 `;
 
 export const MockValue = styled.span`
   font-size: 2.4rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
 `;
 
 // Feature Grid
@@ -770,7 +786,7 @@ export const SectionHeader = styled.div`
 export const SectionTitle = styled.h2`
   font-size: 3.2rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   margin-bottom: 1rem;
   letter-spacing: -0.02em;
 
@@ -781,7 +797,7 @@ export const SectionTitle = styled.h2`
 
 export const SectionSubtitle = styled.p`
   font-size: 1.6rem;
-  color: rgba(255, 255, 255, 0.65);
+  color: ${({ theme }) => theme.colors.secondary};
   max-width: 600px;
   margin: 0 auto;
 `;
@@ -801,14 +817,14 @@ export const FeatureGrid = styled.div`
 `;
 
 export const FeatureCard = styled.div`
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 12px;
   padding: 1.5rem;
   transition: all 0.2s ease;
 
   &:hover {
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: ${({ theme }) => theme.colors.borderHover};
     transform: translateY(-2px);
   }
 `;
@@ -820,9 +836,9 @@ export const FeatureIcon = styled.div`
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.65);
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  color: ${({ theme }) => theme.colors.secondary};
   margin-bottom: 1rem;
 
   svg {
@@ -834,14 +850,14 @@ export const FeatureIcon = styled.div`
 export const FeatureTitle = styled.h3`
   font-size: 1.5rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   margin-bottom: 0.5rem;
 `;
 
 export const FeatureDescription = styled.p`
   font-size: 1.3rem;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.45);
+  color: ${({ theme }) => theme.colors.muted};
 `;
 
 export const FeatureLink = styled.a`
@@ -851,11 +867,11 @@ export const FeatureLink = styled.a`
   margin-top: 1rem;
   font-size: 1.3rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.65);
+  color: ${({ theme }) => theme.colors.secondary};
   transition: color 0.15s ease;
 
   &:hover {
-    color: rgba(255, 255, 255, 0.92);
+    color: ${({ theme }) => theme.colors.primary};
   }
 
   svg {
@@ -887,7 +903,7 @@ export const DeveloperContent = styled.div`
 export const DeveloperTitle = styled.h2`
   font-size: 3.2rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   letter-spacing: -0.02em;
 
   @media ${DeviceSize.sm} {
@@ -898,12 +914,12 @@ export const DeveloperTitle = styled.h2`
 export const DeveloperText = styled.p`
   font-size: 1.6rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.65);
+  color: ${({ theme }) => theme.colors.secondary};
 `;
 
 export const CodeBlock = styled.div`
-  background: rgba(15, 22, 32, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 12px;
   overflow: hidden;
 `;
@@ -912,24 +928,24 @@ export const CodeHeader = styled.div`
   display: flex;
   gap: 0.5rem;
   padding: 1rem 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+  background: ${({ theme }) => theme.colors.surfaceHover};
 `;
 
 export const CodeTab = styled.button<{ $active?: boolean }>`
   padding: 0.4rem 0.8rem;
   font-size: 1.2rem;
   font-family: ui-monospace, monospace;
-  color: ${(props) => props.$active ? "rgba(255,255,255,0.92)" : "rgba(255,255,255,0.45)"};
-  background: ${(props) => props.$active ? "rgba(255,255,255,0.08)" : "transparent"};
+  color: ${({ theme, $active }) => $active ? theme.colors.primary : theme.colors.muted};
+  background: ${({ theme, $active }) => $active ? theme.colors.surfaceHover : 'transparent'};
   border: none;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.15s ease;
 
   &:hover {
-    color: rgba(255, 255, 255, 0.65);
-    background: rgba(255, 255, 255, 0.05);
+    color: ${({ theme }) => theme.colors.secondary};
+    background: ${({ theme }) => theme.colors.surface};
   }
 `;
 
@@ -938,14 +954,14 @@ export const CodeContent = styled.pre`
   margin: 0;
   font-size: 1.25rem;
   font-family: ui-monospace, SFMono-Regular, monospace;
-  color: rgba(255, 255, 255, 0.85);
+  color: ${({ theme }) => theme.colors.primary};
   line-height: 1.7;
   overflow-x: auto;
 
   .keyword { color: #C792EA; }
   .string { color: #C3E88D; }
   .property { color: #82AAFF; }
-  .comment { color: rgba(255,255,255,0.35); }
+  .comment { color: ${({ theme }) => theme.colors.muted}; }
 `;
 
 // Security Section
@@ -993,14 +1009,14 @@ export const SecurityIcon = styled.div`
 export const SecurityText = styled.p`
   font-size: 1.4rem;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.65);
+  color: ${({ theme }) => theme.colors.secondary};
 `;
 
 // Final CTA
 export const CTASection = styled.section`
   text-align: center;
   padding: 8rem 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid ${({ theme }) => theme.colors.border};
 
   @media ${DeviceSize.sm} {
     padding: 5rem 0;
@@ -1010,7 +1026,7 @@ export const CTASection = styled.section`
 export const CTATitle = styled.h2`
   font-size: 3.2rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   margin-bottom: 1rem;
   letter-spacing: -0.02em;
 
@@ -1021,7 +1037,7 @@ export const CTATitle = styled.h2`
 
 export const CTASubtitle = styled.p`
   font-size: 1.6rem;
-  color: rgba(255, 255, 255, 0.65);
+  color: ${({ theme }) => theme.colors.secondary};
   margin-bottom: 2rem;
   max-width: 500px;
   margin-left: auto;
@@ -1032,7 +1048,7 @@ export const CTASubtitle = styled.p`
 export const InfraSection = styled.section`
   padding: 6rem 0;
   background: linear-gradient(180deg, rgba(139, 92, 246, 0.03) 0%, transparent 100%);
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid ${({ theme }) => theme.colors.border};
 
   @media ${DeviceSize.sm} {
     padding: 4rem 0;
@@ -1055,15 +1071,15 @@ export const InfraGrid = styled.div`
 `;
 
 export const InfraCard = styled.div`
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 12px;
   padding: 1.5rem;
   text-align: center;
   transition: all 0.2s ease;
 
   &:hover {
-    border-color: rgba(139, 92, 246, 0.4);
+    border-color: ${({ theme }) => theme.colors.borderHover};
     transform: translateY(-2px);
   }
 `;
@@ -1088,13 +1104,13 @@ export const InfraIcon = styled.div`
 export const InfraTitle = styled.h4`
   font-size: 1.3rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   margin-bottom: 0.5rem;
 `;
 
 export const InfraDescription = styled.p`
   font-size: 1.2rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: ${({ theme }) => theme.colors.secondary};
   line-height: 1.4;
 `;
 
@@ -1329,7 +1345,7 @@ export const CryptoIcon = styled.span<{ $type: 'usdc' | 'usdt' }>`
 export const MobileSection = styled.section`
   padding: 6rem 0;
   background: linear-gradient(180deg, rgba(34, 197, 94, 0.03) 0%, transparent 100%);
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid ${({ theme }) => theme.colors.border};
 
   @media ${DeviceSize.sm} {
     padding: 4rem 0;
@@ -1362,7 +1378,7 @@ export const MobileBadge = styled.span`
   padding: 0.5rem 1rem;
   font-size: 1.2rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.7);
+  color: ${({ theme }) => theme.colors.secondary};
   background: rgba(34, 197, 94, 0.1);
   border: 1px solid rgba(34, 197, 94, 0.2);
   border-radius: 20px;
@@ -1376,7 +1392,7 @@ export const MobileBadge = styled.span`
 export const MobileTitle = styled.h2`
   font-size: 3.2rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   letter-spacing: -0.02em;
 
   @media ${DeviceSize.sm} {
@@ -1387,7 +1403,7 @@ export const MobileTitle = styled.h2`
 export const MobileDescription = styled.p`
   font-size: 1.6rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.65);
+  color: ${({ theme }) => theme.colors.secondary};
 `;
 
 export const MobileFeatures = styled.div`
@@ -1402,12 +1418,12 @@ export const MobileFeature = styled.div`
   align-items: center;
   gap: 0.5rem;
   font-size: 1.3rem;
-  color: rgba(255, 255, 255, 0.65);
+  color: ${({ theme }) => theme.colors.secondary};
 
   svg {
     width: 16px;
     height: 16px;
-    color: rgba(255, 255, 255, 0.7);
+    color: ${({ theme }) => theme.colors.secondary};
   }
 `;
 
@@ -1426,16 +1442,16 @@ export const AppStoreBadge = styled.a`
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem 1.25rem;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 10px;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   text-decoration: none;
   transition: all 0.2s ease;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.2);
+    background: ${({ theme }) => theme.colors.surfaceHover};
+    border-color: ${({ theme }) => theme.colors.borderHover};
   }
 
   svg {
@@ -1451,7 +1467,7 @@ export const AppStoreText = styled.div`
 
 export const AppStoreLabel = styled.span`
   font-size: 1rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: ${({ theme }) => theme.colors.muted};
 `;
 
 export const AppStoreName = styled.span`
@@ -1630,7 +1646,7 @@ export const PhoneAssetValue = styled.span`
 // Stats Section
 export const StatsSection = styled.section`
   padding: 4rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
 export const StatsGrid = styled.div`
@@ -1655,12 +1671,8 @@ export const StatItem = styled.div`
 export const StatValue = styled.div`
   font-size: 3.6rem;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   letter-spacing: -0.02em;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.7) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 
   @media ${DeviceSize.sm} {
     font-size: 2.8rem;
@@ -1669,15 +1681,14 @@ export const StatValue = styled.div`
 
 export const StatLabel = styled.div`
   font-size: 1.3rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: ${({ theme }) => theme.colors.secondary};
   margin-top: 0.5rem;
 `;
 
 // Industries Section
 export const IndustriesSection = styled.section`
   padding: 6rem 0;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, transparent 100%);
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid ${({ theme }) => theme.colors.border};
 
   @media ${DeviceSize.sm} {
     padding: 4rem 0;
@@ -1706,16 +1717,15 @@ export const IndustryCard = styled.a`
   align-items: center;
   gap: 0.75rem;
   padding: 1.25rem 0.75rem;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 10px;
   text-decoration: none;
   transition: all 0.2s ease;
 
   &:hover {
-    border-color: rgba(255, 255, 255, 0.2);
+    border-color: ${({ theme }) => theme.colors.borderHover};
     transform: translateY(-2px);
-    background: rgba(255, 255, 255, 0.03);
   }
 `;
 
@@ -1726,7 +1736,7 @@ export const IndustryIcon = styled.span`
 export const IndustryName = styled.span`
   font-size: 1.1rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.75);
+  color: ${({ theme }) => theme.colors.secondary};
   text-align: center;
   line-height: 1.3;
 
@@ -1755,7 +1765,7 @@ export const ViewAllLink = styled.a`
 export const ComplianceSection = styled.section`
   padding: 6rem 0;
   background: linear-gradient(180deg, rgba(59, 130, 246, 0.03) 0%, transparent 100%);
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid ${({ theme }) => theme.colors.border};
 
   @media ${DeviceSize.sm} {
     padding: 4rem 0;
@@ -1774,28 +1784,28 @@ export const ComplianceGrid = styled.div`
 `;
 
 export const ComplianceCard = styled.div`
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 12px;
   padding: 1.5rem;
   transition: all 0.2s ease;
 
   &:hover {
-    border-color: rgba(59, 130, 246, 0.3);
+    border-color: ${({ theme }) => theme.colors.borderHover};
   }
 `;
 
 export const ComplianceTitle = styled.h4`
   font-size: 1.5rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   margin-bottom: 0.5rem;
 `;
 
 export const ComplianceDescription = styled.p`
   font-size: 1.3rem;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.5);
+  color: ${({ theme }) => theme.colors.secondary};
 `;
 
 // Legacy exports for compatibility

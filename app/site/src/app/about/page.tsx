@@ -311,9 +311,9 @@ const HeroBadge = styled.span`
   padding: 0.4rem 1rem;
   font-size: 1.2rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.65);
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: ${({ theme }) => theme.colors.secondary};
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 20px;
   margin-bottom: 1.5rem;
 `;
@@ -322,7 +322,7 @@ const HeroTitle = styled.h1`
   font-size: 4.4rem;
   font-weight: 600;
   line-height: 1.1;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   margin-bottom: 1.5rem;
   letter-spacing: -0.02em;
 
@@ -334,7 +334,7 @@ const HeroTitle = styled.h1`
 const HeroSubtitle = styled.p`
   font-size: 1.8rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.65);
+  color: ${({ theme }) => theme.colors.secondary};
   margin-bottom: 2rem;
 
   @media ${DeviceSize.sm} {
@@ -354,7 +354,7 @@ const HeroButtons = styled.div`
 
 const Section = styled.section`
   padding: 5rem 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
 const SectionHeader = styled.div`
@@ -365,7 +365,7 @@ const SectionHeader = styled.div`
 const SectionTitle = styled.h2`
   font-size: 3rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   margin-bottom: 1rem;
   letter-spacing: -0.02em;
 
@@ -376,7 +376,7 @@ const SectionTitle = styled.h2`
 
 const SectionSubtitle = styled.p`
   font-size: 1.6rem;
-  color: rgba(255, 255, 255, 0.65);
+  color: ${({ theme }) => theme.colors.secondary};
   max-width: 600px;
   margin: 0 auto;
 `;
@@ -392,14 +392,14 @@ const ValuesGrid = styled.div`
 `;
 
 const ValueCard = styled.div`
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 12px;
   padding: 2rem;
   transition: all 0.2s ease;
 
   &:hover {
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: ${({ theme }) => theme.colors.borderHover};
   }
 `;
 
@@ -407,12 +407,12 @@ const ValueIcon = styled.div`
   width: 3rem;
   height: 3rem;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: ${({ theme }) => theme.colors.surfaceHover};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(255, 255, 255, 0.65);
+  color: ${({ theme }) => theme.colors.secondary};
   margin-bottom: 1.25rem;
 
   svg {
@@ -424,14 +424,14 @@ const ValueIcon = styled.div`
 const ValueTitle = styled.h3`
   font-size: 1.6rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   margin-bottom: 0.5rem;
 `;
 
 const ValueDescription = styled.p`
   font-size: 1.4rem;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.45);
+  color: ${({ theme }) => theme.colors.muted};
 `;
 
 const TwoColumn = styled.div`
@@ -456,7 +456,7 @@ const CapabilityItem = styled.div`
   align-items: center;
   gap: 0.75rem;
   font-size: 1.4rem;
-  color: rgba(255, 255, 255, 0.65);
+  color: ${({ theme }) => theme.colors.secondary};
 `;
 
 const CapabilityCheck = styled.div`
@@ -476,7 +476,7 @@ const StatsSection = styled.section`
   grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
   padding: 5rem 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid ${({ theme }) => theme.colors.border};
 
   @media ${DeviceSize.md} {
     grid-template-columns: repeat(2, 1fr);
@@ -490,39 +490,39 @@ const StatsSection = styled.section`
 const StatCard = styled.div`
   text-align: center;
   padding: 2rem;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 12px;
 `;
 
 const StatValue = styled.div`
   font-size: 3rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   margin-bottom: 0.5rem;
 `;
 
 const StatLabel = styled.div`
   font-size: 1.3rem;
-  color: rgba(255, 255, 255, 0.45);
+  color: ${({ theme }) => theme.colors.muted};
 `;
 
 const CTASection = styled.section`
   text-align: center;
   padding: 6rem 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
 const CTATitle = styled.h2`
   font-size: 3rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   margin-bottom: 1rem;
 `;
 
 const CTASubtitle = styled.p`
   font-size: 1.6rem;
-  color: rgba(255, 255, 255, 0.65);
+  color: ${({ theme }) => theme.colors.secondary};
   margin-bottom: 2rem;
   max-width: 500px;
   margin-left: auto;
@@ -540,8 +540,8 @@ const EntitiesGrid = styled.div`
 `;
 
 const EntityCard = styled.div`
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 12px;
   padding: 2rem;
 `;
@@ -549,7 +549,7 @@ const EntityCard = styled.div`
 const EntityName = styled.h3`
   font-size: 1.8rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   margin-bottom: 0.5rem;
 
   a {
@@ -558,21 +558,21 @@ const EntityName = styled.h3`
     transition: color 0.2s ease;
 
     &:hover {
-      color: #FFFFFF;
+      color: ${({ theme }) => theme.colors.primary};
     }
   }
 `;
 
 const EntityLocation = styled.div`
   font-size: 1.3rem;
-  color: #FFFFFF;
+  color: ${({ theme }) => theme.colors.primary};
   margin-bottom: 1rem;
 `;
 
 const EntityDescription = styled.p`
   font-size: 1.4rem;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.45);
+  color: ${({ theme }) => theme.colors.muted};
 `;
 
 const Timeline = styled.div`
@@ -585,7 +585,7 @@ const TimelineItem = styled.div`
   grid-template-columns: 80px 1fr;
   gap: 2rem;
   padding: 1.5rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
 
   &:last-child {
     border-bottom: none;
@@ -600,7 +600,7 @@ const TimelineItem = styled.div`
 const TimelineYear = styled.div`
   font-size: 1.4rem;
   font-weight: 600;
-  color: #FFFFFF;
+  color: ${({ theme }) => theme.colors.primary};
 `;
 
 const TimelineContent = styled.div``;
@@ -608,12 +608,12 @@ const TimelineContent = styled.div``;
 const TimelineTitle = styled.h4`
   font-size: 1.6rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   margin-bottom: 0.5rem;
 `;
 
 const TimelineDescription = styled.p`
   font-size: 1.4rem;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.45);
+  color: ${({ theme }) => theme.colors.muted};
 `;

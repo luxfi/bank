@@ -355,9 +355,9 @@ const HeroBadge = styled.span`
   padding: 0.4rem 1rem;
   font-size: 1.2rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.65);
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: ${({ theme }) => theme.colors.secondary};
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 20px;
   margin-bottom: 1.5rem;
 `;
@@ -366,7 +366,7 @@ const HeroTitle = styled.h1`
   font-size: 4rem;
   font-weight: 600;
   line-height: 1.1;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   margin-bottom: 1rem;
   letter-spacing: -0.02em;
 
@@ -378,7 +378,7 @@ const HeroTitle = styled.h1`
 const HeroSubtitle = styled.p`
   font-size: 1.6rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.65);
+  color: ${({ theme }) => theme.colors.secondary};
 `;
 
 const ContentSection = styled.section`
@@ -396,8 +396,8 @@ const ContentGrid = styled.div`
 `;
 
 const FormCard = styled.div`
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 12px;
   padding: 2.5rem;
 
@@ -413,13 +413,13 @@ const FormHeader = styled.div`
 const FormTitle = styled.h2`
   font-size: 2rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   margin-bottom: 0.5rem;
 `;
 
 const FormSubtitle = styled.p`
   font-size: 1.4rem;
-  color: rgba(255, 255, 255, 0.45);
+  color: ${({ theme }) => theme.colors.muted};
 `;
 
 const Form = styled.form`
@@ -447,7 +447,7 @@ const FormField = styled.div`
 const FormLabel = styled.label`
   font-size: 1.3rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.65);
+  color: ${({ theme }) => theme.colors.secondary};
 `;
 
 const FormInput = styled.input<{ $hasError?: boolean }>`
@@ -455,20 +455,20 @@ const FormInput = styled.input<{ $hasError?: boolean }>`
   padding: 0.875rem 1rem;
   font-size: 1.4rem;
   font-family: inherit;
-  color: rgba(255, 255, 255, 0.92);
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid ${props => props.$hasError ? 'rgba(239, 68, 68, 0.5)' : 'rgba(255, 255, 255, 0.08)'};
+  color: ${({ theme }) => theme.colors.primary};
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${props => props.$hasError ? 'rgba(239, 68, 68, 0.5)' : props.theme.colors.border};
   border-radius: 8px;
   outline: none;
   transition: all 0.15s ease;
 
   &::placeholder {
-    color: rgba(255, 255, 255, 0.25);
+    color: ${({ theme }) => theme.colors.muted};
   }
 
   &:focus {
-    border-color: rgba(255, 255, 255, 0.25);
-    background: rgba(255, 255, 255, 0.05);
+    border-color: ${({ theme }) => theme.colors.borderHover};
+    background: ${({ theme }) => theme.colors.surfaceHover};
   }
 `;
 
@@ -478,21 +478,21 @@ const FormTextarea = styled.textarea<{ $hasError?: boolean }>`
   padding: 0.875rem 1rem;
   font-size: 1.4rem;
   font-family: inherit;
-  color: rgba(255, 255, 255, 0.92);
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid ${props => props.$hasError ? 'rgba(239, 68, 68, 0.5)' : 'rgba(255, 255, 255, 0.08)'};
+  color: ${({ theme }) => theme.colors.primary};
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${props => props.$hasError ? 'rgba(239, 68, 68, 0.5)' : props.theme.colors.border};
   border-radius: 8px;
   outline: none;
   resize: vertical;
   transition: all 0.15s ease;
 
   &::placeholder {
-    color: rgba(255, 255, 255, 0.25);
+    color: ${({ theme }) => theme.colors.muted};
   }
 
   &:focus {
-    border-color: rgba(255, 255, 255, 0.25);
-    background: rgba(255, 255, 255, 0.05);
+    border-color: ${({ theme }) => theme.colors.borderHover};
+    background: ${({ theme }) => theme.colors.surfaceHover};
   }
 `;
 
@@ -522,7 +522,7 @@ const LoadingState = styled.div`
 
 const LoadingText = styled.p`
   font-size: 1.4rem;
-  color: rgba(255, 255, 255, 0.65);
+  color: ${({ theme }) => theme.colors.secondary};
 `;
 
 const SuccessState = styled.div`
@@ -550,12 +550,12 @@ const SuccessIcon = styled.div`
 const SuccessTitle = styled.h3`
   font-size: 2rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
 `;
 
 const SuccessText = styled.p`
   font-size: 1.4rem;
-  color: rgba(255, 255, 255, 0.65);
+  color: ${({ theme }) => theme.colors.secondary};
   max-width: 320px;
   margin-bottom: 1rem;
 `;
@@ -571,13 +571,13 @@ const InfoCard = styled.div`
   align-items: flex-start;
   gap: 1rem;
   padding: 1.25rem;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 12px;
   transition: all 0.2s ease;
 
   &:hover {
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: ${({ theme }) => theme.colors.borderHover};
   }
 `;
 
@@ -585,12 +585,12 @@ const InfoIconContainer = styled.div`
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(255, 255, 255, 0.65);
+  color: ${({ theme }) => theme.colors.secondary};
   flex-shrink: 0;
 
   svg {
@@ -606,34 +606,34 @@ const InfoContent = styled.div`
 const InfoTitle = styled.div`
   font-size: 1.2rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.45);
+  color: ${({ theme }) => theme.colors.muted};
   margin-bottom: 0.25rem;
 `;
 
 const InfoValue = styled.div`
   font-size: 1.4rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
 `;
 
 const InfoDescription = styled.div`
   font-size: 1.2rem;
-  color: rgba(255, 255, 255, 0.45);
+  color: ${({ theme }) => theme.colors.muted};
   margin-top: 0.25rem;
 `;
 
 const QuickLinks = styled.div`
   margin-top: 1rem;
   padding: 1.25rem;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 12px;
 `;
 
 const QuickLinksTitle = styled.div`
   font-size: 1.2rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.45);
+  color: ${({ theme }) => theme.colors.muted};
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 1rem;
@@ -651,19 +651,19 @@ const QuickLink = styled(Link)`
   justify-content: space-between;
   padding: 0.5rem 0;
   font-size: 1.35rem;
-  color: rgba(255, 255, 255, 0.92);
+  color: ${({ theme }) => theme.colors.primary};
   text-decoration: none;
   transition: color 0.15s ease;
 
   &:hover {
-    color: rgba(255, 255, 255, 1);
+    opacity: 0.8;
   }
 `;
 
 const ArrowIcon = styled.span`
   width: 1rem;
   height: 1rem;
-  color: rgba(255, 255, 255, 0.45);
+  color: ${({ theme }) => theme.colors.muted};
 
   svg {
     width: 100%;
@@ -680,13 +680,13 @@ const MapContainer = styled.div`
   height: 400px;
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid ${({ theme }) => theme.colors.border};
 
   iframe {
     width: 100%;
     height: 100%;
     border: 0;
-    filter: grayscale(100%) invert(92%) contrast(83%);
+    filter: ${({ theme }) => theme.name === 'light' ? 'grayscale(100%) contrast(83%)' : 'grayscale(100%) invert(92%) contrast(83%)'};
   }
 
   @media ${DeviceSize.sm} {
