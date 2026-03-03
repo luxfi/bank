@@ -12,8 +12,8 @@ const GlobalStyles = createGlobalStyle`
   html {
     --scroll-top-app-main: 'top';
 
-    /* Linear-style typography - Inter */
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+    /* Geist font family */
+    font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
 
     font-size: 62.5%;
     -webkit-font-smoothing: antialiased;
@@ -71,7 +71,7 @@ const GlobalStyles = createGlobalStyle`
    *, button, input {
       border: 0;
       outline: 0;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+      font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
     }
 
   /* Modern link styling */

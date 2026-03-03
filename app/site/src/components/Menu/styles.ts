@@ -48,7 +48,7 @@ export const MenuContainer = styled.nav`
 export const MenuItem = styled(Link)<{ $active: boolean }>`
   padding: 0.6rem 1rem;
   background: none;
-  border-radius: 8px;
+  border-radius: 12px;
   transition: all 0.15s ease;
   color: ${({ theme, $active }) => ($active ? theme.colors.primary : theme.colors.secondary)};
   font-weight: 500;
@@ -116,7 +116,7 @@ export const SearchButton = styled.button`
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 0.75rem;
-  border-radius: 8px;
+  border-radius: 12px;
   background: ${({ theme }) => theme.colors.surface};
   border: 1px solid ${({ theme }) => theme.colors.border};
   color: ${({ theme }) => theme.colors.muted};
@@ -192,7 +192,7 @@ export const ThemeToggle = styled.button`
   justify-content: center;
   width: 36px;
   height: 36px;
-  border-radius: 8px;
+  border-radius: 12px;
   background: transparent;
   border: 1px solid ${({ theme }) => theme.colors.border};
   color: ${({ theme }) => theme.colors.secondary};

@@ -5,7 +5,7 @@ import styled from "styled-components";
 export const CustomButton = styled.button`
   background: ${({ theme }) => theme.colors.accent};
   height: 40px;
-  border-radius: 8px;
+  border-radius: 12px;
   color: ${({ theme }) => theme.colors.accentForeground || theme.colors.background};
   font-size: 1.4rem;
   font-weight: 600;
@@ -29,7 +29,7 @@ export const CustomButton = styled.button`
 export const SecondaryButton = styled.button`
   background: transparent;
   height: 40px;
-  border-radius: 8px;
+  border-radius: 12px;
   color: ${({ theme }) => theme.colors.primary};
   font-size: 1.4rem;
   font-weight: 500;
@@ -54,7 +54,7 @@ export const SecondaryButton = styled.button`
 export const GhostButton = styled.button`
   background: transparent;
   height: 40px;
-  border-radius: 8px;
+  border-radius: 12px;
   color: ${({ theme }) => theme.colors.secondary};
   font-size: 1.4rem;
   font-weight: 500;
