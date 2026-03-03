@@ -1,3 +1,4 @@
+import { randomBytes } from 'crypto';
 import { Cascade, Collection, Entity, EntityRepositoryType, ManyToMany, ManyToOne, OneToMany, OneToOne, Property, serialize } from '@mikro-orm/core';
 import { BadRequestException } from '@nestjs/common';
 import { compareHash, generateCodeAndHash, generateHash } from '@luxbank/misc';
@@ -82,6 +83,17 @@ export class User extends BaseEntity {
 
   @Property({ nullable: true, defaultRaw: 'current_timestamp' })
   passwordUpdatedAt: Date = new Date();
+
+  @Exclude()
+  @Property({ type: String, nullable: true, hidden: true })
+  passwordResetToken: string | null;
+
+  @Exclude()
+  @Property({ type: Date, nullable: true })
+  passwordResetExpires: Date | null;
+
+  @Property({ type: String, nullable: true, unique: true })
+  oidcSubject: string | null;
 
   @Property({ persist: false })
   personatedBy: string;
@@ -202,6 +214,28 @@ export class User extends BaseEntity {
   }
   getFullName(): string {
     return `${this.firstname || ''} ${this.lastname || ''}`;
+  }
+
+  async generatePasswordResetToken(): Promise<string> {
+    const token = randomBytes(32).toString('hex');
+    this.passwordResetToken = await generateHash(token);
+    this.passwordResetExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+    return token;
+  }
+
+  async validatePasswordResetToken(token: string): Promise<boolean> {
+    if (!this.passwordResetToken || !this.passwordResetExpires)
+      return false;
+
+    if (new Date() > this.passwordResetExpires)
+      return false;
+
+    return compareHash(token, this.passwordResetToken);
+  }
+
+  clearPasswordResetToken(): void {
+    this.passwordResetToken = null;
+    this.passwordResetExpires = null;
   }
 
   serialize(): object {

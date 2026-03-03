@@ -16,6 +16,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtConstants } from './constants';
 import { JwtAuthGuard } from './jwt.guard';
+import { IamStrategy } from './iam.strategy';
 import { JwtStrategy } from './jwt.strategy';
 import { MobileVerificationEntity } from './model/mobile-verification.entity';
 import { RecaptchaGuard } from './recaptcha.guard';
@@ -25,6 +26,7 @@ import { RolesGuard } from './roles.guard';
     providers: [
         AuthService,
         JwtStrategy,
+        IamStrategy,
         JwtAuthGuard,
         RecaptchaGuard,
         TwoFaVerificationService,

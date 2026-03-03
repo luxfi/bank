@@ -4,11 +4,11 @@ import { Throttle } from '@nestjs/throttler';
 import { Response } from 'express';
 import { RealIP } from 'nestjs-real-ip';
 import { SessionsService } from '../sessions/sessions.service';
-import { generatePassword, SuccessResponse, isDemoAccount } from '@luxbank/tools-misc';
+import { SuccessResponse, isDemoAccount } from '@luxbank/tools-misc';
 import { TwoFaVerificationService } from './2fa-verification/2fa-verification.service';
 import { Anonymous } from './anonymous.decorator';
 import { AuthService } from './auth.service';
-import { ForgotDto, LoginDto } from './model/login.dto';
+import { ForgotDto, ResetPasswordWithTokenDto, LoginDto } from './model/login.dto';
 import { RecaptchaGuard } from './recaptcha.guard';
 import { Roles } from './roles.decorator';
 import { UserRole } from '@luxbank/tools-models';
@@ -109,10 +109,19 @@ export class AuthController {
     @UsePipes(new ValidationPipe({ transform: true }))
     async forgotPassword(@Res({ passthrough: true }) res: Response, @Body() dto: ForgotDto) {
         const user = await this.authService.validateUserEmail(dto.email);
-        if (!user) 
-            throw new BadRequestException('The email is not registered.');
-        const newPassword = generatePassword(10);
-        await this.authService.setPassword(user, newPassword);
+        // Always return success to avoid email enumeration
+        if (user)
+            await this.authService.sendPasswordResetLink(user);
+
+        return new SuccessResponse({ status: 'Success' });
+    }
+
+    @Post('reset-password')
+    @Throttle({default: {limit: 5, ttl: 60}})
+    @Anonymous()
+    @UsePipes(new ValidationPipe({ transform: true }))
+    async resetPassword(@Body() dto: ResetPasswordWithTokenDto) {
+        await this.authService.resetPassword(dto.email, dto.token, dto.newPassword);
         return new SuccessResponse({ status: 'Success' });
     }
 }

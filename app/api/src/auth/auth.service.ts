@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { PayloadInterface } from './payload.interface';
-import ForgotPasswordEmail from '../users/emails/forgot-password-email';
+import PasswordResetEmail from '../users/emails/password-reset-email';
 import { MailerService } from '../mailer/mailer.service';
 import { User, UserClientsRepository } from '@luxbank/tools-models';
 
@@ -49,11 +49,26 @@ export class AuthService {
         return user;
     }
 
-    async setPassword(user: User, password: string): Promise<User | null> {
-        await user.setPassword(password);
+    async sendPasswordResetLink(user: User): Promise<void> {
+        const token = await user.generatePasswordResetToken();
         await this.usersService.store(user);
-        await this.mailer.send(new ForgotPasswordEmail(user.username, password));
-        return user;
+
+        const resetUrl = `${process.env.FRONTEND_URL || 'https://app.lux.financial'}/reset-password?token=${token}&email=${encodeURIComponent(user.username)}`;
+        await this.mailer.send(new PasswordResetEmail(user.username, resetUrl));
+    }
+
+    async resetPassword(email: string, token: string, newPassword: string): Promise<void> {
+        const user = await this.usersService.getByUsername(email);
+        if (!user)
+            throw new BadRequestException('Invalid or expired reset token.');
+
+        const isValid = await user.validatePasswordResetToken(token);
+        if (!isValid)
+            throw new BadRequestException('Invalid or expired reset token.');
+
+        await user.setPassword(newPassword);
+        user.clearPasswordResetToken();
+        await this.usersService.store(user);
     }
 
     async login(user: User, twoFA: boolean, superAdminToken?: string) {

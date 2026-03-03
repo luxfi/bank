@@ -3,7 +3,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { RealIP } from 'nestjs-real-ip';
 import { SessionsService } from '../../sessions/sessions.service';
-import { SuccessResponse, isDemoAccount } from '@luxbank/tools-misc';
+import { SuccessResponse } from '@luxbank/tools-misc';
 import { AuthService } from '../auth.service';
 import { TwoFaCodeCheckDto, TwoFaCodeDto } from '../model/2fa-verification.dto';
 import { TwoFaVerificationService } from './2fa-verification.service';
@@ -62,24 +62,21 @@ export class TwoFaVerificationController {
         if (req.user.personatedBy)
             impersonatedByUser = await this.userService.getUserMeta(req.user.personatedBy);
 
-        let verified = (process.env.NODE_ENV === 'development' || isDemoAccount(req.user.getCurrentClient().uuid)) && process.env.BYPASS_2FA === code;
-
-        if (!verified && provider === 'sms' && !req.user?.contact?.mobileNumber)
+        if (provider === 'sms' && !req.user?.contact?.mobileNumber)
             throw new ForbiddenException(`User doesn't have mobile number.`);
 
         try {
-            if (!verified) {
-                if (impersonatedByUser) {
-                    verified = await this.twoFaVerificationService.checkVerification(
-                        provider === 'email' ? (impersonatedByUser.username as string) : (impersonatedByUser?.contact?.mobileNumber as string),
-                        code
-                    );
-                } else {
-                    verified = await this.twoFaVerificationService.checkVerification(
-                        provider === 'email' ? req.user.username : req.user.contact.mobileNumber,
-                        code
-                    );
-                }
+            let verified: boolean;
+            if (impersonatedByUser) {
+                verified = await this.twoFaVerificationService.checkVerification(
+                    provider === 'email' ? (impersonatedByUser.username as string) : (impersonatedByUser?.contact?.mobileNumber as string),
+                    code
+                );
+            } else {
+                verified = await this.twoFaVerificationService.checkVerification(
+                    provider === 'email' ? req.user.username : req.user.contact.mobileNumber,
+                    code
+                );
             }
 
             if (!verified)

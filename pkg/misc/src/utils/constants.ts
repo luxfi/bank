@@ -27,7 +27,7 @@ export const VALIDATION_LIST = {
   export const SUPER_CLIENT = {
     UUID: 'ba676889-9995-4cde-b3d4-b1f2c0da141b',
     NAME: 'Super Client',
-    EMAIL: 'super-client@lifemed.ai',
+    EMAIL: 'super-admin@lux.financial',
     FIRSTNAME: 'super',
     LASTNAME: 'client',
     TYPE: 'super',
