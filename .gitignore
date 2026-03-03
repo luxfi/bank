@@ -1,13 +1,20 @@
 node_modules
 
+# Environment files (secrets)
+.env
+.env.local
+.env.*.local
+*.env
 
-
+# AI symlinks
 AGENTS.md
 CLAUDE.md
 GEMINI.md
 GROK.md
 QWEN.md
 
+# Build outputs
 .next
 out
 dist
+*.tsbuildinfo
