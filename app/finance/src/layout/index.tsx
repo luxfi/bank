@@ -117,7 +117,7 @@ export const HomeLayout = () => {
               <img src="assets/images/diamond-2.png" alt="diamond-2" />
           }
           {
-            screenSize === "lg" ? lineTextData.map((data) => <LineText {...data} />) :
+            screenSize === "lg" ? lineTextData.map((data, i) => <LineText key={i} {...data} />) :
               <div className="max-w-[calc(100vw-200px)] mt-[57px]">
                 <ul className="text-lg leading-[22px] text-white list-disc">
                   <li className="mb-[18px]">Mass Payments Made Easy Bulk upload simplifies sending funds.</li>
@@ -182,7 +182,7 @@ export const HomeLayout = () => {
         </p>
         <div className="flex justify-center items-center lg:justify-normal lg:items-center flex-col lg:flex-row w-full gap-[37px] mt-[96px] overflow-x-auto lg:overflow-x-scroll overflow-y-auto lg:overflow-y-hidden no-scroll">
           {
-            textCardData.map((data) => <TextCard {...data} />)
+            textCardData.map((data, i) => <TextCard key={i} {...data} />)
           }
         </div>
       </div>

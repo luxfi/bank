@@ -9,7 +9,7 @@ import { ICurrentUser, UserRole } from '@/models/auth';
 import { useAuth } from '@/store/useAuth';
 import { Icon, Row, Text, useTheme, Button as ButtonDS } from '@luxbank/ui/';
 import { Avatar } from 'antd';
-import { LuxLogo } from '@luxfi/logo';
+import { LuxLogo } from '@luxfi/logo/react';
 
 import { defaultTheme } from '@/styles/themes/default';
 

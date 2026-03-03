@@ -6,7 +6,7 @@ import { useState } from 'react';
 
 import Button from '@/components/Button';
 import Input from '@/components/Input';
-import { LuxLogo } from '@luxfi/logo';
+import { LuxLogo } from '@luxfi/logo/react';
 
 import { LoadingOutlined } from '@ant-design/icons';
 import { useFormik } from 'formik';

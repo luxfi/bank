@@ -9,7 +9,7 @@ import Button from '@/components/Button';
 import Input from '@/components/Input';
 import ModalForgotPassword from '@/components/ModalForgotPassword';
 import { TriangleBankLogo } from '@/components/TriangleBankLogo';
-import { LuxLogo } from '@luxfi/logo';
+import { LuxLogo } from '@luxfi/logo/react';
 
 // Demo mode configuration
 const IS_DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === 'true' || process.env.NEXT_PUBLIC_DEMO_CUSTOMER === 'triangle-bank';
