@@ -1,53 +1,167 @@
-import {Collection, Entity, ManyToMany, OneToMany, OneToOne, Property} from '@mikro-orm/core';
+import {
+  BelongsTo,
+  BelongsToMany,
+  Column,
+  DataType,
+  ForeignKey,
+  HasMany,
+  HasOne,
+  Table,
+} from 'sequelize-typescript';
 import { Exclude, Expose, Type } from 'class-transformer';
 import { BaseEntity } from '../../base';
-import { Account, AccountType, BankMetadataDto, BrokerDto, BusinessMetadataDto, DirectorDto, IndividualMetadataDto, RiskAssessmentDto, ShareholderDto, User, UserRole} from '../../users';
-import { ClientsRepository } from '../repository';
+import { Account, AccountType, BankMetadataDto, BrokerDto, BusinessMetadataDto, DirectorDto, IndividualMetadataDto, RiskAssessmentDto, ShareholderDto, User, UserRole } from '../../users';
 import { UserClient } from '../../user-clients';
 import { ClientDocument } from './client-document.entity';
 
-@Entity({ repository: () => ClientsRepository })
+@Table({ tableName: 'client', underscored: true, paranoid: true })
 export class Client extends BaseEntity {
+  @ForeignKey(() => Account)
+  @Column({ type: DataType.STRING(36), allowNull: true })
+  declare accountUuid: string;
+
   @Type(() => Account)
-  @OneToOne({nullable: true,owner: true, entity: () => Account})
-  account?: Account;
+  @HasOne(() => Account, 'clientUuid')
+  declare account: Account;
 
   @Type(() => User)
-  @ManyToMany({entity: () => User, mappedBy: 'clients', pivotTable: 'user_clients'})
-  users = new Array<User>();
+  @BelongsToMany(() => User, () => UserClient)
+  declare users: User[];
 
   @Exclude()
-  @Property({ default: false, persist: false })
-  isSubAccount: boolean;
+  @Column({ type: DataType.VIRTUAL, defaultValue: false })
+  declare isSubAccount: boolean;
 
   @Exclude()
-  @Property({ persist: false })
-  name: string;
+  @Column({ type: DataType.VIRTUAL })
+  declare name: string;
 
   @Exclude()
-  @OneToMany(() => UserClient, (uc) => uc.client)
-  userClients = new Collection<UserClient>(this);
+  @HasMany(() => UserClient, 'clientUuid')
+  declare userClients: UserClient[];
 
-  @OneToMany(() => ClientDocument, (cd) => cd.client)
-  documents = new Collection<ClientDocument>(this);
+  @HasMany(() => ClientDocument, 'clientUuid')
+  declare documents: ClientDocument[];
 
   @Expose({ name: 'metadata' })
   getMetadataByUser(uuid: string) {
-    return this.userClients.getItems().find((uc) => uc.user.uuid === uuid)?.metadata;
+    return this.userClients?.find((uc) => uc.userUuid === uuid)?.metadata;
   }
 
   getAccountName() {
-    return this.account?.entityType == AccountType.Individual ? this.account?.individualMetadata?.getName() : this.account?.businessMetadata?.getName();
+    return this.account?.entityType == AccountType.Individual
+      ? this.account?.individualMetadata?.getName()
+      : this.account?.businessMetadata?.getName();
   }
 
   getCoutry() {
-    return this.account?.entityType == AccountType.Individual ? this.account?.individualMetadata?.country : this.account?.businessMetadata?.countryOfRegistration;
+    return this.account?.entityType == AccountType.Individual
+      ? this.account?.individualMetadata?.country
+      : this.account?.businessMetadata?.countryOfRegistration;
+  }
+
+  getJurisdiction(): string {
+    return this.account?.jurisdiction || this.inferJurisdiction();
+  }
+
+  // Infer regulatory jurisdiction from client's country when not explicitly set.
+  private inferJurisdiction(): string {
+    const country = this.getCoutry()?.toUpperCase();
+    if (!country) return 'US'; // default
+
+    // US territories
+    if (['US', 'PR', 'VI', 'GU', 'AS', 'MP'].includes(country)) return 'US';
+    // Isle of Man — home jurisdiction (Crown Dependency, own FSA)
+    if (country === 'IM') return 'IM';
+    // UK and Crown Dependencies (GG, JE route to UK FCA oversight)
+    if (['GB', 'UK', 'GG', 'JE'].includes(country)) return 'UK';
+    // Singapore
+    if (country === 'SG') return 'SG';
+    // Hong Kong
+    if (country === 'HK') return 'HK';
+    // UAE
+    if (country === 'AE') return 'AE';
+    // Japan
+    if (country === 'JP') return 'JP';
+    // Switzerland
+    if (country === 'CH') return 'CH';
+    // Australia
+    if (country === 'AU') return 'AU';
+    // Canada
+    if (country === 'CA') return 'CA';
+    // South Korea
+    if (country === 'KR') return 'KR';
+    // India
+    if (country === 'IN') return 'IN';
+    // Brazil
+    if (country === 'BR') return 'BR';
+    // Mexico
+    if (country === 'MX') return 'MX';
+    // Gibraltar
+    if (country === 'GI') return 'GI';
+    // Liechtenstein
+    if (country === 'LI') return 'LI';
+
+    // MENA
+    if (country === 'SA') return 'SA'; // Saudi Arabia
+    if (country === 'BH') return 'BH'; // Bahrain
+    if (country === 'QA') return 'QA'; // Qatar
+    if (country === 'KW') return 'KW'; // Kuwait
+    if (country === 'OM') return 'OM'; // Oman
+    if (country === 'JO') return 'JO'; // Jordan
+
+    // Africa
+    if (country === 'ZA') return 'ZA'; // South Africa
+    if (country === 'NG') return 'NG'; // Nigeria
+    if (country === 'KE') return 'KE'; // Kenya
+    if (country === 'MU') return 'MU'; // Mauritius
+
+    // Caribbean OFCs
+    if (country === 'KY') return 'KY'; // Cayman Islands
+    if (country === 'BM') return 'BM'; // Bermuda
+    if (country === 'BS') return 'BS'; // Bahamas
+
+    // EU member states
+    const euCountries = [
+      'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR',
+      'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL',
+      'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE',
+    ];
+    if (euCountries.includes(country)) return 'EU';
+
+    return 'US'; // fallback for unrecognized
+  }
+
+  getTradingComplianceStatus() {
+    return {
+      accountId: this.account?.uuid,
+      jurisdiction: this.getJurisdiction(),
+      clientType: this.account?.tradingClientType || 'individual',
+      kycLevel: this.account?.kycLevel || 0,
+      accredited: this.account?.accredited || false,
+      professional: this.account?.professional || false,
+      amlCleared: this.account?.amlCleared || false,
+      sanctioned: this.account?.sanctioned || false,
+      maxOrderSize: this.account?.maxOrderSize || 0,
+      dailyLimit: this.account?.dailyTradingLimit || 0,
+      annualIncome: this.account?.annualIncome || 0,
+      netWorth: this.account?.netWorth || 0,
+      // PEP / EDD
+      pepStatus: this.account?.pepStatus || null,
+      pepReviewedAt: this.account?.pepReviewedAt || null,
+      sourceOfFunds: this.account?.sourceOfFunds || null,
+      sofVerified: this.account?.sofVerified || false,
+      adverseMedia: this.account?.adverseMedia || false,
+      highRiskCountry: this.account?.highRiskCountry || false,
+      eddRequired: this.account?.eddRequired || false,
+      taxResidency: this.account?.taxResidency || null,
+    };
   }
 
   setName() {
     if (!this.account)
       this.name = '';
-    
+
     if (!this.name) {
       this.name = this.account?.individualMetadata
         ? `${this.account?.individualMetadata?.firstname} ${this.account.individualMetadata?.lastname}`
@@ -58,14 +172,13 @@ export class Client extends BaseEntity {
   }
 
   getOwner(): User | undefined {
-    return this.userClients?.getItems().find((uc) => uc.metadata.role === UserRole.AdminUser)?.user;
+    return this.userClients?.find((uc) => uc.metadata?.role === UserRole.AdminUser)?.user;
   }
 
   @Expose({ name: 'accountType' })
   getAccountType() {
     if (!this.account)
       return '';
-
     return this.account.entityType;
   }
 
@@ -118,21 +231,13 @@ export class Client extends BaseEntity {
   }
 
   static fromAdminDto(data: any) {
-    const client = new Client();
+    const client = Client.build() as Client;
     if (data.account)
       client.account = data.account;
-
     return client;
   }
 
-  constructor(data?: any) {
-    super();
-
-    if (!!data.account) 
-      this.account = data.account;
-  }
-
   static fromUser(user: Partial<User>, account: Account): Client {
-    return new Client({ user, account });
+    return Client.build({ account }) as Client;
   }
 }

@@ -5,6 +5,7 @@ import { MiscModule } from './misc/misc.module';
 import { PaymentsModule } from './payments/payments.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { WalletsModule } from './wallets/wallets.module';
+import { TradingModule } from '../trading/trading.module';
 
 @Module({
     imports: [
@@ -13,7 +14,8 @@ import { WalletsModule } from './wallets/wallets.module';
         ConversionsModule,
         WalletsModule,
         TransactionsModule,
-        MiscModule
+        MiscModule,
+        TradingModule,
     ]
 })
 export class BankModule { }

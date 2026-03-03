@@ -1,11 +1,18 @@
-import { Cascade, Collection, Entity, EntityRepositoryType, Enum, ManyToOne, OneToMany, OneToOne, Property } from '@mikro-orm/core';
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  ForeignKey,
+  HasMany,
+  HasOne,
+  Table,
+} from 'sequelize-typescript';
 import { Exclude, Type } from 'class-transformer';
 import { BaseEntity } from '../../base';
 import { Beneficiary } from '../../beneficiaries';
 import { Fee, FeesDto } from '../../fees';
 import { BankMetadataDto, BrokerDto, BusinessMetadataDto, DirectorDto, IndividualMetadataDto, PendingMetadataDto, RiskAssessmentDto, ShareholderDto } from '../dtos';
 import { AccountType } from '../enums';
-import { AccountsRepository } from '../repository';
 import { BankMetadata } from './bank-metadata.entity';
 import { Broker } from './broker.entity';
 import { BusinessMetadata } from './business-metadata.entity';
@@ -18,115 +25,183 @@ import { Shareholder } from './shareholder.entity';
 import { User } from './user.entity';
 import { EPaymentProvider } from '@luxbank/misc';
 
-@Entity({ repository: () => AccountsRepository })
+@Table({ tableName: 'account', underscored: true, paranoid: true })
 export class Account extends BaseEntity {
-  @Property({ type: String, default: AccountType.Individual })
-  entityType: AccountType;
+  @Column({ type: DataType.STRING, defaultValue: AccountType.Individual })
+  declare entityType: AccountType;
 
-  @OneToOne({ nullable: true, owner: true, cascade: [Cascade.ALL] })
-  bankMetadata: BankMetadata;
+  @ForeignKey(() => BankMetadata)
+  @Column({ type: DataType.STRING(36), allowNull: true })
+  declare bankMetadataUuid: string;
 
-  @OneToOne({ nullable: true, owner: true, cascade: [Cascade.ALL] })
-  individualMetadata?: IndividualMetadata;
+  @HasOne(() => BankMetadata, 'accountUuid')
+  declare bankMetadata: BankMetadata;
 
-  @OneToOne({ nullable: true, owner: true, cascade: [Cascade.ALL] })
-  businessMetadata?: BusinessMetadata;
+  @ForeignKey(() => IndividualMetadata)
+  @Column({ type: DataType.STRING(36), allowNull: true })
+  declare individualMetadataUuid: string;
+
+  @HasOne(() => IndividualMetadata, 'accountUuid')
+  declare individualMetadata: IndividualMetadata;
+
+  @ForeignKey(() => BusinessMetadata)
+  @Column({ type: DataType.STRING(36), allowNull: true })
+  declare businessMetadataUuid: string;
+
+  @HasOne(() => BusinessMetadata, 'accountUuid')
+  declare businessMetadata: BusinessMetadata;
 
   @Exclude()
-  @OneToMany(() => RiskAssessment, (riskAssessment) => riskAssessment.account, {
-    mappedBy: 'account',
-  })
-  riskAssessments = new Collection<RiskAssessment>(this);
+  @HasMany(() => RiskAssessment, 'accountUuid')
+  declare riskAssessments: RiskAssessment[];
 
   @Exclude()
-  @OneToMany(() => Contact, (contact) => contact.account, {
-    mappedBy: 'account',
-  })
-  contact = new Collection<Contact>(this);
+  @HasMany(() => Contact, 'accountUuid')
+  declare contacts: Contact[];
 
   @Exclude()
   @Type(() => Broker)
-  @OneToMany(() => Broker, (broker) => broker.account, {
-    mappedBy: 'account',
-  })
-  brokers = new Collection<Broker>(this);
+  @HasMany(() => Broker, 'accountUuid')
+  declare brokers: Broker[];
 
   @Exclude()
-  @OneToMany(() => Director, (director) => director.account, {
-    mappedBy: 'account',
-  })
-  directors = new Collection<Director>(this);
+  @HasMany(() => Director, 'accountUuid')
+  declare directors: Director[];
 
   @Exclude()
-  @OneToMany(() => Shareholder, (shareholder) => shareholder.account, {
-    mappedBy: 'account',
-  })
-  shareholders = new Collection<Shareholder>(this);
+  @HasMany(() => Shareholder, 'accountUuid')
+  declare shareholders: Shareholder[];
 
   @Exclude()
-  @OneToMany(() => Beneficiary, (beneficiary) => beneficiary.account, {
-    mappedBy: 'account',
-  })
-  beneficiaries = new Collection<Beneficiary>(this);
+  @HasMany(() => Beneficiary, 'accountUuid')
+  declare beneficiaries: Beneficiary[];
 
-  @Property({ nullable: true })
-  cloudCurrencyId?: string;
+  @Column({ type: DataType.STRING, allowNull: true })
+  declare cloudCurrencyId: string;
 
-  @Property({ nullable: true })
-  openPaydId?: string;
+  @Column({ type: DataType.STRING, allowNull: true })
+  declare openPaydId: string;
 
-  @Property({ nullable: true })
-  gatewayId?: string;
+  @Column({ type: DataType.STRING, allowNull: true })
+  declare gatewayId: string;
 
-  @Property({ nullable: true })
-  @Enum(() => EPaymentProvider)
-  gateway?: string;
+  @Column({ type: DataType.STRING, allowNull: true })
+  declare gateway: string;
 
-  @Property({ nullable: true })
-  archivedAt: Date;
+  @Column({ type: DataType.DATE, allowNull: true })
+  declare archivedAt: Date;
+
+  @ForeignKey(() => Fee)
+  @Column({ type: DataType.STRING(36), allowNull: true })
+  declare feeUuid: string;
 
   @Exclude()
-  @OneToOne({ nullable: true, owner: true, cascade: [Cascade.ALL] })
-  fee: Fee;
+  @HasOne(() => Fee, 'accountUuid')
+  declare fee: Fee;
 
-  @Property({ nullable: true, default: false })
-  isApproved: boolean;
+  @Column({ type: DataType.BOOLEAN, allowNull: true, defaultValue: false })
+  declare isApproved: boolean;
 
-  //  @Property({ type: User, nullable: true, persist: false })
-  //   users: User[]; 
+  @ForeignKey(() => User)
+  @Column({ type: DataType.STRING(36), allowNull: true })
+  declare usersUuid: string;
 
-  @ManyToOne(() => User, {nullable: true, eager: false})
-  users: User[];
+  @BelongsTo(() => User, 'usersUuid')
+  declare users: User[];
 
   @Exclude()
   @Type(() => PendingMetaData)
-  @OneToMany(() => PendingMetaData, (pendingMetadata) => pendingMetadata.account, {
-    mappedBy: 'account',
-  })
-  pendingMetadatas = new Collection<PendingMetaData>(this);
+  @HasMany(() => PendingMetaData, 'accountUuid')
+  declare pendingMetadatas: PendingMetaData[];
 
-  @Property({ nullable: true })
-  credentials?: string | null;
+  @Column({ type: DataType.STRING, allowNull: true })
+  declare credentials: string | null;
+
+  // --- Trading Compliance Fields ---
+  // Jurisdiction determines which regulatory regime applies (SEC, FCA, MAS, etc.)
+  @Column({ type: DataType.STRING, allowNull: true })
+  declare jurisdiction: string | null; // US, UK, EU, SG, HK, AE, JP, CH
+
+  // Client classification for trading (maps to compliance.ClientType in cex)
+  @Column({ type: DataType.STRING, allowNull: true })
+  declare tradingClientType: string | null; // individual, institutional, broker_dealer
+
+  // KYC level for trading (0=none, 1=basic, 2=standard/ID verified, 3=enhanced/accredited)
+  @Column({ type: DataType.INTEGER, allowNull: true, defaultValue: 0 })
+  declare kycLevel: number;
+
+  // Investor accreditation status
+  @Column({ type: DataType.BOOLEAN, allowNull: true, defaultValue: false })
+  declare accredited: boolean; // US: SEC accredited investor ($1M+ net worth or $200K+ income)
+
+  @Column({ type: DataType.BOOLEAN, allowNull: true, defaultValue: false })
+  declare professional: boolean; // UK/EU: MiFID II professional client / SG: MAS accredited (S$2M+ net assets)
+
+  // AML/Sanctions status
+  @Column({ type: DataType.BOOLEAN, allowNull: true, defaultValue: false })
+  declare amlCleared: boolean;
+
+  @Column({ type: DataType.BOOLEAN, allowNull: true, defaultValue: false })
+  declare sanctioned: boolean;
+
+  // Investor profile for offering-specific limits (e.g., Reg CF annual limits)
+  @Column({ type: DataType.DOUBLE, allowNull: true })
+  declare annualIncome: number | null; // USD equivalent
+
+  @Column({ type: DataType.DOUBLE, allowNull: true })
+  declare netWorth: number | null; // USD equivalent
+
+  // Trading limits
+  @Column({ type: DataType.DOUBLE, allowNull: true })
+  declare maxOrderSize: number | null;
+
+  @Column({ type: DataType.DOUBLE, allowNull: true })
+  declare dailyTradingLimit: number | null;
+
+  // PEP / EDD fields
+  @Column({ type: DataType.STRING, allowNull: true })
+  declare pepStatus: string | null; // direct, related, former
+
+  @Column({ type: DataType.DATE, allowNull: true })
+  declare pepReviewedAt: Date | null;
+
+  @Column({ type: DataType.STRING, allowNull: true })
+  declare sourceOfFunds: string | null; // employment, investments, inheritance, business, pension, other
+
+  @Column({ type: DataType.BOOLEAN, allowNull: true, defaultValue: false })
+  declare sofVerified: boolean;
+
+  @Column({ type: DataType.BOOLEAN, allowNull: true, defaultValue: false })
+  declare adverseMedia: boolean;
+
+  @Column({ type: DataType.BOOLEAN, allowNull: true, defaultValue: false })
+  declare highRiskCountry: boolean;
+
+  @Column({ type: DataType.BOOLEAN, allowNull: true, defaultValue: false })
+  declare eddRequired: boolean;
+
+  @Column({ type: DataType.STRING, allowNull: true })
+  declare taxResidency: string | null; // ISO country for CRS/FATCA
 
   getPaymentProvider() {
     return this.gateway;
   }
 
   getRecentRiskAssessment(): RiskAssessment {
-    return this.riskAssessments.getItems().sort((a, b) => {
+    return (this.riskAssessments || []).sort((a, b) => {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     })[0];
   }
 
   async setFees(data: FeesDto) {
-    this.fee = new Fee();
+    this.fee = Fee.build() as Fee;
     this.fee.accountId = this.openPaydId || '';
     await this.fee.updateFromDto(data);
   }
 
   async setBankMetadata(data: BankMetadataDto) {
     if (!this.bankMetadata)
-      this.bankMetadata = new BankMetadata();
+      this.bankMetadata = BankMetadata.build() as BankMetadata;
 
     await this.bankMetadata.updateFromDto(data);
   }
@@ -136,7 +211,7 @@ export class Account extends BaseEntity {
       throw new Error("Account type and metadata type don't match");
 
     if (!this.individualMetadata)
-      this.individualMetadata = new IndividualMetadata();
+      this.individualMetadata = IndividualMetadata.build() as IndividualMetadata;
 
     await this.individualMetadata.updateFromDto(data, exclude);
   }
@@ -146,79 +221,81 @@ export class Account extends BaseEntity {
       throw new Error("Account type and metadata type don't match");
 
     if (!this.businessMetadata)
-      this.businessMetadata = new BusinessMetadata();
+      this.businessMetadata = BusinessMetadata.build() as BusinessMetadata;
 
     await this.businessMetadata.updateFromDto(data);
   }
 
   async setNewRiskAssessments(data: RiskAssessmentDto) {
-    const newRiskAssessment = new RiskAssessment();
-
+    const newRiskAssessment = RiskAssessment.build() as RiskAssessment;
     await newRiskAssessment.updateFromDto(data);
-    this.riskAssessments.add(newRiskAssessment);
-
+    if (!this.riskAssessments) this.riskAssessments = [];
+    this.riskAssessments.push(newRiskAssessment);
     return newRiskAssessment;
   }
 
   async setRiskAssessments(data: RiskAssessmentDto) {
-    const newRiskAssessment = new RiskAssessment();
-    Object.values(this.riskAssessments).forEach((ele, index) => {
-      const date2 = new Date(ele.updatedAt);
-      const date1 = new Date();
-      if (date1.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth() && date1.getDate() === date2.getDate())
-        this.riskAssessments.remove(ele);
-    });
+    const newRiskAssessment = RiskAssessment.build() as RiskAssessment;
+    if (this.riskAssessments) {
+      this.riskAssessments = this.riskAssessments.filter((ele) => {
+        const date2 = new Date(ele.updatedAt);
+        const date1 = new Date();
+        return !(date1.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth() && date1.getDate() === date2.getDate());
+      });
+    } else {
+      this.riskAssessments = [];
+    }
     newRiskAssessment.updateFromDto(data);
-    this.riskAssessments.add(newRiskAssessment);
+    this.riskAssessments.push(newRiskAssessment);
   }
 
   async setBrokers(data: BrokerDto[]) {
-    const oldBrokers = await this.brokers.loadItems();
+    const oldBrokers = this.brokers || [];
     const newBrokers: Broker[] = [];
-    const savingData = data.map(async (broker) => {
-      const newBroker = !broker.uuid ? new Broker() : oldBrokers.find((oldBroker) => oldBroker.uuid == broker.uuid) || new Broker();
+    for (const broker of data) {
+      const newBroker = !broker.uuid
+        ? Broker.build() as Broker
+        : oldBrokers.find((ob) => ob.uuid === broker.uuid) || Broker.build() as Broker;
       newBroker.updateFromDto(broker);
       newBrokers.push(newBroker);
-    });
-    await Promise.all(savingData);
-    this.brokers.set(newBrokers);
+    }
+    this.brokers = newBrokers;
   }
 
   async setDirectors(data: DirectorDto[]) {
-    const oldDirectors = await this.directors.loadItems();
+    const oldDirectors = this.directors || [];
     const newDirectors: Director[] = [];
-    const savingData = data.map(async (director) => {
-      const newDirector = !director.uuid ? new Director() : oldDirectors.find((oldDirector) => oldDirector.uuid == director.uuid) || new Director();
+    for (const director of data) {
+      const newDirector = !director.uuid
+        ? Director.build() as Director
+        : oldDirectors.find((od) => od.uuid === director.uuid) || Director.build() as Director;
       await newDirector.updateFromDto(director);
       newDirectors.push(newDirector);
-    });
-    await Promise.all(savingData);
-    this.directors.set(newDirectors);
+    }
+    this.directors = newDirectors;
   }
 
   async setShareholders(data: ShareholderDto[]) {
-    const oldShareholders = await this.shareholders.loadItems();
+    const oldShareholders = this.shareholders || [];
     const newShareholders: Shareholder[] = [];
-    const savingData = data.map(async (shareholder) => {
-      const newShareholder = !shareholder.uuid ? new Shareholder() : oldShareholders.find((oldShareholder) => oldShareholder.uuid == shareholder.uuid) || new Shareholder();
+    for (const shareholder of data) {
+      const newShareholder = !shareholder.uuid
+        ? Shareholder.build() as Shareholder
+        : oldShareholders.find((os) => os.uuid === shareholder.uuid) || Shareholder.build() as Shareholder;
       newShareholder.updateFromDto(shareholder);
       newShareholders.push(newShareholder);
-    });
-    await Promise.all(savingData);
-    this.shareholders.set(newShareholders);
+    }
+    this.shareholders = newShareholders;
   }
 
   async setPendingData(data: PendingMetadataDto[]) {
     const pendingMetas: PendingMetaData[] = [];
-    const oldPendingMetas = await this.pendingMetadatas.loadItems();
-    const savingData = data.map(async (metadata) => {
-      const newMetadata = oldPendingMetas.find((oldMeta) => oldMeta.field == metadata.field && oldMeta.type == metadata.type) || new PendingMetaData();
+    const oldPendingMetas = this.pendingMetadatas || [];
+    for (const metadata of data) {
+      const newMetadata = oldPendingMetas.find((om) => om.field === metadata.field && om.type === metadata.type) || PendingMetaData.build() as PendingMetaData;
       newMetadata.updateFromDto(metadata);
       pendingMetas.push(newMetadata);
-    });
-    await Promise.all(savingData);
-    this.pendingMetadatas.set(pendingMetas);
+    }
+    this.pendingMetadatas = pendingMetas;
   }
-
-  [EntityRepositoryType]: AccountsRepository;
 }
