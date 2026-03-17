@@ -7,7 +7,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "nest build"
+    "build": "tsc"
   },
   "publishConfig": {
     "access": "public"
