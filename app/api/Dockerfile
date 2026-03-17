@@ -54,6 +54,8 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/app/api/node_modules ./app/api/node_modules
 COPY --from=builder /app/app/api/package.json ./
 COPY --from=builder /app/pkg/ ./pkg/
+# Templates are referenced as /templates/ (absolute) — symlink from root
+RUN ln -sf /app/dist/templates /templates
 
 EXPOSE 4000
 ENV PORT=4000
