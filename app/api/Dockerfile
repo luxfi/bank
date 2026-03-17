@@ -12,29 +12,29 @@ COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 COPY pkg/brand/package.json ./pkg/brand/
 COPY pkg/models/package.json ./pkg/models/
 COPY pkg/email/package.json ./pkg/email/
+COPY pkg/misc/package.json ./pkg/misc/
 COPY pkg/currency-cloud/package.json ./pkg/currency-cloud/
 COPY pkg/ifx/package.json ./pkg/ifx/
 COPY pkg/iam/package.json ./pkg/iam/
 COPY app/api/package.json ./app/api/
 
-# Install dependencies (include devDeps for nest CLI)
+# Install all dependencies (including devDeps for build tools)
 RUN pnpm install --frozen-lockfile
-RUN pnpm add -g @nestjs/cli
 
 FROM base AS builder
 WORKDIR /app
 
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/pkg/brand/node_modules ./pkg/brand/node_modules
-COPY --from=deps /app/pkg/models/node_modules ./pkg/models/node_modules
-COPY --from=deps /app/pkg/email/node_modules ./pkg/email/node_modules
-COPY --from=deps /app/pkg/currency-cloud/node_modules ./pkg/currency-cloud/node_modules
-COPY --from=deps /app/pkg/ifx/node_modules ./pkg/ifx/node_modules
-COPY --from=deps /app/pkg/iam/node_modules ./pkg/iam/node_modules
-COPY --from=deps /app/app/api/node_modules ./app/api/node_modules
+# Install nest CLI globally for build
+RUN npm i -g @nestjs/cli
+
+# Copy all node_modules from deps
+COPY --from=deps /app/ ./
+
+# Copy source code
 COPY . .
 
-# Build workspace packages
+# Build workspace packages in dependency order
+RUN pnpm --filter @luxbank/misc build || true
 RUN pnpm --filter @luxbank/brand build
 RUN pnpm --filter @luxbank/models build
 RUN pnpm --filter @luxbank/email build
@@ -50,10 +50,12 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-# Copy built artifacts
+# Copy built artifacts and all workspace node_modules
 COPY --from=builder /app/app/api/dist ./dist
-COPY --from=builder /app/app/api/node_modules ./node_modules
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/app/api/node_modules ./app/api/node_modules
 COPY --from=builder /app/app/api/package.json ./
+COPY --from=builder /app/pkg/ ./pkg/
 
 EXPOSE 4000
 

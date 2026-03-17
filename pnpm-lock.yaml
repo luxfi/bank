@@ -115,6 +115,12 @@ importers:
       country-to-iso:
         specifier: ^1.3.0
         version: 1.3.0
+      date-fns:
+        specifier: ^4.1.0
+        version: 4.1.0
+      decimal.js:
+        specifier: ^10.6.0
+        version: 10.6.0
       expect-puppeteer:
         specifier: ^6.1.1
         version: 6.1.1
@@ -130,6 +136,9 @@ importers:
       lottie-react:
         specifier: ^2.4.0
         version: 2.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      moment:
+        specifier: ^2.30.1
+        version: 2.30.1
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -250,7 +259,7 @@ importers:
         version: link:../../pkg/brand
       '@luxbank/currency-cloud':
         specifier: ^1.0.32
-        version: 1.0.32(@nestjs/core@10.3.10)(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+        version: 1.0.32(@nestjs/core@10.3.10)(class-transformer@0.5.1)(class-validator@0.14.1)(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       '@luxbank/email':
         specifier: ^1.0.33
         version: 1.0.33(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
@@ -259,13 +268,13 @@ importers:
         version: link:../../pkg/iam
       '@luxbank/ifx':
         specifier: ^1.0.32
-        version: 1.0.32(@nestjs/core@10.3.10)(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+        version: 1.0.32(@nestjs/core@10.3.10)(class-transformer@0.5.1)(class-validator@0.14.1)(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       '@luxbank/misc':
         specifier: ^1.0.32
         version: 1.0.32(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)
       '@luxbank/models':
         specifier: ^1.0.32
-        version: 1.0.32(@nestjs/core@10.3.10)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+        version: 1.0.32(@nestjs/core@10.3.10)(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       '@mikro-orm/core':
         specifier: ^6.3.2
         version: 6.3.2
@@ -374,6 +383,9 @@ importers:
       jsonwebtoken:
         specifier: ^9.0.2
         version: 9.0.2
+      jwks-rsa:
+        specifier: ^4.0.1
+        version: 4.0.1
       multer:
         specifier: ^1.4.5-lts.1
         version: 1.4.5-lts.1
@@ -479,7 +491,7 @@ importers:
         version: 5.3.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@ant-design/static-style-extract':
         specifier: ^1.0.2
-        version: 1.0.2(antd@5.19.1(date-fns@3.6.0)(luxon@3.4.4)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 1.0.2(antd@5.19.1(date-fns@4.1.0)(luxon@3.4.4)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@fortawesome/free-solid-svg-icons':
         specifier: ^6.5.2
         version: 6.5.2
@@ -500,7 +512,7 @@ importers:
         version: 2.2.6(react-redux@9.1.2(@types/react@18.3.3)(react@18.3.1)(redux@5.0.1))(react@18.3.1)
       antd:
         specifier: ^5.19.1
-        version: 5.19.1(date-fns@3.6.0)(luxon@3.4.4)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 5.19.1(date-fns@4.1.0)(luxon@3.4.4)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       dayjs:
         specifier: ^1.11.11
         version: 1.11.12
@@ -685,16 +697,16 @@ importers:
     dependencies:
       '@hanzo/auth':
         specifier: 2.4.12
-        version: 2.4.12(54c2b79bd294d292dc31a9e072f01789)
+        version: 2.4.12(f93420897396ea592f51ad640a0b8c7e)
       '@hanzo/commerce':
         specifier: 7.1.5
-        version: 7.1.5(36cb052d7f42ae1c9f539ed3aca0469c)
+        version: 7.1.5(5154236608b3145ba9d030f86eeaefa5)
       '@hanzo/ui':
         specifier: 3.8.21
-        version: 3.8.21(@hookform/resolvers@3.9.0(react-hook-form@7.51.4(react@18.3.1)))(@types/react-dom@18.3.0)(@types/react@18.3.3)(date-fns@3.6.0)(embla-carousel@8.1.8)(lucide-react@0.344.0(react@18.3.1))(mobx@6.13.1)(next-themes@0.2.1(next@14.2.3(@babel/core@7.24.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(next@14.2.3(@babel/core@7.24.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react-hook-form@7.51.4(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.7(ts-node@10.9.2(@types/node@20.14.13)(typescript@5.5.4)))(validator@13.12.0)(zod@3.23.8)
+        version: 3.8.21(@hookform/resolvers@3.9.0(react-hook-form@7.51.4(react@18.3.1)))(@types/react-dom@18.3.0)(@types/react@18.3.3)(date-fns@4.1.0)(embla-carousel@8.1.8)(lucide-react@0.344.0(react@18.3.1))(mobx@6.13.1)(next-themes@0.2.1(next@14.2.3(@babel/core@7.24.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(next@14.2.3(@babel/core@7.24.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react-hook-form@7.51.4(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.7(ts-node@10.9.2(@types/node@20.14.13)(typescript@5.5.4)))(validator@13.12.0)(zod@3.23.8)
       '@luxfi/ui':
         specifier: '*'
-        version: 5.3.13(19a5c7ffcae2113b3d7b24213c49a56c)
+        version: 5.3.13(c8aeaa3fb05cfa349f1338093dfa1795)
       '@next/mdx':
         specifier: 14.1.0
         version: 14.1.0(@mdx-js/loader@3.0.1(webpack@5.92.1))(@mdx-js/react@3.0.1(@types/react@18.3.3)(react@18.3.1))
@@ -776,7 +788,7 @@ importers:
         version: 1.11.21
       antd:
         specifier: ^5.13.2
-        version: 5.19.1(date-fns@3.6.0)(luxon@3.4.4)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 5.19.1(date-fns@4.1.0)(luxon@3.4.4)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       formik:
         specifier: ^2.4.5
         version: 2.4.6(react@18.3.1)
@@ -983,10 +995,10 @@ importers:
     dependencies:
       '@luxbank/models':
         specifier: ^1.0.31
-        version: 1.0.32(@nestjs/core@11.1.17(@nestjs/common@11.1.17(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(reflect-metadata@0.2.2)(rxjs@7.8.1))(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+        version: 1.0.32(@nestjs/core@11.1.17(@nestjs/common@11.1.17(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(reflect-metadata@0.2.2)(rxjs@7.8.1))(reflect-metadata@0.2.2)(rxjs@7.8.1)
       '@mikro-orm/cli':
         specifier: ^6.3.2
-        version: 6.3.2(pg@8.12.0)
+        version: 6.3.2
       '@mikro-orm/core':
         specifier: ^6.3.2
         version: 6.3.2
@@ -995,7 +1007,7 @@ importers:
         version: 6.3.2(@mikro-orm/core@6.3.2)(pg@8.12.0)(sqlite3@5.1.7)
       '@mikro-orm/migrations':
         specifier: ^6.3.2
-        version: 6.3.2(@mikro-orm/core@6.3.2)(@types/node@20.14.13)(pg@8.12.0)
+        version: 6.3.2(@mikro-orm/core@6.3.2)(@types/node@20.14.13)
       '@mikro-orm/postgresql':
         specifier: ^6.3.2
         version: 6.3.2(@mikro-orm/core@6.3.2)
@@ -1100,6 +1112,9 @@ importers:
       moment:
         specifier: ^2.30.1
         version: 2.30.1
+      sequelize-typescript:
+        specifier: ^2.1.6
+        version: 2.1.6(@types/node@20.14.13)(@types/validator@13.12.0)(reflect-metadata@0.2.2)(sequelize@6.37.8)
     devDependencies:
       '@types/express':
         specifier: ^4.17.21
@@ -7147,6 +7162,9 @@ packages:
   date-fns@3.6.0:
     resolution: {integrity: sha512-fRHTG8g/Gif+kSh50gaGEdToemgfj74aRX3swtiouboip5JDLAyDE9F11nHMIcvOaXeOC6D7SpNhi7uFyB7Uww==}
 
+  date-fns@4.1.0:
+    resolution: {integrity: sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==}
+
   date-holidays-parser@3.4.4:
     resolution: {integrity: sha512-R5aO4oT8H51ZKdvApqHrqYEiNBrqT6tRj2PFXNcZfqMI4nxY7KKKly0ZsmquR5gY+x9ldKR8SAMdozzIInaoXg==}
     engines: {node: '>=12.0.0'}
@@ -7212,8 +7230,8 @@ packages:
     resolution: {integrity: sha512-z2S+W9X73hAUUki+N+9Za2lBlun89zigOyGrsax+KUQ6wKW4ZoWpEYBkGhQjwAjjDCkWxhY0VKEhk8wzY7F5cA==}
     engines: {node: '>=0.10.0'}
 
-  decimal.js@10.4.3:
-    resolution: {integrity: sha512-VBBaLc1MgL5XpzgIP7ny5Z6Nx3UrRkIViUkPUdtl9aya5amy3De1gsUUSB1g3+3sExYNjCAsAznmukyxCb1GRA==}
+  decimal.js@10.6.0:
+    resolution: {integrity: sha512-YpgQiITW3JXGntzdUmyUR1V812Hn8T1YVXhCu+wO3OpS4eU9l4YdD3qjyiKdV6mvV29zapkMeD390UVEf2lkUg==}
 
   decode-named-character-reference@1.0.2:
     resolution: {integrity: sha512-O8x12RzrUF8xyVcY0KJowWsmaJxQbmy0/EtnNtHRpsOcT7dFk5W598coHqBVpmWo1oQQfsCqfCmkZN5DJrZVdg==}
@@ -7446,6 +7464,9 @@ packages:
   dotenv@16.4.5:
     resolution: {integrity: sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==}
     engines: {node: '>=12'}
+
+  dottie@2.0.7:
+    resolution: {integrity: sha512-7lAK2A0b3zZr3UC5aE69CPdCFR4RHW1o2Dr74TqFykxkUCBXSRJum/yPc7g8zRHJqWKomPLHwFLLoUnn8PXXRg==}
 
   dset@3.1.3:
     resolution: {integrity: sha512-20TuZZHCEZ2O71q9/+8BwKwZ0QtD9D8ObhrihJPr+vLLYlSuAU3/zL4cSlgbfeoGHTjCSJBa7NGcrF9/Bx/WJQ==}
@@ -8365,6 +8386,10 @@ packages:
     resolution: {integrity: sha512-OvD9ENzPLbegENnYP5UUfJIirTg4+XwMWGaQfQTY0JenxNvvIKP3U3/tAQSPIu/lHxXYSZmpXlUHeqAIdKzBLQ==}
     deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
+  glob@7.2.0:
+    resolution: {integrity: sha512-lmLf6gtyrPq8tTjSmrO94wBeQbFR3HbLHbuyD69wuyQkImp2hWqMGB47OX65FBkPffO641IP9jWa1z4ivqG26Q==}
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
     deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
@@ -8746,6 +8771,10 @@ packages:
 
   infer-owner@1.0.4:
     resolution: {integrity: sha512-IClj+Xz94+d7irH5qRyfJonOdfTzuDaifE6ZPWfx0N0+/ATZCbuTPq2prFl526urkQd90WyUKIh1DfBQ2hMz9A==}
+
+  inflection@1.13.4:
+    resolution: {integrity: sha512-6I/HUDeYFfuNCVS3td055BaXBwKYuzw7K3ExVMStBowKo9oOAMJIXIHvdyR3iboTCp1b+1i5DSkIZTcwIktuDw==}
+    engines: {'0': node >= 0.4.0}
 
   inflight@1.0.6:
     resolution: {integrity: sha512-k92I/b08q4wvFscXCLvqfsHCrjrF7yiXsQuIVvVE7N82W3+aqpzuUdBbfhWcy/FZR3/4IgflMgKLOsvPDrGCJA==}
@@ -9611,6 +9640,10 @@ packages:
     resolution: {integrity: sha512-v7nqlfezb9YfHHzYII3ef2a2j1XnGeSE/bK3WfumaYCqONAIstJbrEGapz4kadScZzEt7zYCN7bucj8C0Mv/Rg==}
     engines: {node: '>=14'}
 
+  jwks-rsa@4.0.1:
+    resolution: {integrity: sha512-poXwUA8S4cP9P5N8tZS3xnUDJH8WmwSGfKK9gIaRPdjLHyJtd9iX/cngX9CUIe0Caof5JhK2EbN7N5lnnaf9NA==}
+    engines: {node: ^20.19.0 || ^22.12.0 || >= 23.0.0}
+
   jws@3.2.2:
     resolution: {integrity: sha512-YHlZCB6lMTllWDtSPHz/ZXTsi8S00usEV6v1tjq8tOUZzw7DpSDWVXjXDre6ed1w/pd495ODpHZYSdkRTsa0HA==}
 
@@ -9859,6 +9892,10 @@ packages:
   lru-cache@10.4.3:
     resolution: {integrity: sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==}
 
+  lru-cache@11.2.7:
+    resolution: {integrity: sha512-aY/R+aEsRelme17KGQa/1ZSIpLpNYYrhcrepKTZgE+W3WM16YMCaPwOHLHsmopZHELU0Ojin1lPVxKR0MihncA==}
+    engines: {node: 20 || >=22}
+
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
 
@@ -9868,6 +9905,9 @@ packages:
 
   lru-memoizer@2.3.0:
     resolution: {integrity: sha512-GXn7gyHAMhO13WSKrIiNfztwxodVsP8IoZ3XfrJV4yH2x0/OeTO/FIaAHTY5YekdGgW94njfuKmyyt1E0mR6Ug==}
+
+  lru-memoizer@3.0.0:
+    resolution: {integrity: sha512-m83w/cYXLdUIboKSPxzPAGfYnk+vqeDYXuoSrQRw1q+yVEd8IXhvMufN8Q5TIPe7e2jyX4SRNrDJI2Skw1yznQ==}
 
   lucide-react@0.344.0:
     resolution: {integrity: sha512-6YyBnn91GB45VuVT96bYCOKElbJzUHqp65vX8cDcu55MQL9T969v4dhGClpljamuI/+KMO9P6w9Acq1CVQGvIQ==}
@@ -12685,6 +12725,9 @@ packages:
   retext@9.0.0:
     resolution: {integrity: sha512-sbMDcpHCNjvlheSgMfEcVrZko3cDzdbe1x/e7G66dFp0Ff7Mldvi2uv6JkJQzdRcvLYE8CA8Oe8siQx8ZOgTcA==}
 
+  retry-as-promised@7.1.1:
+    resolution: {integrity: sha512-hMD7odLOt3LkTjcif8aRZqi/hybjpLNgSk5oF5FCowfCjok6LukpN2bDX7R5wDmbgBQFn7YoBxSagmtXHaJYJw==}
+
   retry-request@7.0.2:
     resolution: {integrity: sha512-dUOvLMJ0/JJYEn8NrpOaGNE7X3vpI5XlZS/u0ANjqtcZVKnIxP7IgCFwrKTxENw29emmwug53awKtaMm4i9g5w==}
     engines: {node: '>=14'}
@@ -12863,6 +12906,52 @@ packages:
   send@0.18.0:
     resolution: {integrity: sha512-qqWzuOjSFOuqPjFe4NOsMLafToQQwBSOEpS+FwEt3A2V3vKubTquT3vmLTQpFgMXp8AlFWFuP1qKaJZOtPpVXg==}
     engines: {node: '>= 0.8.0'}
+
+  sequelize-pool@7.1.0:
+    resolution: {integrity: sha512-G9c0qlIWQSK29pR/5U2JF5dDQeqqHRragoyahj/Nx4KOOQ3CPPfzxnfqFPCSB7x5UgjOgnZ61nSxz+fjDpRlJg==}
+    engines: {node: '>= 10.0.0'}
+
+  sequelize-typescript@2.1.6:
+    resolution: {integrity: sha512-Vc2N++3en346RsbGjL3h7tgAl2Y7V+2liYTAOZ8XL0KTw3ahFHsyAUzOwct51n+g70I1TOUDgs06Oh6+XGcFkQ==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      '@types/node': '*'
+      '@types/validator': '*'
+      reflect-metadata: '*'
+      sequelize: '>=6.20.1'
+
+  sequelize@6.37.8:
+    resolution: {integrity: sha512-HJ0IQFqcTsTiqbEgiuioYFMSD00TP6Cz7zoTti+zVVBwVe9fEhev9cH6WnM3XU31+ABS356durAb99ZuOthnKw==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      ibm_db: '*'
+      mariadb: '*'
+      mysql2: '*'
+      oracledb: '*'
+      pg: '*'
+      pg-hstore: '*'
+      snowflake-sdk: '*'
+      sqlite3: '*'
+      tedious: '*'
+    peerDependenciesMeta:
+      ibm_db:
+        optional: true
+      mariadb:
+        optional: true
+      mysql2:
+        optional: true
+      oracledb:
+        optional: true
+      pg:
+        optional: true
+      pg-hstore:
+        optional: true
+      snowflake-sdk:
+        optional: true
+      sqlite3:
+        optional: true
+      tedious:
+        optional: true
 
   serialize-javascript@4.0.0:
     resolution: {integrity: sha512-GaNA54380uFefWghODBWEGisLZFj00nS5ACs6yHa9nLqlLpVLO8ChDGeKRjZnV4Nh4n0Qi7nhYZD/9fCPzEqkw==}
@@ -13567,6 +13656,9 @@ packages:
     resolution: {integrity: sha512-dRXchy+C0IgK8WPC6xvCHFRIWYUbqqdEIKPaKo/AcTUNzwLTK6AH7RjdLWsEZcAN/TBdtfUw3PYEgPr5VPr6ww==}
     engines: {node: '>=14.16'}
 
+  toposort-class@1.0.1:
+    resolution: {integrity: sha512-OsLcGGbYF3rMjPUf8oKktyvCiUxSbqMMS39m33MAjLTC1DVIH6x3WSt63/M77ihI09+Sdfk1AXvfhCEeUmC7mg==}
+
   toposort@2.0.2:
     resolution: {integrity: sha512-0a5EOkAUp8D4moMi2W8ZF8jcga7BgZd91O/yabJCFY8az+XSzeGyTKs0Aoo897iV1Nj6guFq8orWDS96z91oGg==}
 
@@ -14262,6 +14354,9 @@ packages:
   wide-align@1.1.5:
     resolution: {integrity: sha512-eDMORYaPNZ4sQIuuYPDHdQvf4gyCF9rEEV/yPxGfwPkRodwEgiMUUXTx/dex+Me0wxx53S+NgUHaP7y3MGlDmg==}
 
+  wkx@0.5.0:
+    resolution: {integrity: sha512-Xng/d4Ichh8uN4l0FToV/258EjMGU9MGcA0HV2d9B/ZpZB3lqQm7nkOdZdm5GhKtLLhAE7PiVQwN4eN+2YJJUg==}
+
   word-wrap@1.2.5:
     resolution: {integrity: sha512-BN22B5eaMMI9UMtjrGd5g5eCYPpCPDUy0FJXbYsaT5zYxjFOckS53SQDE3pWkVoWpHXVb3BrYcEN4Twa55B5cA==}
     engines: {node: '>=0.10.0'}
@@ -14609,12 +14704,12 @@ snapshots:
       resize-observer-polyfill: 1.5.1
       throttle-debounce: 5.0.2
 
-  '@ant-design/static-style-extract@1.0.2(antd@5.19.1(date-fns@3.6.0)(luxon@3.4.4)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@ant-design/static-style-extract@1.0.2(antd@5.19.1(date-fns@4.1.0)(luxon@3.4.4)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@ant-design/cssinjs': 1.21.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@babel/runtime': 7.24.7
       '@rc-component/portal': 1.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      antd: 5.19.1(date-fns@3.6.0)(luxon@3.4.4)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      antd: 5.19.1(date-fns@4.1.0)(luxon@3.4.4)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       classnames: 2.5.1
       rc-align: 4.0.15(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       rc-motion: 2.9.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -14729,7 +14824,7 @@ snapshots:
       '@babel/traverse': 7.24.7(supports-color@8.1.1)
       '@babel/types': 7.24.7
       convert-source-map: 2.0.0
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.1
@@ -14810,7 +14905,7 @@ snapshots:
       '@babel/core': 7.24.7
       '@babel/helper-compilation-targets': 7.25.2
       '@babel/helper-plugin-utils': 7.24.8
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       lodash.debounce: 4.0.8
       resolve: 1.22.8
     transitivePeerDependencies:
@@ -15705,7 +15800,7 @@ snapshots:
       '@babel/helper-split-export-declaration': 7.24.7
       '@babel/parser': 7.24.7
       '@babel/types': 7.24.7
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
@@ -15717,7 +15812,7 @@ snapshots:
       '@babel/parser': 7.25.3
       '@babel/template': 7.25.0
       '@babel/types': 7.25.2
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
@@ -15895,7 +15990,7 @@ snapshots:
   '@eslint/eslintrc@2.1.4':
     dependencies:
       ajv: 6.12.6
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5
       espree: 9.6.1
       globals: 13.24.0
       ignore: 5.3.1
@@ -16451,9 +16546,9 @@ snapshots:
       protobufjs: 7.3.2
       yargs: 17.7.2
 
-  '@hanzo/auth@2.4.12(54c2b79bd294d292dc31a9e072f01789)':
+  '@hanzo/auth@2.4.12(f93420897396ea592f51ad640a0b8c7e)':
     dependencies:
-      '@hanzo/ui': 3.8.21(@hookform/resolvers@3.9.0(react-hook-form@7.51.4(react@18.3.1)))(@types/react-dom@18.3.0)(@types/react@18.3.3)(date-fns@3.6.0)(embla-carousel@8.1.8)(lucide-react@0.344.0(react@18.3.1))(mobx@6.13.1)(next-themes@0.2.1(next@14.2.3(@babel/core@7.24.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(next@14.2.3(@babel/core@7.24.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react-hook-form@7.51.4(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.7(ts-node@10.9.2(@types/node@20.14.13)(typescript@5.5.4)))(validator@13.12.0)(zod@3.23.8)
+      '@hanzo/ui': 3.8.21(@hookform/resolvers@3.9.0(react-hook-form@7.51.4(react@18.3.1)))(@types/react-dom@18.3.0)(@types/react@18.3.3)(date-fns@4.1.0)(embla-carousel@8.1.8)(lucide-react@0.344.0(react@18.3.1))(mobx@6.13.1)(next-themes@0.2.1(next@14.2.3(@babel/core@7.24.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(next@14.2.3(@babel/core@7.24.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react-hook-form@7.51.4(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.7(ts-node@10.9.2(@types/node@20.14.13)(typescript@5.5.4)))(validator@13.12.0)(zod@3.23.8)
       '@hookform/resolvers': 3.9.0(react-hook-form@7.51.4(react@18.3.1))
       firebase: 10.12.0
       firebase-admin: 12.3.0(encoding@0.1.13)
@@ -16468,10 +16563,10 @@ snapshots:
       - encoding
       - supports-color
 
-  '@hanzo/commerce@7.1.5(36cb052d7f42ae1c9f539ed3aca0469c)':
+  '@hanzo/commerce@7.1.5(5154236608b3145ba9d030f86eeaefa5)':
     dependencies:
-      '@hanzo/auth': 2.4.12(54c2b79bd294d292dc31a9e072f01789)
-      '@hanzo/ui': 3.8.21(@hookform/resolvers@3.9.0(react-hook-form@7.51.4(react@18.3.1)))(@types/react-dom@18.3.0)(@types/react@18.3.3)(date-fns@3.6.0)(embla-carousel@8.1.8)(lucide-react@0.344.0(react@18.3.1))(mobx@6.13.1)(next-themes@0.2.1(next@14.2.3(@babel/core@7.24.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(next@14.2.3(@babel/core@7.24.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react-hook-form@7.51.4(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.7(ts-node@10.9.2(@types/node@20.14.13)(typescript@5.5.4)))(validator@13.12.0)(zod@3.23.8)
+      '@hanzo/auth': 2.4.12(f93420897396ea592f51ad640a0b8c7e)
+      '@hanzo/ui': 3.8.21(@hookform/resolvers@3.9.0(react-hook-form@7.51.4(react@18.3.1)))(@types/react-dom@18.3.0)(@types/react@18.3.3)(date-fns@4.1.0)(embla-carousel@8.1.8)(lucide-react@0.344.0(react@18.3.1))(mobx@6.13.1)(next-themes@0.2.1(next@14.2.3(@babel/core@7.24.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(next@14.2.3(@babel/core@7.24.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react-hook-form@7.51.4(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.7(ts-node@10.9.2(@types/node@20.14.13)(typescript@5.5.4)))(validator@13.12.0)(zod@3.23.8)
       '@hookform/resolvers': 3.9.0(react-hook-form@7.51.4(react@18.3.1))
       '@radix-ui/react-radio-group': 1.2.0(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       ethers: 6.13.2
@@ -16509,7 +16604,7 @@ snapshots:
       - '@types/react'
       - '@types/react-dom'
 
-  '@hanzo/ui@3.8.21(@hookform/resolvers@3.9.0(react-hook-form@7.51.4(react@18.3.1)))(@types/react-dom@18.3.0)(@types/react@18.3.3)(date-fns@3.6.0)(embla-carousel@8.1.8)(lucide-react@0.344.0(react@18.3.1))(mobx@6.13.1)(next-themes@0.2.1(next@14.2.3(@babel/core@7.24.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(next@14.2.3(@babel/core@7.24.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react-hook-form@7.51.4(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.7(ts-node@10.9.2(@types/node@20.14.13)(typescript@5.5.4)))(validator@13.12.0)(zod@3.23.8)':
+  '@hanzo/ui@3.8.21(@hookform/resolvers@3.9.0(react-hook-form@7.51.4(react@18.3.1)))(@types/react-dom@18.3.0)(@types/react@18.3.3)(date-fns@4.1.0)(embla-carousel@8.1.8)(lucide-react@0.344.0(react@18.3.1))(mobx@6.13.1)(next-themes@0.2.1(next@14.2.3(@babel/core@7.24.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(next@14.2.3(@babel/core@7.24.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react-hook-form@7.51.4(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.7(ts-node@10.9.2(@types/node@20.14.13)(typescript@5.5.4)))(validator@13.12.0)(zod@3.23.8)':
     dependencies:
       '@hanzo/react-drawer': 0.1.7(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@hookform/resolvers': 3.9.0(react-hook-form@7.51.4(react@18.3.1))
@@ -16554,7 +16649,7 @@ snapshots:
       next-themes: 0.2.1(next@14.2.3(@babel/core@7.24.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       postcss-selector-parser: 6.1.1
       react: 18.3.1
-      react-day-picker: 8.10.1(date-fns@3.6.0)(react@18.3.1)
+      react-day-picker: 8.10.1(date-fns@4.1.0)(react@18.3.1)
       react-dom: 18.3.1(react@18.3.1)
       react-hook-form: 7.51.4(react@18.3.1)
       react-intersection-observer: 9.10.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -16593,7 +16688,7 @@ snapshots:
   '@humanwhocodes/config-array@0.11.14':
     dependencies:
       '@humanwhocodes/object-schema': 2.0.3
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5
       minimatch: 3.1.2
     transitivePeerDependencies:
       - supports-color
@@ -17231,10 +17326,10 @@ snapshots:
 
   '@lukeed/csprng@1.1.0': {}
 
-  '@luxbank/currency-cloud@1.0.32(@nestjs/core@10.3.10)(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)':
+  '@luxbank/currency-cloud@1.0.32(@nestjs/core@10.3.10)(class-transformer@0.5.1)(class-validator@0.14.1)(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)':
     dependencies:
       '@luxbank/misc': 1.0.32(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)
-      '@luxbank/models': 1.0.32(@nestjs/core@10.3.10)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@luxbank/models': 1.0.32(@nestjs/core@10.3.10)(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       '@nestjs/common': 10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       axios: 1.7.3
     transitivePeerDependencies:
@@ -17296,11 +17391,11 @@ snapshots:
       - reflect-metadata
       - rxjs
 
-  '@luxbank/ifx@1.0.32(@nestjs/core@10.3.10)(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)':
+  '@luxbank/ifx@1.0.32(@nestjs/core@10.3.10)(class-transformer@0.5.1)(class-validator@0.14.1)(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)':
     dependencies:
-      '@luxbank/currency-cloud': 1.0.32(@nestjs/core@10.3.10)(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@luxbank/currency-cloud': 1.0.32(@nestjs/core@10.3.10)(class-transformer@0.5.1)(class-validator@0.14.1)(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       '@luxbank/misc': 1.0.32(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)
-      '@luxbank/models': 1.0.32(@nestjs/core@10.3.10)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@luxbank/models': 1.0.32(@nestjs/core@10.3.10)(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       '@nestjs/common': 10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       axios: 1.7.3
     transitivePeerDependencies:
@@ -17336,7 +17431,7 @@ snapshots:
       - class-validator
       - reflect-metadata
 
-  '@luxbank/models@1.0.32(@nestjs/core@10.3.10)(reflect-metadata@0.2.2)(rxjs@7.8.1)':
+  '@luxbank/models@1.0.32(@nestjs/core@10.3.10)(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)':
     dependencies:
       '@luxbank/misc': 1.0.32(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)
       '@mikro-orm/core': 6.3.2
@@ -17398,7 +17493,7 @@ snapshots:
       - supports-color
       - tedious
 
-  '@luxbank/models@1.0.32(@nestjs/core@11.1.17(@nestjs/common@11.1.17(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(reflect-metadata@0.2.2)(rxjs@7.8.1))(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)':
+  '@luxbank/models@1.0.32(@nestjs/core@11.1.17(@nestjs/common@11.1.17(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(reflect-metadata@0.2.2)(rxjs@7.8.1))(reflect-metadata@0.2.2)(rxjs@7.8.1)':
     dependencies:
       '@luxbank/misc': 1.0.32(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)
       '@mikro-orm/core': 6.3.2
@@ -17450,11 +17545,11 @@ snapshots:
     optionalDependencies:
       react: 18.3.1
 
-  '@luxfi/ui@5.3.13(19a5c7ffcae2113b3d7b24213c49a56c)':
+  '@luxfi/ui@5.3.13(c8aeaa3fb05cfa349f1338093dfa1795)':
     dependencies:
-      '@hanzo/auth': 2.4.12(54c2b79bd294d292dc31a9e072f01789)
-      '@hanzo/commerce': 7.1.5(36cb052d7f42ae1c9f539ed3aca0469c)
-      '@hanzo/ui': 3.8.21(@hookform/resolvers@3.9.0(react-hook-form@7.51.4(react@18.3.1)))(@types/react-dom@18.3.0)(@types/react@18.3.3)(date-fns@3.6.0)(embla-carousel@8.1.8)(lucide-react@0.344.0(react@18.3.1))(mobx@6.13.1)(next-themes@0.2.1(next@14.2.3(@babel/core@7.24.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(next@14.2.3(@babel/core@7.24.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react-hook-form@7.51.4(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.7(ts-node@10.9.2(@types/node@20.14.13)(typescript@5.5.4)))(validator@13.12.0)(zod@3.23.8)
+      '@hanzo/auth': 2.4.12(f93420897396ea592f51ad640a0b8c7e)
+      '@hanzo/commerce': 7.1.5(5154236608b3145ba9d030f86eeaefa5)
+      '@hanzo/ui': 3.8.21(@hookform/resolvers@3.9.0(react-hook-form@7.51.4(react@18.3.1)))(@types/react-dom@18.3.0)(@types/react@18.3.3)(date-fns@4.1.0)(embla-carousel@8.1.8)(lucide-react@0.344.0(react@18.3.1))(mobx@6.13.1)(next-themes@0.2.1(next@14.2.3(@babel/core@7.24.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(next@14.2.3(@babel/core@7.24.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react-hook-form@7.51.4(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.7(ts-node@10.9.2(@types/node@20.14.13)(typescript@5.5.4)))(validator@13.12.0)(zod@3.23.8)
       '@hookform/resolvers': 3.9.0(react-hook-form@7.51.4(react@18.3.1))
       '@next/third-parties': 14.2.5(next@14.2.3(@babel/core@7.24.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
       '@types/node': 20.14.13
@@ -17537,7 +17632,7 @@ snapshots:
 
   '@microsoft/tsdoc@0.15.0': {}
 
-  '@mikro-orm/cli@6.3.2(pg@8.12.0)':
+  '@mikro-orm/cli@6.3.2':
     dependencies:
       '@jercle/yargonaut': 1.1.5
       '@mikro-orm/core': 6.3.2
@@ -17582,7 +17677,7 @@ snapshots:
       - supports-color
       - tedious
 
-  '@mikro-orm/migrations@6.3.2(@mikro-orm/core@6.3.2)(@types/node@20.14.13)(pg@8.12.0)':
+  '@mikro-orm/migrations@6.3.2(@mikro-orm/core@6.3.2)(@types/node@20.14.13)':
     dependencies:
       '@mikro-orm/core': 6.3.2
       '@mikro-orm/knex': 6.3.2(@mikro-orm/core@6.3.2)(pg@8.12.0)(sqlite3@5.1.7)
@@ -19433,7 +19528,7 @@ snapshots:
 
   '@tokenizer/inflate@0.4.1':
     dependencies:
-      debug: 4.4.3
+      debug: 4.4.3(supports-color@8.1.1)
       token-types: 6.1.2
     transitivePeerDependencies:
       - supports-color
@@ -19996,7 +20091,7 @@ snapshots:
       '@typescript-eslint/scope-manager': 5.62.0
       '@typescript-eslint/type-utils': 5.62.0(eslint@8.57.0)(typescript@4.9.5)
       '@typescript-eslint/utils': 5.62.0(eslint@8.57.0)(typescript@4.9.5)
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       eslint: 8.57.0
       graphemer: 1.4.0
       ignore: 5.3.1
@@ -20016,7 +20111,7 @@ snapshots:
       '@typescript-eslint/type-utils': 6.21.0(eslint@8.46.0)(typescript@5.1.6)
       '@typescript-eslint/utils': 6.21.0(eslint@8.46.0)(typescript@5.1.6)
       '@typescript-eslint/visitor-keys': 6.21.0
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5
       eslint: 8.46.0
       graphemer: 1.4.0
       ignore: 5.3.1
@@ -20036,7 +20131,7 @@ snapshots:
       '@typescript-eslint/type-utils': 6.21.0(eslint@8.57.0)(typescript@5.5.4)
       '@typescript-eslint/utils': 6.21.0(eslint@8.57.0)(typescript@5.5.4)
       '@typescript-eslint/visitor-keys': 6.21.0
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5
       eslint: 8.57.0
       graphemer: 1.4.0
       ignore: 5.3.1
@@ -20079,7 +20174,7 @@ snapshots:
       '@typescript-eslint/scope-manager': 5.62.0
       '@typescript-eslint/types': 5.62.0
       '@typescript-eslint/typescript-estree': 5.62.0(typescript@4.9.5)
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       eslint: 8.57.0
     optionalDependencies:
       typescript: 4.9.5
@@ -20092,7 +20187,7 @@ snapshots:
       '@typescript-eslint/types': 6.21.0
       '@typescript-eslint/typescript-estree': 6.21.0(typescript@5.1.6)
       '@typescript-eslint/visitor-keys': 6.21.0
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5
       eslint: 8.46.0
     optionalDependencies:
       typescript: 5.1.6
@@ -20105,7 +20200,7 @@ snapshots:
       '@typescript-eslint/types': 6.21.0
       '@typescript-eslint/typescript-estree': 6.21.0(typescript@5.5.4)
       '@typescript-eslint/visitor-keys': 6.21.0
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5
       eslint: 8.57.0
     optionalDependencies:
       typescript: 5.5.4
@@ -20118,7 +20213,7 @@ snapshots:
       '@typescript-eslint/types': 7.18.0
       '@typescript-eslint/typescript-estree': 7.18.0(typescript@5.5.4)
       '@typescript-eslint/visitor-keys': 7.18.0
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5
       eslint: 8.57.0
     optionalDependencies:
       typescript: 5.5.4
@@ -20144,7 +20239,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/typescript-estree': 5.62.0(typescript@4.9.5)
       '@typescript-eslint/utils': 5.62.0(eslint@8.57.0)(typescript@4.9.5)
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       eslint: 8.57.0
       tsutils: 3.21.0(typescript@4.9.5)
     optionalDependencies:
@@ -20156,7 +20251,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/typescript-estree': 6.21.0(typescript@5.1.6)
       '@typescript-eslint/utils': 6.21.0(eslint@8.46.0)(typescript@5.1.6)
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       eslint: 8.46.0
       ts-api-utils: 1.3.0(typescript@5.1.6)
     optionalDependencies:
@@ -20168,7 +20263,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/typescript-estree': 6.21.0(typescript@5.5.4)
       '@typescript-eslint/utils': 6.21.0(eslint@8.57.0)(typescript@5.5.4)
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       eslint: 8.57.0
       ts-api-utils: 1.3.0(typescript@5.5.4)
     optionalDependencies:
@@ -20180,7 +20275,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/typescript-estree': 7.18.0(typescript@5.5.4)
       '@typescript-eslint/utils': 7.18.0(eslint@8.57.0)(typescript@5.5.4)
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5
       eslint: 8.57.0
       ts-api-utils: 1.3.0(typescript@5.5.4)
     optionalDependencies:
@@ -20198,7 +20293,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 5.62.0
       '@typescript-eslint/visitor-keys': 5.62.0
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       globby: 11.1.0
       is-glob: 4.0.3
       semver: 7.6.2
@@ -20212,7 +20307,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 6.21.0
       '@typescript-eslint/visitor-keys': 6.21.0
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       globby: 11.1.0
       is-glob: 4.0.3
       minimatch: 9.0.3
@@ -20227,7 +20322,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 6.21.0
       '@typescript-eslint/visitor-keys': 6.21.0
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       globby: 11.1.0
       is-glob: 4.0.3
       minimatch: 9.0.3
@@ -20242,7 +20337,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 7.18.0
       '@typescript-eslint/visitor-keys': 7.18.0
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5
       globby: 11.1.0
       is-glob: 4.0.3
       minimatch: 9.0.5
@@ -20324,7 +20419,7 @@ snapshots:
 
   '@typescript/vfs@1.6.2(typescript@5.5.4)':
     dependencies:
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       typescript: 5.5.4
     transitivePeerDependencies:
       - supports-color
@@ -20464,13 +20559,13 @@ snapshots:
 
   agent-base@6.0.2:
     dependencies:
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
   agent-base@7.1.1:
     dependencies:
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
     optional: true
@@ -20615,7 +20710,7 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
       scroll-into-view-if-needed: 2.2.31
 
-  antd@5.19.1(date-fns@3.6.0)(luxon@3.4.4)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  antd@5.19.1(date-fns@4.1.0)(luxon@3.4.4)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@ant-design/colors': 7.1.0
       '@ant-design/cssinjs': 1.21.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -20646,7 +20741,7 @@ snapshots:
       rc-motion: 2.9.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       rc-notification: 5.6.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       rc-pagination: 4.2.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      rc-picker: 4.6.8(date-fns@3.6.0)(dayjs@1.11.12)(luxon@3.4.4)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      rc-picker: 4.6.8(date-fns@4.1.0)(dayjs@1.11.12)(luxon@3.4.4)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       rc-progress: 4.0.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       rc-rate: 2.13.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       rc-resize-observer: 1.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -22177,6 +22272,8 @@ snapshots:
 
   date-fns@3.6.0: {}
 
+  date-fns@4.1.0: {}
+
   date-holidays-parser@3.4.4:
     dependencies:
       astronomia: 4.1.1
@@ -22213,19 +22310,19 @@ snapshots:
     dependencies:
       ms: 2.1.2
 
-  debug@4.3.5(supports-color@8.1.1):
+  debug@4.3.5:
     dependencies:
       ms: 2.1.2
+
+  debug@4.4.3(supports-color@8.1.1):
+    dependencies:
+      ms: 2.1.3
     optionalDependencies:
       supports-color: 8.1.1
 
-  debug@4.4.3:
-    dependencies:
-      ms: 2.1.3
-
   decamelize@1.2.0: {}
 
-  decimal.js@10.4.3: {}
+  decimal.js@10.6.0: {}
 
   decode-named-character-reference@1.0.2:
     dependencies:
@@ -22450,6 +22547,8 @@ snapshots:
   dotenv@10.0.0: {}
 
   dotenv@16.4.5: {}
+
+  dottie@2.0.7: {}
 
   dset@3.1.3:
     optional: true
@@ -22773,7 +22872,7 @@ snapshots:
 
   eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@6.21.0(eslint@8.46.0)(typescript@5.1.6))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1)(eslint@8.46.0):
     dependencies:
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       enhanced-resolve: 5.17.0
       eslint: 8.46.0
       eslint-module-utils: 2.8.1(@typescript-eslint/parser@6.21.0(eslint@8.46.0)(typescript@5.1.6))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1)(eslint@8.46.0)
@@ -22790,7 +22889,7 @@ snapshots:
 
   eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@6.21.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1)(eslint@8.57.0):
     dependencies:
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       enhanced-resolve: 5.17.0
       eslint: 8.57.0
       eslint-module-utils: 2.8.1(@typescript-eslint/parser@6.21.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0)
@@ -23101,7 +23200,7 @@ snapshots:
       ajv: 6.12.6
       chalk: 4.1.2
       cross-spawn: 7.0.3
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5
       doctrine: 3.0.0
       escape-string-regexp: 4.0.0
       eslint-scope: 7.2.2
@@ -23144,7 +23243,7 @@ snapshots:
       ajv: 6.12.6
       chalk: 4.1.2
       cross-spawn: 7.0.3
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5
       doctrine: 3.0.0
       escape-string-regexp: 4.0.0
       eslint-scope: 7.2.2
@@ -23364,7 +23463,7 @@ snapshots:
 
   extract-zip@2.0.1:
     dependencies:
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       get-stream: 5.2.0
       yauzl: 2.10.0
     optionalDependencies:
@@ -23491,7 +23590,7 @@ snapshots:
     dependencies:
       chalk: 4.1.2
       commander: 5.1.0
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -23852,6 +23951,15 @@ snapshots:
       path-scurry: 1.11.1
 
   glob@7.1.7:
+    dependencies:
+      fs.realpath: 1.0.0
+      inflight: 1.0.6
+      inherits: 2.0.4
+      minimatch: 3.1.2
+      once: 1.4.0
+      path-is-absolute: 1.0.1
+
+  glob@7.2.0:
     dependencies:
       fs.realpath: 1.0.0
       inflight: 1.0.6
@@ -24269,7 +24377,7 @@ snapshots:
     dependencies:
       '@tootallnate/once': 1.1.2
       agent-base: 6.0.2
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -24277,7 +24385,7 @@ snapshots:
     dependencies:
       '@tootallnate/once': 2.0.0
       agent-base: 6.0.2
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
     optional: true
@@ -24311,14 +24419,14 @@ snapshots:
   https-proxy-agent@5.0.1:
     dependencies:
       agent-base: 6.0.2
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5
     transitivePeerDependencies:
       - supports-color
 
   https-proxy-agent@7.0.5:
     dependencies:
       agent-base: 7.1.1
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
     optional: true
@@ -24386,6 +24494,8 @@ snapshots:
 
   infer-owner@1.0.4:
     optional: true
+
+  inflection@1.13.4: {}
 
   inflight@1.0.6:
     dependencies:
@@ -24700,7 +24810,7 @@ snapshots:
 
   istanbul-lib-source-maps@4.0.1:
     dependencies:
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       istanbul-lib-coverage: 3.2.2
       source-map: 0.6.1
     transitivePeerDependencies:
@@ -25652,7 +25762,7 @@ snapshots:
       cssom: 0.4.4
       cssstyle: 2.3.0
       data-urls: 2.0.0
-      decimal.js: 10.4.3
+      decimal.js: 10.6.0
       domexception: 2.0.1
       escodegen: 2.1.0
       form-data: 3.0.1
@@ -25873,10 +25983,20 @@ snapshots:
     dependencies:
       '@types/express': 4.17.21
       '@types/jsonwebtoken': 9.0.5
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       jose: 4.15.9
       limiter: 1.1.5
       lru-memoizer: 2.3.0
+    transitivePeerDependencies:
+      - supports-color
+
+  jwks-rsa@4.0.1:
+    dependencies:
+      '@types/jsonwebtoken': 9.0.5
+      debug: 4.4.3(supports-color@8.1.1)
+      jose: 6.2.1
+      limiter: 1.1.5
+      lru-memoizer: 3.0.0
     transitivePeerDependencies:
       - supports-color
 
@@ -26093,6 +26213,8 @@ snapshots:
 
   lru-cache@10.4.3: {}
 
+  lru-cache@11.2.7: {}
+
   lru-cache@5.1.1:
     dependencies:
       yallist: 3.1.1
@@ -26105,6 +26227,11 @@ snapshots:
     dependencies:
       lodash.clonedeep: 4.5.0
       lru-cache: 6.0.0
+
+  lru-memoizer@3.0.0:
+    dependencies:
+      lodash.clonedeep: 4.5.0
+      lru-cache: 11.2.7
 
   lucide-react@0.344.0(react@18.3.1):
     dependencies:
@@ -26685,7 +26812,7 @@ snapshots:
   micromark@4.0.0:
     dependencies:
       '@types/debug': 4.1.12
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       decode-named-character-reference: 1.0.2
       devlop: 1.1.0
       micromark-core-commonmark: 2.0.1
@@ -28551,7 +28678,7 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
       shallowequal: 1.1.0
 
-  rc-picker@4.6.8(date-fns@3.6.0)(dayjs@1.11.12)(luxon@3.4.4)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  rc-picker@4.6.8(date-fns@4.1.0)(dayjs@1.11.12)(luxon@3.4.4)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@babel/runtime': 7.25.0
       '@rc-component/trigger': 2.2.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -28562,7 +28689,7 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
     optionalDependencies:
-      date-fns: 3.6.0
+      date-fns: 4.1.0
       dayjs: 1.11.12
       luxon: 3.4.4
       moment: 2.30.1
@@ -28904,9 +29031,9 @@ snapshots:
       react-onclickoutside: 6.13.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-popper: 2.3.0(@popperjs/core@2.11.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
-  react-day-picker@8.10.1(date-fns@3.6.0)(react@18.3.1):
+  react-day-picker@8.10.1(date-fns@4.1.0)(react@18.3.1):
     dependencies:
-      date-fns: 3.6.0
+      date-fns: 4.1.0
       react: 18.3.1
 
   react-dev-utils@12.0.1(eslint@8.57.0)(typescript@4.9.5)(webpack@5.92.1):
@@ -29659,6 +29786,8 @@ snapshots:
       retext-stringify: 4.0.0
       unified: 11.0.5
 
+  retry-as-promised@7.1.1: {}
+
   retry-request@7.0.2(encoding@0.1.13):
     dependencies:
       '@types/request': 2.48.12
@@ -29834,6 +29963,37 @@ snapshots:
       on-finished: 2.4.1
       range-parser: 1.2.1
       statuses: 2.0.1
+    transitivePeerDependencies:
+      - supports-color
+
+  sequelize-pool@7.1.0: {}
+
+  sequelize-typescript@2.1.6(@types/node@20.14.13)(@types/validator@13.12.0)(reflect-metadata@0.2.2)(sequelize@6.37.8):
+    dependencies:
+      '@types/node': 20.14.13
+      '@types/validator': 13.12.0
+      glob: 7.2.0
+      reflect-metadata: 0.2.2
+      sequelize: 6.37.8
+
+  sequelize@6.37.8:
+    dependencies:
+      '@types/debug': 4.1.12
+      '@types/validator': 13.12.0
+      debug: 4.4.3(supports-color@8.1.1)
+      dottie: 2.0.7
+      inflection: 1.13.4
+      lodash: 4.17.21
+      moment: 2.30.1
+      moment-timezone: 0.5.45
+      pg-connection-string: 2.6.4
+      retry-as-promised: 7.1.1
+      semver: 7.7.3
+      sequelize-pool: 7.1.0
+      toposort-class: 1.0.1
+      uuid: 8.3.2
+      validator: 13.12.0
+      wkx: 0.5.0
     transitivePeerDependencies:
       - supports-color
 
@@ -30033,7 +30193,7 @@ snapshots:
   socks-proxy-agent@6.2.1:
     dependencies:
       agent-base: 6.0.2
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       socks: 2.8.3
     transitivePeerDependencies:
       - supports-color
@@ -30115,7 +30275,7 @@ snapshots:
 
   spdy-transport@3.0.0:
     dependencies:
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       detect-node: 2.1.0
       hpack.js: 2.1.6
       obuf: 1.1.2
@@ -30126,7 +30286,7 @@ snapshots:
 
   spdy@4.0.2:
     dependencies:
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       handle-thing: 2.0.1
       http-deceiver: 1.2.7
       select-hose: 2.0.0
@@ -30448,7 +30608,7 @@ snapshots:
     dependencies:
       component-emitter: 1.3.1
       cookiejar: 2.1.4
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5
       fast-safe-stringify: 2.1.1
       form-data: 4.0.0
       formidable: 3.5.1
@@ -30748,6 +30908,8 @@ snapshots:
       '@borewit/text-codec': 0.2.2
       '@tokenizer/token': 0.3.0
       ieee754: 1.2.1
+
+  toposort-class@1.0.1: {}
 
   toposort@2.0.2: {}
 
@@ -31563,6 +31725,10 @@ snapshots:
     dependencies:
       string-width: 4.2.3
     optional: true
+
+  wkx@0.5.0:
+    dependencies:
+      '@types/node': 20.14.13
 
   word-wrap@1.2.5: {}
 
