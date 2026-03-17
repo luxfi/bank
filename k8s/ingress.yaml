@@ -1,0 +1,47 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: bank-ingress
+  namespace: lux-bank
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - app.lux.financial
+    - api.lux.financial
+    - admin.lux.financial
+    secretName: lux-financial-tls
+  rules:
+  - host: api.lux.financial
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: bank-api
+            port:
+              number: 4000
+  - host: app.lux.financial
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: bank-dash
+            port:
+              number: 3000
+  - host: admin.lux.financial
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: bank-admin
+            port:
+              number: 3000

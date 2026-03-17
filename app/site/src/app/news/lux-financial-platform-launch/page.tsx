@@ -161,9 +161,9 @@ export default function PlatformLaunchPressRelease() {
             <SidebarCard>
               <SidebarTitle>Related News</SidebarTitle>
               <RelatedList>
-                <RelatedItem href="/news/cdax-becomes-lux-financial">
+                <RelatedItem href="/news/lux-financial-cdax-partnership">
                   <RelatedDate>Jan 15, 2026</RelatedDate>
-                  <RelatedTitle>CDAX Becomes Lux Financial: A New Era of Bank Infrastructure</RelatedTitle>
+                  <RelatedTitle>Lux Financial and CDAX: Technology Partnership Powers New Banking Infrastructure</RelatedTitle>
                 </RelatedItem>
                 <RelatedItem href="/news/instant-settlement-network-launch">
                   <RelatedDate>Nov 12, 2025</RelatedDate>

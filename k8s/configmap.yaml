@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bank-config
+  namespace: lux-bank
+data:
+  NODE_ENV: "production"
+  FRONTEND_URL: "https://app.lux.financial"
+  IMAGE_BASE_URL_IMAGES: "https://static.lux.financial/images"
+  S3_BUCKET_NAME: "lux-bank-kyc"
+  S3_BUCKET_NAME_IMAGES: "lux-bank-static"
+  WEBDAV_ROOT_DIR: "Lux Financial Documents"
+  WEBDAV_URL: "https://uploads.lux.financial/remote.php/webdav"
+  BACKOFFICE_EMAIL: "z@lux.network"
+  NEXT_PUBLIC_BASE_URL: "https://api.lux.financial"
+  NEXT_PUBLIC_CURRENT_USER_COOKIE: "lux-current-user"
+  NEXT_PUBLIC_JWT_COOKIE: "lux-jwt-session"
+  NEXT_PUBLIC_JWT_COOKIE_IMPERSONATE: "lux-jwt-session-impersonate"

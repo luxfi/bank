@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bank-api
+  namespace: lux-bank
+  labels:
+    app: bank-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bank-api
+  template:
+    metadata:
+      labels:
+        app: bank-api
+    spec:
+      containers:
+      - name: bank-api
+        image: ghcr.io/luxfi/bank-api:latest
+        ports:
+        - containerPort: 4000
+        env:
+        - name: PORT
+          value: "4000"
+        - name: DATABASE_URL
+          value: "postgresql://luxbank:$(DB_PASSWORD)@lux-sql.lux.svc.cluster.local:5432/lux_bank"
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: bank-secrets
+              key: db-password
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: bank-secrets
+              key: jwt-secret
+        - name: ENCRYPT_KEY
+          valueFrom:
+            secretKeyRef:
+              name: bank-secrets
+              key: encrypt-key
+        - name: SENDGRID_KEY
+          valueFrom:
+            secretKeyRef:
+              name: bank-secrets
+              key: sendgrid-key
+        - name: SENTRY_DSN
+          valueFrom:
+            secretKeyRef:
+              name: bank-secrets
+              key: sentry-dsn
+        - name: GOOGLE_RECAPTCHA_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: bank-secrets
+              key: recaptcha-secret-key
+        envFrom:
+        - configMapRef:
+            name: bank-config
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 4000
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 4000
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bank-api
+  namespace: lux-bank
+spec:
+  selector:
+    app: bank-api
+  ports:
+  - port: 4000
+    targetPort: 4000

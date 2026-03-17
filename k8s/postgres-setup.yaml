@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-bank-db
+  namespace: lux-bank
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      containers:
+      - name: createdb
+        image: postgres:16-alpine
+        command:
+        - sh
+        - -c
+        - |
+          PGPASSWORD=$POSTGRES_PASSWORD psql \
+            -h lux-sql.lux.svc.cluster.local \
+            -U postgres \
+            -c "SELECT 1 FROM pg_database WHERE datname = 'lux_bank'" | grep -q 1 || \
+          PGPASSWORD=$POSTGRES_PASSWORD psql \
+            -h lux-sql.lux.svc.cluster.local \
+            -U postgres \
+            -c "CREATE DATABASE lux_bank;"
+        env:
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: bank-secrets
+              key: db-password
+      restartPolicy: Never

@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bank-admin
+  namespace: lux-bank
+  labels:
+    app: bank-admin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bank-admin
+  template:
+    metadata:
+      labels:
+        app: bank-admin
+    spec:
+      containers:
+      - name: bank-admin
+        image: ghcr.io/luxfi/bank-admin:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: NEXT_PUBLIC_BASE_URL
+          value: "https://api.lux.financial"
+        - name: NEXT_PUBLIC_CURRENT_USER_COOKIE
+          value: "lux-current-user"
+        - name: NEXT_PUBLIC_JWT_COOKIE
+          value: "lux-jwt-session"
+        - name: NEXT_PUBLIC_JWT_COOKIE_IMPERSONATE
+          value: "lux-jwt-session-impersonate"
+        - name: NEXT_PUBLIC_RECAPTCHA_SITE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: bank-secrets
+              key: recaptcha-site-key
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bank-admin
+  namespace: lux-bank
+spec:
+  selector:
+    app: bank-admin
+  ports:
+  - port: 3000
+    targetPort: 3000

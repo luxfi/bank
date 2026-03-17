@@ -12,12 +12,12 @@ const basePath = `${GHOST_API_URL}/ghost/api/content/posts/`;
 // Using Partial<IPosts> to allow optional fields in fallback data
 const FALLBACK_POSTS: Array<Partial<IPosts> & Pick<IPosts, 'id' | 'uuid' | 'title' | 'slug' | 'html' | 'excerpt' | 'feature_image' | 'reading_time'>> = [
   {
-    id: "post-2026-01-lux-rebrand",
-    uuid: "lux-rebrand-2026",
-    title: "CDAX Becomes Lux Financial: A New Era of Stablecoin Infrastructure",
-    slug: "cdax-becomes-lux-financial",
-    html: "<p>Today marks a significant milestone as CDAX officially rebrands to Lux Financial. After five years of building trusted infrastructure for financial institutions, we're entering a new chapter with expanded capabilities including native USDC/USDT support, AI-powered operations via MCP, and post-quantum security.</p>",
-    excerpt: "After five years of building trusted infrastructure for financial institutions, CDAX officially rebrands to Lux Financial with expanded stablecoin and AI capabilities.",
+    id: "post-2026-01-lux-partnership",
+    uuid: "lux-partnership-2026",
+    title: "Lux Financial and CDAX: Technology Partnership Powers New Banking Infrastructure",
+    slug: "lux-financial-cdax-partnership",
+    html: "<p>Lux Financial announces expanded capabilities built through its long-standing technology partnership with CDAX. Since 2020, Lux Financial has served as the technology services partner to CDAX, developing open banking infrastructure for digital asset services. This partnership now delivers native USDC/USDT support, AI-powered operations via MCP, and post-quantum security to regulated financial institutions.</p>",
+    excerpt: "Lux Financial expands capabilities through its technology partnership with CDAX, delivering stablecoin infrastructure and AI-powered operations to regulated institutions.",
     feature_image: "/images/news.jpg",
     published_at: new Date("2026-01-15T10:00:00.000Z"),
     reading_time: 4,
