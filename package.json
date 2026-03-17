@@ -9,9 +9,9 @@
     "clean:nm": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +",
     "clean:nxt": "find . -name '.next' -type d -prune -exec rm -rf '{}' +",
     "clean:all": "pnpm clean:nm && pnpm clean:nxt && rm pnpm-lock.yaml"
-
   },
   "devDependencies": {
+    "@nestjs/cli": "^10.4.2",
     "@types/jquery": "^3.5.30",
     "webpack-watch-files-plugin": "^1.2.1"
   },

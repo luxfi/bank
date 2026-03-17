@@ -1,6 +1,6 @@
 {
   "name": "@luxbank/iam",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Hanzo IAM + KMS + MPC client for Lux Bank",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

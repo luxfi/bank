@@ -6,7 +6,7 @@
   "types": "./lib/esm/index.d.ts",
   "license": "MIT",
   "scripts": {
-    "build": "yarn build-tokens && yarn build-icons && yarn build-text && yarn build:esm && yarn build:cjs",
+    "build": "pnpm run build-tokens && pnpm run build-icons && pnpm run build-text && pnpm run build:esm && pnpm run build:cjs",
     "build:esm": "tsc",
     "build:cjs": "tsc --module commonjs --outDir lib/cjs",
     "build-tokens": "node src/scripts/generateThemeTypes src/styles/theme/tokens.json src/styles/theme/index.ts semantic-default/light semantic-default/dark",

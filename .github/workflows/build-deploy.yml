@@ -59,6 +59,14 @@ jobs:
           cache-to: type=gha,mode=max
           platforms: linux/amd64
 
+      - name: Make package public
+        if: success()
+        run: |
+          curl -X PATCH -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/orgs/luxfi/packages/container/${{ matrix.app }}" \
+            -d '{"visibility":"public"}' || true
+
   deploy:
     name: Deploy to lux-k8s
     runs-on: ubuntu-latest

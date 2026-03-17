@@ -1,6 +1,6 @@
 {
   "name": "@luxbank/models",
-  "version": "1.0.32",
+  "version": "1.0.33",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -21,7 +21,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@luxbank/misc": "^1.0.31",
+    "@luxbank/misc": "workspace:^",
     "@mikro-orm/core": "^6.3.2",
     "@mikro-orm/knex": "^6.3.2",
     "@mikro-orm/nestjs": "^6.0.2",

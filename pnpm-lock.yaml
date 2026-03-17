@@ -43,6 +43,9 @@ importers:
         specifier: ^6.9.14
         version: 6.9.14
     devDependencies:
+      '@nestjs/cli':
+        specifier: ^10.4.2
+        version: 10.4.2
       '@types/jquery':
         specifier: ^3.5.30
         version: 3.5.30
@@ -181,6 +184,9 @@ importers:
       react-redux:
         specifier: ^7.2.6
         version: 7.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-router:
+        specifier: ^7.13.1
+        version: 7.13.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-router-dom:
         specifier: ^6.2.1
         version: 6.24.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -204,7 +210,7 @@ importers:
         version: 4.9.5
       use-react-router-breadcrumbs:
         specifier: ^3.2.1
-        version: 3.2.1(react-router@6.24.1(react@18.3.1))(react@18.3.1)
+        version: 3.2.1(react-router@7.13.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
       yup:
         specifier: ^0.32.11
         version: 0.32.11
@@ -258,23 +264,23 @@ importers:
         specifier: workspace:*
         version: link:../../pkg/brand
       '@luxbank/currency-cloud':
-        specifier: ^1.0.32
-        version: 1.0.32(@nestjs/core@10.3.10)(class-transformer@0.5.1)(class-validator@0.14.1)(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+        specifier: workspace:*
+        version: link:../../pkg/currency-cloud
       '@luxbank/email':
-        specifier: ^1.0.33
-        version: 1.0.33(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+        specifier: workspace:*
+        version: link:../../pkg/email
       '@luxbank/iam':
         specifier: workspace:*
         version: link:../../pkg/iam
       '@luxbank/ifx':
-        specifier: ^1.0.32
-        version: 1.0.32(@nestjs/core@10.3.10)(class-transformer@0.5.1)(class-validator@0.14.1)(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+        specifier: workspace:*
+        version: link:../../pkg/ifx
       '@luxbank/misc':
-        specifier: ^1.0.32
-        version: 1.0.32(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)
+        specifier: workspace:*
+        version: link:../../pkg/misc
       '@luxbank/models':
-        specifier: ^1.0.32
-        version: 1.0.32(@nestjs/core@10.3.10)(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+        specifier: workspace:*
+        version: link:../../pkg/models
       '@mikro-orm/core':
         specifier: ^6.3.2
         version: 6.3.2
@@ -502,8 +508,8 @@ importers:
         specifier: workspace:*
         version: link:../../pkg/brand
       '@luxbank/ui':
-        specifier: ^0.0.39
-        version: 0.0.39(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.11(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
+        specifier: workspace:*
+        version: link:../../pkg/ui
       '@luxfi/logo':
         specifier: ^1.0.0
         version: 1.0.0(react@18.3.1)
@@ -891,11 +897,11 @@ importers:
   pkg/currency-cloud:
     dependencies:
       '@luxbank/misc':
-        specifier: ^1.0.31
-        version: 1.0.32(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)
+        specifier: workspace:*
+        version: link:../misc
       '@luxbank/models':
-        specifier: ^1.0.31
-        version: 1.0.32(@nestjs/core@11.1.17(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(reflect-metadata@0.2.2)(rxjs@7.8.1))(reflect-metadata@0.2.2)(rxjs@7.8.1)
+        specifier: workspace:*
+        version: link:../models
       '@nestjs/common':
         specifier: ^10.3.10
         version: 10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
@@ -966,14 +972,14 @@ importers:
         specifier: workspace:*
         version: link:../brand
       '@luxbank/currency-cloud':
-        specifier: ^1.0.31
-        version: 1.0.32(@nestjs/core@11.1.17(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(reflect-metadata@0.2.2)(rxjs@7.8.1))(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+        specifier: workspace:*
+        version: link:../currency-cloud
       '@luxbank/misc':
-        specifier: ^1.0.31
-        version: 1.0.32(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)
+        specifier: workspace:*
+        version: link:../misc
       '@luxbank/models':
-        specifier: ^1.0.31
-        version: 1.0.32(@nestjs/core@11.1.17(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(reflect-metadata@0.2.2)(rxjs@7.8.1))(reflect-metadata@0.2.2)(rxjs@7.8.1)
+        specifier: workspace:*
+        version: link:../models
       '@nestjs/common':
         specifier: ^10.3.10
         version: 10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
@@ -994,8 +1000,8 @@ importers:
   pkg/migration:
     dependencies:
       '@luxbank/models':
-        specifier: ^1.0.31
-        version: 1.0.32(@nestjs/core@11.1.17(@nestjs/common@11.1.17(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(reflect-metadata@0.2.2)(rxjs@7.8.1))(reflect-metadata@0.2.2)(rxjs@7.8.1)
+        specifier: workspace:*
+        version: link:../models
       '@mikro-orm/cli':
         specifier: ^6.3.2
         version: 6.3.2
@@ -1077,8 +1083,8 @@ importers:
   pkg/models:
     dependencies:
       '@luxbank/misc':
-        specifier: ^1.0.31
-        version: 1.0.32(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)
+        specifier: workspace:^
+        version: link:../misc
       '@mikro-orm/core':
         specifier: ^6.3.2
         version: 6.3.2
@@ -1114,7 +1120,7 @@ importers:
         version: 2.30.1
       sequelize-typescript:
         specifier: ^2.1.6
-        version: 2.1.6(@types/node@20.14.13)(@types/validator@13.12.0)(reflect-metadata@0.2.2)(sequelize@6.37.8)
+        version: 2.1.6(@types/node@20.14.13)(@types/validator@13.12.0)(reflect-metadata@0.2.2)(sequelize@6.37.8(pg@8.12.0))
     devDependencies:
       '@types/express':
         specifier: ^4.17.21
@@ -3227,29 +3233,6 @@ packages:
   '@lukeed/csprng@1.1.0':
     resolution: {integrity: sha512-Z7C/xXCiGWsg0KuKsHTKJxbWhpI3Vs5GwLfOean7MGyVFGqdRgBbAjOCh6u4bbjPc/8MJ2pZmK/0DLdCbivLDA==}
     engines: {node: '>=8'}
-
-  '@luxbank/currency-cloud@1.0.32':
-    resolution: {integrity: sha512-DaV4xpwzdNv/oCtblhdHhONWZziHz00PzT8HY3nVm0UYfFOKJazfZ0z8e+oZXswsCVLK9j0uU5fTidLONF1aag==}
-
-  '@luxbank/email@1.0.33':
-    resolution: {integrity: sha512-ehjKq2XgWaLnwjPmvGXqD7jcxXCXDyNQKFoQzd+Jj5stFWtM7oEcimiO/bTeKjqcNnumrdwx1vZ9ExpawJjlIw==}
-
-  '@luxbank/ifx@1.0.32':
-    resolution: {integrity: sha512-6MmtFFY+sJm9S0EH8VoYebEDjj5CU2oiXdgOHDWeqSMt/Wh6+nHbuTjMndNXBtwkP2MyJG3RciXOEyObFUsBqQ==}
-
-  '@luxbank/misc@1.0.32':
-    resolution: {integrity: sha512-/T9WiIs889XQ3QDp0blEanz7mdO5dzxg3WRE7iuGdPg3aMgUvvynIHzyabJAd1KE/XeVO69xH+vBQH32tSV0pQ==}
-
-  '@luxbank/models@1.0.32':
-    resolution: {integrity: sha512-s+8th72g7MwfNvYvPfWRJ4ofi2IhYojmVAXEH7ueBU+U13rdnNfBOTFJ06ye7XI90w+dFxsDQoLKA+Y28rINaw==}
-
-  '@luxbank/ui@0.0.39':
-    resolution: {integrity: sha512-mKjKfNkhQ1ct8xGYrmbdxDfCdE+J6qZ+DfrEdyLTm8qSTRoYDYavFZ1OQCYHMRwAA7Iha1XCJFpTSCrMEzrL9A==}
-    hasBin: true
-    peerDependencies:
-      react: ^18.3.1
-      react-dom: ^18.3.1
-      styled-components: '6'
 
   '@luxfi/logo@1.0.0':
     resolution: {integrity: sha512-D7O9Jjmd59o9uJyWC32zAttZYmnqyXqZUXtHo0c6BxoAL9xdnmi8zA1bWkq6cSsLRDh6MaVXSlNrL4CfA5TK+Q==}
@@ -6264,11 +6247,6 @@ packages:
   browser-process-hrtime@1.0.0:
     resolution: {integrity: sha512-9o5UecI3GhkpM6DrXr69PblIuWxPKk9Y0jHBRhdocZ2y7YECBFCsHm79Pr3OyR2AvjhDkabFJaDJMYRazHgsow==}
 
-  browserslist@4.23.1:
-    resolution: {integrity: sha512-TUfofFo/KsK/bWZ9TWQ5O26tsWW4Uhmt8IYklbnUa70udB6P2wA7w7o4PY4muaEPBQaAX+CEnmmIA41NVHtPVw==}
-    engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
-    hasBin: true
-
   browserslist@4.23.3:
     resolution: {integrity: sha512-btwCFJVjI4YWDNfau8RhZ+B1Q/VLoUITrm3RlP6y1tYGWIOa+InuYiRGXUBXo8nA1qKmHMyLB/iVQg5TT4eFoA==}
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
@@ -6688,6 +6666,10 @@ packages:
   cookie@0.6.0:
     resolution: {integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==}
     engines: {node: '>= 0.6'}
+
+  cookie@1.1.1:
+    resolution: {integrity: sha512-ei8Aos7ja0weRpFzJnEA9UHJ/7XQmqglbRwnf2ATjcB9Wq874VKH9kfjjirM6UhU2/E5fFYadylyhFldcqSidQ==}
+    engines: {node: '>=18'}
 
   cookiejar@2.1.4:
     resolution: {integrity: sha512-LDx6oHrK+PhzLKJU9j5S7/Y3jM/mUHvD/DeI1WQmJn652iPC5Y4TBzC9l+5OMOXlyTTA+SmVUPm0HQUwpD5Jqw==}
@@ -7494,9 +7476,6 @@ packages:
     resolution: {integrity: sha512-UeJmFfOrAQS8OJWPZ4qtgHyWExa088/MtK5UEyoJGFH67cDEXkZSviOiKRCZ4Xij0zxI3JECgYs3oKx+AizQBA==}
     engines: {node: '>=0.10.0'}
     hasBin: true
-
-  electron-to-chromium@1.4.820:
-    resolution: {integrity: sha512-kK/4O/YunacfboFEk/BDf7VO1HoPmDudLTJAU9NmXIOSjsV7qVIX3OrI4REZo0VmdqhcpUcncQc6N8Q3aEXlHg==}
 
   electron-to-chromium@1.5.4:
     resolution: {integrity: sha512-orzA81VqLyIGUEA77YkVA1D+N+nNfl2isJVjjmOyrlxuooZ19ynb+dOlaDTqd/idKRS9lDCSBmtzM+kyCsMnkA==}
@@ -10554,9 +10533,6 @@ packages:
   node-int64@0.4.0:
     resolution: {integrity: sha512-O5lz91xSOeoXP6DulyHfllpq+Eg00MWitZIbtPfoSEvqIHdl5gfcY6hYzDWnj0qD5tz52PI08u9qUvSVeUBeHw==}
 
-  node-releases@2.0.14:
-    resolution: {integrity: sha512-y10wOWt8yZpqXmOgRo77WaHEmhYQYGNA6y421PKsKYWEK8aW+cqAphborZDhqfyKrbZEN92CN1X2KbafY2s7Yw==}
-
   node-releases@2.0.18:
     resolution: {integrity: sha512-d9VeXT4SJ7ZeOqGX6R5EM022wpL+eWPooLI+5UpWn2jCT1aosUQEhQP214x33Wkwx3JQMvIm+tIoVOdodFS40g==}
 
@@ -12404,6 +12380,16 @@ packages:
     engines: {node: '>=14.0.0'}
     peerDependencies:
       react: ^18.3.1
+
+  react-router@7.13.1:
+    resolution: {integrity: sha512-td+xP4X2/6BJvZoX6xw++A2DdEi++YypA69bJUV5oVvqf6/9/9nNlD70YO1e9d3MyamJEBQFEzk6mbfDYbqrSA==}
+    engines: {node: '>=20.0.0'}
+    peerDependencies:
+      react: ^18.3.1
+      react-dom: ^18.3.1
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
 
   react-scripts@5.0.1:
     resolution: {integrity: sha512-8VAmEm/ZAwQzJ+GOMLbBsTdDKOpuZh7RPs0UymvBR2vRk4iZWCskjbFnxqjrzoIvlNNRZ3QJFx6/qDSi6zSnaQ==}
@@ -17326,219 +17312,6 @@ snapshots:
 
   '@lukeed/csprng@1.1.0': {}
 
-  '@luxbank/currency-cloud@1.0.32(@nestjs/core@10.3.10)(class-transformer@0.5.1)(class-validator@0.14.1)(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)':
-    dependencies:
-      '@luxbank/misc': 1.0.32(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)
-      '@luxbank/models': 1.0.32(@nestjs/core@10.3.10)(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)
-      '@nestjs/common': 10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
-      axios: 1.7.3
-    transitivePeerDependencies:
-      - '@fastify/static'
-      - '@nestjs/core'
-      - better-sqlite3
-      - bluebird
-      - class-transformer
-      - class-validator
-      - debug
-      - libsql
-      - mariadb
-      - mysql
-      - mysql2
-      - pg
-      - pg-native
-      - reflect-metadata
-      - rxjs
-      - sqlite3
-      - supports-color
-      - tedious
-
-  '@luxbank/currency-cloud@1.0.32(@nestjs/core@11.1.17(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(reflect-metadata@0.2.2)(rxjs@7.8.1))(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)':
-    dependencies:
-      '@luxbank/misc': 1.0.32(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)
-      '@luxbank/models': 1.0.32(@nestjs/core@11.1.17(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(reflect-metadata@0.2.2)(rxjs@7.8.1))(reflect-metadata@0.2.2)(rxjs@7.8.1)
-      '@nestjs/common': 10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
-      axios: 1.7.3
-    transitivePeerDependencies:
-      - '@fastify/static'
-      - '@nestjs/core'
-      - better-sqlite3
-      - bluebird
-      - class-transformer
-      - class-validator
-      - debug
-      - libsql
-      - mariadb
-      - mysql
-      - mysql2
-      - pg
-      - pg-native
-      - reflect-metadata
-      - rxjs
-      - sqlite3
-      - supports-color
-      - tedious
-
-  '@luxbank/email@1.0.33(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)':
-    dependencies:
-      '@nestjs/common': 10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
-      '@sendgrid/helpers': 8.0.0
-      '@sendgrid/mail': 8.1.3
-      ejs: 3.1.10
-    transitivePeerDependencies:
-      - class-transformer
-      - class-validator
-      - debug
-      - reflect-metadata
-      - rxjs
-
-  '@luxbank/ifx@1.0.32(@nestjs/core@10.3.10)(class-transformer@0.5.1)(class-validator@0.14.1)(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)':
-    dependencies:
-      '@luxbank/currency-cloud': 1.0.32(@nestjs/core@10.3.10)(class-transformer@0.5.1)(class-validator@0.14.1)(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)
-      '@luxbank/misc': 1.0.32(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)
-      '@luxbank/models': 1.0.32(@nestjs/core@10.3.10)(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)
-      '@nestjs/common': 10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
-      axios: 1.7.3
-    transitivePeerDependencies:
-      - '@fastify/static'
-      - '@nestjs/core'
-      - better-sqlite3
-      - bluebird
-      - class-transformer
-      - class-validator
-      - debug
-      - libsql
-      - mariadb
-      - mysql
-      - mysql2
-      - pg
-      - pg-native
-      - reflect-metadata
-      - rxjs
-      - sqlite3
-      - supports-color
-      - tedious
-
-  '@luxbank/misc@1.0.32(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)':
-    dependencies:
-      '@mikro-orm/core': 6.3.2
-      '@nestjs/common': 10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
-      bcryptjs: 2.4.3
-      generate-password: 1.7.1
-      rxjs: 7.8.1
-      short-unique-id: 5.2.0
-    transitivePeerDependencies:
-      - class-transformer
-      - class-validator
-      - reflect-metadata
-
-  '@luxbank/models@1.0.32(@nestjs/core@10.3.10)(pg@8.12.0)(reflect-metadata@0.2.2)(rxjs@7.8.1)':
-    dependencies:
-      '@luxbank/misc': 1.0.32(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)
-      '@mikro-orm/core': 6.3.2
-      '@mikro-orm/knex': 6.3.2(@mikro-orm/core@6.3.2)(pg@8.12.0)(sqlite3@5.1.7)
-      '@mikro-orm/nestjs': 6.0.2(@mikro-orm/core@6.3.2)(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.3.10)
-      '@mikro-orm/postgresql': 6.3.2(@mikro-orm/core@6.3.2)
-      '@mikro-orm/sqlite': 6.3.2(@mikro-orm/core@6.3.2)(pg@8.12.0)
-      '@nestjs/common': 10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
-      '@nestjs/swagger': 7.4.0(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.3.10)(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)
-      class-transformer: 0.5.1
-      class-validator: 0.14.1
-      dayjs: 1.11.12
-      moment: 2.30.1
-    transitivePeerDependencies:
-      - '@fastify/static'
-      - '@nestjs/core'
-      - better-sqlite3
-      - bluebird
-      - libsql
-      - mariadb
-      - mysql
-      - mysql2
-      - pg
-      - pg-native
-      - reflect-metadata
-      - rxjs
-      - sqlite3
-      - supports-color
-      - tedious
-
-  '@luxbank/models@1.0.32(@nestjs/core@11.1.17(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(reflect-metadata@0.2.2)(rxjs@7.8.1))(reflect-metadata@0.2.2)(rxjs@7.8.1)':
-    dependencies:
-      '@luxbank/misc': 1.0.32(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)
-      '@mikro-orm/core': 6.3.2
-      '@mikro-orm/knex': 6.3.2(@mikro-orm/core@6.3.2)(pg@8.12.0)(sqlite3@5.1.7)
-      '@mikro-orm/nestjs': 6.0.2(@mikro-orm/core@6.3.2)(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@11.1.17(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(reflect-metadata@0.2.2)(rxjs@7.8.1))
-      '@mikro-orm/postgresql': 6.3.2(@mikro-orm/core@6.3.2)
-      '@mikro-orm/sqlite': 6.3.2(@mikro-orm/core@6.3.2)(pg@8.12.0)
-      '@nestjs/common': 10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
-      '@nestjs/swagger': 7.4.0(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@11.1.17(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(reflect-metadata@0.2.2)(rxjs@7.8.1))(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)
-      class-transformer: 0.5.1
-      class-validator: 0.14.1
-      dayjs: 1.11.12
-      moment: 2.30.1
-    transitivePeerDependencies:
-      - '@fastify/static'
-      - '@nestjs/core'
-      - better-sqlite3
-      - bluebird
-      - libsql
-      - mariadb
-      - mysql
-      - mysql2
-      - pg
-      - pg-native
-      - reflect-metadata
-      - rxjs
-      - sqlite3
-      - supports-color
-      - tedious
-
-  '@luxbank/models@1.0.32(@nestjs/core@11.1.17(@nestjs/common@11.1.17(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(reflect-metadata@0.2.2)(rxjs@7.8.1))(reflect-metadata@0.2.2)(rxjs@7.8.1)':
-    dependencies:
-      '@luxbank/misc': 1.0.32(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)
-      '@mikro-orm/core': 6.3.2
-      '@mikro-orm/knex': 6.3.2(@mikro-orm/core@6.3.2)(pg@8.12.0)(sqlite3@5.1.7)
-      '@mikro-orm/nestjs': 6.0.2(@mikro-orm/core@6.3.2)(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@11.1.17(@nestjs/common@11.1.17(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(reflect-metadata@0.2.2)(rxjs@7.8.1))
-      '@mikro-orm/postgresql': 6.3.2(@mikro-orm/core@6.3.2)
-      '@mikro-orm/sqlite': 6.3.2(@mikro-orm/core@6.3.2)(pg@8.12.0)
-      '@nestjs/common': 10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
-      '@nestjs/swagger': 7.4.0(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@11.1.17(@nestjs/common@11.1.17(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(reflect-metadata@0.2.2)(rxjs@7.8.1))(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)
-      class-transformer: 0.5.1
-      class-validator: 0.14.1
-      dayjs: 1.11.12
-      moment: 2.30.1
-    transitivePeerDependencies:
-      - '@fastify/static'
-      - '@nestjs/core'
-      - better-sqlite3
-      - bluebird
-      - libsql
-      - mariadb
-      - mysql
-      - mysql2
-      - pg
-      - pg-native
-      - reflect-metadata
-      - rxjs
-      - sqlite3
-      - supports-color
-      - tedious
-
-  '@luxbank/ui@0.0.39(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.11(react-dom@18.3.1(react@18.3.1))(react@18.3.1))':
-    dependencies:
-      '@floating-ui/react': 0.26.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@radix-ui/react-checkbox': 1.1.1(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@radix-ui/react-radio-group': 1.2.0(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@radix-ui/react-select': 2.1.1(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      imask: 7.6.1
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-      react-hook-form: 7.51.4(react@18.3.1)
-      styled-components: 6.1.11(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-    transitivePeerDependencies:
-      - '@types/react'
-      - '@types/react-dom'
-
   '@luxfi/logo@1.0.0(react@18.3.1)':
     dependencies:
       sharp: 0.34.5
@@ -17707,12 +17480,6 @@ snapshots:
       '@mikro-orm/core': 6.3.2
       '@nestjs/common': 10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       '@nestjs/core': 11.1.17(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(reflect-metadata@0.2.2)(rxjs@7.8.1)
-
-  '@mikro-orm/nestjs@6.0.2(@mikro-orm/core@6.3.2)(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@11.1.17(@nestjs/common@11.1.17(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(reflect-metadata@0.2.2)(rxjs@7.8.1))':
-    dependencies:
-      '@mikro-orm/core': 6.3.2
-      '@nestjs/common': 10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
-      '@nestjs/core': 11.1.17(@nestjs/common@11.1.17(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(reflect-metadata@0.2.2)(rxjs@7.8.1)
 
   '@mikro-orm/postgresql@6.3.2(@mikro-orm/core@6.3.2)':
     dependencies:
@@ -18033,21 +17800,6 @@ snapshots:
       class-transformer: 0.5.1
       class-validator: 0.14.1
 
-  '@nestjs/swagger@7.4.0(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@11.1.17(@nestjs/common@11.1.17(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(reflect-metadata@0.2.2)(rxjs@7.8.1))(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)':
-    dependencies:
-      '@microsoft/tsdoc': 0.15.0
-      '@nestjs/common': 10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
-      '@nestjs/core': 11.1.17(@nestjs/common@11.1.17(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(reflect-metadata@0.2.2)(rxjs@7.8.1)
-      '@nestjs/mapped-types': 2.0.5(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)
-      js-yaml: 4.1.0
-      lodash: 4.17.21
-      path-to-regexp: 3.2.0
-      reflect-metadata: 0.2.2
-      swagger-ui-dist: 5.17.14
-    optionalDependencies:
-      class-transformer: 0.5.1
-      class-validator: 0.14.1
-
   '@nestjs/testing@10.3.10(@nestjs/common@10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.3.10)(@nestjs/platform-express@10.3.10)':
     dependencies:
       '@nestjs/common': 10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
@@ -18173,7 +17925,7 @@ snapshots:
   '@npmcli/fs@1.1.1':
     dependencies:
       '@gar/promisify': 1.1.3
-      semver: 7.6.2
+      semver: 7.7.3
     optional: true
 
   '@npmcli/move-file@1.1.2':
@@ -20296,7 +20048,7 @@ snapshots:
       debug: 4.4.3(supports-color@8.1.1)
       globby: 11.1.0
       is-glob: 4.0.3
-      semver: 7.6.2
+      semver: 7.7.3
       tsutils: 3.21.0(typescript@4.9.5)
     optionalDependencies:
       typescript: 4.9.5
@@ -20358,7 +20110,7 @@ snapshots:
       '@typescript-eslint/typescript-estree': 5.62.0(typescript@4.9.5)
       eslint: 8.57.0
       eslint-scope: 5.1.1
-      semver: 7.6.2
+      semver: 7.7.3
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -20528,9 +20280,9 @@ snapshots:
       acorn: 7.4.1
       acorn-walk: 7.2.0
 
-  acorn-import-attributes@1.9.5(acorn@8.12.1):
+  acorn-import-attributes@1.9.5(acorn@8.15.0):
     dependencies:
-      acorn: 8.12.1
+      acorn: 8.15.0
 
   acorn-jsx@5.3.2(acorn@8.12.1):
     dependencies:
@@ -21272,13 +21024,6 @@ snapshots:
 
   browser-process-hrtime@1.0.0: {}
 
-  browserslist@4.23.1:
-    dependencies:
-      caniuse-lite: 1.0.30001640
-      electron-to-chromium: 1.4.820
-      node-releases: 2.0.14
-      update-browserslist-db: 1.1.0(browserslist@4.23.1)
-
   browserslist@4.23.3:
     dependencies:
       caniuse-lite: 1.0.30001647
@@ -21690,6 +21435,8 @@ snapshots:
   cookie@0.4.2: {}
 
   cookie@0.6.0: {}
+
+  cookie@1.1.1: {}
 
   cookiejar@2.1.4: {}
 
@@ -22579,8 +22326,6 @@ snapshots:
   ejs@3.1.10:
     dependencies:
       jake: 10.9.2
-
-  electron-to-chromium@1.4.820: {}
 
   electron-to-chromium@1.5.4: {}
 
@@ -23721,7 +23466,7 @@ snapshots:
       minimatch: 3.1.2
       node-abort-controller: 3.1.1
       schema-utils: 3.3.0
-      semver: 7.6.2
+      semver: 7.7.3
       tapable: 2.2.1
       typescript: 5.3.3
       webpack: 5.92.1
@@ -24798,7 +24543,7 @@ snapshots:
       '@babel/parser': 7.25.3
       '@istanbuljs/schema': 0.1.3
       istanbul-lib-coverage: 3.2.2
-      semver: 7.6.2
+      semver: 7.7.3
     transitivePeerDependencies:
       - supports-color
 
@@ -25538,7 +25283,7 @@ snapshots:
       jest-util: 27.5.1
       natural-compare: 1.4.0
       pretty-format: 27.5.1
-      semver: 7.6.2
+      semver: 7.7.3
     transitivePeerDependencies:
       - supports-color
 
@@ -25757,7 +25502,7 @@ snapshots:
   jsdom@16.7.0:
     dependencies:
       abab: 2.0.6
-      acorn: 8.12.1
+      acorn: 8.15.0
       acorn-globals: 6.0.0
       cssom: 0.4.4
       cssstyle: 2.3.0
@@ -26255,7 +26000,7 @@ snapshots:
 
   make-dir@4.0.0:
     dependencies:
-      semver: 7.6.2
+      semver: 7.7.3
 
   make-error@1.3.6: {}
 
@@ -27209,7 +26954,7 @@ snapshots:
 
   node-abi@3.65.0:
     dependencies:
-      semver: 7.6.2
+      semver: 7.7.3
 
   node-abort-controller@3.1.1: {}
 
@@ -27251,8 +26996,6 @@ snapshots:
     optional: true
 
   node-int64@0.4.0: {}
-
-  node-releases@2.0.14: {}
 
   node-releases@2.0.18: {}
 
@@ -29288,6 +29031,14 @@ snapshots:
       '@remix-run/router': 1.17.1
       react: 18.3.1
 
+  react-router@7.13.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+    dependencies:
+      cookie: 1.1.1
+      react: 18.3.1
+      set-cookie-parser: 2.6.0
+    optionalDependencies:
+      react-dom: 18.3.1(react@18.3.1)
+
   react-scripts@5.0.1(@babel/plugin-syntax-flow@7.24.7(@babel/core@7.24.7))(@babel/plugin-transform-react-jsx@7.25.2(@babel/core@7.24.7))(@types/babel__core@7.20.5)(eslint@8.57.0)(react@18.3.1)(ts-node@10.9.2(@types/node@12.20.55)(typescript@4.9.5))(type-fest@4.23.0)(typescript@4.9.5):
     dependencies:
       '@babel/core': 7.24.7
@@ -29968,15 +29719,15 @@ snapshots:
 
   sequelize-pool@7.1.0: {}
 
-  sequelize-typescript@2.1.6(@types/node@20.14.13)(@types/validator@13.12.0)(reflect-metadata@0.2.2)(sequelize@6.37.8):
+  sequelize-typescript@2.1.6(@types/node@20.14.13)(@types/validator@13.12.0)(reflect-metadata@0.2.2)(sequelize@6.37.8(pg@8.12.0)):
     dependencies:
       '@types/node': 20.14.13
       '@types/validator': 13.12.0
       glob: 7.2.0
       reflect-metadata: 0.2.2
-      sequelize: 6.37.8
+      sequelize: 6.37.8(pg@8.12.0)
 
-  sequelize@6.37.8:
+  sequelize@6.37.8(pg@8.12.0):
     dependencies:
       '@types/debug': 4.1.12
       '@types/validator': 13.12.0
@@ -29994,6 +29745,8 @@ snapshots:
       uuid: 8.3.2
       validator: 13.12.0
       wkx: 0.5.0
+    optionalDependencies:
+      pg: 8.12.0
     transitivePeerDependencies:
       - supports-color
 
@@ -31315,12 +31068,6 @@ snapshots:
 
   upath@1.2.0: {}
 
-  update-browserslist-db@1.1.0(browserslist@4.23.1):
-    dependencies:
-      browserslist: 4.23.1
-      escalade: 3.1.2
-      picocolors: 1.0.1
-
   update-browserslist-db@1.1.0(browserslist@4.23.3):
     dependencies:
       browserslist: 4.23.3
@@ -31350,10 +31097,10 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.3.3
 
-  use-react-router-breadcrumbs@3.2.1(react-router@6.24.1(react@18.3.1))(react@18.3.1):
+  use-react-router-breadcrumbs@3.2.1(react-router@7.13.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1):
     dependencies:
       react: 18.3.1
-      react-router: 6.24.1(react@18.3.1)
+      react-router: 7.13.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
   use-sidecar@1.1.2(@types/react@18.3.3)(react@18.3.1):
     dependencies:
@@ -31614,9 +31361,9 @@ snapshots:
       '@webassemblyjs/ast': 1.12.1
       '@webassemblyjs/wasm-edit': 1.12.1
       '@webassemblyjs/wasm-parser': 1.12.1
-      acorn: 8.12.1
-      acorn-import-attributes: 1.9.5(acorn@8.12.1)
-      browserslist: 4.23.1
+      acorn: 8.15.0
+      acorn-import-attributes: 1.9.5(acorn@8.15.0)
+      browserslist: 4.23.3
       chrome-trace-event: 1.0.4
       enhanced-resolve: 5.17.0
       es-module-lexer: 1.5.4

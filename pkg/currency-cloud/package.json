@@ -1,6 +1,6 @@
 {
   "name": "@luxbank/currency-cloud",
-  "version": "1.0.32",
+  "version": "1.0.33",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -21,8 +21,8 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@luxbank/misc": "^1.0.31",
-    "@luxbank/models": "^1.0.31",
+    "@luxbank/misc": "workspace:*",
+    "@luxbank/models": "workspace:*",
     "@nestjs/common": "^10.3.10",
     "axios": "^1.7.3"
   },
