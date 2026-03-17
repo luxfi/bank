@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import * as yup from "yup";
-import { LuxLogo } from "@luxfi/logo";
+import { LuxLogo } from "@luxfi/logo/react";
 import { useAppDispatch } from "../../app/hooks";
 import Button from "../../components/Button";
 import InputField from "../../components/InputField";

@@ -2,7 +2,7 @@ import { UserOutlined } from "@ant-design/icons";
 import { Avatar, Tooltip } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { LuxLogo } from "@luxfi/logo";
+import { LuxLogo } from "@luxfi/logo/react";
 import Constants from "../Constants";
 import { useAppSelector } from "../app/hooks";
 import { selectCurrentUser } from "../features/auth/AuthSlice";

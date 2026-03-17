@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { LuxLogo } from "@luxfi/logo";
+import { LuxLogo } from "@luxfi/logo/react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Button from "../../components/Button";
 import InputField from "../../components/InputField";
