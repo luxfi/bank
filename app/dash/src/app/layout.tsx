@@ -1,3 +1,7 @@
+// Force all pages to be dynamically rendered (no SSG prerender)
+// All pages are auth-gated and use client-side APIs (document, window)
+export const dynamic = 'force-dynamic';
+
 import localFont from 'next/font/local';
 
 import { MessagesProvider } from '@/context/Messages';
