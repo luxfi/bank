@@ -1134,6 +1134,24 @@ importers:
         specifier: ^5.5.3
         version: 5.5.4
 
+  pkg/ports-currency-cloud:
+    dependencies:
+      '@luxbank/currency-cloud':
+        specifier: workspace:*
+        version: link:../currency-cloud
+
+  pkg/ports-email:
+    dependencies:
+      '@luxbank/email':
+        specifier: workspace:*
+        version: link:../email
+
+  pkg/ports-ifx:
+    dependencies:
+      '@luxbank/ifx':
+        specifier: workspace:*
+        version: link:../ifx
+
   pkg/tools-misc:
     dependencies:
       '@luxbank/misc':

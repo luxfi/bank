@@ -22,6 +22,9 @@ COPY app/dash/package.json ./app/dash/
 COPY app/admin/package.json ./app/admin/
 COPY pkg/tools-models/package.json ./pkg/tools-models/
 COPY pkg/tools-misc/package.json ./pkg/tools-misc/
+COPY pkg/ports-currency-cloud/package.json ./pkg/ports-currency-cloud/
+COPY pkg/ports-email/package.json ./pkg/ports-email/
+COPY pkg/ports-ifx/package.json ./pkg/ports-ifx/
 
 RUN pnpm install --frozen-lockfile --shamefully-hoist
 
