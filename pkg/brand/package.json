@@ -2,12 +2,12 @@
   "name": "@luxbank/brand",
   "version": "1.0.1",
   "description": "Centralized brand and jurisdiction configuration for Lux Financial",
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts",
-    "./jurisdictions": "./src/jurisdictions/index.ts",
-    "./assets": "./src/assets/index.ts"
+    ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
+    "./jurisdictions": { "types": "./dist/jurisdictions/index.d.ts", "default": "./dist/jurisdictions/index.js" },
+    "./assets": { "types": "./dist/assets/index.d.ts", "default": "./dist/assets/index.js" }
   },
   "scripts": {
     "build": "tsc",
