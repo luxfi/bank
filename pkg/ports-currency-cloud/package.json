@@ -1,1 +1,6 @@
-{"name":"@luxbank/ports-currency-cloud","version":"1.0.0","main":"./src/index.ts","dependencies":{"@luxbank/currency-cloud":"workspace:*"}}
+{
+  "name": "@luxbank/ports-currency-cloud",
+  "version": "1.0.0",
+  "main": "../currency-cloud/dist/index.js",
+  "types": "../currency-cloud/dist/index.d.ts"
+}

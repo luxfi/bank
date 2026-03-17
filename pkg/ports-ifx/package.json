@@ -1,1 +1,6 @@
-{"name":"@luxbank/ports-ifx","version":"1.0.0","main":"./src/index.ts","dependencies":{"@luxbank/ifx":"workspace:*"}}
+{
+  "name": "@luxbank/ports-ifx",
+  "version": "1.0.0",
+  "main": "../ifx/dist/index.js",
+  "types": "../ifx/dist/index.d.ts"
+}

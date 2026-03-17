@@ -1,1 +1,6 @@
-{"name":"@luxbank/ports-email","version":"1.0.0","main":"./src/index.ts","dependencies":{"@luxbank/email":"workspace:*"}}
+{
+  "name": "@luxbank/ports-email",
+  "version": "1.0.0",
+  "main": "../email/dist/index.js",
+  "types": "../email/dist/index.d.ts"
+}
