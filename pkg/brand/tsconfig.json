@@ -6,8 +6,8 @@
     "declaration": true,
     "declarationMap": true,
     "noEmit": false,
-    "module": "esnext",
-    "moduleResolution": "bundler",
+    "module": "commonjs",
+    "moduleResolution": "node",
     "verbatimModuleSyntax": false,
     "isolatedModules": false
   },
