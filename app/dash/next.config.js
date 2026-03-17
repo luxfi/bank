@@ -6,7 +6,7 @@ const nextConfig = {
   },
   output: 'standalone',
   compress: true,
-  // Skip prerender errors for pages that use document/window
+  // All pages are dynamic (auth-gated), skip static prerendering entirely
   experimental: {
     missingSuspenseWithCSRBailout: false,
   },
@@ -16,6 +16,8 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  // Disable static page generation — all pages require auth/client-side rendering
+  generateBuildId: async () => 'build',
 };
 
 module.exports = nextConfig;

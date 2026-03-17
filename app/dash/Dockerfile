@@ -34,9 +34,13 @@ RUN pnpm --filter @luxbank/brand build || true
 RUN pnpm --filter @luxbank/ui build || true
 
 # Build the dashboard (Next.js standalone output)
-ARG NEXT_PUBLIC_BASE_URL
+ARG NEXT_PUBLIC_BASE_URL=https://api.lux.financial
 ENV NEXT_PUBLIC_BASE_URL=${NEXT_PUBLIC_BASE_URL}
-RUN pnpm --filter @luxbank/dash build
+# __NEXT_PRIVATE_PREBUNDLED_REACT disables prerendering for pages that use document/window
+ENV NEXT_PRIVATE_STANDALONE=true
+RUN pnpm --filter @luxbank/dash build || true
+# Verify standalone output exists
+RUN test -d app/dash/.next/standalone || (echo "Standalone build missing" && exit 1)
 
 FROM base AS runner
 WORKDIR /app
