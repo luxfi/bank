@@ -17,8 +17,9 @@ COPY pkg/ifx/package.json ./pkg/ifx/
 COPY pkg/iam/package.json ./pkg/iam/
 COPY app/api/package.json ./app/api/
 
-# Install dependencies
+# Install dependencies (include devDeps for nest CLI)
 RUN pnpm install --frozen-lockfile
+RUN pnpm add -g @nestjs/cli
 
 FROM base AS builder
 WORKDIR /app
