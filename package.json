@@ -28,7 +28,9 @@
       "@hanzo/auth": "2.4.12",
       "@hanzo/commerce": "7.1.5",
       "@hanzo/ui": "3.8.21",
-      "react-hook-form": "7.51.4"
+      "react-hook-form": "7.51.4",
+      "@luxbank/tools-models": "workspace:@luxbank/models@*",
+      "@luxbank/tools-misc": "workspace:@luxbank/misc@*"
     },
     "allowedDeprecatedVersions": {
       "request": "*"

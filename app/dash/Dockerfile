@@ -54,6 +54,11 @@ COPY --from=builder /app/app/dash/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/app/dash/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/app/dash/.next/static ./.next/static
 
+# In pnpm workspace, standalone server.js may be nested under app/dash/
+RUN if [ -f server.js ]; then echo "server.js at root"; \
+    elif [ -f app/dash/server.js ]; then cp app/dash/server.js . && echo "copied from app/dash/"; \
+    else find . -name server.js -maxdepth 3 | head -1; fi
+
 USER nextjs
 
 EXPOSE 3000
