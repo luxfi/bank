@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@luxbank/brand": "workspace:*",
+    "@luxbank/iam": "workspace:*",
     "@luxbank/currency-cloud": "^1.0.32",
     "@luxbank/email": "^1.0.33",
     "@luxbank/ifx": "^1.0.32",

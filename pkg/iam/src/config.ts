@@ -27,10 +27,26 @@ export interface MpcConfig {
   apiKey: string;
 }
 
+export interface BrokerConfig {
+  /** Broker server URL (e.g., http://localhost:8090) */
+  baseUrl: string;
+  /** API key for broker operations */
+  apiKey: string;
+}
+
+export interface CommerceConfig {
+  /** Commerce server URL (e.g., http://localhost:8001) */
+  baseUrl: string;
+  /** API key for commerce operations */
+  apiKey: string;
+}
+
 export interface LuxSecurityConfig {
   iam: IamConfig;
   kms?: KmsConfig;
   mpc?: MpcConfig;
+  broker?: BrokerConfig;
+  commerce?: CommerceConfig;
 }
 
 export function resolveConfig(overrides?: Partial<LuxSecurityConfig>): LuxSecurityConfig {
@@ -39,6 +55,8 @@ export function resolveConfig(overrides?: Partial<LuxSecurityConfig>): LuxSecuri
     iam: { ...defaults.iam, ...overrides?.iam },
     kms: overrides?.kms ?? defaults.kms,
     mpc: overrides?.mpc ?? defaults.mpc,
+    broker: overrides?.broker ?? defaults.broker,
+    commerce: overrides?.commerce ?? defaults.commerce,
   };
 }
 
@@ -62,6 +80,18 @@ export function createDefaultConfig(): LuxSecurityConfig {
       ? {
           baseUrl: process.env.MPC_BASE_URL || 'https://mpc.lux.network',
           apiKey: process.env.MPC_API_KEY || '',
+        }
+      : undefined,
+    broker: process.env.BROKER_BASE_URL
+      ? {
+          baseUrl: process.env.BROKER_BASE_URL || 'http://localhost:8090',
+          apiKey: process.env.BROKER_API_KEY || '',
+        }
+      : undefined,
+    commerce: process.env.COMMERCE_BASE_URL
+      ? {
+          baseUrl: process.env.COMMERCE_BASE_URL || 'http://localhost:8001',
+          apiKey: process.env.COMMERCE_API_KEY || '',
         }
       : undefined,
   };

@@ -14,6 +14,7 @@ COPY pkg/models/package.json ./pkg/models/
 COPY pkg/email/package.json ./pkg/email/
 COPY pkg/currency-cloud/package.json ./pkg/currency-cloud/
 COPY pkg/ifx/package.json ./pkg/ifx/
+COPY pkg/iam/package.json ./pkg/iam/
 COPY app/api/package.json ./app/api/
 
 # Install dependencies
@@ -28,6 +29,7 @@ COPY --from=deps /app/pkg/models/node_modules ./pkg/models/node_modules
 COPY --from=deps /app/pkg/email/node_modules ./pkg/email/node_modules
 COPY --from=deps /app/pkg/currency-cloud/node_modules ./pkg/currency-cloud/node_modules
 COPY --from=deps /app/pkg/ifx/node_modules ./pkg/ifx/node_modules
+COPY --from=deps /app/pkg/iam/node_modules ./pkg/iam/node_modules
 COPY --from=deps /app/app/api/node_modules ./app/api/node_modules
 COPY . .
 
@@ -37,6 +39,7 @@ RUN pnpm --filter @luxbank/models build
 RUN pnpm --filter @luxbank/email build
 RUN pnpm --filter @luxbank/currency-cloud build
 RUN pnpm --filter @luxbank/ifx build
+RUN pnpm --filter @luxbank/iam build
 
 # Build the API
 RUN pnpm --filter @luxbank/api build

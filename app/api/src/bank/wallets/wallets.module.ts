@@ -5,10 +5,15 @@ import { Module } from '@nestjs/common';
 import { MikroOrmRegisteredForUser } from '@luxbank/tools-models';
 import { paymentAdapter } from '../shared/providers/payment-adapter.provider';
 import { WalletsController } from './wallets.controller';
+import { CryptoWalletsController } from './crypto-wallets.controller';
+import { TradingModule } from '../../trading/trading.module';
 
 @Module({
-    imports: [MikroOrmRegisteredForUser()],
-    controllers: [WalletsController],
+    imports: [
+        MikroOrmRegisteredForUser(),
+        TradingModule,
+    ],
+    controllers: [WalletsController, CryptoWalletsController],
     providers: [
         paymentAdapter(GetWalletBalancesUseCase, {
             factory: {

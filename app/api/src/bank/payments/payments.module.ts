@@ -6,14 +6,17 @@ import { BeneficiariesRepository, MikroOrmRegisteredForBeneficiaries, MikroOrmRe
         TransactionsRepository, UsersRepository } from '@luxbank/tools-models';
 import { paymentAdapter } from '../shared/providers/payment-adapter.provider';
 import { PaymentsController } from './payments.controller';
+import { CryptoPaymentsController } from './crypto-payments.controller';
+import { IamModule } from '@luxbank/iam';
 
 @Module({
     imports: [
         MikroOrmRegisteredForUser(),
         MikroOrmRegisteredForTransaction(),
-        MikroOrmRegisteredForBeneficiaries()
+        MikroOrmRegisteredForBeneficiaries(),
+        IamModule.forRoot(),
     ],
-    controllers: [PaymentsController],
+    controllers: [PaymentsController, CryptoPaymentsController],
     providers: [
         MailerService,
         RejectPaymentDomainUseCase,
