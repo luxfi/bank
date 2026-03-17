@@ -1,0 +1,25 @@
+{
+  "name": "@luxbank/compliance",
+  "version": "0.1.0",
+  "description": "TypeScript SDK for the luxfi/compliance Go service HTTP API",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@nestjs/common": "^10.3.10",
+    "@nestjs/core": "^10.3.10"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "^10.0.0 || ^11.0.0",
+    "@nestjs/core": "^10.0.0 || ^11.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.3"
+  }
+}
