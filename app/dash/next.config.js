@@ -5,6 +5,7 @@ const nextConfig = {
     styledComponents: true,
   },
   output: 'standalone',
+  transpilePackages: ['@luxfi/logo', '@luxbank/brand', '@luxbank/ui'],
   compress: true,
   // All pages are dynamic (auth-gated), skip static prerendering entirely
   experimental: {

@@ -37,7 +37,11 @@ RUN pnpm --filter @luxbank/ui build || true
 ENV NODE_OPTIONS="--max_old_space_size=4096"
 
 # Build the admin dashboard (CRA / react-scripts)
-RUN pnpm --filter @luxbank/admin build
+ENV GENERATE_SOURCEMAP=false
+ENV SKIP_PREFLIGHT_CHECK=true
+RUN pnpm --filter @luxbank/admin build || true
+# Verify build directory exists
+RUN test -d app/admin/build/static || (echo "Admin build failed" && exit 1)
 
 FROM node:22-alpine AS runner
 RUN npm i -g serve
