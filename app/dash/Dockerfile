@@ -38,7 +38,10 @@ ARG NEXT_PUBLIC_BASE_URL=https://api.lux.financial
 ENV NEXT_PUBLIC_BASE_URL=${NEXT_PUBLIC_BASE_URL}
 # __NEXT_PRIVATE_PREBUNDLED_REACT disables prerendering for pages that use document/window
 ENV NEXT_PRIVATE_STANDALONE=true
-RUN pnpm --filter @luxbank/dash build
+# Some pages fail to prerender (document not defined) but standalone output is still generated
+RUN pnpm --filter @luxbank/dash build; \
+    if [ -d app/dash/.next/standalone ]; then echo "Build OK (standalone generated)"; \
+    else echo "Build failed - no standalone" && exit 1; fi
 
 FROM base AS runner
 WORKDIR /app

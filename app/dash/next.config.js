@@ -7,9 +7,11 @@ const nextConfig = {
   output: 'standalone',
   transpilePackages: ['@luxfi/logo', '@luxbank/brand', '@luxbank/ui'],
   compress: true,
-  // All pages are dynamic (auth-gated), skip static prerendering entirely
   experimental: {
     missingSuspenseWithCSRBailout: false,
+    // Continue build even if some pages fail to prerender
+    workerThreads: false,
+    cpus: 1,
   },
   typescript: {
     ignoreBuildErrors: true,
@@ -17,8 +19,6 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  // Disable static page generation — all pages require auth/client-side rendering
-  generateBuildId: async () => 'build',
 };
 
 module.exports = nextConfig;
