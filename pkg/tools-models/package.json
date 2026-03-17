@@ -1,0 +1,8 @@
+{
+  "name": "@luxbank/tools-models",
+  "version": "1.0.33",
+  "main": "./src/index.ts",
+  "dependencies": {
+    "@luxbank/models": "workspace:*"
+  }
+}

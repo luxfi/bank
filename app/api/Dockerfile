@@ -21,6 +21,8 @@ COPY pkg/migration/package.json ./pkg/migration/
 COPY app/api/package.json ./app/api/
 COPY app/dash/package.json ./app/dash/
 COPY app/admin/package.json ./app/admin/
+COPY pkg/tools-models/package.json ./pkg/tools-models/
+COPY pkg/tools-misc/package.json ./pkg/tools-misc/
 
 RUN pnpm install --frozen-lockfile --shamefully-hoist
 

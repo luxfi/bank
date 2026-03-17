@@ -1134,6 +1134,18 @@ importers:
         specifier: ^5.5.3
         version: 5.5.4
 
+  pkg/tools-misc:
+    dependencies:
+      '@luxbank/misc':
+        specifier: workspace:*
+        version: link:../misc
+
+  pkg/tools-models:
+    dependencies:
+      '@luxbank/models':
+        specifier: workspace:*
+        version: link:../models
+
   pkg/ui:
     dependencies:
       '@floating-ui/react':

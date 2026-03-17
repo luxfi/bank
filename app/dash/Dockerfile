@@ -20,6 +20,8 @@ COPY pkg/migration/package.json ./pkg/migration/
 COPY app/api/package.json ./app/api/
 COPY app/dash/package.json ./app/dash/
 COPY app/admin/package.json ./app/admin/
+COPY pkg/tools-models/package.json ./pkg/tools-models/
+COPY pkg/tools-misc/package.json ./pkg/tools-misc/
 
 RUN pnpm install --frozen-lockfile --shamefully-hoist
 
@@ -50,18 +52,15 @@ ENV NODE_ENV=production
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder /app/app/dash/public ./public
+# Standalone output in monorepo preserves workspace structure
 COPY --from=builder --chown=nextjs:nodejs /app/app/dash/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/app/dash/.next/static ./.next/static
-
-# In pnpm workspace, standalone server.js may be nested under app/dash/
-RUN if [ -f server.js ]; then echo "server.js at root"; \
-    elif [ -f app/dash/server.js ]; then cp app/dash/server.js . && echo "copied from app/dash/"; \
-    else find . -name server.js -maxdepth 3 | head -1; fi
+COPY --from=builder --chown=nextjs:nodejs /app/app/dash/.next/static ./app/dash/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/app/dash/public ./app/dash/public
 
 USER nextjs
 
 EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
-CMD ["node", "server.js"]
+# server.js is at app/dash/server.js in monorepo standalone output
+CMD ["node", "app/dash/server.js"]
