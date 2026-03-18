@@ -8,12 +8,15 @@ import {
   HasOne,
   Table,
 } from 'sequelize-typescript';
+import { Entity as MikroEntity } from '@mikro-orm/core';
 import { Exclude, Expose, Type } from 'class-transformer';
 import { BaseEntity } from '../../base';
 import { Account, AccountType, BankMetadataDto, BrokerDto, BusinessMetadataDto, DirectorDto, IndividualMetadataDto, RiskAssessmentDto, ShareholderDto, User, UserRole } from '../../users';
 import { UserClient } from '../../user-clients';
 import { ClientDocument } from './client-document.entity';
+import { ClientsRepository } from '../repository/clients.repository';
 
+@MikroEntity({ tableName: 'client', repository: () => ClientsRepository })
 @Table({ tableName: 'client', underscored: true, paranoid: true })
 export class Client extends BaseEntity {
   @ForeignKey(() => Account)
