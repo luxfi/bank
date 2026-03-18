@@ -4,28 +4,34 @@ import twilio from 'twilio';
 
 @Injectable()
 export class TwoFaVerificationService {
-  private client: twilio.Twilio;
+  private client: twilio.Twilio | null = null;
   private readonly serviceSid: string;
+  private readonly enabled: boolean;
   private readonly logger = new Logger(TwoFaVerificationService.name);
 
   constructor(private configService: ConfigService) {
-    this.serviceSid = this.getEnvVar('TWILIO_SERVICE_SID');
-    const accountSid = this.getEnvVar('TWILIO_ACCOUNT_SID');
-    const authToken = this.getEnvVar('TWILIO_AUTH_TOKEN');
+    const serviceSid = this.configService.get<string>('TWILIO_SERVICE_SID');
+    const accountSid = this.configService.get<string>('TWILIO_ACCOUNT_SID');
+    const authToken = this.configService.get<string>('TWILIO_AUTH_TOKEN');
 
-    this.client = twilio(accountSid, authToken); // Correct instantiation of Twilio client
-  }
-
-  private getEnvVar(key: string): string {
-    const value = this.configService.get<string>(key);
-    if (!value) {
-      this.logger.error(`Environment variable ${key} is not set`);
-      throw new Error(`Environment variable ${key} is not set`);
+    if (!serviceSid || !accountSid || !authToken) {
+      this.logger.warn('Twilio credentials not configured — 2FA verification disabled');
+      this.serviceSid = '';
+      this.enabled = false;
+      return;
     }
-    return value;
+
+    this.serviceSid = serviceSid;
+    this.enabled = true;
+    this.client = twilio(accountSid, authToken);
   }
 
   async sendVerification(to: string, channel: 'sms' | 'email'): Promise<boolean> {
+    if (!this.enabled || !this.client) {
+      this.logger.warn(`2FA disabled — skipping verification send to: ${to}`);
+      return false;
+    }
+
     try {
       const verification = await this.client.verify
         .services(this.serviceSid)
@@ -42,6 +48,11 @@ export class TwoFaVerificationService {
   }
 
   async checkVerification(to: string, code: string): Promise<boolean> {
+    if (!this.enabled || !this.client) {
+      this.logger.warn(`2FA disabled — skipping verification check for: ${to}`);
+      return false;
+    }
+
     try {
       const verification = await this.client.verify
         .services(this.serviceSid)
