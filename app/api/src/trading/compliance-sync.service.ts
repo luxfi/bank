@@ -1,4 +1,4 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit, Optional } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { ClientsRepository, Account, RiskAssessment, Client } from '@luxbank/tools-models';
@@ -32,7 +32,7 @@ export class ComplianceSyncService implements OnModuleInit {
   private syncEnabled: boolean;
 
   constructor(
-    private readonly clientsRepository: ClientsRepository,
+    @Optional() private readonly clientsRepository: ClientsRepository,
     private readonly configService: ConfigService,
   ) {
     this.cexBaseUrl = this.configService.get<string>('CEX_BASE_URL', 'http://localhost:8080');
@@ -154,6 +154,10 @@ export class ComplianceSyncService implements OnModuleInit {
     let failed = 0;
 
     try {
+      if (!this.clientsRepository) {
+        this.logger.warn('ClientsRepository not available — skipping sync');
+        return;
+      }
       const clients = await this.clientsRepository.findAll();
       for (const client of clients) {
         try {
