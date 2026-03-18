@@ -2,15 +2,15 @@ import * as dotenv from 'dotenv';
 
 dotenv.config({ path: '.env' });
 
-import bodyParser from 'body-parser';
-import cookieParser from 'cookie-parser';
+import * as bodyParser from 'body-parser';
+import * as cookieParser from 'cookie-parser';
 import { VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
 import { json, urlencoded } from 'express';
-import helmet from 'helmet';
+import * as helmet from 'helmet';
 import { LUX_BRAND } from '@luxbank/brand';
 import { AppModule } from './app.module';
 import { Request, Response, NextFunction } from 'express';
