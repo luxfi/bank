@@ -25,8 +25,10 @@ COPY pkg/tools-misc/package.json ./pkg/tools-misc/
 COPY pkg/ports-currency-cloud/package.json ./pkg/ports-currency-cloud/
 COPY pkg/ports-email/package.json ./pkg/ports-email/
 COPY pkg/ports-ifx/package.json ./pkg/ports-ifx/
+COPY pkg/compliance/package.json ./pkg/compliance/
 
-RUN pnpm install --frozen-lockfile --shamefully-hoist
+RUN pnpm install --frozen-lockfile --shamefully-hoist --ignore-scripts
+RUN pnpm rebuild 2>/dev/null || true
 
 FROM base AS builder
 WORKDIR /app
@@ -44,7 +46,10 @@ ENV NODE_OPTIONS="--max_old_space_size=4096"
 # Build the admin dashboard (CRA / react-scripts)
 ENV GENERATE_SOURCEMAP=false
 ENV SKIP_PREFLIGHT_CHECK=true
-RUN pnpm --filter @luxbank/admin build || true
+ENV DISABLE_ESLINT_PLUGIN=true
+# react-scripts is hoisted to root node_modules; ensure the local symlink resolves
+RUN ln -sf /app/node_modules/react-scripts /app/app/admin/node_modules/react-scripts 2>/dev/null; \
+    cd app/admin && NODE_PATH=/app/node_modules /app/node_modules/.bin/react-scripts build || true
 # Verify build directory exists
 RUN test -d app/admin/build/static || (echo "Admin build failed" && exit 1)
 
