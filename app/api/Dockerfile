@@ -26,14 +26,19 @@ COPY pkg/tools-misc/package.json ./pkg/tools-misc/
 COPY pkg/ports-currency-cloud/package.json ./pkg/ports-currency-cloud/
 COPY pkg/ports-email/package.json ./pkg/ports-email/
 COPY pkg/ports-ifx/package.json ./pkg/ports-ifx/
+COPY pkg/compliance/package.json ./pkg/compliance/
 
-RUN pnpm install --frozen-lockfile --shamefully-hoist
+RUN pnpm install --frozen-lockfile --shamefully-hoist --ignore-scripts
+RUN pnpm rebuild 2>/dev/null || true
 
 FROM base AS builder
 WORKDIR /app
 
 COPY --from=deps /app/ ./
 COPY . .
+
+# Remove stale dist to force fresh build
+RUN rm -rf app/api/dist
 
 # Build workspace packages in dependency order
 RUN pnpm --filter @luxbank/misc build || true
