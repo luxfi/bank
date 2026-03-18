@@ -24,12 +24,10 @@ spec:
         - name: PORT
           value: "4000"
         - name: DATABASE_URL
-          value: "postgresql://luxbank:$(DB_PASSWORD)@lux-sql.lux.svc.cluster.local:5432/lux_bank"
-        - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
               name: bank-secrets
-              key: db-password
+              key: database-url
         - name: JWT_SECRET
           valueFrom:
             secretKeyRef:

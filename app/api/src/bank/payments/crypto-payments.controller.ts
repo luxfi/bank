@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Logger, Optional, Param, Post, ServiceUnavailableException } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { GetUser, SuccessResponseV2 } from '@luxbank/tools-misc';
 import { ManagerRoles, User, UserRole } from '@luxbank/tools-models';
@@ -17,9 +17,22 @@ import {
 @ApiBearerAuth()
 @Controller({path: 'payments/crypto', version: '2'})
 export class CryptoPaymentsController {
+  private readonly logger = new Logger(CryptoPaymentsController.name);
+
   constructor(
-    @Inject(COMMERCE_CLIENT) private readonly commerce: CommerceClient,
-  ) {}
+    @Optional() @Inject(COMMERCE_CLIENT) private readonly commerce: CommerceClient | null,
+  ) {
+    if (!commerce) {
+      this.logger.warn('COMMERCE_CLIENT not configured — crypto payments disabled');
+    }
+  }
+
+  private requireCommerce(): CommerceClient {
+    if (!this.commerce) {
+      throw new ServiceUnavailableException('Crypto payments not configured');
+    }
+    return this.commerce;
+  }
 
   @Post('charge')
   @Roles(...ManagerRoles, UserRole.TeamMember)
@@ -27,7 +40,7 @@ export class CryptoPaymentsController {
     @Body() dto: CreateCryptoPaymentRequestDto,
     @GetUser() _user: User,
   ) {
-    const result = await this.commerce.charge({
+    const result = await this.requireCommerce().charge({
       amount: dto.amount,
       currency: dto.currency,
       source: dto.source,
@@ -43,7 +56,7 @@ export class CryptoPaymentsController {
     @Body() dto: CreateCryptoPaymentRequestDto,
     @GetUser() _user: User,
   ) {
-    const result = await this.commerce.authorize({
+    const result = await this.requireCommerce().authorize({
       amount: dto.amount,
       currency: dto.currency,
       source: dto.source,
@@ -60,7 +73,7 @@ export class CryptoPaymentsController {
     @Body() dto: CaptureCryptoPaymentRequestDto,
     @GetUser() _user: User,
   ) {
-    const result = await this.commerce.capture(transactionId, dto.amount);
+    const result = await this.requireCommerce().capture(transactionId, dto.amount);
     return new SuccessResponseV2(result);
   }
 
@@ -71,7 +84,7 @@ export class CryptoPaymentsController {
     @Body() dto: RefundCryptoPaymentRequestDto,
     @GetUser() _user: User,
   ) {
-    const result = await this.commerce.refund(transactionId, dto.amount);
+    const result = await this.requireCommerce().refund(transactionId, dto.amount);
     return new SuccessResponseV2(result);
   }
 
@@ -81,14 +94,14 @@ export class CryptoPaymentsController {
     @Param('id') transactionId: string,
     @GetUser() _user: User,
   ) {
-    const result = await this.commerce.getTransaction(transactionId);
+    const result = await this.requireCommerce().getTransaction(transactionId);
     return new SuccessResponseV2(result);
   }
 
   @Get('processors')
   @Roles(...ManagerRoles, UserRole.TeamMember, UserRole.ViewerUser)
   async listProcessors(@GetUser() _user: User) {
-    const result = await this.commerce.listProcessors();
+    const result = await this.requireCommerce().listProcessors();
     return new SuccessResponseV2(result);
   }
 }
