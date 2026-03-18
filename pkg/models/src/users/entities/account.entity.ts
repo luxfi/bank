@@ -7,6 +7,7 @@ import {
   HasOne,
   Table,
 } from 'sequelize-typescript';
+import { Entity as MikroEntity } from '@mikro-orm/core';
 import { Exclude, Type } from 'class-transformer';
 import { BaseEntity } from '../../base';
 import { Beneficiary } from '../../beneficiaries';
@@ -24,7 +25,9 @@ import { RiskAssessment } from './risk-assessment.entity';
 import { Shareholder } from './shareholder.entity';
 import { User } from './user.entity';
 import { EPaymentProvider } from '@luxbank/misc';
+import { AccountsRepository } from '../repository/accounts.repository';
 
+@MikroEntity({ tableName: 'account', repository: () => AccountsRepository })
 @Table({ tableName: 'account', underscored: true, paranoid: true })
 export class Account extends BaseEntity {
   @Column({ type: DataType.STRING, defaultValue: AccountType.Individual })
