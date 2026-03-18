@@ -13,18 +13,26 @@ const TEST_EMAIL_DOMAIN = LUX_BRAND.domains.primary.replace(/\./g, '').toLowerCa
 export class MailerService {
     readonly logger = new Logger(MailerService.name);
 
+    private mailerEnabled = false;
+
     constructor() {
         const apiKey = process.env.SENDGRID_KEY;
 
-        if (!apiKey) {
-            this.logger.error('SENDGRID_KEY is not defined');
-            throw new Error('SENDGRID_KEY is not defined');
+        if (!apiKey || !apiKey.startsWith('SG.')) {
+            this.logger.warn('SENDGRID_KEY is not configured — email sending disabled');
+            return;
         }
 
-        sgMail.setApiKey(apiKey); // Correct instantiation of SendGrid client
+        sgMail.setApiKey(apiKey);
+        this.mailerEnabled = true;
     }
 
     async send<T extends Record<string, any>>(email: BaseEmail<T>): Promise<void> {
+        if (!this.mailerEnabled) {
+            this.logger.warn(`Email to ${email.to} suppressed — mailer not configured`);
+            return;
+        }
+
         const sendGridEmail: sgMail.MailDataRequired = {
             from: email.from,
             to: email.to,
