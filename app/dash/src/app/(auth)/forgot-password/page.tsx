@@ -111,7 +111,7 @@ export default function ForgotPassword() {
                 error={formik.touched.email && formik.errors.email ? formik.errors.email : undefined}
               >
                 <input
-                  className={`bank-input ${formik.touched.email && formik.errors.email ? 'bank-input-invalid' : ''}`}
+                  style={bankInputStyle} className={`bank-input ${formik.touched.email && formik.errors.email ? 'bank-input-invalid' : ''}`}
                   placeholder="email@example.com"
                   disabled={loading}
                   value={formik.values.email}

@@ -155,7 +155,7 @@ function SignInContent() {
                     {/* Email field */}
                     <BankField label="Email" error={errors.email}>
                       <input
-                        className={`bank-input ${errors.email ? "bank-input-invalid" : ""}`}
+                        style={bankInputStyle} className={`bank-input ${errors.email ? "bank-input-invalid" : ""}`}
                         placeholder="email@example.com"
                         value={values.email}
                         onChange={(e) => handleChange('email')(e.target.value)}
@@ -167,7 +167,7 @@ function SignInContent() {
                     {/* Password field */}
                     <BankField label="Password" error={errors.password}>
                       <input
-                        className={`bank-input ${errors.password ? "bank-input-invalid" : ""}`}
+                        style={bankInputStyle} className={`bank-input ${errors.password ? "bank-input-invalid" : ""}`}
                         type="password"
                         placeholder="Enter your password"
                         value={values.password}
@@ -394,7 +394,7 @@ function SignInContent() {
           ) : (
             <XStack gap={12} maxWidth={480} width="100%">
               <input
-                className="bank-input" style={{ flex: 1 }}
+                className="bank-input" style={{ ...bankInputStyle, flex: 1 }}
                 placeholder="your@email.com"
                 value={waitlistEmail}
                 onChange={(e) => setWaitlistEmail(e.target.value)}

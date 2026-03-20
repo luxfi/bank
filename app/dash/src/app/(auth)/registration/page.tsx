@@ -114,7 +114,7 @@ export default function Registration() {
               {/* First Name */}
               <BankField label="First Name" error={fieldError('firstname')}>
                 <input
-                  className={`bank-input ${fieldError('firstname') ? "bank-input-invalid" : ""}`}
+                  style={bankInputStyle} className={`bank-input ${fieldError('firstname') ? "bank-input-invalid" : ""}`}
                   placeholder="First Name"
                   disabled={formActions.loading}
                   value={formik.values.firstname}
@@ -126,7 +126,7 @@ export default function Registration() {
               {/* Last Name */}
               <BankField label="Last Name" error={fieldError('lastname')}>
                 <input
-                  className={`bank-input ${fieldError('lastname') ? "bank-input-invalid" : ""}`}
+                  style={bankInputStyle} className={`bank-input ${fieldError('lastname') ? "bank-input-invalid" : ""}`}
                   placeholder="Last Name"
                   disabled={formActions.loading}
                   value={formik.values.lastname}
@@ -138,7 +138,7 @@ export default function Registration() {
               {/* Email */}
               <BankField label="Email" error={fieldError('email')}>
                 <input
-                  className={`bank-input ${fieldError('email') ? "bank-input-invalid" : ""}`}
+                  style={bankInputStyle} className={`bank-input ${fieldError('email') ? "bank-input-invalid" : ""}`}
                   type="email"
                   inputMode="email"
                   placeholder="email@example.com"
@@ -152,7 +152,7 @@ export default function Registration() {
               {/* Mobile Number */}
               <BankField label="Mobile Number" error={fieldError('mobileNumber')}>
                 <input
-                  className={`bank-input ${fieldError('mobileNumber') ? "bank-input-invalid" : ""}`}
+                  style={bankInputStyle} className={`bank-input ${fieldError('mobileNumber') ? "bank-input-invalid" : ""}`}
                   type="tel"
                   inputMode="tel"
                   placeholder="+44..."
