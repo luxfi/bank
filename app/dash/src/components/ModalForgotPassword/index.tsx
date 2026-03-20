@@ -121,7 +121,7 @@ export default function ModalForgotPassword({ isVisible, onClose }: IProps) {
           error={formik.errors.email && formik.touched.email ? formik.errors.email : undefined}
         >
           <input
-            style={bankInputStyle}
+            className="bank-input"
             disabled={formActions.loading}
             value={formik.values.email}
             onChange={(e) => formik.setFieldValue('email', e.target.value)}

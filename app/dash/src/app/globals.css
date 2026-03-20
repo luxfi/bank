@@ -16,6 +16,55 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
-*, button, input, textarea {
+*, button, textarea {
   font-family: inherit;
+}
+
+/* Bank auth form inputs — override legacy resets */
+input.bank-input {
+  background-color: #1A1A1A !important;
+  color: #FFFFFF !important;
+  border: 1px solid #333333 !important;
+  border-radius: 12px !important;
+  padding: 14px 16px !important;
+  font-size: 16px !important;
+  line-height: 24px !important;
+  width: 100% !important;
+  outline: none !important;
+  font-family: inherit !important;
+  box-sizing: border-box !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+}
+input.bank-input:focus {
+  border-color: #555555 !important;
+}
+input.bank-input::placeholder {
+  color: #666666 !important;
+}
+input.bank-input.bank-input-invalid {
+  border-color: #FF4444 !important;
+}
+input.bank-input:disabled {
+  opacity: 0.5 !important;
+}
+
+/* Bank PIN input boxes (2FA) */
+input.bank-pin {
+  background-color: #1A1A1A !important;
+  color: #FFFFFF !important;
+  border: 1px solid #333333 !important;
+  border-radius: 12px !important;
+  width: 48px !important;
+  height: 48px !important;
+  text-align: center !important;
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  outline: none !important;
+  font-family: inherit !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+}
+input.bank-pin:focus {
+  border-color: #555555 !important;
 }

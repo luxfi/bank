@@ -185,7 +185,7 @@ export default function TwoFactorAuth() {
                 <input
                   key={i}
                   id={`pin-${i}`}
-                  style={pinInputStyle}
+                  className="bank-pin"
                   maxLength={1}
                   inputMode="numeric"
                   value={pinDigits[i] || ''}

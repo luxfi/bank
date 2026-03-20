@@ -42,10 +42,9 @@ const GlobalStyles = createGlobalStyle`
     }
   }
 
-   *, button, input {
-      border: 0;
-      outline: 0;  
-      font-family: 'Nunito Sans', sans-serif;    
+   *, button {
+      outline: 0;
+      font-family: var(--font-inter, 'Inter', sans-serif);
     }
     
 `;
