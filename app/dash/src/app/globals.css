@@ -6,65 +6,65 @@
   --font-mono: "Geist Mono", ui-monospace, monospace;
 }
 
-/* Scan @luxfi/ui components for Tailwind classes */
 @source "../../node_modules/@luxfi/ui/dist";
 
-/* Keep legacy styles working during migration */
-html {
-  font-family: var(--font-sans, "Nunito Sans", sans-serif);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+@layer base {
+  html {
+    font-family: var(--font-sans, "Inter", sans-serif);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-*, button, textarea {
-  font-family: inherit;
-}
+  *, button, textarea {
+    font-family: inherit;
+  }
 
-/* Bank auth form inputs — override legacy resets */
-input.bank-input {
-  background-color: #1A1A1A !important;
-  color: #FFFFFF !important;
-  border: 1px solid #333333 !important;
-  border-radius: 12px !important;
-  padding: 14px 16px !important;
-  font-size: 16px !important;
-  line-height: 24px !important;
-  width: 100% !important;
-  outline: none !important;
-  font-family: inherit !important;
-  box-sizing: border-box !important;
-  -webkit-appearance: none !important;
-  appearance: none !important;
-}
-input.bank-input:focus {
-  border-color: #555555 !important;
-}
-input.bank-input::placeholder {
-  color: #666666 !important;
-}
-input.bank-input.bank-input-invalid {
-  border-color: #FF4444 !important;
-}
-input.bank-input:disabled {
-  opacity: 0.5 !important;
-}
+  /* Bank auth form inputs */
+  input.bank-input {
+    background-color: #1A1A1A;
+    color: #FFFFFF;
+    border: 1px solid #333333;
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 16px;
+    line-height: 24px;
+    width: 100%;
+    outline: none;
+    font-family: inherit;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  input.bank-input:focus {
+    border-color: #555555;
+  }
+  input.bank-input::placeholder {
+    color: #666666;
+  }
+  input.bank-input.bank-input-invalid {
+    border-color: #FF4444;
+  }
+  input.bank-input:disabled {
+    opacity: 0.5;
+  }
 
-/* Bank PIN input boxes (2FA) */
-input.bank-pin {
-  background-color: #1A1A1A !important;
-  color: #FFFFFF !important;
-  border: 1px solid #333333 !important;
-  border-radius: 12px !important;
-  width: 48px !important;
-  height: 48px !important;
-  text-align: center !important;
-  font-size: 20px !important;
-  font-weight: 600 !important;
-  outline: none !important;
-  font-family: inherit !important;
-  -webkit-appearance: none !important;
-  appearance: none !important;
-}
-input.bank-pin:focus {
-  border-color: #555555 !important;
+  /* Bank PIN input boxes (2FA) */
+  input.bank-pin {
+    background-color: #1A1A1A;
+    color: #FFFFFF;
+    border: 1px solid #333333;
+    border-radius: 12px;
+    width: 48px;
+    height: 48px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+    outline: none;
+    font-family: inherit;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  input.bank-pin:focus {
+    border-color: #555555;
+  }
 }
