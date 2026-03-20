@@ -21,7 +21,7 @@ const GlobalStyles = createGlobalStyle`
   /* Bank form inputs — must survive the universal reset */
   input.bank-input,
   input.bank-pin {
-    border: 1px solid #333333;
+    border: 1px solid #555555;
     padding: 14px 16px;
     background-color: #1A1A1A;
     color: #FFFFFF;
@@ -36,7 +36,7 @@ const GlobalStyles = createGlobalStyle`
   }
   input.bank-input:focus,
   input.bank-pin:focus {
-    border-color: #555555;
+    border-color: #888888;
   }
   input.bank-input::placeholder {
     color: #666666;
