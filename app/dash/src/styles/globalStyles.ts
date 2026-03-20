@@ -1,52 +1,60 @@
 import { createGlobalStyle } from 'styled-components';
 
-const GlobalStyles = createGlobalStyle` 
-  @font-face {
-    src: url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200;0,6..12,300;0,6..12,400;0,6..12,500;0,6..12,600;0,6..12,700;0,6..12,800;1,6..12,200;1,6..12,300;1,6..12,400;1,6..12,500;1,6..12,600;1,6..12,700;1,6..12,800&display=swap');;
-    font-family: 'Nunito Sans', sans-serif;
-  } 
-
-   * {
+const GlobalStyles = createGlobalStyle`
+  * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;    
+    box-sizing: border-box;
   }
 
-  html {    
-    --scroll-top-app-main: 'top';
-
-    font-family: 'Nunito Sans', sans-serif;
-    overflow-y: hidden;
-
-    font-size: 62.5%;    
+  html {
+    font-family: var(--font-inter, 'Inter', sans-serif);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    
-    ::-webkit-scrollbar {
-      width: 1rem;
-      height: 8px;
-    }
-   
     scroll-behavior: smooth;
-    scrollbar-width: thin;
-    scrollbar-color: #00569f;
-  
-    ::-webkit-scrollbar-track {
-      background: #F2F2F2;
-    }
-  
-
-    ::-webkit-scrollbar-thumb {
-      border-radius: .5rem;
-      background: #b2b5b8;
-    }
   }
 
-   *, button {
-      outline: 0;
-      font-family: var(--font-inter, 'Inter', sans-serif);
-    }
-    
+  body {
+    font-family: var(--font-inter, 'Inter', sans-serif);
+  }
+
+  /* Bank form inputs — must survive the universal reset */
+  input.bank-input,
+  input.bank-pin {
+    border: 1px solid #333333;
+    padding: 14px 16px;
+    background-color: #1A1A1A;
+    color: #FFFFFF;
+    border-radius: 12px;
+    font-size: 16px;
+    line-height: 24px;
+    width: 100%;
+    outline: none;
+    font-family: inherit;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  input.bank-input:focus,
+  input.bank-pin:focus {
+    border-color: #555555;
+  }
+  input.bank-input::placeholder {
+    color: #666666;
+  }
+  input.bank-input.bank-input-invalid {
+    border-color: #FF4444;
+  }
+  input.bank-input:disabled {
+    opacity: 0.5;
+  }
+  input.bank-pin {
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+  }
 `;
 
 export default GlobalStyles;
