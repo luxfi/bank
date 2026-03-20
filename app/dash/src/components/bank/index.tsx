@@ -6,26 +6,26 @@ import { View, Text, styled, type GetProps } from 'tamagui'
 // ── Bank Theme Tokens ─────────────────────────────────────────────
 export const bankColors = {
   bg: '#000000',
-  card: '#111111',
-  cardBorder: '#222222',
-  input: '#1A1A1A',
-  inputBorder: '#555555',
-  inputFocus: '#888888',
-  inputPlaceholder: '#666666',
+  card: '#0A0A0A',
+  cardBorder: '#1A1A1A',
+  input: '#000000',
+  inputBorder: '#444444',
+  inputFocus: '#FFFFFF',
+  inputPlaceholder: '#555555',
   text: '#FFFFFF',
-  textMuted: '#888888',
-  textLabel: '#CCCCCC',
+  textMuted: '#777777',
+  textLabel: '#AAAAAA',
   accent: '#FFFFFF',
-  accentPress: '#E0E0E0',
-  accentHover: '#F0F0F0',
-  error: '#FF4444',
-  errorBg: '#1C0A0A',
+  accentPress: '#CCCCCC',
+  accentHover: '#E8E8E8',
+  error: '#FF3B30',
+  errorBg: '#1A0000',
   errorBorder: '#441111',
-  success: '#44FF44',
-  successBg: '#0A1C0A',
+  success: '#30D158',
+  successBg: '#001A0A',
   successBorder: '#114411',
-  divider: '#222222',
-  disabled: '#444444',
+  divider: '#1A1A1A',
+  disabled: '#333333',
 } as const
 
 // ── BankPage (full-screen dark background) ────────────────────────
@@ -44,19 +44,18 @@ export type BankPageProps = GetProps<typeof BankPage>
 export const BankCard = styled(View, {
   name: 'BankCard',
   backgroundColor: bankColors.card,
-  borderRadius: 24,
-  borderWidth: 1,
-  borderColor: bankColors.cardBorder,
-  padding: 32,
-  gap: 32,
+  borderRadius: 32,
+  borderWidth: 0,
+  padding: 40,
+  gap: 36,
   width: '100%',
-  maxWidth: 512,
+  maxWidth: 480,
 
   variants: {
     size: {
-      sm: { padding: 24, gap: 24, maxWidth: 448 },
-      md: { padding: 32, gap: 32, maxWidth: 512 },
-      lg: { padding: 40, gap: 40, maxWidth: 640 },
+      sm: { padding: 28, gap: 28, maxWidth: 420 },
+      md: { padding: 40, gap: 36, maxWidth: 480 },
+      lg: { padding: 48, gap: 44, maxWidth: 560 },
     },
   } as const,
 
@@ -72,8 +71,8 @@ export const BankButton = styled(View, {
   name: 'BankButton',
   tag: 'button',
   backgroundColor: bankColors.accent,
-  borderRadius: 16,
-  height: 56,
+  borderRadius: 999,
+  height: 60,
   alignItems: 'center',
   justifyContent: 'center',
   cursor: 'pointer',
@@ -144,11 +143,11 @@ export const BankHeading = styled(Text, {
 
   variants: {
     size: {
-      xs: { fontSize: 18, lineHeight: 24 },
-      sm: { fontSize: 24, lineHeight: 32 },
-      md: { fontSize: 30, lineHeight: 38 },
-      lg: { fontSize: 36, lineHeight: 44 },
-      xl: { fontSize: 48, lineHeight: 56 },
+      xs: { fontSize: 20, lineHeight: 28 },
+      sm: { fontSize: 28, lineHeight: 36 },
+      md: { fontSize: 36, lineHeight: 44 },
+      lg: { fontSize: 44, lineHeight: 52 },
+      xl: { fontSize: 56, lineHeight: 64 },
     },
   } as const,
 
@@ -163,17 +162,17 @@ export type BankHeadingProps = GetProps<typeof BankHeading>
 export const BankText = styled(Text, {
   name: 'BankText',
   color: bankColors.textMuted,
-  fontSize: 16,
-  lineHeight: 24,
+  fontSize: 18,
+  lineHeight: 28,
 
   variants: {
     variant: {
       default: { color: bankColors.textMuted },
-      label: { color: bankColors.textLabel, fontSize: 14, fontWeight: '500' },
-      error: { color: bankColors.error, fontSize: 13 },
-      success: { color: bankColors.success, fontSize: 13 },
-      link: { color: bankColors.text, fontWeight: '600', cursor: 'pointer' },
-      muted: { color: bankColors.disabled },
+      label: { color: bankColors.textLabel, fontSize: 16, fontWeight: '500' },
+      error: { color: bankColors.error, fontSize: 14 },
+      success: { color: bankColors.success, fontSize: 14 },
+      link: { color: bankColors.text, fontWeight: '600', cursor: 'pointer', fontSize: 16 },
+      muted: { color: bankColors.disabled, fontSize: 14 },
     },
   } as const,
 
@@ -281,20 +280,21 @@ export const BankDivider = styled(View, {
 // Shared inline style object for real HTML <input> elements.
 // Use this with <input style={bankInputStyle} /> to get bank-themed form inputs.
 export const bankInputStyle: React.CSSProperties = {
-  backgroundColor: bankColors.input,
-  color: bankColors.text,
-  border: `1px solid ${bankColors.inputBorder}`,
-  borderRadius: 12,
-  padding: '14px 16px',
-  fontSize: 16,
-  lineHeight: '24px',
+  backgroundColor: '#000000',
+  color: '#FFFFFF',
+  border: '1px solid #444444',
+  borderRadius: 16,
+  padding: '18px 20px',
+  fontSize: 18,
+  lineHeight: '26px',
   width: '100%',
   outline: 'none',
   fontFamily: 'inherit',
-  boxSizing: 'border-box',
+  boxSizing: 'border-box' as const,
+  WebkitAppearance: 'none' as const,
 }
 
 export const bankInputInvalidStyle: React.CSSProperties = {
   ...bankInputStyle,
-  borderColor: bankColors.error,
+  borderColor: '#FF3B30',
 }

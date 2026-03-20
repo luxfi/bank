@@ -2,32 +2,33 @@
 @import "@luxfi/ui/tokens.css";
 
 @theme {
-  --font-sans: "Geist", "Inter", system-ui, -apple-system, sans-serif;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, monospace;
 }
 
 @source "../../node_modules/@luxfi/ui/dist";
 
 @layer base {
-  html {
+  html, body {
     font-family: var(--font-sans, "Inter", sans-serif);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background-color: #000000;
+    color: #FFFFFF;
   }
 
   *, button, textarea {
     font-family: inherit;
   }
 
-  /* Bank auth form inputs */
   input.bank-input {
-    background-color: #1A1A1A;
+    background-color: #000000;
     color: #FFFFFF;
-    border: 1px solid #555555;
-    border-radius: 12px;
-    padding: 14px 16px;
-    font-size: 16px;
-    line-height: 24px;
+    border: 1px solid #444444;
+    border-radius: 16px;
+    padding: 18px 20px;
+    font-size: 18px;
+    line-height: 26px;
     width: 100%;
     outline: none;
     font-family: inherit;
@@ -36,35 +37,34 @@
     appearance: none;
   }
   input.bank-input:focus {
-    border-color: #888888;
+    border-color: #FFFFFF;
   }
   input.bank-input::placeholder {
-    color: #666666;
+    color: #555555;
   }
   input.bank-input.bank-input-invalid {
-    border-color: #FF4444;
+    border-color: #FF3B30;
   }
   input.bank-input:disabled {
-    opacity: 0.5;
+    opacity: 0.4;
   }
 
-  /* Bank PIN input boxes (2FA) */
   input.bank-pin {
-    background-color: #1A1A1A;
+    background-color: #000000;
     color: #FFFFFF;
-    border: 1px solid #555555;
-    border-radius: 12px;
-    width: 48px;
-    height: 48px;
+    border: 1px solid #444444;
+    border-radius: 14px;
+    width: 52px;
+    height: 52px;
     text-align: center;
-    font-size: 20px;
-    font-weight: 600;
+    font-size: 22px;
+    font-weight: 700;
     outline: none;
     font-family: inherit;
     -webkit-appearance: none;
     appearance: none;
   }
   input.bank-pin:focus {
-    border-color: #888888;
+    border-color: #FFFFFF;
   }
 }
