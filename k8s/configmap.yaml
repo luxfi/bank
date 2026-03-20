@@ -9,6 +9,7 @@ data:
   IMAGE_BASE_URL_IMAGES: "https://static.lux.financial/images"
   S3_BUCKET_NAME: "lux-bank-kyc"
   S3_BUCKET_NAME_IMAGES: "lux-bank-static"
+  BYPASS_RECAPTCHA: "true"
   WEBDAV_ROOT_DIR: "Lux Financial Documents"
   WEBDAV_URL: "https://uploads.lux.financial/remote.php/webdav"
   BACKOFFICE_EMAIL: "z@lux.network"

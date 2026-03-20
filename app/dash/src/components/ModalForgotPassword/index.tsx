@@ -1,60 +1,66 @@
-'use client';
+'use client'
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react'
 
-import { IRequestError } from '@/models/request';
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
 
-import { LoadingOutlined } from '@ant-design/icons';
-import { Modal } from 'antd';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
+import { Stack, Spinner } from 'tamagui'
 
-import * as ApiAuth from '@/api/auth';
+import {
+  BankCard,
+  BankButton,
+  BankButtonText,
+  BankHeading,
+  BankText,
+  BankField,
+  BankAlert,
+  BankAlertText,
+  bankColors,
+  bankInputStyle,
+} from '@/components/bank'
 
-import { defaultTheme } from '@/styles/themes/default';
-
-import Button from '../Button';
-import Input from '../Input';
-import { Container, LoadingContainer, SubmitError } from './styles';
+import { IRequestError } from '@/models/request'
+import * as ApiAuth from '@/api/auth'
 
 interface IProps {
-  isVisible: boolean;
-  onClose(value: false): void;
+  isVisible: boolean
+  onClose(value: false): void
 }
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
     .email('E-mail invalid')
     .required('Please enter the email address.'),
-});
+})
 
 const formActionsInit = {
   loading: false,
   error: '',
-};
+}
 
 export default function ModalForgotPassword({ isVisible, onClose }: IProps) {
-  const [formActions, setFormActions] = useState(formActionsInit);
+  const [formActions, setFormActions] = useState(formActionsInit)
 
   const handleSendEmail = useCallback(async (email: string) => {
     try {
       setFormActions({
         error: '',
         loading: true,
-      });
+      })
 
-      await ApiAuth.forgotPassword({ email });
+      await ApiAuth.forgotPassword({ email })
 
-      onClose(false);
+      onClose(false)
     } catch (err) {
-      const error = err as unknown as IRequestError;
+      const error = err as unknown as IRequestError
 
       setFormActions({
         error: error?.message,
         loading: false,
-      });
+      })
     }
-  }, []);
+  }, [onClose])
 
   const formik = useFormik({
     initialValues: {
@@ -62,58 +68,91 @@ export default function ModalForgotPassword({ isVisible, onClose }: IProps) {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      handleSendEmail(values.email);
+      handleSendEmail(values.email)
     },
-  });
+  })
 
   useEffect(() => {
     if (isVisible) {
-      formik.resetForm();
-      setFormActions(formActionsInit);
+      formik.resetForm()
+      setFormActions(formActionsInit)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isVisible]);
+  }, [isVisible])
+
+  if (!isVisible) return null
 
   return (
-    <Modal
-      onCancel={() => !formActions.loading && onClose(false)}
-      title="Forgot Password"
-      open={isVisible}
-      footer={() => null}
+    <Stack
+      position="absolute"
+      top={0}
+      left={0}
+      right={0}
+      bottom={0}
+      backgroundColor="rgba(0,0,0,0.8)"
+      justifyContent="center"
+      alignItems="center"
+      zIndex={100}
+      animation="fast"
+      enterStyle={{ opacity: 0 }}
+      exitStyle={{ opacity: 0 }}
+      onPress={() => {
+        if (!formActions.loading) onClose(false)
+      }}
     >
-      <Container>
-        <Input
-          disabled={formActions.loading}
-          label="E-mail"
-          value={formik.values.email}
-          onChange={formik.handleChange('email')}
-          error={formik.errors.email}
-        />
+      <BankCard
+        size="sm"
+        width="90%"
+        gap={16}
+        animation="fast"
+        enterStyle={{ y: -20, opacity: 0, scale: 0.9 }}
+        exitStyle={{ y: 10, opacity: 0, scale: 0.95 }}
+        onPress={(e: any) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <BankHeading size="sm">Forgot Password</BankHeading>
+        <BankText>
+          Enter your email to receive a password reset link
+        </BankText>
 
-        {formActions.loading ? (
-          <LoadingContainer>
-            <LoadingOutlined
-              style={{
-                color: defaultTheme.colors.primary,
-                fontSize: 40,
-                paddingBlock: 16,
-              }}
-            />
-          </LoadingContainer>
-        ) : (
-          <>
-            {formActions.error && (
-              <SubmitError>{formActions.error}</SubmitError>
-            )}
-            <Button
-              color={defaultTheme.colors.primary}
-              onClick={() => formik.handleSubmit()}
-            >
-              Send Request
-            </Button>
-          </>
+        {/* Email field */}
+        <BankField
+          label="Email"
+          error={formik.errors.email && formik.touched.email ? formik.errors.email : undefined}
+        >
+          <input
+            style={bankInputStyle}
+            disabled={formActions.loading}
+            value={formik.values.email}
+            onChange={(e) => formik.setFieldValue('email', e.target.value)}
+          />
+        </BankField>
+
+        {/* Error */}
+        {formActions.error && (
+          <BankAlert status="error">
+            <BankAlertText status="error">{formActions.error}</BankAlertText>
+          </BankAlert>
         )}
-      </Container>
-    </Modal>
-  );
+
+        {/* Actions */}
+        <BankButton
+          disabled={formActions.loading}
+          onPress={() => formik.handleSubmit()}
+        >
+          <BankButtonText>
+            {formActions.loading ? <Spinner color="black" /> : 'Send Reset Link'}
+          </BankButtonText>
+        </BankButton>
+
+        <BankButton
+          variant="secondary"
+          disabled={formActions.loading}
+          onPress={() => onClose(false)}
+        >
+          <BankButtonText variant="secondary">Cancel</BankButtonText>
+        </BankButton>
+      </BankCard>
+    </Stack>
+  )
 }

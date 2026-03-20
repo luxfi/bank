@@ -44,6 +44,11 @@ RUN pnpm --filter @luxbank/ui build || true
 ENV NODE_OPTIONS="--max_old_space_size=4096"
 
 # Build the admin dashboard (CRA / react-scripts)
+# Build args — injected by CI from secrets, never hardcoded
+ARG REACT_APP_RECAPTCHA_KEY
+ARG REACT_APP_API_BASE_URL
+ENV REACT_APP_RECAPTCHA_KEY=${REACT_APP_RECAPTCHA_KEY}
+ENV REACT_APP_API_BASE_URL=${REACT_APP_API_BASE_URL}
 ENV GENERATE_SOURCEMAP=false
 ENV SKIP_PREFLIGHT_CHECK=true
 ENV DISABLE_ESLINT_PLUGIN=true

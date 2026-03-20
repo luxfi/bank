@@ -1,0 +1,21 @@
+@import "tailwindcss";
+@import "@luxfi/ui/tokens.css";
+
+@theme {
+  --font-sans: "Geist", "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
+}
+
+/* Scan @luxfi/ui components for Tailwind classes */
+@source "../../node_modules/@luxfi/ui/dist";
+
+/* Keep legacy styles working during migration */
+html {
+  font-family: var(--font-sans, "Nunito Sans", sans-serif);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*, button, input, textarea {
+  font-family: inherit;
+}

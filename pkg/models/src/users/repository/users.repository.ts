@@ -58,10 +58,6 @@ export class UsersRepository extends EntityRepository<User> {
           'contact',
           'userClients.metadata',
           'contact.account',
-          'clients.account',
-          'clients.account.businessMetadata',
-          'clients.account.individualMetadata',
-          'clients.account.bankMetadata',
         ]
       }
     ).then((user) => {
@@ -132,23 +128,8 @@ export class UsersRepository extends EntityRepository<User> {
         populate: [
           'clients',
           'contact',
-          'clients.account',
-          'clients.users',
-          'clients.userClients',
-          'clients.users.userClients.metadata',
-          'clients.users.contact',
-          'clients.account.bankMetadata',
-          'clients.account.individualMetadata',
-          'clients.account.businessMetadata',
-          'clients.account.bankMetadata',
-          'clients.account.pendingMetadatas',
-          'clients.account.riskAssessments',
-          'clients.account.brokers',
-          'clients.account.directors',
-          'clients.account.shareholders',
-          'clients.account.shareholders.businessMetadata',
-          'clients.account.shareholders.individualMetadata',
-          'clients.account.fee',
+          'contact.account',
+          'userClients.metadata',
           'documents',
           'documents.document'
         ]
@@ -167,12 +148,9 @@ export class UsersRepository extends EntityRepository<User> {
         populate: [
           'contact',
           'clients',
+          'contact.account',
           'userClients',
           'userClients.metadata',
-          'clients.account',
-          'clients.account.bankMetadata',
-          'clients.account.individualMetadata',
-          'clients.account.businessMetadata'
         ]
       }
     );
@@ -203,9 +181,6 @@ export class UsersRepository extends EntityRepository<User> {
         'contact',
         'userClients.metadata',
         'contact.account',
-        'contact.account.businessMetadata',
-        'contact.account.individualMetadata',
-        'contact.account.riskAssessments'
       ],
       orderBy: {
         createdAt: 'desc'
@@ -296,18 +271,10 @@ export class UsersRepository extends EntityRepository<User> {
         'contact',
         'clients',
         'userClients.metadata',
-        'clients.account',
-        'clients.account.businessMetadata',
-        'clients.account.individualMetadata',
-        'clients.account.riskAssessments'
+        'contact.account',
       ],
       orderBy: {
         createdAt: 'desc',
-        clients: {
-          account: {
-            riskAssessments: { createdAt: 'desc' }
-          }
-        }
       }
     });
   }

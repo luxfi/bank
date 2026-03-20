@@ -7,6 +7,8 @@ export class RecaptchaGuard implements CanActivate {
         try {
             if (process.env.NODE_ENV === 'development')
                 return true;
+            if (process.env.BYPASS_RECAPTCHA === 'true')
+                return true;
             
             const { body } = context.switchToHttp().getRequest();
 

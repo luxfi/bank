@@ -39,8 +39,17 @@ RUN pnpm --filter @luxbank/brand build || true
 RUN pnpm --filter @luxbank/ui build || true
 
 # Build the dashboard (Next.js standalone output)
-ARG NEXT_PUBLIC_BASE_URL=https://api.lux.financial
+# Build args — injected by CI from secrets, never hardcoded
+ARG NEXT_PUBLIC_BASE_URL
+ARG NEXT_PUBLIC_RECAPTCHA_SITE_KEY
+ARG NEXT_PUBLIC_CURRENT_USER_COOKIE
+ARG NEXT_PUBLIC_JWT_COOKIE
+ARG NEXT_PUBLIC_JWT_COOKIE_IMPERSONATE
 ENV NEXT_PUBLIC_BASE_URL=${NEXT_PUBLIC_BASE_URL}
+ENV NEXT_PUBLIC_RECAPTCHA_SITE_KEY=${NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+ENV NEXT_PUBLIC_CURRENT_USER_COOKIE=${NEXT_PUBLIC_CURRENT_USER_COOKIE}
+ENV NEXT_PUBLIC_JWT_COOKIE=${NEXT_PUBLIC_JWT_COOKIE}
+ENV NEXT_PUBLIC_JWT_COOKIE_IMPERSONATE=${NEXT_PUBLIC_JWT_COOKIE_IMPERSONATE}
 # __NEXT_PRIVATE_PREBUNDLED_REACT disables prerendering for pages that use document/window
 ENV NEXT_PRIVATE_STANDALONE=true
 # Some pages fail to prerender (document not defined) but standalone output is still generated

@@ -54,6 +54,12 @@ jobs:
           push: true
           build-args: |
             NEXT_PUBLIC_BASE_URL=https://api.lux.financial
+            NEXT_PUBLIC_RECAPTCHA_SITE_KEY=${{ secrets.RECAPTCHA_SITE_KEY }}
+            NEXT_PUBLIC_CURRENT_USER_COOKIE=lux-current-user
+            NEXT_PUBLIC_JWT_COOKIE=lux-jwt-session
+            NEXT_PUBLIC_JWT_COOKIE_IMPERSONATE=lux-jwt-session-impersonate
+            REACT_APP_RECAPTCHA_KEY=${{ secrets.RECAPTCHA_SITE_KEY }}
+            REACT_APP_API_BASE_URL=https://api.lux.financial
           tags: |
             ${{ env.IMAGE_PREFIX }}/${{ matrix.app }}:latest
             ${{ env.IMAGE_PREFIX }}/${{ matrix.app }}:${{ github.sha }}

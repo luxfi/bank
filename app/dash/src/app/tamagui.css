@@ -1,0 +1,10 @@
+/* Tamagui web CSS resets */
+body {
+  overscroll-behavior-y: none;
+}
+
+/* Ensure Tamagui View/Stack components use border-box */
+[data-is="view"],
+[data-is="text"] {
+  box-sizing: border-box;
+}
