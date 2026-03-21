@@ -140,99 +140,22 @@ function SignInContent() {
               <BankButtonText>Continue with Lux ID</BankButtonText>
             </BankButton>
 
-            {/* Divider */}
-            <XStack alignItems="center" gap={16} width="100%">
-              <Stack flex={1} height={1} backgroundColor={bankColors.divider} />
-              <BankText variant="muted" fontSize={14}>or sign in directly</BankText>
-              <Stack flex={1} height={1} backgroundColor={bankColors.divider} />
-            </XStack>
-
-            {/* Direct Login Form */}
-            <Formik
-              initialValues={{
-                email: '',
-                password: '',
-              }}
-              validationSchema={validationSchema}
-              onSubmit={({ email, password }) => {
-                handleSubmit({ email, password })
-              }}
-            >
-              {({ handleChange, values, errors, handleSubmit }) => (
-                <Stack gap={24}>
-                  <Stack gap={20}>
-                    {/* Email field */}
-                    <BankField label="Email" error={errors.email}>
-                      <input
-                        style={bankInputStyle} className={`bank-input ${errors.email ? "bank-input-invalid" : ""}`}
-                        placeholder="email@example.com"
-                        value={values.email}
-                        onChange={(e) => handleChange('email')(e.target.value)}
-                        disabled={formActions.loading}
-                        autoComplete="email"
-                      />
-                    </BankField>
-
-                    {/* Password field */}
-                    <BankField label="Password" error={errors.password}>
-                      <input
-                        style={bankInputStyle} className={`bank-input ${errors.password ? "bank-input-invalid" : ""}`}
-                        type="password"
-                        placeholder="Enter your password"
-                        value={values.password}
-                        onChange={(e) => handleChange('password')(e.target.value)}
-                        disabled={formActions.loading}
-                        autoComplete="current-password"
-                      />
-                    </BankField>
-                  </Stack>
-
-                  {/* Error */}
-                  {formActions.error && (
-                    <BankAlert status="error">
-                      <BankAlertText status="error">{formActions.error}</BankAlertText>
-                    </BankAlert>
-                  )}
-
-                  {/* Button */}
-                  <BankButton
-                    disabled={formActions.loading}
-                    onPress={(e) => {
-                      e.preventDefault?.()
-                      handleSubmit()
-                    }}
-                  >
-                    <BankButtonText>
-                      {formActions.loading ? 'Signing in...' : 'Log In'}
-                    </BankButtonText>
-                  </BankButton>
-
-                  {/* Links */}
-                  <Stack alignItems="center" gap={12} paddingTop={8}>
-                    <BankText
-                      variant="link"
-                      hoverStyle={{ opacity: 0.7 }}
-                      onPress={() => setModalForgotPassword(true)}
-                    >
-                      Forgot Password
-                    </BankText>
-                    <BankText>
-                      {"Don't have an Account? "}
-                      <Link
-                        href="/registration"
-                        style={{
-                          fontWeight: 600,
-                          color: 'white',
-                          textDecorationLine: 'underline',
-                        }}
-                      >
-                        Request registration
-                      </Link>
-                    </BankText>
-                  </Stack>
-                </Stack>
-              )}
-            </Formik>
+            {/* Links */}
+            <Stack alignItems="center" gap={12} paddingTop={8}>
+              <BankText>
+                {"Don't have an Account? "}
+                <Link
+                  href="/registration"
+                  style={{
+                    fontWeight: 600,
+                    color: 'white',
+                    textDecorationLine: 'underline',
+                  }}
+                >
+                  Request access
+                </Link>
+              </BankText>
+            </Stack>
           </BankCard>
 
           {/* Scroll indicator */}
