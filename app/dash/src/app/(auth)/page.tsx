@@ -128,7 +128,26 @@ function SignInContent() {
               </BankText>
             </Stack>
 
-            {/* Form */}
+            {/* Lux ID OAuth Login */}
+            <BankButton
+              onPress={() => {
+                const clientId = 'lux-financial'
+                const redirectUri = encodeURIComponent(`${window.location.origin}/auth/callback`)
+                const scope = encodeURIComponent('openid profile email')
+                window.location.href = `https://lux.id/oauth/authorize?client_id=${clientId}&response_type=code&redirect_uri=${redirectUri}&scope=${scope}`
+              }}
+            >
+              <BankButtonText>Continue with Lux ID</BankButtonText>
+            </BankButton>
+
+            {/* Divider */}
+            <XStack alignItems="center" gap={16} width="100%">
+              <Stack flex={1} height={1} backgroundColor={bankColors.divider} />
+              <BankText variant="muted" fontSize={14}>or sign in directly</BankText>
+              <Stack flex={1} height={1} backgroundColor={bankColors.divider} />
+            </XStack>
+
+            {/* Direct Login Form */}
             <Formik
               initialValues={{
                 email: '',
