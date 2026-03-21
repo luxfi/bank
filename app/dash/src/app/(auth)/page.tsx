@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
-import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3'
+// reCAPTCHA disabled — API uses BYPASS_RECAPTCHA
 
 import { Stack, XStack } from 'tamagui'
 
@@ -66,7 +66,7 @@ function FeatureCard({ title, description }: { title: string; description: strin
 function SignInContent() {
   const router = useRouter()
   const { setClearUser, setSignIn } = useAuth()
-  const { executeRecaptcha } = useGoogleReCaptcha()
+  // reCAPTCHA disabled
 
   const [formActions, setFormActions] = useState(formActionsInit)
   const [modalForgotPassword, setModalForgotPassword] =
@@ -86,19 +86,9 @@ function SignInContent() {
           loading: true,
         })
 
-        if (!executeRecaptcha) {
-          setFormActions({
-            error: 'reCAPTCHA not ready. Please try again.',
-            loading: false,
-          })
-          return
-        }
-
-        const token = await executeRecaptcha('login')
-
         await setSignIn({
           password: data.password,
-          r: token,
+          r: 'bypass',
           username: data.email,
         })
 
@@ -110,7 +100,7 @@ function SignInContent() {
         })
       }
     },
-    [executeRecaptcha, router, setSignIn]
+    [router, setSignIn]
   )
 
   return (
@@ -437,11 +427,5 @@ function SignInContent() {
 }
 
 export default function SignIn() {
-  return (
-    <GoogleReCaptchaProvider
-      reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
-    >
-      <SignInContent />
-    </GoogleReCaptchaProvider>
-  )
+  return <SignInContent />
 }
