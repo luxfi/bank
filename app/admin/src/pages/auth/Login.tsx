@@ -70,22 +70,11 @@ export default function Login() {
 
     const onSubmit = useCallback(
         async (values: any) => {
-            if (!captcha) {
-                setCaptchaErrorMessage(
-                    "Please complete the reCAPTCHA to proceed."
-                );
-                return;
-            }
-
             setCaptchaErrorMessage(null);
             setLoading(true);
-
-            const token = captcha;
-            if (token) {
-                dispatch(login({ ...values, r: token }));
-            }
+            dispatch(login({ ...values, r: captcha || "disabled" }));
         },
-        [captcha, captchaErrorMessage]
+        [captcha]
     );
 
     useEffect(() => {
@@ -164,32 +153,6 @@ export default function Login() {
                                 {authError ? (
                                     <ErrorText>{authError}</ErrorText>
                                 ) : null}
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        justifyContent: "center",
-                                        padding: "1rem",
-                                    }}
-                                >
-                                    <CaptchaContainer
-                                        hasError={!!captchaErrorMessage}
-                                    >
-                                        <div>
-                                            <ReCAPTCHA
-                                                hl="en"
-                                                ref={recaptchaRef}
-                                                onChange={(e) => setCaptcha(e)}
-                                                sitekey={String(
-                                                    process.env
-                                                        .REACT_APP_RECAPTCHA_KEY
-                                                )}
-                                            />
-                                        </div>
-                                        {captchaErrorMessage && !captcha && (
-                                            <span>{captchaErrorMessage}</span>
-                                        )}
-                                    </CaptchaContainer>
-                                </div>
                                 <ButtonContainer>
                                     {loading ? (
                                         <Spinner />
