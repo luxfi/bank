@@ -133,6 +133,7 @@ export function createBrandConfig(
     domains: {
       primary: 'lux.financial',
       app: 'app.lux.financial',
+      admin: 'admin.lux.financial',
       api: 'api.lux.financial',
       docs: 'docs.lux.financial',
       support: 'support.lux.financial',

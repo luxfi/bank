@@ -75,9 +75,11 @@ async function bootstrap() {
     origin: [
       `https://${domains.app}`,
       `https://${domains.primary}`,
+      domains.admin ? `https://${domains.admin}` : null,
       domains.api ? `https://${domains.api}` : null,
       domains.support ? `https://${domains.support}` : null,
-      'http://localhost:3000'
+      'http://localhost:3000',
+      'http://localhost:3001',
     ].filter(Boolean),
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: ['Content-Type', 'Authorization'],
