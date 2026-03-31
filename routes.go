@@ -3,6 +3,7 @@ package bank
 import (
 	"bytes"
 	"encoding/json"
+	"math"
 	"net/http"
 	"os"
 	"time"
@@ -62,10 +63,13 @@ func handleTransfer(app core.App) func(*core.RequestEvent) error {
 			return apis.NewForbiddenError("not your account", nil)
 		}
 
-		// Verify destination exists.
-		_, err = app.FindRecordById(collections.AccountCollectionName, req.ToAccountID)
+		// Verify destination exists and belongs to the caller.
+		to, err := app.FindRecordById(collections.AccountCollectionName, req.ToAccountID)
 		if err != nil {
 			return apis.NewNotFoundError("destination account not found", nil)
+		}
+		if to.GetString("owner") != e.Auth.Id {
+			return apis.NewForbiddenError("destination account not owned by caller", nil)
 		}
 
 		// Create debit transaction (hooks will validate balance, KYC, limits).
@@ -211,8 +215,8 @@ func handleGetBalances(app core.App) func(*core.RequestEvent) error {
 		for _, b := range balances {
 			result = append(result, balanceResponse{
 				Currency:  b.GetString("currency"),
-				Available: int64(b.GetFloat("available")),
-				Held:      int64(b.GetFloat("held")),
+				Available: int64(math.Round(b.GetFloat("available"))),
+				Held:      int64(math.Round(b.GetFloat("held"))),
 			})
 		}
 

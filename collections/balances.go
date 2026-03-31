@@ -15,6 +15,8 @@ func EnsureBalanceCollection(app core.App) error {
 
 	c := core.NewBaseCollection(BalanceCollectionName)
 
+	// API rules: all nil — superuser only. Balances are read via custom routes.
+
 	c.Fields.Add(
 		&core.RelationField{
 			Name:         "account",

@@ -77,6 +77,7 @@ func main() {
 	hooks.RegisterPaymentHooks(app)
 	hooks.RegisterAccountHooks(app)
 	hooks.RegisterFeeHooks(app)
+	hooks.RegisterAuditHooks(app)
 	hooks.RegisterCronJobs(app)
 
 	// ---- routes ----

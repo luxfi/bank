@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"log/slog"
+	"math"
 	"net/http"
 	"os"
 	"time"
@@ -66,7 +67,7 @@ func RegisterComplianceHooks(app core.App) {
 		}
 
 		// AML screening for transactions above threshold.
-		amount := int64(e.Record.GetFloat("amount"))
+		amount := int64(math.Round(e.Record.GetFloat("amount")))
 		if amount >= amlThreshold {
 			if err := screenAML(app, accountId, e.Record); err != nil {
 				return apis.NewForbiddenError("transaction blocked by AML screening", nil)
