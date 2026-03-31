@@ -61,6 +61,4 @@ require (
 )
 
 // For local development, uncomment:
-// replace github.com/hanzoai/base => /Users/z/work/hanzo/base
-
-replace github.com/hanzoai/base => ../../hanzo/base
+// replace github.com/hanzoai/base => ../../hanzo/base
