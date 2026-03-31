@@ -2,7 +2,7 @@ module github.com/luxfi/bank
 
 go 1.26.1
 
-require github.com/hanzoai/base v1.0.0
+require github.com/hanzoai/base v0.39.0
 
 require (
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
@@ -62,3 +62,5 @@ require (
 
 // For local development, uncomment:
 // replace github.com/hanzoai/base => /Users/z/work/hanzo/base
+
+replace github.com/hanzoai/base => ../../hanzo/base
