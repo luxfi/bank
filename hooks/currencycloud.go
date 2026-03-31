@@ -1,12 +1,9 @@
 package hooks
 
 import (
-	"encoding/json"
-	"fmt"
 	"log/slog"
 	"net/http"
 
-	"github.com/hanzoai/base/apis"
 	"github.com/hanzoai/base/core"
 	"github.com/hanzoai/base/tools/hook"
 	"github.com/luxfi/bank/collections"
@@ -21,15 +18,15 @@ func RegisterCurrencyCloudWebhooks(app core.App) {
 		Func: func(e *core.ServeEvent) error {
 			// CurrencyCloud payment status callback.
 			e.Router.POST("/webhooks/currencycloud/payment", handleCCPayment(app)).
-				Bind(apis.RequireSuperuserAuth())
+				Bind(RequireHMACAuth())
 
 			// CurrencyCloud conversion status callback.
 			e.Router.POST("/webhooks/currencycloud/conversion", handleCCConversion(app)).
-				Bind(apis.RequireSuperuserAuth())
+				Bind(RequireHMACAuth())
 
 			// IFX (forex) rate and settlement callback.
 			e.Router.POST("/webhooks/ifx/settlement", handleIFXSettlement(app)).
-				Bind(apis.RequireSuperuserAuth())
+				Bind(RequireHMACAuth())
 
 			return e.Next()
 		},
@@ -217,7 +214,3 @@ func mapIFXStatus(ifxStatus string) string {
 		return "processing"
 	}
 }
-
-// Ensure json is used (it is imported for payload types).
-var _ = json.Marshal
-var _ = fmt.Sprintf

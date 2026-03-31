@@ -15,6 +15,11 @@ func EnsureAccountCollection(app core.App) error {
 
 	c := core.NewBaseCollection(AccountCollectionName)
 
+	// API rules: list/view scoped to owner; create/update/delete superuser only (nil).
+	ownerRule := `owner = @request.auth.id`
+	c.ListRule = &ownerRule
+	c.ViewRule = &ownerRule
+
 	c.Fields.Add(
 		// Owner — relation to the "users" auth collection.
 		&core.RelationField{

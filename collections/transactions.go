@@ -18,6 +18,11 @@ func EnsureTransactionCollection(app core.App) error {
 
 	c := core.NewBaseCollection(TransactionCollectionName)
 
+	// API rules: list/view scoped to account owner; mutations superuser only (nil).
+	txRule := `account.owner = @request.auth.id`
+	c.ListRule = &txRule
+	c.ViewRule = &txRule
+
 	c.Fields.Add(
 		// Source account.
 		&core.RelationField{
@@ -145,6 +150,8 @@ func EnsureFeeCollection(app core.App) error {
 
 	c := core.NewBaseCollection(FeeCollectionName)
 
+	// API rules: all nil — superuser only. Fees are internal records.
+
 	c.Fields.Add(
 		&core.RelationField{
 			Name:         "transaction",
@@ -187,6 +194,11 @@ func EnsureSessionCollection(app core.App) error {
 	}
 
 	c := core.NewBaseCollection(SessionCollectionName)
+
+	// API rules: list/view scoped to session owner; mutations superuser only (nil).
+	sessRule := `user = @request.auth.id`
+	c.ListRule = &sessRule
+	c.ViewRule = &sessRule
 
 	c.Fields.Add(
 		&core.RelationField{

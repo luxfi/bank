@@ -2,6 +2,8 @@ package hooks
 
 import (
 	"log/slog"
+	"math"
+	"time"
 
 	"github.com/hanzoai/base/apis"
 	"github.com/hanzoai/base/core"
@@ -79,7 +81,7 @@ func RegisterAccountHooks(app core.App) {
 			limits = accountLimits["individual"]
 		}
 
-		amount := int64(e.Record.GetFloat("amount"))
+		amount := int64(math.Round(e.Record.GetFloat("amount")))
 
 		// Check daily limit.
 		dailySpent := getDailySpent(app, accountId)
@@ -144,40 +146,35 @@ func getDailySpent(app core.App, accountId string) int64 {
 		"",
 		0,
 		0,
-		map[string]any{
-			"accountId":  accountId,
-			"todayStart": "@todayStart",
-		},
+		map[string]any{"accountId": accountId},
 	)
 	if err != nil {
 		return 0
 	}
 	var total int64
 	for _, r := range records {
-		total += int64(r.GetFloat("amount"))
+		total += int64(math.Round(r.GetFloat("amount")))
 	}
 	return total
 }
 
 // getMonthlySpent sums debit transaction amounts for the last 30 days.
 func getMonthlySpent(app core.App, accountId string) int64 {
+	thirtyDaysAgo := time.Now().UTC().AddDate(0, 0, -30).Format("2006-01-02 15:04:05.000Z")
 	records, err := app.FindRecordsByFilter(
 		collections.TransactionCollectionName,
-		`account = {:accountId} && direction = "debit" && status != "failed" && status != "cancelled" && created >= @monthAgo`,
+		`account = {:accountId} && direction = "debit" && status != "failed" && status != "cancelled" && created >= {:since}`,
 		"",
 		0,
 		0,
-		map[string]any{
-			"accountId": accountId,
-			"monthAgo":  "@now -30d",
-		},
+		map[string]any{"accountId": accountId, "since": thirtyDaysAgo},
 	)
 	if err != nil {
 		return 0
 	}
 	var total int64
 	for _, r := range records {
-		total += int64(r.GetFloat("amount"))
+		total += int64(math.Round(r.GetFloat("amount")))
 	}
 	return total
 }

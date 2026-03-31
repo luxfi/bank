@@ -2,6 +2,8 @@ package hooks
 
 import (
 	"log/slog"
+	"math"
+	"time"
 
 	"github.com/hanzoai/base/core"
 	"github.com/luxfi/bank/collections"
@@ -95,7 +97,7 @@ func RegisterFeeHooks(app core.App) {
 			return err
 		}
 
-		amount := int64(e.Record.GetFloat("amount"))
+		amount := int64(math.Round(e.Record.GetFloat("amount")))
 		if amount <= 0 {
 			return nil
 		}
@@ -152,16 +154,14 @@ func RegisterFeeHooks(app core.App) {
 // getMonthlyVolume sums completed transaction amounts for an account in the
 // last 30 days.
 func getMonthlyVolume(app core.App, accountId string) int64 {
+	thirtyDaysAgo := time.Now().UTC().AddDate(0, 0, -30).Format("2006-01-02 15:04:05.000Z")
 	records, err := app.FindRecordsByFilter(
 		collections.TransactionCollectionName,
-		`account = {:accountId} && status = "completed" && created >= @thirtyDaysAgo`,
+		`account = {:accountId} && status = "completed" && created >= {:since}`,
 		"",
 		0,
 		0,
-		map[string]any{
-			"accountId":    accountId,
-			"thirtyDaysAgo": "@now -30d",
-		},
+		map[string]any{"accountId": accountId, "since": thirtyDaysAgo},
 	)
 	if err != nil {
 		return 0
@@ -169,7 +169,7 @@ func getMonthlyVolume(app core.App, accountId string) int64 {
 
 	var total int64
 	for _, r := range records {
-		total += int64(r.GetFloat("amount"))
+		total += int64(math.Round(r.GetFloat("amount")))
 	}
 	return total
 }

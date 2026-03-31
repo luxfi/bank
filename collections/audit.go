@@ -15,6 +15,8 @@ func EnsureAuditCollection(app core.App) error {
 
 	c := core.NewBaseCollection(AuditCollectionName)
 
+	// API rules: all nil — superuser only. Audit log is not user-accessible.
+
 	c.Fields.Add(
 		// The account this event relates to.
 		&core.RelationField{

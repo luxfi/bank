@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log/slog"
+	"math"
 	"net/http"
 	"os"
 	"time"
@@ -18,7 +19,7 @@ import (
 // Allowed status transitions. Any transition not listed is rejected.
 var allowedTransitions = map[string][]string{
 	"pending":    {"processing", "failed", "cancelled"},
-	"processing": {"completed", "failed"},
+	"processing": {"completed", "failed", "cancelled"},
 }
 
 func validTransition(from, to string) bool {
@@ -43,32 +44,50 @@ func RegisterPaymentHooks(app core.App) {
 			return e.Next()
 		}
 
-		accountId := e.Record.GetString("account")
-		currency := e.Record.GetString("currency")
-		amount := int64(e.Record.GetFloat("amount"))
-
+		amount := int64(math.Round(e.Record.GetFloat("amount")))
 		if amount <= 0 {
 			return apis.NewBadRequestError("amount must be positive", nil)
 		}
 
-		bal, err := app.FindFirstRecordByFilter(
-			collections.BalanceCollectionName,
-			`account = {:accountId} && currency = {:currency}`,
-			map[string]any{"accountId": accountId, "currency": currency},
-		)
-		if err != nil {
-			return apis.NewBadRequestError("no balance found for currency", nil)
-		}
+		accountId := e.Record.GetString("account")
+		currency := e.Record.GetString("currency")
 
-		available := int64(bal.GetFloat("available"))
-		if available < amount {
-			return apis.NewBadRequestError("insufficient balance", nil)
+		// Atomic balance check + hold within a transaction to prevent races.
+		err := app.RunInTransaction(func(txApp core.App) error {
+			bal, err := txApp.FindFirstRecordByFilter(
+				collections.BalanceCollectionName,
+				`account = {:accountId} && currency = {:currency}`,
+				map[string]any{"accountId": accountId, "currency": currency},
+			)
+			if err != nil {
+				return apis.NewBadRequestError("no balance found for currency", nil)
+			}
+
+			available := int64(math.Round(bal.GetFloat("available")))
+			if available < amount {
+				return apis.NewBadRequestError("insufficient balance", nil)
+			}
+
+			// Floor check: ensure available would not go negative.
+			if available-amount < 0 {
+				return apis.NewBadRequestError("insufficient balance", nil)
+			}
+
+			// Hold funds atomically: available -= amount, held += amount.
+			held := int64(math.Round(bal.GetFloat("held")))
+			bal.Set("available", available-amount)
+			bal.Set("held", held+amount)
+			return txApp.Save(bal)
+		})
+		if err != nil {
+			return err
 		}
 
 		return e.Next()
 	})
 
-	// Post-create: hold funds and route outbound.
+	// Post-create: route outbound payments to forex service.
+	// (Balance hold is already done in pre-create transaction above.)
 	app.OnRecordCreateExecute(collections.TransactionCollectionName).BindFunc(func(e *core.RecordEvent) error {
 		if err := e.Next(); err != nil {
 			return err
@@ -78,14 +97,6 @@ func RegisterPaymentHooks(app core.App) {
 			return nil
 		}
 
-		accountId := e.Record.GetString("account")
-		currency := e.Record.GetString("currency")
-		amount := int64(e.Record.GetFloat("amount"))
-
-		// Move funds from available to held.
-		updateBalance(app, accountId, currency, -amount, amount)
-
-		// Route outbound payments to forex service.
 		txType := e.Record.GetString("type")
 		if txType == "payment" || txType == "conversion" {
 			go routeToForex(app, e.Record)
@@ -122,7 +133,7 @@ func RegisterPaymentHooks(app core.App) {
 
 		accountId := e.Record.GetString("account")
 		currency := e.Record.GetString("currency")
-		amount := int64(e.Record.GetFloat("amount"))
+		amount := int64(math.Round(e.Record.GetFloat("amount")))
 		direction := e.Record.GetString("direction")
 
 		switch {
@@ -148,7 +159,7 @@ func RegisterPaymentHooks(app core.App) {
 		Id: "bankPaymentCallbacks",
 		Func: func(e *core.ServeEvent) error {
 			e.Router.POST("/webhooks/payments/callback", handlePaymentCallback(app)).
-				Bind(apis.RequireSuperuserAuth())
+				Bind(RequireHMACAuth())
 			return e.Next()
 		},
 	})
@@ -174,8 +185,21 @@ func updateBalance(app core.App, accountId, currency string, availableDelta, hel
 		return
 	}
 
-	bal.Set("available", int64(bal.GetFloat("available"))+availableDelta)
-	bal.Set("held", int64(bal.GetFloat("held"))+heldDelta)
+	newAvailable := int64(math.Round(bal.GetFloat("available"))) + availableDelta
+	newHeld := int64(math.Round(bal.GetFloat("held"))) + heldDelta
+
+	// F13: Floor check — never allow negative available balance.
+	if newAvailable < 0 {
+		app.Logger().Error("payments: balance floor violation — available would go negative",
+			slog.String("accountId", accountId),
+			slog.String("currency", currency),
+			slog.Int64("newAvailable", newAvailable),
+		)
+		return
+	}
+
+	bal.Set("available", newAvailable)
+	bal.Set("held", newHeld)
 
 	if err := app.Save(bal); err != nil {
 		app.Logger().Error("payments: failed to update balance", slog.String("error", err.Error()))
