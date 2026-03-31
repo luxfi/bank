@@ -1,9 +1,9 @@
 name: CI
 on:
   push:
-    branches: [main]
+    branches: [v2]
   pull_request:
-    branches: [main]
+    branches: [v2]
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -17,7 +17,7 @@ jobs:
       - run: go build ./...
   docker:
     needs: test
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/v2'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -34,8 +34,5 @@ jobs:
         with:
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}:main
-            ghcr.io/${{ github.repository }}:test
             ghcr.io/${{ github.repository }}:dev
-            ghcr.io/${{ github.repository }}:latest
             ghcr.io/${{ github.repository }}:${{ github.sha }}

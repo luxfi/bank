@@ -83,7 +83,7 @@ func main() {
 			})
 
 			// Authenticated account summary.
-			e.Router.GET("/api/v1/account/summary", func(re *core.RequestEvent) error {
+			e.Router.GET("/v1/account/summary", func(re *core.RequestEvent) error {
 				if re.Auth == nil {
 					return apis.NewUnauthorizedError("unauthorized", nil)
 				}
