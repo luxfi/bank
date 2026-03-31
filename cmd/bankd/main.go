@@ -9,6 +9,7 @@ import (
 	"github.com/hanzoai/base/core"
 	"github.com/hanzoai/base/plugins/migratecmd"
 	"github.com/hanzoai/base/tools/hook"
+	bank "github.com/luxfi/bank"
 	"github.com/luxfi/bank/collections"
 	"github.com/luxfi/bank/hooks"
 )
@@ -80,63 +81,18 @@ func main() {
 
 	// ---- routes ----
 
+	bank.RegisterRoutes(app)
+
 	app.OnServe().Bind(&hook.Handler[*core.ServeEvent]{
-		Id: "bankCustomRoutes",
+		Id: "bankLegacyRoutes",
 		Func: func(e *core.ServeEvent) error {
 			// Health endpoint (unauthenticated).
 			e.Router.GET("/health", func(re *core.RequestEvent) error {
 				return re.JSON(http.StatusOK, map[string]string{"status": "ok"})
 			})
 
-			// Authenticated account summary.
-			// Multi-currency balance summary.
-			e.Router.GET("/v1/accounts/{id}/balances", func(re *core.RequestEvent) error {
-				if re.Auth == nil {
-					return apis.NewUnauthorizedError("unauthorized", nil)
-				}
-
-				accountId := re.Request.PathValue("id")
-
-				// Verify ownership.
-				account, err := app.FindRecordById(collections.AccountCollectionName, accountId)
-				if err != nil {
-					return apis.NewNotFoundError("account not found", nil)
-				}
-				if account.GetString("owner") != re.Auth.Id {
-					return apis.NewForbiddenError("not your account", nil)
-				}
-
-				balances, err := app.FindRecordsByFilter(
-					collections.BalanceCollectionName,
-					"account = {:accountId}",
-					"currency",
-					100, 0,
-					map[string]any{"accountId": accountId},
-				)
-				if err != nil {
-					return apis.NewBadRequestError("failed to fetch balances", nil)
-				}
-
-				type balanceSummary struct {
-					Currency  string `json:"currency"`
-					Available int64  `json:"available"`
-					Held      int64  `json:"held"`
-				}
-
-				result := make([]balanceSummary, 0, len(balances))
-				for _, b := range balances {
-					result = append(result, balanceSummary{
-						Currency:  b.GetString("currency"),
-						Available: int64(b.GetFloat("available")),
-						Held:      int64(b.GetFloat("held")),
-					})
-				}
-
-				return re.JSON(http.StatusOK, result)
-			}).Bind(apis.RequireAuth())
-
-			// Account summary.
-			e.Router.GET("/v1/account/summary", func(re *core.RequestEvent) error {
+			// Legacy account summary endpoint.
+			e.Router.GET("/api/v1/account/summary", func(re *core.RequestEvent) error {
 				if re.Auth == nil {
 					return apis.NewUnauthorizedError("unauthorized", nil)
 				}
