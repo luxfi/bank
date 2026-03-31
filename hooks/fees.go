@@ -47,7 +47,8 @@ var volumeDiscounts = []struct {
 // entityType is "individual" or "business".
 // txType is "payment", "conversion", etc.
 // amount is in minor units. monthlyVolume is the rolling 30-day volume.
-func CalculateFee(entityType, txType string, amount, monthlyVolume int64) (feeAmount int64, feeType string) {
+// rail is the payment rail (sepa, fps, ach, wire, swift, interac).
+func CalculateFee(entityType, txType string, amount, monthlyVolume int64, rail ...PaymentRail) (feeAmount int64, feeType string) {
 	rateBP, ok := tierFees[entityType]
 	if !ok {
 		rateBP = tierFees["individual"] // default to highest
@@ -76,10 +77,13 @@ func CalculateFee(entityType, txType string, amount, monthlyVolume int64) (feeAm
 	case "payment":
 		// Percentage fee.
 		feeAmount = amount * rateBP / 10000
-		// Add flat wire fee (use wire for now; SEPA detection would come from
-		// beneficiary payment type which is outside this function's scope).
-		feeAmount += paymentTypeFees["payment"]["wire_fee"]
-		feeType = "wire_fee"
+		// Add flat rail fee based on payment network.
+		r := RailSWIFT
+		if len(rail) > 0 {
+			r = rail[0]
+		}
+		feeAmount += RailFee(r)
+		feeType = string(r) + "_fee"
 		return
 
 	default:
