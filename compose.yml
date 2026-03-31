@@ -1,0 +1,13 @@
+services:
+  bankd:
+    build: .
+    ports:
+      - "8070:8070"
+    volumes:
+      - bank-data:/data
+    environment:
+      - BANKD_DIR=/data
+    restart: unless-stopped
+
+volumes:
+  bank-data:
