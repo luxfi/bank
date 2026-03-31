@@ -61,6 +61,9 @@ func main() {
 			collections.EnsureSessionCollection,
 			collections.EnsureBalanceCollection,
 			collections.EnsureAuditCollection,
+			collections.EnsureDocumentCollection,
+			collections.EnsureWalletCollection,
+			collections.EnsureConversionCollection,
 		} {
 			if err := ensure(app); err != nil {
 				return err
@@ -78,6 +81,9 @@ func main() {
 	hooks.RegisterAccountHooks(app)
 	hooks.RegisterFeeHooks(app)
 	hooks.RegisterAuditHooks(app)
+	hooks.RegisterDocumentHooks(app)
+	hooks.RegisterWalletHooks(app)
+	hooks.RegisterEmailHooks(app)
 	hooks.RegisterCronJobs(app)
 
 	// ---- routes ----

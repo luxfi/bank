@@ -25,6 +25,8 @@ func RegisterRoutes(app core.App) {
 			g.POST("/transfers", handleTransfer(app))
 			g.POST("/payments/outbound", handleOutboundPayment(app))
 			g.GET("/accounts/{id}/balances", handleGetBalances(app))
+			g.GET("/accounts/{id}/wallets", handleGetWallets(app))
+			g.GET("/accounts/{id}/transactions", handleGetTransactions(app))
 			g.POST("/fx/quote", handleFXQuote(app))
 			g.POST("/fx/execute", handleFXExecute(app))
 
@@ -334,5 +336,75 @@ func handleFXExecute(app core.App) func(*core.RequestEvent) error {
 		}
 
 		return e.JSON(http.StatusOK, result)
+	}
+}
+
+// -- Account wallets --
+
+func handleGetWallets(app core.App) func(*core.RequestEvent) error {
+	return func(e *core.RequestEvent) error {
+		accountId := e.Request.PathValue("id")
+		account, err := app.FindRecordById(collections.AccountCollectionName, accountId)
+		if err != nil {
+			return apis.NewNotFoundError("account not found", nil)
+		}
+		if account.GetString("owner") != e.Auth.Id {
+			return apis.NewForbiddenError("not your account", nil)
+		}
+		wallets, err := app.FindRecordsByFilter(collections.WalletCollectionName,
+			"account = {:accountId}", "currency", 0, 0,
+			map[string]any{"accountId": accountId})
+		if err != nil {
+			return apis.NewInternalServerError("", nil)
+		}
+		type wr struct {
+			ID       string `json:"id"`
+			Currency string `json:"currency"`
+			WalletId string `json:"walletId"`
+			Status   string `json:"status"`
+		}
+		out := make([]wr, 0, len(wallets))
+		for _, w := range wallets {
+			out = append(out, wr{w.Id, w.GetString("currency"), w.GetString("walletId"), w.GetString("status")})
+		}
+		return e.JSON(http.StatusOK, out)
+	}
+}
+
+// -- Transaction history --
+
+func handleGetTransactions(app core.App) func(*core.RequestEvent) error {
+	return func(e *core.RequestEvent) error {
+		accountId := e.Request.PathValue("id")
+		account, err := app.FindRecordById(collections.AccountCollectionName, accountId)
+		if err != nil {
+			return apis.NewNotFoundError("account not found", nil)
+		}
+		if account.GetString("owner") != e.Auth.Id {
+			return apis.NewForbiddenError("not your account", nil)
+		}
+		txs, err := app.FindRecordsByFilter(collections.TransactionCollectionName,
+			"account = {:accountId}", "-created", 100, 0,
+			map[string]any{"accountId": accountId})
+		if err != nil {
+			return apis.NewInternalServerError("", nil)
+		}
+		type tr struct {
+			ID        string  `json:"id"`
+			Type      string  `json:"type"`
+			Direction string  `json:"direction"`
+			Amount    float64 `json:"amount"`
+			Currency  string  `json:"currency"`
+			Status    string  `json:"status"`
+			Reference string  `json:"reference"`
+			Created   string  `json:"created"`
+		}
+		out := make([]tr, 0, len(txs))
+		for _, t := range txs {
+			out = append(out, tr{t.Id, t.GetString("type"), t.GetString("direction"),
+				t.GetFloat("amount"), t.GetString("currency"), t.GetString("status"),
+				t.GetString("reference"), t.GetString("created")})
+		}
+		return e.JSON(http.StatusOK, out)
 	}
 }
