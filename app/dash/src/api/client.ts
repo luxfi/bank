@@ -45,7 +45,7 @@ export interface AuthResponse {
 
 export async function login(email: string, password: string): Promise<AuthResponse> {
   const data = await request<AuthResponse>(
-    '/api/collections/users/auth-with-password',
+    '/v1/base/collections/users/auth-with-password',
     {
       method: 'POST',
       body: JSON.stringify({ identity: email, password }),
@@ -92,7 +92,7 @@ export async function listRecords<T = Record<string, unknown>>(
   collection: string,
   params?: ListParams,
 ): Promise<ListResult<T>> {
-  return request(`/api/collections/${collection}/records${buildQuery(params)}`)
+  return request(`/v1/base/collections/${collection}/records${buildQuery(params)}`)
 }
 
 export async function getRecord<T = Record<string, unknown>>(
@@ -101,14 +101,14 @@ export async function getRecord<T = Record<string, unknown>>(
   expand?: string,
 ): Promise<T> {
   const q = expand ? `?expand=${encodeURIComponent(expand)}` : ''
-  return request(`/api/collections/${collection}/records/${id}${q}`)
+  return request(`/v1/base/collections/${collection}/records/${id}${q}`)
 }
 
 export async function createRecord<T = Record<string, unknown>>(
   collection: string,
   data: Record<string, unknown>,
 ): Promise<T> {
-  return request(`/api/collections/${collection}/records`, {
+  return request(`/v1/base/collections/${collection}/records`, {
     method: 'POST',
     body: JSON.stringify(data),
   })
@@ -119,14 +119,14 @@ export async function updateRecord<T = Record<string, unknown>>(
   id: string,
   data: Record<string, unknown>,
 ): Promise<T> {
-  return request(`/api/collections/${collection}/records/${id}`, {
+  return request(`/v1/base/collections/${collection}/records/${id}`, {
     method: 'PATCH',
     body: JSON.stringify(data),
   })
 }
 
 export async function deleteRecord(collection: string, id: string): Promise<void> {
-  return request(`/api/collections/${collection}/records/${id}`, {
+  return request(`/v1/base/collections/${collection}/records/${id}`, {
     method: 'DELETE',
   })
 }
@@ -135,7 +135,7 @@ export async function deleteRecord(collection: string, id: string): Promise<void
 
 export async function getBalances(accountId: string) {
   return request<{ currency: string; available: number; held: number }[]>(
-    `/v1/accounts/${accountId}/balances`,
+    `/v1/bank/accounts/${accountId}/balances`,
   )
 }
 
@@ -147,7 +147,7 @@ export async function sendPayment(data: {
   reference: string
 }) {
   return request<{ transactionId: string; status: string }>(
-    '/v1/payments/outbound',
+    '/v1/bank/payments/outbound',
     { method: 'POST', body: JSON.stringify(data) },
   )
 }
@@ -160,7 +160,7 @@ export async function createTransfer(data: {
   reference: string
 }) {
   return request<{ debitId: string; creditId: string; status: string }>(
-    '/v1/transfers',
+    '/v1/bank/transfers',
     { method: 'POST', body: JSON.stringify(data) },
   )
 }
@@ -178,11 +178,11 @@ export async function getFXQuote(data: {
     rate: number
     quoteId: string
     expiresAt: string
-  }>('/v1/fx/quote', { method: 'POST', body: JSON.stringify(data) })
+  }>('/v1/bank/fx/quote', { method: 'POST', body: JSON.stringify(data) })
 }
 
 export async function executeFX(data: { accountId: string; quoteId: string }) {
-  return request<Record<string, unknown>>('/v1/fx/execute', {
+  return request<Record<string, unknown>>('/v1/bank/fx/execute', {
     method: 'POST',
     body: JSON.stringify(data),
   })
@@ -203,7 +203,7 @@ export async function uploadFile(
   if (authToken) headers['Authorization'] = `Bearer ${authToken}`
 
   const res = await fetch(
-    `${BASE_URL}/api/collections/${collection}/records/${id}`,
+    `${BASE_URL}/v1/base/collections/${collection}/records/${id}`,
     { method: 'PATCH', headers, body: form },
   )
 

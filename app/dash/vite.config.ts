@@ -11,10 +11,6 @@ export default defineConfig({
   server: {
     port: 3000,
     proxy: {
-      '/api': {
-        target: process.env.VITE_BANK_API_URL || 'http://localhost:8070',
-        changeOrigin: true,
-      },
       '/v1': {
         target: process.env.VITE_BANK_API_URL || 'http://localhost:8070',
         changeOrigin: true,

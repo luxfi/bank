@@ -17,15 +17,15 @@ func RegisterCurrencyCloudWebhooks(app core.App) {
 		Id: "bankCurrencyCloudWebhooks",
 		Func: func(e *core.ServeEvent) error {
 			// CurrencyCloud payment status callback.
-			e.Router.POST("/webhooks/currencycloud/payment", handleCCPayment(app)).
+			e.Router.POST("/v1/bank/webhooks/currencycloud/payment", handleCCPayment(app)).
 				Bind(RequireHMACAuth())
 
 			// CurrencyCloud conversion status callback.
-			e.Router.POST("/webhooks/currencycloud/conversion", handleCCConversion(app)).
+			e.Router.POST("/v1/bank/webhooks/currencycloud/conversion", handleCCConversion(app)).
 				Bind(RequireHMACAuth())
 
 			// IFX (forex) rate and settlement callback.
-			e.Router.POST("/webhooks/ifx/settlement", handleIFXSettlement(app)).
+			e.Router.POST("/v1/bank/webhooks/ifx/settlement", handleIFXSettlement(app)).
 				Bind(RequireHMACAuth())
 
 			return e.Next()

@@ -19,7 +19,7 @@ func RegisterRoutes(app core.App) {
 	app.OnServe().Bind(&hook.Handler[*core.ServeEvent]{
 		Id: "bankRoutes",
 		Func: func(e *core.ServeEvent) error {
-			g := e.Router.Group("/v1")
+			g := e.Router.Group("/v1/bank")
 			g.Bind(apis.RequireAuth())
 
 			g.POST("/transfers", handleTransfer(app))
