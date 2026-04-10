@@ -158,7 +158,7 @@ func RegisterPaymentHooks(app core.App) {
 	app.OnServe().Bind(&hook.Handler[*core.ServeEvent]{
 		Id: "bankPaymentCallbacks",
 		Func: func(e *core.ServeEvent) error {
-			e.Router.POST("/webhooks/payments/callback", handlePaymentCallback(app)).
+			e.Router.POST("/v1/bank/webhooks/payments/callback", handlePaymentCallback(app)).
 				Bind(RequireHMACAuth())
 			return e.Next()
 		},

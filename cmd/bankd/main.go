@@ -91,15 +91,15 @@ func main() {
 	bank.RegisterRoutes(app)
 
 	app.OnServe().Bind(&hook.Handler[*core.ServeEvent]{
-		Id: "bankLegacyRoutes",
+		Id: "bankExtraRoutes",
 		Func: func(e *core.ServeEvent) error {
 			// Health endpoint (unauthenticated).
-			e.Router.GET("/health", func(re *core.RequestEvent) error {
+			e.Router.GET("/v1/bank/health", func(re *core.RequestEvent) error {
 				return re.JSON(http.StatusOK, map[string]string{"status": "ok"})
 			})
 
-			// Legacy account summary endpoint.
-			e.Router.GET("/api/v1/account/summary", func(re *core.RequestEvent) error {
+			// Account summary endpoint.
+			e.Router.GET("/v1/bank/account/summary", func(re *core.RequestEvent) error {
 				if re.Auth == nil {
 					return apis.NewUnauthorizedError("unauthorized", nil)
 				}
