@@ -27,10 +27,10 @@ We add domain-specific collections and hooks on top.
 
 ## Hooks
 
-- **CurrencyCloud webhooks** (`/webhooks/currencycloud/payment`,
-  `/webhooks/currencycloud/conversion`) -- receive payment/conversion status
-  updates and sync to transaction records.
-- **IFX settlement** (`/webhooks/ifx/settlement`) -- forex settlement
+- **CurrencyCloud webhooks** (`/v1/bank/webhooks/currencycloud/payment`,
+  `/v1/bank/webhooks/currencycloud/conversion`) -- receive payment/conversion
+  status updates and sync to transaction records.
+- **IFX settlement** (`/v1/bank/webhooks/ifx/settlement`) -- forex settlement
   notifications.
 - **Compliance** -- record-level hooks that block transactions on non-KYC
   accounts, prevent beneficiary verification on inactive accounts, and log
@@ -63,14 +63,16 @@ custom HTTP routes, and scheduled jobs.
 
 | Method | Path | Auth | Purpose |
 |--------|------|------|---------|
-| POST | /v1/transfers | JWT | Internal transfer between own accounts |
-| POST | /v1/payments/outbound | JWT | Payment to external beneficiary |
-| GET | /v1/accounts/{id}/balances | JWT | Multi-currency balance query |
-| POST | /v1/fx/quote | JWT | FX rate quote (proxied to forex service) |
-| POST | /v1/fx/execute | JWT | Execute FX conversion |
-| POST | /webhooks/payments/callback | Superuser | Payment status callback from forex service |
-| GET | /health | None | Health check |
-| GET | /api/v1/account/summary | JWT | Legacy account summary |
+| POST | /v1/bank/transfers | JWT | Internal transfer between own accounts |
+| POST | /v1/bank/payments/outbound | JWT | Payment to external beneficiary |
+| GET | /v1/bank/accounts/{id}/balances | JWT | Multi-currency balance query |
+| GET | /v1/bank/accounts/{id}/wallets | JWT | Wallet list per account |
+| GET | /v1/bank/accounts/{id}/transactions | JWT | Transaction history |
+| POST | /v1/bank/fx/quote | JWT | FX rate quote (proxied to forex service) |
+| POST | /v1/bank/fx/execute | JWT | Execute FX conversion |
+| POST | /v1/bank/webhooks/payments/callback | HMAC | Payment status callback from forex service |
+| GET | /v1/bank/health | None | Health check |
+| GET | /v1/bank/account/summary | JWT | Account summary |
 
 ### External Services (env vars)
 
@@ -130,7 +132,7 @@ All collections have explicit API rules set. `nil` = superuser only.
 - All create/update/delete = nil (superuser only; mutations via custom routes/hooks)
 
 ### Webhook HMAC Auth (F02)
-All webhook routes (`/webhooks/*`) now use HMAC-SHA256 signature validation
+All webhook routes (`/v1/bank/webhooks/*`) now use HMAC-SHA256 signature validation
 instead of RequireSuperuserAuth. Secret from `WEBHOOK_HMAC_SECRET` env var (KMS).
 Validates `X-Signature` header = hex(HMAC-SHA256(secret, body)).
 
@@ -196,7 +198,7 @@ The old NestJS bank uses these modules that map to our collections:
 - React 19, TypeScript 5.9, Vite 6, Tailwind CSS 4
 - React Router 7 for navigation
 - Fetch API only (no state management library)
-- Auth via Base `POST /api/collections/users/auth-with-password`
+- Auth via Base `POST /v1/base/collections/users/auth-with-password`
 
 ### Structure
 
@@ -234,16 +236,16 @@ VITE_BANK_API_URL=http://localhost:8070 pnpm dev
 
 | Endpoint | Page |
 |----------|------|
-| POST /api/collections/users/auth-with-password | Login |
-| GET /api/collections/accounts/records | Dashboard, Accounts |
-| GET /api/collections/transactions/records | Dashboard, Transactions |
-| GET /api/collections/beneficiaries/records | Beneficiaries, Payments |
-| GET /api/collections/documents/records | Documents |
-| POST /api/collections/documents/records | Documents (upload) |
-| GET /v1/accounts/{id}/balances | Dashboard, Accounts |
-| POST /v1/payments/outbound | Payments |
-| POST /v1/fx/quote | Conversions |
-| POST /v1/fx/execute | Conversions |
+| POST /v1/base/collections/users/auth-with-password | Login |
+| GET /v1/base/collections/accounts/records | Dashboard, Accounts |
+| GET /v1/base/collections/transactions/records | Dashboard, Transactions |
+| GET /v1/base/collections/beneficiaries/records | Beneficiaries, Payments |
+| GET /v1/base/collections/documents/records | Documents |
+| POST /v1/base/collections/documents/records | Documents (upload) |
+| GET /v1/bank/accounts/{id}/balances | Dashboard, Accounts |
+| POST /v1/bank/payments/outbound | Payments |
+| POST /v1/bank/fx/quote | Conversions |
+| POST /v1/bank/fx/execute | Conversions |
 
 ### Build
 
@@ -251,4 +253,4 @@ VITE_BANK_API_URL=http://localhost:8070 pnpm dev
 pnpm build        # Output: dist/ (~80 KB gzip)
 ```
 
-Vite dev server proxies `/api` and `/v1` to `VITE_BANK_API_URL` (default localhost:8070).
+Vite dev server proxies `/v1` to `VITE_BANK_API_URL` (default localhost:8070).

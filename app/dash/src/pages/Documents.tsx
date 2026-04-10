@@ -1,5 +1,4 @@
 import { useState, useRef, type DragEvent, type ChangeEvent } from 'react'
-import { createRecord, listRecords } from '@/api/client'
 import { StatusBadge } from '@/components/StatusBadge'
 import { formatDate } from '@/lib/format'
 import { useRecords } from '@/hooks/useRecords'
@@ -71,7 +70,7 @@ export function Documents() {
       const headers: Record<string, string> = {}
       if (token) headers['Authorization'] = `Bearer ${token}`
 
-      const res = await fetch(`${baseUrl}/api/collections/documents/records`, {
+      const res = await fetch(`${baseUrl}/v1/base/collections/documents/records`, {
         method: 'POST',
         headers,
         body: form,
