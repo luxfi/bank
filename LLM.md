@@ -1,7 +1,7 @@
-# bank-v2
+# bank
 
-Hanzo Base-powered banking backend, replacing the NestJS/MikroORM bank at
-`~/work/lux/bank/`.
+Hanzo Base-powered banking backend for Lux Financial (`lux.financial`).
+Replaced the NestJS/MikroORM v1 (archived at `~/archive/lux-retired-2026-04/bank-v1/`).
 
 ## Architecture
 
