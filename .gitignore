@@ -5,3 +5,17 @@ data/
 *.db-wal
 .env
 .env.local
+
+# hygiene (untrack node_modules, block common build output)
+node_modules/
+**/node_modules/
+.pnpm-store/
+dist/
+build/
+.next/
+coverage/
+playwright-report/
+test-results/
+*.log
+tmp/
+.DS_Store
