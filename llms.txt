@@ -1,0 +1,25 @@
+# Lux Finance
+
+> Decentralized finance (DeFi) hub for the Lux Network ecosystem.
+
+## About
+
+Lux Finance provides decentralized financial services built on Lux Network's post-quantum blockchain. Access lending, borrowing, yield farming, and liquidity protocols secured by quantum-resistant cryptography.
+
+## Key Features
+
+- Lending and borrowing protocols
+- Yield farming and liquidity mining
+- Post-quantum security for all DeFi operations
+- Sub-second transaction finality
+- Cross-chain DeFi via Lux Bridge Chain
+
+## Links
+
+- [Lux Network](https://lux.network)
+- [Documentation](https://docs.lux.network/defi)
+- [GitHub](https://github.com/luxfi)
+
+## Contact
+
+- https://lux.network
