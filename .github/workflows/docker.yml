@@ -1,0 +1,17 @@
+name: Docker
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, dev, test]
+    tags: ['v*']
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  docker:
+    uses: hanzoai/.github/.github/workflows/docker-build.yml@main
+    with:
+      image: ghcr.io/luxfi/bank
+    secrets: inherit
