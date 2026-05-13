@@ -1,6 +1,6 @@
 module github.com/luxfi/bank
 
-go 1.26.1
+go 1.26.3
 
 require github.com/hanzoai/base v0.39.0
 
