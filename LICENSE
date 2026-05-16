@@ -1,0 +1,122 @@
+Lux Ecosystem License
+Version 1.2, December 2025
+
+Copyright (c) 2020-2025 Lux Industries Inc.
+All rights reserved.
+
+TECHNOLOGY PORTFOLIO - PATENT APPLICATIONS PLANNED
+Contact: licensing@lux.network
+
+================================================================================
+                          TERMS AND CONDITIONS
+================================================================================
+
+1. DEFINITIONS
+
+   "Lux Primary Network" means the official Lux blockchain with Network ID=1
+   and EVM Chain ID=96369.
+   
+   "Authorized Network" means the Lux Primary Network, official testnets/devnets,
+   and any L1/L2/L3 chain descending from the Lux Primary Network.
+   
+   "Descending Chain" means an L1/L2/L3 chain built on, anchored to, or deriving
+   security from the Lux Primary Network or its authorized testnets.
+   
+   "Research Use" means non-commercial academic research, education, personal
+   study, or evaluation purposes.
+   
+   "Commercial Use" means any use in connection with a product or service
+   offered for sale or fee, internal use by a for-profit entity, or any use
+   to generate revenue.
+
+2. GRANT OF LICENSE
+
+   Subject to these terms, Lux Industries Inc grants you a non-exclusive,
+   royalty-free license to:
+   
+   (a) Use for Research Use without restriction;
+   
+   (b) Operate on the Lux Primary Network (Network ID=1, EVM Chain ID=96369);
+   
+   (c) Operate on official Lux testnets and devnets;
+   
+   (d) Operate L1/L2/L3 chains descending from the Lux Primary Network;
+   
+   (e) Build applications within the Lux ecosystem;
+   
+   (f) Contribute improvements back to the original repositories.
+
+3. RESTRICTIONS
+
+   Without a commercial license from Lux Industries Inc, you may NOT:
+   
+   (a) Fork the Lux Network or any Lux software;
+   
+   (b) Create competing networks not descending from Lux Primary Network;
+   
+   (c) Use for Commercial Use outside the Lux ecosystem;
+   
+   (d) Sublicense or transfer rights outside the Lux ecosystem;
+   
+   (e) Use to create competing blockchain networks, exchanges, custody
+       services, or cryptographic systems outside the Lux ecosystem.
+
+4. NO FORKS POLICY
+
+   Lux Industries Inc maintains ZERO TOLERANCE for unauthorized forks.
+   Any fork or deployment on an unauthorized network constitutes:
+   
+   (a) Breach of this license;
+   (b) Grounds for immediate legal action.
+
+5. RIGHTS RESERVATION
+
+   All rights not explicitly granted are reserved by Lux Industries Inc.
+   
+   We plan to apply for patent protection for the technology in this
+   repository. Any implementation outside the Lux ecosystem may require
+   a separate commercial license.
+
+6. DISCLAIMER OF WARRANTY
+
+   THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+
+7. LIMITATION OF LIABILITY
+
+   IN NO EVENT SHALL LUX INDUSTRIES INC BE LIABLE FOR ANY CLAIM, DAMAGES
+   OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE.
+
+8. TERMINATION
+
+   This license terminates immediately upon any breach, including but not
+   limited to deployment on unauthorized networks or creation of forks.
+
+9. GOVERNING LAW
+
+   This License shall be governed by the laws of the State of Delaware.
+
+10. COMMERCIAL LICENSING
+
+    For commercial use outside the Lux ecosystem:
+    
+    Lux Industries Inc.
+    Email: licensing@lux.network
+    Subject: Commercial License Request
+
+================================================================================
+                              TL;DR
+================================================================================
+
+- Research/academic use = OK
+- Lux Primary Network (Network ID=1, Chain ID=96369) = OK
+- L1/L2/L3 chains descending from Lux Primary Network = OK
+- Commercial products outside Lux ecosystem = Contact licensing@lux.network
+- Forks = Absolutely not
+
+================================================================================
+
+See LP-0012 for full licensing documentation:
+https://github.com/luxfi/lps/blob/main/LPs/lp-0012-ecosystem-licensing.md
