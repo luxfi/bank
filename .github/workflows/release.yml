@@ -33,8 +33,10 @@ jobs:
 
       - name: Install syft for SBOM
         run: |
+          mkdir -p "$HOME/.local/bin"
           curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh \
-            | sh -s -- -b /usr/local/bin
+            | sh -s -- -b "$HOME/.local/bin"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - uses: goreleaser/goreleaser-action@v6
         with:
