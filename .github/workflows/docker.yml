@@ -17,4 +17,4 @@ jobs:
       # Native multi-arch on lux-org ARC scale-sets — no QEMU.
       runner-amd64: lux-build-linux-amd64
       runner-arm64: lux-build-linux-arm64
-      runner-deploy: lux-deploy-linux-amd64
+      runner-deploy: lux-build-linux-amd64
