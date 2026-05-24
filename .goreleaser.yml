@@ -1,0 +1,63 @@
+# goreleaser config for bankd.
+#
+# Triggered by the release workflow on `v*` tag push. Builds native
+# binaries for all six policy platforms, produces tarballs + zips +
+# checksums + SBOM, and attaches them to the GitHub Release.
+#
+# Container images are built separately by `.github/workflows/docker.yml`
+# (native multi-arch via hanzoai/.github reusable workflow).
+
+version: 2
+
+project_name: bankd
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: bankd
+    main: ./cmd/bankd
+    binary: bankd
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}}
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+
+archives:
+  - id: bankd
+    builds: [bankd]
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - LICENSE*
+      - README*
+
+checksum:
+  name_template: checksums.txt
+
+sboms:
+  - artifacts: archive
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  use: github
+  sort: asc
+
+release:
+  draft: false
+  prerelease: auto
+  mode: append

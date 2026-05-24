@@ -261,11 +261,17 @@ func routeToForex(app core.App, record *core.Record) {
 	}
 }
 
-// paymentCallbackPayload is the expected shape from the forex/payment service.
+// paymentCallbackPayload is the normalized shape forexd POSTs here for any
+// provider webhook. TransactionID resolves an internal record by id;
+// ExternalID resolves by the provider-issued reference stored in
+// ccTransactionId. Exactly one must be set.
 type paymentCallbackPayload struct {
-	TransactionID string `json:"transactionId"`
-	Status        string `json:"status"` // completed, failed, processing
-	Reason        string `json:"reason"`
+	TransactionID string `json:"transactionId,omitempty"`
+	ExternalID    string `json:"externalId,omitempty"`
+	Provider      string `json:"provider,omitempty"`
+	EventType     string `json:"eventType,omitempty"`
+	Status        string `json:"status"`
+	Reason        string `json:"reason,omitempty"`
 }
 
 func handlePaymentCallback(app core.App) func(*core.RequestEvent) error {
@@ -274,11 +280,11 @@ func handlePaymentCallback(app core.App) func(*core.RequestEvent) error {
 		if err := e.BindBody(&p); err != nil {
 			return e.JSON(http.StatusBadRequest, map[string]string{"error": "invalid payload"})
 		}
-		if p.TransactionID == "" {
-			return e.JSON(http.StatusBadRequest, map[string]string{"error": "missing transactionId"})
+		if p.TransactionID == "" && p.ExternalID == "" {
+			return e.JSON(http.StatusBadRequest, map[string]string{"error": "missing transactionId or externalId"})
 		}
 
-		record, err := app.FindRecordById(collections.TransactionCollectionName, p.TransactionID)
+		record, err := lookupTransaction(app, p.TransactionID, p.ExternalID)
 		if err != nil {
 			// Return 200 so the caller does not retry unknown transactions.
 			return e.JSON(http.StatusOK, map[string]string{"status": "ignored"})
@@ -315,9 +321,24 @@ func mapCallbackStatus(s string) string {
 		return "completed"
 	case "failed", "rejected":
 		return "failed"
+	case "cancelled", "canceled":
+		return "cancelled"
 	case "processing", "in_progress":
 		return "processing"
 	default:
 		return "pending"
 	}
+}
+
+// lookupTransaction resolves a transaction record by internal id or by the
+// provider-issued external id stored in the ccTransactionId column.
+func lookupTransaction(app core.App, internalID, externalID string) (*core.Record, error) {
+	if internalID != "" {
+		return app.FindRecordById(collections.TransactionCollectionName, internalID)
+	}
+	return app.FindFirstRecordByFilter(
+		collections.TransactionCollectionName,
+		"ccTransactionId = {:extId}",
+		map[string]any{"extId": externalID},
+	)
 }
