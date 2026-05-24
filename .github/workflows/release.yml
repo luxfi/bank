@@ -1,0 +1,45 @@
+name: Release
+
+# Native binary release for bankd on `v*` tags.
+#
+# Six-platform matrix (linux/darwin/windows × amd64/arm64) via goreleaser.
+# Container image is built independently by .github/workflows/docker.yml
+# (native multi-arch ARC runners — NO QEMU).
+#
+# Runner labels: lux-build self-hosted ARC scale-sets per the org policy.
+# GitHub-hosted runners are NOT a permitted fallback.
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+
+jobs:
+  goreleaser:
+    runs-on: lux-build
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Install syft for SBOM
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh \
+            | sh -s -- -b /usr/local/bin
+
+      - uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser
+          version: "~> v2"
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -75,7 +75,6 @@ func main() {
 
 	// ---- hooks ----
 
-	hooks.RegisterCurrencyCloudWebhooks(app)
 	hooks.RegisterComplianceHooks(app)
 	hooks.RegisterPaymentHooks(app)
 	hooks.RegisterAccountHooks(app)
