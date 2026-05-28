@@ -3,16 +3,26 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/hanzoai/base"
 	"github.com/hanzoai/base/apis"
 	"github.com/hanzoai/base/core"
 	"github.com/hanzoai/base/plugins/migratecmd"
+	"github.com/hanzoai/base/plugins/platform"
 	"github.com/hanzoai/base/tools/hook"
 	bank "github.com/luxfi/bank"
 	"github.com/luxfi/bank/collections"
 	"github.com/luxfi/bank/hooks"
 )
+
+// envOr returns the env value or fallback if unset / empty.
+func envOr(key, fallback string) string {
+	if v := os.Getenv(key); v != "" {
+		return v
+	}
+	return fallback
+}
 
 func main() {
 	app := base.New()
@@ -41,6 +51,22 @@ func main() {
 		TemplateLang: migratecmd.TemplateLangGo,
 		Automigrate:  automigrate,
 		Dir:          migrationsDir,
+	})
+
+	// Hanzo Platform plugin — wires Lux IAM (lux.id) for OIDC SSO and
+	// activates per-principal SQLite isolation (one encrypted DB per org/user).
+	// Defaults pin the Lux brand; every value overridable via env.
+	platform.MustRegister(app, platform.PlatformConfig{
+		IAMEndpoint:        envOr("IAM_ENDPOINT", "https://lux.id"),
+		KMSEndpoint:        envOr("KMS_ENDPOINT", "https://kms.lux.network"),
+		IAMClientID:        envOr("IAM_CLIENT_ID", "lux-bankd"),
+		IAMClientSecret:    os.Getenv("IAM_CLIENT_SECRET"),
+		IAMOrg:             envOr("IAM_ORG", "lux"),
+		IAMApp:             envOr("IAM_APP", "lux-bankd"),
+		PrincipalIsolation: envOr("PRINCIPAL_ISOLATION", "sqlite"),
+		PrincipalEncryptionKey: os.Getenv("PRINCIPAL_ENCRYPTION_KEY"),
+		OrgStorageEndpoint: os.Getenv("ORG_STORAGE_ENDPOINT"),
+		OrgStorageBucket:   envOr("ORG_STORAGE_BUCKET", "orgs"),
 	})
 
 	// ---- collections ----
