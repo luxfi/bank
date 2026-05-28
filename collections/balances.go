@@ -13,7 +13,7 @@ func EnsureBalanceCollection(app core.App) error {
 		return nil
 	}
 
-	c := core.NewBaseCollection(BalanceCollectionName)
+	c := core.NewBaseCollection(BalanceCollectionName, BalanceCollectionName)
 
 	// API rules: all nil — superuser only. Balances are read via custom routes.
 

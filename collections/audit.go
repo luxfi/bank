@@ -13,7 +13,7 @@ func EnsureAuditCollection(app core.App) error {
 		return nil
 	}
 
-	c := core.NewBaseCollection(AuditCollectionName)
+	c := core.NewBaseCollection(AuditCollectionName, AuditCollectionName)
 
 	// API rules: all nil — superuser only. Audit log is not user-accessible.
 

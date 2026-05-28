@@ -10,7 +10,7 @@ func EnsureWalletCollection(app core.App) error {
 		return nil
 	}
 
-	c := core.NewBaseCollection(WalletCollectionName)
+	c := core.NewBaseCollection(WalletCollectionName, WalletCollectionName)
 
 	c.Fields.Add(
 		&core.RelationField{
