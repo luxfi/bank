@@ -10,7 +10,7 @@ func EnsureConversionCollection(app core.App) error {
 		return nil
 	}
 
-	c := core.NewBaseCollection(ConversionCollectionName)
+	c := core.NewBaseCollection(ConversionCollectionName, ConversionCollectionName)
 
 	c.Fields.Add(
 		&core.RelationField{

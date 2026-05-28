@@ -10,7 +10,7 @@ func EnsureDocumentCollection(app core.App) error {
 		return nil
 	}
 
-	c := core.NewBaseCollection(DocumentCollectionName)
+	c := core.NewBaseCollection(DocumentCollectionName, DocumentCollectionName)
 
 	c.Fields.Add(
 		&core.RelationField{
