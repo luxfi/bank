@@ -57,16 +57,16 @@ func main() {
 	// activates per-principal SQLite isolation (one encrypted DB per org/user).
 	// Defaults pin the Lux brand; every value overridable via env.
 	platform.MustRegister(app, platform.PlatformConfig{
-		IAMEndpoint:        envOr("IAM_ENDPOINT", "https://lux.id"),
-		KMSEndpoint:        envOr("KMS_ENDPOINT", "https://kms.lux.network"),
-		IAMClientID:        envOr("IAM_CLIENT_ID", "lux-bankd"),
-		IAMClientSecret:    os.Getenv("IAM_CLIENT_SECRET"),
-		IAMOrg:             envOr("IAM_ORG", "lux"),
-		IAMApp:             envOr("IAM_APP", "lux-bankd"),
-		PrincipalIsolation: envOr("PRINCIPAL_ISOLATION", "sqlite"),
+		IAMEndpoint:            envOr("IAM_ENDPOINT", "https://lux.id"),
+		KMSEndpoint:            envOr("KMS_ENDPOINT", "https://kms.lux.network"),
+		IAMClientID:            envOr("IAM_CLIENT_ID", "lux-bankd"),
+		IAMClientSecret:        os.Getenv("IAM_CLIENT_SECRET"),
+		IAMOrg:                 envOr("IAM_ORG", "lux"),
+		IAMApp:                 envOr("IAM_APP", "lux-bankd"),
+		PrincipalIsolation:     envOr("PRINCIPAL_ISOLATION", "sqlite"),
 		PrincipalEncryptionKey: os.Getenv("PRINCIPAL_ENCRYPTION_KEY"),
-		OrgStorageEndpoint: os.Getenv("ORG_STORAGE_ENDPOINT"),
-		OrgStorageBucket:   envOr("ORG_STORAGE_BUCKET", "orgs"),
+		OrgStorageEndpoint:     os.Getenv("ORG_STORAGE_ENDPOINT"),
+		OrgStorageBucket:       envOr("ORG_STORAGE_BUCKET", "orgs"),
 	})
 
 	// ---- collections ----

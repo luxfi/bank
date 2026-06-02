@@ -38,8 +38,8 @@ var volumeDiscounts = []struct {
 	threshold int64
 	discount  int64
 }{
-	{100_000_00, 5},  // > $100k/mo → 5bp off
-	{500_000_00, 10}, // > $500k/mo → 10bp off
+	{100_000_00, 5},    // > $100k/mo → 5bp off
+	{500_000_00, 10},   // > $500k/mo → 10bp off
 	{1_000_000_00, 15}, // > $1M/mo → 15bp off
 }
 
