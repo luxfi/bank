@@ -8,7 +8,7 @@ on:
     - main
 jobs:
   test:
-    runs-on: lux-build-linux-amd64
+    runs-on: [self-hosted, linux, amd64]
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-go@v5
