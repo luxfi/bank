@@ -4,6 +4,7 @@ import { Layout } from '@/components/Layout'
 import { Landing } from '@/pages/Landing'
 import { Login } from '@/pages/Login'
 import { Signup } from '@/pages/Signup'
+import { Callback } from '@/pages/Callback'
 import { Dashboard } from '@/pages/Dashboard'
 import { Accounts } from '@/pages/Accounts'
 import { Transactions } from '@/pages/Transactions'
@@ -13,8 +14,9 @@ import { Conversions } from '@/pages/Conversions'
 import { Documents } from '@/pages/Documents'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { token } = useAuth()
-  if (!token) return <Navigate to="/login" replace />
+  const { isAuthenticated, isLoading } = useAuth()
+  if (isLoading) return <div className="grid h-full place-items-center text-sm text-gray-500">Loading…</div>
+  if (!isAuthenticated) return <Navigate to="/login" replace />
   return <>{children}</>
 }
 
@@ -26,6 +28,7 @@ export function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/callback" element={<Callback />} />
           <Route
             path="/app"
             element={

@@ -7,6 +7,12 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: { '@': resolve(__dirname, 'src') },
+    // @hanzo/iam ships its own React; dedupe so hooks share one instance
+    // (otherwise: "Invalid hook call — more than one copy of React").
+    dedupe: ['react', 'react-dom'],
+  },
+  optimizeDeps: {
+    include: ['@hanzo/iam/browser', '@hanzo/iam/react'],
   },
   server: {
     port: 3000,

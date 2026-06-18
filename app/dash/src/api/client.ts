@@ -1,13 +1,14 @@
+import { IAM_TOKEN_KEY } from '@/lib/iam'
+
 const BASE_URL = import.meta.env.VITE_BANK_API_URL || ''
 
-let authToken: string | null = null
-
-export function setToken(token: string | null) {
-  authToken = token
-}
-
+// The IAM SDK owns the access token (sessionStorage). The client only reads it.
 export function getToken(): string | null {
-  return authToken
+  try {
+    return sessionStorage.getItem(IAM_TOKEN_KEY)
+  } catch {
+    return null
+  }
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
@@ -15,14 +16,14 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     'Content-Type': 'application/json',
     ...(init?.headers as Record<string, string>),
   }
-  if (authToken) {
-    headers['Authorization'] = `Bearer ${authToken}`
+  const token = getToken()
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`
   }
 
   const res = await fetch(`${BASE_URL}${path}`, { ...init, headers })
 
   if (res.status === 401 || res.status === 403) {
-    setToken(null)
     window.location.href = '/login'
     throw new Error('Unauthorized')
   }
@@ -37,50 +38,10 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 // -- Auth --
-
-export interface AuthResponse {
-  token: string
-  record: Record<string, unknown>
-}
-
-// Auth is native Hanzo IAM (lux.id): the bank runs the Base `platform` plugin
-// with IAM as the only auth source, so login/signup go through the IAM proxy
-// (/v1/platform/auth/*), never Base's local password routes. The returned JWT
-// is validated by Base against IAM's JWKS on every request.
-type IAMAuth = { token?: string; accessToken?: string; access_token?: string; record?: Record<string, unknown>; user?: Record<string, unknown> }
-
-function normalizeAuth(d: IAMAuth): AuthResponse {
-  const token = d.token || d.accessToken || d.access_token || ''
-  return { token, record: (d.record || d.user || {}) as Record<string, unknown> }
-}
-
-export async function login(email: string, password: string): Promise<AuthResponse> {
-  const data = normalizeAuth(
-    await request<IAMAuth>('/v1/platform/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({ identity: email, email, password }),
-    }),
-  )
-  setToken(data.token)
-  return data
-}
-
-// signup registers a new customer via IAM, then authenticates them. The caller
-// then runs onboard() to provision their account, balance, and crypto wallet.
-export async function signup(email: string, password: string, name: string): Promise<AuthResponse> {
-  const data = normalizeAuth(
-    await request<IAMAuth>('/v1/platform/auth/signup', {
-      method: 'POST',
-      body: JSON.stringify({ email, password, name }),
-    }),
-  )
-  if (data.token) {
-    setToken(data.token)
-    return data
-  }
-  // Some IAM configs separate registration from session issuance.
-  return login(email, password)
-}
+//
+// Sign-in / sign-up are owned entirely by the IAM SDK (@hanzo/iam, OIDC+PKCE
+// against lux.id) — see lib/iam.ts. There are no password endpoints here; the
+// SDK stores the JWT, which getToken() reads and bankd validates via JWKS.
 
 // onboard provisions the signed-in customer: a multi-currency account, its
 // opening balance, and a non-custodial MPC crypto wallet. Idempotent.
@@ -88,9 +49,6 @@ export async function onboard(): Promise<{ account: Record<string, unknown>; wal
   return request('/v1/bank/onboard', { method: 'POST', body: JSON.stringify({}) })
 }
 
-export function logout() {
-  setToken(null)
-}
 
 // -- Collection CRUD --
 
@@ -233,7 +191,8 @@ export async function uploadFile(
   form.append(field, file)
 
   const headers: Record<string, string> = {}
-  if (authToken) headers['Authorization'] = `Bearer ${authToken}`
+  const token = getToken()
+  if (token) headers['Authorization'] = `Bearer ${token}`
 
   const res = await fetch(
     `${BASE_URL}/v1/collections/${collection}/records/${id}`,
