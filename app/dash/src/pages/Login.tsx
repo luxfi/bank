@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
-import { useNavigate } from 'react-router'
+import { useNavigate, Link } from 'react-router'
 import { useAuth } from '@/hooks/useAuth'
+import { Wordmark } from '@/components/Brand'
 
 export function Login() {
   const { token, login } = useAuth()
@@ -12,7 +13,7 @@ export function Login() {
 
   // Already logged in.
   if (token) {
-    navigate('/', { replace: true })
+    navigate('/app', { replace: true })
     return null
   }
 
@@ -22,7 +23,7 @@ export function Login() {
     setLoading(true)
     try {
       await login(email, password)
-      navigate('/', { replace: true })
+      navigate('/app', { replace: true })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed')
     } finally {
@@ -36,6 +37,9 @@ export function Login() {
         onSubmit={handleSubmit}
         className="w-full max-w-sm space-y-4 rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900"
       >
+        <Link to="/" className="inline-flex text-lg">
+          <Wordmark />
+        </Link>
         <h1 className="text-xl font-semibold">Sign in</h1>
 
         {error && (

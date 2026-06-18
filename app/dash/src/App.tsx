@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router'
 import { AuthProvider, useAuth } from '@/hooks/useAuth'
 import { Layout } from '@/components/Layout'
+import { Landing } from '@/pages/Landing'
 import { Login } from '@/pages/Login'
 import { Dashboard } from '@/pages/Dashboard'
 import { Accounts } from '@/pages/Accounts'
@@ -21,8 +22,10 @@ export function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
+          <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route
+            path="/app"
             element={
               <ProtectedRoute>
                 <Layout />

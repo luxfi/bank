@@ -1,15 +1,16 @@
 import { useState } from 'react'
-import { NavLink, Outlet } from 'react-router'
+import { NavLink, Outlet, Link, useNavigate } from 'react-router'
 import { useAuth } from '@/hooks/useAuth'
+import { Wordmark } from '@/components/Brand'
 
 const nav = [
-  { to: '/', label: 'Dashboard' },
-  { to: '/accounts', label: 'Accounts' },
-  { to: '/transactions', label: 'Transactions' },
-  { to: '/payments', label: 'Payments' },
-  { to: '/conversions', label: 'Conversions' },
-  { to: '/beneficiaries', label: 'Beneficiaries' },
-  { to: '/documents', label: 'Documents' },
+  { to: '/app', label: 'Dashboard' },
+  { to: '/app/accounts', label: 'Accounts' },
+  { to: '/app/transactions', label: 'Transactions' },
+  { to: '/app/payments', label: 'Payments' },
+  { to: '/app/conversions', label: 'Conversions' },
+  { to: '/app/beneficiaries', label: 'Beneficiaries' },
+  { to: '/app/documents', label: 'Documents' },
 ] as const
 
 function linkClass({ isActive }: { isActive: boolean }) {
@@ -22,9 +23,15 @@ function linkClass({ isActive }: { isActive: boolean }) {
 
 export function Layout() {
   const { user, logout } = useAuth()
+  const navigate = useNavigate()
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const email = (user?.email as string) || ''
+
+  function signOut() {
+    logout()
+    navigate('/', { replace: true })
+  }
 
   return (
     <div className="flex h-full">
@@ -43,14 +50,16 @@ export function Layout() {
         }`}
       >
         <div className="flex h-14 items-center border-b border-gray-200 px-4 dark:border-gray-800">
-          <span className="text-lg font-semibold">Bank</span>
+          <Link to="/app" className="text-lg">
+            <Wordmark />
+          </Link>
         </div>
         <nav className="flex-1 space-y-1 overflow-y-auto p-3">
           {nav.map((n) => (
             <NavLink
               key={n.to}
               to={n.to}
-              end={n.to === '/'}
+              end={n.to === '/app'}
               className={linkClass}
               onClick={() => setSidebarOpen(false)}
             >
@@ -61,7 +70,7 @@ export function Layout() {
         <div className="border-t border-gray-200 p-3 dark:border-gray-800">
           <p className="truncate text-xs text-gray-500 dark:text-gray-400">{email}</p>
           <button
-            onClick={logout}
+            onClick={signOut}
             className="mt-2 w-full rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
           >
             Sign out
@@ -81,7 +90,7 @@ export function Layout() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
-          <span className="text-lg font-semibold">Bank</span>
+          <Wordmark className="text-lg" />
         </header>
         <main className="flex-1 overflow-y-auto p-4 md:p-6">
           <Outlet />
