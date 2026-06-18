@@ -70,7 +70,7 @@ export function Documents() {
       const headers: Record<string, string> = {}
       if (token) headers['Authorization'] = `Bearer ${token}`
 
-      const res = await fetch(`${baseUrl}/v1/base/collections/documents/records`, {
+      const res = await fetch(`${baseUrl}/v1/collections/documents/records`, {
         method: 'POST',
         headers,
         body: form,

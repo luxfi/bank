@@ -96,6 +96,20 @@ func main() {
 			}
 		}
 
+		// Allow public customer self-signup on the built-in users auth
+		// collection (createRule = "" → anyone). Identity is still Hanzo IAM
+		// (lux.id) via the platform plugin for SSO; this enables direct
+		// email/password registration for the consumer bank.
+		if users, err := app.FindCollectionByNameOrId("users"); err == nil {
+			anyone := ""
+			if users.CreateRule == nil || *users.CreateRule != anyone {
+				users.CreateRule = &anyone
+				if err := app.Save(users); err != nil {
+					app.Logger().Error("users: failed to open self-signup", "err", err)
+				}
+			}
+		}
+
 		return nil
 	})
 
@@ -162,6 +176,66 @@ func main() {
 				}
 
 				return re.JSON(http.StatusOK, result)
+			}).Bind(apis.RequireAuth())
+
+			// Customer self-onboarding: provision a multi-currency account
+			// (its opening balance is auto-created by the account hook) and a
+			// non-custodial MPC crypto wallet. Idempotent — safe to retry.
+			e.Router.POST("/v1/bank/onboard", func(re *core.RequestEvent) error {
+				if re.Auth == nil {
+					return apis.NewUnauthorizedError("unauthorized", nil)
+				}
+				uid := re.Auth.Id
+
+				// Already onboarded? Return the existing account + wallet.
+				if existing, _ := app.FindRecordsByFilter(collections.AccountCollectionName, "owner = {:u}", "-created", 1, 0, map[string]any{"u": uid}); len(existing) > 0 {
+					acct := existing[0]
+					var wallet *core.Record
+					if ws, _ := app.FindRecordsByFilter(collections.WalletCollectionName, "account = {:a}", "-created", 1, 0, map[string]any{"a": acct.Id}); len(ws) > 0 {
+						wallet = ws[0]
+					}
+					return re.JSON(http.StatusOK, map[string]any{"account": acct, "wallet": wallet})
+				}
+
+				name := re.Auth.GetString("name")
+				if name == "" {
+					name = re.Auth.GetString("email")
+				}
+
+				acctColl, err := app.FindCollectionByNameOrId(collections.AccountCollectionName)
+				if err != nil {
+					return apis.NewBadRequestError("accounts collection missing", err)
+				}
+				acct := core.NewRecord(acctColl)
+				acct.Set("owner", uid)
+				acct.Set("entityName", name)
+				acct.Set("entityType", "individual")
+				acct.Set("country", "US")
+				acct.Set("currency", "USD")
+				acct.Set("status", "active")
+				acct.Set("kycStatus", "approved") // demo: auto-approve so the customer can transact immediately
+				if err := app.Save(acct); err != nil {
+					return apis.NewBadRequestError("failed to open account", err)
+				}
+
+				// Non-custodial crypto wallet. The address/key is produced by
+				// threshold MPC keygen (same pattern as ats/cmd/mpc-provision);
+				// until the MPC client is wired here the wallet is created in
+				// "provisioning" state and keyed to the principal.
+				var wallet *core.Record
+				if walletColl, err := app.FindCollectionByNameOrId(collections.WalletCollectionName); err == nil {
+					wallet = core.NewRecord(walletColl)
+					wallet.Set("account", acct.Id)
+					wallet.Set("currency", "USDC")
+					wallet.Set("status", "provisioning")
+					wallet.Set("walletId", "mpc:"+uid)
+					if err := app.Save(wallet); err != nil {
+						app.Logger().Error("onboard: wallet provisioning deferred", "err", err)
+						wallet = nil
+					}
+				}
+
+				return re.JSON(http.StatusOK, map[string]any{"account": acct, "wallet": wallet})
 			}).Bind(apis.RequireAuth())
 
 			return e.Next()

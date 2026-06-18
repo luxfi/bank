@@ -43,16 +43,49 @@ export interface AuthResponse {
   record: Record<string, unknown>
 }
 
+// Auth is native Hanzo IAM (lux.id): the bank runs the Base `platform` plugin
+// with IAM as the only auth source, so login/signup go through the IAM proxy
+// (/v1/platform/auth/*), never Base's local password routes. The returned JWT
+// is validated by Base against IAM's JWKS on every request.
+type IAMAuth = { token?: string; accessToken?: string; access_token?: string; record?: Record<string, unknown>; user?: Record<string, unknown> }
+
+function normalizeAuth(d: IAMAuth): AuthResponse {
+  const token = d.token || d.accessToken || d.access_token || ''
+  return { token, record: (d.record || d.user || {}) as Record<string, unknown> }
+}
+
 export async function login(email: string, password: string): Promise<AuthResponse> {
-  const data = await request<AuthResponse>(
-    '/v1/base/collections/users/auth-with-password',
-    {
+  const data = normalizeAuth(
+    await request<IAMAuth>('/v1/platform/auth/login', {
       method: 'POST',
-      body: JSON.stringify({ identity: email, password }),
-    },
+      body: JSON.stringify({ identity: email, email, password }),
+    }),
   )
   setToken(data.token)
   return data
+}
+
+// signup registers a new customer via IAM, then authenticates them. The caller
+// then runs onboard() to provision their account, balance, and crypto wallet.
+export async function signup(email: string, password: string, name: string): Promise<AuthResponse> {
+  const data = normalizeAuth(
+    await request<IAMAuth>('/v1/platform/auth/signup', {
+      method: 'POST',
+      body: JSON.stringify({ email, password, name }),
+    }),
+  )
+  if (data.token) {
+    setToken(data.token)
+    return data
+  }
+  // Some IAM configs separate registration from session issuance.
+  return login(email, password)
+}
+
+// onboard provisions the signed-in customer: a multi-currency account, its
+// opening balance, and a non-custodial MPC crypto wallet. Idempotent.
+export async function onboard(): Promise<{ account: Record<string, unknown>; wallet: Record<string, unknown> }> {
+  return request('/v1/bank/onboard', { method: 'POST', body: JSON.stringify({}) })
 }
 
 export function logout() {
@@ -92,7 +125,7 @@ export async function listRecords<T = Record<string, unknown>>(
   collection: string,
   params?: ListParams,
 ): Promise<ListResult<T>> {
-  return request(`/v1/base/collections/${collection}/records${buildQuery(params)}`)
+  return request(`/v1/collections/${collection}/records${buildQuery(params)}`)
 }
 
 export async function getRecord<T = Record<string, unknown>>(
@@ -101,14 +134,14 @@ export async function getRecord<T = Record<string, unknown>>(
   expand?: string,
 ): Promise<T> {
   const q = expand ? `?expand=${encodeURIComponent(expand)}` : ''
-  return request(`/v1/base/collections/${collection}/records/${id}${q}`)
+  return request(`/v1/collections/${collection}/records/${id}${q}`)
 }
 
 export async function createRecord<T = Record<string, unknown>>(
   collection: string,
   data: Record<string, unknown>,
 ): Promise<T> {
-  return request(`/v1/base/collections/${collection}/records`, {
+  return request(`/v1/collections/${collection}/records`, {
     method: 'POST',
     body: JSON.stringify(data),
   })
@@ -119,14 +152,14 @@ export async function updateRecord<T = Record<string, unknown>>(
   id: string,
   data: Record<string, unknown>,
 ): Promise<T> {
-  return request(`/v1/base/collections/${collection}/records/${id}`, {
+  return request(`/v1/collections/${collection}/records/${id}`, {
     method: 'PATCH',
     body: JSON.stringify(data),
   })
 }
 
 export async function deleteRecord(collection: string, id: string): Promise<void> {
-  return request(`/v1/base/collections/${collection}/records/${id}`, {
+  return request(`/v1/collections/${collection}/records/${id}`, {
     method: 'DELETE',
   })
 }
@@ -203,7 +236,7 @@ export async function uploadFile(
   if (authToken) headers['Authorization'] = `Bearer ${authToken}`
 
   const res = await fetch(
-    `${BASE_URL}/v1/base/collections/${collection}/records/${id}`,
+    `${BASE_URL}/v1/collections/${collection}/records/${id}`,
     { method: 'PATCH', headers, body: form },
   )
 
