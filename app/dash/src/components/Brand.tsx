@@ -1,5 +1,5 @@
-// Lux brand mark — the canonical downward triangle (▼) that stands in for the
-// "L" in Lux. Geometry matches the luxfi mark (apex down). Black/white only;
+// Lux brand mark — the canonical downward triangle (▼). The triangle alone IS
+// the mark; we do NOT spell "Lux" by gluing "ux" onto it. Black/white only;
 // the triangle inherits currentColor so it themes with its container.
 
 export function Triangle({ className = 'h-6 w-6' }: { className?: string }) {
@@ -10,21 +10,21 @@ export function Triangle({ className = 'h-6 w-6' }: { className?: string }) {
   )
 }
 
-// Wordmark: the ▼ triangle followed by "ux", reading as "Lux". `financial`
-// appends the product word. Used in the nav, login, and app shell.
+// Brand lockup: the ▼ mark followed by the plain product name. `label={null}`
+// renders the mark alone (e.g. a compact nav). No "ux" glyph trickery.
 export function Wordmark({
   className = '',
-  mark = 'h-[1em] w-[1em]',
-  financial = true,
+  mark = 'h-[1.1em] w-[1.1em]',
+  label = 'Lux Financial' as string | null,
 }: {
   className?: string
   mark?: string
-  financial?: boolean
+  label?: string | null
 }) {
   return (
-    <span className={`inline-flex items-baseline font-semibold tracking-tight ${className}`}>
-      <Triangle className={`${mark} translate-y-[0.12em]`} />
-      <span>ux{financial ? <span className="font-normal opacity-80">&nbsp;Financial</span> : null}</span>
+    <span className={`inline-flex items-center gap-2 font-semibold tracking-tight ${className}`}>
+      <Triangle className={mark} />
+      {label ? <span>{label}</span> : null}
     </span>
   )
 }
