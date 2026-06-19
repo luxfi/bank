@@ -3,15 +3,16 @@
 // transparent proxy to lux.id, so discovery, authorize, token, and jwks all
 // resolve under this origin (no CORS, no hand-rolled OAuth).
 //
-// The IAM app is `lux-bankd` (org `lux`); its redirect URI must be registered
-// at lux.id as `${origin}/callback`.
+// The IAM app is `lux-bank` (<org>-<app> = lux + bank; `bankd` is just the
+// daemon binary). Its redirect URI must be registered at lux.id as
+// `${origin}/callback`.
 import type { IAMConfig } from '@hanzo/iam/browser'
 
 const origin = typeof window !== 'undefined' ? window.location.origin : 'https://lux.financial'
 
 export const IAM_CONFIG: IAMConfig = {
   serverUrl: `${origin}/v1/iam`,
-  clientId: 'lux-bankd',
+  clientId: 'lux-bank',
   redirectUri: `${origin}/callback`,
   scope: 'openid profile email',
   // Discovery advertises lux.id token/userinfo (cross-origin → browser CORS).

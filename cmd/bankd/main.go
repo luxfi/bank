@@ -59,10 +59,10 @@ func main() {
 	platform.MustRegister(app, platform.PlatformConfig{
 		IAMEndpoint:            envOr("IAM_ENDPOINT", "https://lux.id"),
 		KMSEndpoint:            envOr("KMS_ENDPOINT", "https://kms.lux.network"),
-		IAMClientID:            envOr("IAM_CLIENT_ID", "lux-bankd"),
+		IAMClientID:            envOr("IAM_CLIENT_ID", "lux-bank"),
 		IAMClientSecret:        os.Getenv("IAM_CLIENT_SECRET"),
 		IAMOrg:                 envOr("IAM_ORG", "lux"),
-		IAMApp:                 envOr("IAM_APP", "lux-bankd"),
+		IAMApp:                 envOr("IAM_APP", "lux-bank"),
 		PrincipalIsolation:     envOr("PRINCIPAL_ISOLATION", "sqlite"),
 		PrincipalEncryptionKey: os.Getenv("PRINCIPAL_ENCRYPTION_KEY"),
 		OrgStorageEndpoint:     os.Getenv("ORG_STORAGE_ENDPOINT"),
