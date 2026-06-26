@@ -265,10 +265,10 @@ export default function PendingPaymentDetails() {
 const StatusTag = styled.span`
     display: flex;
     border-radius: 8px;
-    border: 1px solid #f7bebe;
+    border: 1px solid #CACACA;
     padding: 0.3rem 0.7rem;
-    background-color: #fff5f5;
-    color: #751d1d;
+    background-color: #F7F7F7;
+    color: #303030;
     font-size: 12px;
 `;
 
@@ -278,7 +278,7 @@ const Wrapper = styled.div`
     gap: 1rem;
 
     .subtitle {
-        color: #0f244da3;
+        color: #222222A3;
         font-size: 12px;
     }
 `;
@@ -295,13 +295,13 @@ const List = styled.table`
         display: flex;
         align-items: center;
         padding: 0 1rem;
-        color: #0b1936;
+        color: #181818;
     }
 
     tr {
         height: 28px;
         justify-content: space-between;
-        background-color: #f5f8ff;
+        background-color: #F8F8F8;
     }
 
     .title {

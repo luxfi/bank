@@ -176,7 +176,7 @@ export default function Login() {
                             marginTop: "20px",
                             display: "block",
                             fontWeight: "bold",
-                            color: "#1E3456",
+                            color: "#323232",
                         }}
                         onClick={showModal}
                     >
@@ -325,7 +325,7 @@ const TitleContainer = styled.div`
     align-items: flex-start;
 
     h1 {
-        color: #1e3456;
+        color: #323232;
         margin: 0;
         padding: 0;
         font-size: 32px;
@@ -333,7 +333,7 @@ const TitleContainer = styled.div`
     }
 
     h4 {
-        color: #516686;
+        color: #646464;
         margin-bottom: 2rem;
     }
 `;
@@ -342,7 +342,7 @@ const RequestRegistrationContainer = styled.div`
     gap: 0.5rem;
     justify-content: center;
     margin-top: 1rem;
-    color: #1e3456;
+    color: #323232;
 `;
 
 const BackButtonContainer = styled.div`

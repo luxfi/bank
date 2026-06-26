@@ -113,7 +113,7 @@ export default function ClientSelector() {
                 <ModalContentContainer>
                     <h2>Changing data for {`${selectdClient}`}</h2>
                     <Spinner
-                        color="#F49C0E"
+                        color="#A4A4A4"
                         style={{ width: "40px", height: "40px", margin: "0" }}
                     />
                     <span>Loading information ...</span>

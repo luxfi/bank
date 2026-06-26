@@ -63,7 +63,7 @@ export default function ToDoWidget(toDoList: ToDoList) {
                                 )
                             }
                         >
-                            <Number color="#d75645">
+                            <Number color="#707070">
                                 {toDoList.awaitingFunds}
                             </Number>
                         </Card>
@@ -74,7 +74,7 @@ export default function ToDoWidget(toDoList: ToDoList) {
                             navigate(`/dashboard/search?action=payment_failure`)
                         }
                     >
-                        <Number color="#d75645">
+                        <Number color="#707070">
                             {toDoList.failedPayments}
                         </Number>
                     </Card>
@@ -84,7 +84,7 @@ export default function ToDoWidget(toDoList: ToDoList) {
                             navigate(`/dashboard/search?status=pending`)
                         }
                     >
-                        <Number color="#d75645">
+                        <Number color="#707070">
                             {toDoList.pendingTransactions}
                         </Number>
                     </Card>
@@ -96,7 +96,7 @@ export default function ToDoWidget(toDoList: ToDoList) {
                             )
                         }
                     >
-                        <Number color="#d75645">
+                        <Number color="#707070">
                             {rejectedCount.total_entries}
                         </Number>
                     </Card>
@@ -108,7 +108,7 @@ export default function ToDoWidget(toDoList: ToDoList) {
                             )
                         }
                     >
-                        <Number color="#e99f3b">
+                        <Number color="#A8A8A8">
                             {toDoList.completedConversions}
                         </Number>
                     </Card>
@@ -121,7 +121,7 @@ export default function ToDoWidget(toDoList: ToDoList) {
                                 )
                             }
                         >
-                            <Number color="#e99f3b">
+                            <Number color="#A8A8A8">
                                 {toDoList.completedTransactions}
                             </Number>
                         </Card>
@@ -134,7 +134,7 @@ export default function ToDoWidget(toDoList: ToDoList) {
                             )
                         }
                     >
-                        <Number color="#e99f3b">
+                        <Number color="#A8A8A8">
                             {toDoList.completedPayments}
                         </Number>
                     </Card>

@@ -40,6 +40,15 @@ COPY . .
 RUN pnpm --filter @luxbank/brand build || true
 RUN pnpm --filter @luxbank/ui build || true
 
+# Neutralize Ant Design's bundled blue (#1890ff family) → monochrome.
+# Deterministic luminance desaturation of the antd v4 CSS bundle that index.css
+# imports via `~antd/dist/antd.css`. Fails loudly if no bundle is found.
+RUN set -e; n=0; \
+    for f in $(find . -path '*/antd/dist/antd.css'); do \
+      python3 app/admin/scripts/mono.py "$f" --inplace >/dev/null; n=$((n+1)); \
+    done; \
+    echo "mono: desaturated $n antd css bundle(s)"; [ "$n" -ge 1 ]
+
 # Increase memory for CRA build
 ENV NODE_OPTIONS="--max_old_space_size=4096"
 

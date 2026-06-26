@@ -131,7 +131,7 @@ export default function Invite() {
                 </HeaderContainer>
                 <HeaderContainer>
                     <PageTitle
-                        style={{ color: "#32CD32", display: showButtonAttr }}
+                        style={{ color: "#A1A1A1", display: showButtonAttr }}
                     >
                         You have successfully sent the invitation to the user.
                     </PageTitle>

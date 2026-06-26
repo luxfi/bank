@@ -373,9 +373,9 @@ export default function Search(props: PropsWithChildren<SearchProps>) {
                   "Out",
               ];
     const CellStyle = {
-        success: { color: "#448841", fontWeight: 700 },
-        failed: { color: "#708090", fontWeight: 700 },
-        red: { color: "#dc5c5c", fontWeight: 700 },
+        success: { color: "#747474", fontWeight: 700 },
+        failed: { color: "#7E7E7E", fontWeight: 700 },
+        red: { color: "#777777", fontWeight: 700 },
     };
     const failedStatus = ["failed", "deleted", "canceled", "cancelled"];
 
@@ -443,9 +443,9 @@ export default function Search(props: PropsWithChildren<SearchProps>) {
             <Row style={{ marginTop: "10px" }}>
                 <Space style={{ marginLeft: "auto", width: "auto" }}>
                     <Text
-                        color="#f7af41"
+                        color="#B6B6B6"
                         size="16px"
-                        hover="#00A2E8"
+                        hover="#858585"
                         onClick={toggleAdvanced}
                     >
                         Advanced
@@ -856,17 +856,17 @@ const Text = styled.a<Props>`
     color: ${(props) => props.color};
     font-size: ${(props) => props.size};
     &:hover {
-        color: ${(props) => (props.hover ? props.hover : "#f49c0e")};
+        color: ${(props) => (props.hover ? props.hover : "#A4A4A4")};
     }
 `;
 const SearchButton = styled(Button)`
     cursor: pointer;
-    border: 3px solid #00a2e8;
+    border: 3px solid #858585;
     border-radius: 5px;
     width: 200px;
     padding: 0px;
     color: #ffffff;
-    background: #00a2e8;
+    background: #858585;
     text-align: center;
     font-size: 1.2em;
     -webkit-transition: background-color 200ms, box-shadow 200ms;

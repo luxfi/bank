@@ -94,7 +94,7 @@ export default function CurrencyDate({ goToSlide }: SlideProps) {
                                 <a
                                     href="/terms_and_conditions"
                                     target={"_blank"}
-                                    style={{ color: "#F49C0E" }}
+                                    style={{ color: "#A4A4A4" }}
                                 >
                                     {" "}
                                     &nbsp; Term of use

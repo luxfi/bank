@@ -38,7 +38,7 @@ import { emailExists } from "../../../../features/registration/RegistrationApi";
 import { countriesToSelect } from "../../../../features/registration/model/countries";
 const MyModal = styled(Modal)`
     .ant-modal-header {
-        background-color: #00569e;
+        background-color: #494949;
     }
     .ant-modal-title,
     .ant-modal-close {

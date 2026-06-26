@@ -2,7 +2,7 @@ import { Modal as M} from "antd";
 import styled from "styled-components";
 export const Modal = styled(M)`
     .ant-modal-header {
-        background-color: #00569E;
+        background-color: #494949;
     }
     .ant-modal-title, .ant-modal-close {
         color: white;

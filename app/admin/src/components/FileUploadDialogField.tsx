@@ -127,7 +127,7 @@ const Icon = styled(FontAwesomeIcon)`
 font-weight: normal;
 margin-right: 10px;
 font-size: 18px;
-color:'#FF0000';
+color:'#363636';
 cusror: pointer;
 `;
 

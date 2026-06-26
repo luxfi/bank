@@ -18,7 +18,7 @@ const InputGroup = styled(Input)`
     .ant-input-group-addon:first-child {
         width: 40%;
         text-align: left;
-        background-color: #00569E;
+        background-color: #494949;
         padding-top: 10px;
         padding-bottom: 10px;
         border-radius: 5px 0px 0px 5px;

@@ -269,7 +269,7 @@ export default function CurrencyQuote({
                                                             Quote Expires in{" "}
                                                             <span
                                                                 style={{
-                                                                    color: "#FF0000",
+                                                                    color: "#363636",
                                                                 }}
                                                             >
                                                                 {currentSecond}

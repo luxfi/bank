@@ -21,7 +21,7 @@ const StyledContainer = styled.div<Props>`
 `
 const Title = styled.h2`
   color: #fff;
-  background-color: #00569E;
+  background-color: #494949;
   margin: 0;
   font-size: 14px;
   padding: 5px 15px;

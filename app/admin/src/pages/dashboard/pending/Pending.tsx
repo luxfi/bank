@@ -548,12 +548,12 @@ const FiltersContainer = styled.div`
 
 const SearchButton = styled(Button)`
     cursor: pointer;
-    border: 3px solid #00a2e8;
+    border: 3px solid #858585;
     border-radius: 5px;
     width: 50%;
     padding: 0px;
     color: #ffffff;
-    background: #00a2e8;
+    background: #858585;
     text-align: center;
     font-size: 1.2em;
     -webkit-transition: background-color 200ms, box-shadow 200ms;

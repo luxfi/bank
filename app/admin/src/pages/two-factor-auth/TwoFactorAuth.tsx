@@ -233,7 +233,7 @@ const Card = styled.div`
     padding: 32px 48px;
 
     h1 {
-        color: #1e3456;
+        color: #323232;
         margin: 0;
         padding: 0;
         font-size: 32px;
@@ -244,7 +244,7 @@ const Card = styled.div`
     }
     .timer {
         font-size: 16px;
-        color: rgba(99, 64, 6, 0.16);
+        color: rgba(67, 67, 67,0.16);
     }
 `;
 const InputsContainer = styled.div`
@@ -267,7 +267,7 @@ const LinkBtn = styled.button`
     cursor: pointer;
 
     &:disabled {
-        color: rgba(99, 64, 6, 0.16);
+        color: rgba(67, 67, 67,0.16);
         cursor: not-allowed;
     }
 

@@ -267,14 +267,14 @@ const StyledInput = styled.input`
     outline: none;
     color: #6b6b6b;
 
-    border: 2px solid #0f244d30;
+    border: 2px solid #22222230;
 
     .hasError {
         border: 2px solid red;
     }
 
     &:focus {
-        border: 1px solid #00569f;
-        box-shadow: 0 0 0 2px rgba(5, 145, 255, 0.1);
+        border: 1px solid #494949;
+        box-shadow: 0 0 0 2px rgba(123, 123, 123,0.1);
     }
 `;

@@ -24,7 +24,7 @@ const Form = styled<any>(F)`
 `;
 const MyModal = styled(Modal)`
     .ant-modal-header {
-        background-color: #00569e;
+        background-color: #494949;
     }
     .ant-modal-title,
     .ant-modal-close {

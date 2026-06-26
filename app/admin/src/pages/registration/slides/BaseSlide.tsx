@@ -210,7 +210,7 @@ export default function BaseSlide({ verifyCode, title, sort, children }: PropsWi
                         { sending ? 
                             <a className='sendCode'> Resending <Progress icon={faSpinner} style = {{verticalAlign: 'middle', fontSize: 'inherit', padding: '0'}}/></a>
                         :
-                            <a className='sendCode' onClick={verify} style={{ color: '#F49C0E' }}> Resend Code</a>
+                            <a className='sendCode' onClick={verify} style={{ color: '#A4A4A4' }}> Resend Code</a>
                         }
                         <p style={{fontSize: '12px', fontStyle: 'italic'}}>You may resend the code up to 4 times.</p>
                         </PageTitle>

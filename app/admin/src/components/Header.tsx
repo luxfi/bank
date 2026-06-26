@@ -70,7 +70,7 @@ export default function Header({ currentLocation }: IProps) {
     const navigate = useNavigate();
     const ProfileBtn = () => (
         <Avatar
-            style={{ backgroundColor: "#00569f" }}
+            style={{ backgroundColor: "#494949" }}
             icon={<UserOutlined />}
         />
     );
