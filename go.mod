@@ -84,7 +84,7 @@ require (
 	github.com/luxfi/consensus v1.25.15 // indirect
 	github.com/luxfi/constants v1.5.8 // indirect
 	github.com/luxfi/container v0.0.4 // indirect
-	github.com/luxfi/corona v0.10.2 // indirect
+	github.com/luxfi/corona v0.10.3 // indirect
 	github.com/luxfi/crypto v1.19.17 // indirect
 	github.com/luxfi/crypto/ipa v1.2.4 // indirect
 	github.com/luxfi/database v1.19.2 // indirect
@@ -109,7 +109,7 @@ require (
 	github.com/luxfi/p2p v1.21.1 // indirect
 	github.com/luxfi/pq v1.0.3 // indirect
 	github.com/luxfi/proto v1.3.5 // indirect
-	github.com/luxfi/pulsar v1.7.1 // indirect
+	github.com/luxfi/pulsar v1.8.0 // indirect
 	github.com/luxfi/sampler v1.1.0 // indirect
 	github.com/luxfi/threshold v1.9.8 // indirect
 	github.com/luxfi/tls v1.0.3 // indirect
