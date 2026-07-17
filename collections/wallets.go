@@ -25,8 +25,10 @@ func EnsureWalletCollection(app core.App) error {
 			Min:      3,
 			Max:      3,
 		},
-		&core.TextField{Name: "walletId"}, // external ID (CurrencyCloud)
-		&core.TextField{Name: "status"},   // active, suspended, closed
+		&core.TextField{Name: "walletId"},      // external ID (CurrencyCloud / MPC key ref)
+		&core.TextField{Name: "address"},       // on-chain address (Lux testnet)
+		&core.TextField{Name: "network"},       // e.g. "lux-testnet"
+		&core.TextField{Name: "status"},        // active, provisioning, suspended, closed
 		&core.AutodateField{Name: "created", OnCreate: true},
 		&core.AutodateField{Name: "updated", OnCreate: true, OnUpdate: true},
 	)

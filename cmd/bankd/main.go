@@ -2,15 +2,12 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"os"
 
 	"github.com/hanzoai/base"
-	"github.com/hanzoai/base/apis"
 	"github.com/hanzoai/base/core"
 	"github.com/hanzoai/base/plugins/migratecmd"
 	"github.com/hanzoai/base/plugins/platform"
-	"github.com/hanzoai/base/tools/hook"
 	bank "github.com/luxfi/bank"
 	"github.com/luxfi/bank/collections"
 	"github.com/luxfi/bank/hooks"
@@ -90,6 +87,7 @@ func main() {
 			collections.EnsureDocumentCollection,
 			collections.EnsureWalletCollection,
 			collections.EnsureConversionCollection,
+			collections.EnsureCardCollection,
 		} {
 			if err := ensure(app); err != nil {
 				return err
@@ -110,6 +108,10 @@ func main() {
 			}
 		}
 
+		// Sandbox: seed a fully-funded demo customer so admin/API views are
+		// alive out of the box (gated behind BANK_SANDBOX; default on).
+		bank.SeedSandbox(app)
+
 		return nil
 	})
 
@@ -127,120 +129,12 @@ func main() {
 	hooks.RegisterCronJobs(app)
 
 	// ---- routes ----
+	//
+	// All /v1/bank endpoints (health, config, onboard, overview, transfers,
+	// beneficiaries, cards, exchange, wallet, …) are registered in
+	// bank.RegisterRoutes. Keep a single registration site.
 
 	bank.RegisterRoutes(app)
-
-	app.OnServe().Bind(&hook.Handler[*core.ServeEvent]{
-		Id: "bankExtraRoutes",
-		Func: func(e *core.ServeEvent) error {
-			// Health endpoint (unauthenticated).
-			e.Router.GET("/v1/bank/health", func(re *core.RequestEvent) error {
-				return re.JSON(http.StatusOK, map[string]string{"status": "ok"})
-			})
-
-			// Account summary endpoint.
-			e.Router.GET("/v1/bank/account/summary", func(re *core.RequestEvent) error {
-				if re.Auth == nil {
-					return apis.NewUnauthorizedError("unauthorized", nil)
-				}
-
-				records, err := app.FindRecordsByFilter(
-					collections.AccountCollectionName,
-					"owner = {:userId}",
-					"-created",
-					10,
-					0,
-					map[string]any{"userId": re.Auth.Id},
-				)
-				if err != nil {
-					return apis.NewBadRequestError("failed to fetch accounts", nil)
-				}
-
-				type accountSummary struct {
-					ID        string `json:"id"`
-					Entity    string `json:"entityName"`
-					Currency  string `json:"currency"`
-					Status    string `json:"status"`
-					KYCStatus string `json:"kycStatus"`
-				}
-
-				result := make([]accountSummary, 0, len(records))
-				for _, r := range records {
-					result = append(result, accountSummary{
-						ID:        r.Id,
-						Entity:    r.GetString("entityName"),
-						Currency:  r.GetString("currency"),
-						Status:    r.GetString("status"),
-						KYCStatus: r.GetString("kycStatus"),
-					})
-				}
-
-				return re.JSON(http.StatusOK, result)
-			}).Bind(apis.RequireAuth())
-
-			// Customer self-onboarding: provision a multi-currency account
-			// (its opening balance is auto-created by the account hook) and a
-			// non-custodial MPC crypto wallet. Idempotent — safe to retry.
-			e.Router.POST("/v1/bank/onboard", func(re *core.RequestEvent) error {
-				if re.Auth == nil {
-					return apis.NewUnauthorizedError("unauthorized", nil)
-				}
-				uid := re.Auth.Id
-
-				// Already onboarded? Return the existing account + wallet.
-				if existing, _ := app.FindRecordsByFilter(collections.AccountCollectionName, "owner = {:u}", "-created", 1, 0, map[string]any{"u": uid}); len(existing) > 0 {
-					acct := existing[0]
-					var wallet *core.Record
-					if ws, _ := app.FindRecordsByFilter(collections.WalletCollectionName, "account = {:a}", "-created", 1, 0, map[string]any{"a": acct.Id}); len(ws) > 0 {
-						wallet = ws[0]
-					}
-					return re.JSON(http.StatusOK, map[string]any{"account": acct, "wallet": wallet})
-				}
-
-				name := re.Auth.GetString("name")
-				if name == "" {
-					name = re.Auth.GetString("email")
-				}
-
-				acctColl, err := app.FindCollectionByNameOrId(collections.AccountCollectionName)
-				if err != nil {
-					return apis.NewBadRequestError("accounts collection missing", err)
-				}
-				acct := core.NewRecord(acctColl)
-				acct.Set("owner", uid)
-				acct.Set("entityName", name)
-				acct.Set("entityType", "individual")
-				acct.Set("country", "US")
-				acct.Set("currency", "USD")
-				acct.Set("status", "active")
-				acct.Set("kycStatus", "approved") // demo: auto-approve so the customer can transact immediately
-				if err := app.Save(acct); err != nil {
-					return apis.NewBadRequestError("failed to open account", err)
-				}
-
-				// Non-custodial crypto wallet. The address/key is produced by
-				// threshold MPC keygen (same pattern as ats/cmd/mpc-provision);
-				// until the MPC client is wired here the wallet is created in
-				// "provisioning" state and keyed to the principal.
-				var wallet *core.Record
-				if walletColl, err := app.FindCollectionByNameOrId(collections.WalletCollectionName); err == nil {
-					wallet = core.NewRecord(walletColl)
-					wallet.Set("account", acct.Id)
-					wallet.Set("currency", "USDC")
-					wallet.Set("status", "provisioning")
-					wallet.Set("walletId", "mpc:"+uid)
-					if err := app.Save(wallet); err != nil {
-						app.Logger().Error("onboard: wallet provisioning deferred", "err", err)
-						wallet = nil
-					}
-				}
-
-				return re.JSON(http.StatusOK, map[string]any{"account": acct, "wallet": wallet})
-			}).Bind(apis.RequireAuth())
-
-			return e.Next()
-		},
-	})
 
 	// ---- start ----
 

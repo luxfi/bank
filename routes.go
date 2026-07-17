@@ -1,12 +1,8 @@
 package bank
 
 import (
-	"bytes"
-	"encoding/json"
 	"math"
 	"net/http"
-	"os"
-	"time"
 
 	"github.com/hanzoai/base/apis"
 	"github.com/hanzoai/base/core"
@@ -19,20 +15,76 @@ func RegisterRoutes(app core.App) {
 	app.OnServe().Bind(&hook.Handler[*core.ServeEvent]{
 		Id: "bankRoutes",
 		Func: func(e *core.ServeEvent) error {
+			// Public health/config (unauthenticated).
+			e.Router.GET("/v1/bank/health", func(re *core.RequestEvent) error {
+				return re.JSON(http.StatusOK, map[string]any{"status": "ok", "sandbox": Sandbox()})
+			})
+			e.Router.GET("/v1/bank/config", func(re *core.RequestEvent) error {
+				return re.JSON(http.StatusOK, map[string]any{
+					"sandbox":  Sandbox(),
+					"fiat":     SupportedFiat,
+					"crypto":   SupportedCrypto,
+					"network":  "lux-testnet",
+					"disclaimer": "Demo — banking services provided by our licensed BaaS partner; " +
+						"sandbox environment, not for real deposits. Placeholder terms, pending counsel review.",
+				})
+			})
+
 			g := e.Router.Group("/v1/bank")
 			g.Bind(apis.RequireAuth())
 
+			// Onboarding + dashboard.
+			g.POST("/onboard", handleOnboard(app))
+			g.GET("/overview", handleOverview(app))
+			g.GET("/account/summary", handleAccountSummary(app))
+
+			// Money movement.
 			g.POST("/transfers", handleTransfer(app))
 			g.POST("/payments/outbound", handleOutboundPayment(app))
+
+			// Per-account reads.
 			g.GET("/accounts/{id}/balances", handleGetBalances(app))
 			g.GET("/accounts/{id}/wallets", handleGetWallets(app))
 			g.GET("/accounts/{id}/transactions", handleGetTransactions(app))
-			g.POST("/fx/quote", handleFXQuote(app))
-			g.POST("/fx/execute", handleFXExecute(app))
+
+			// Beneficiaries.
+			g.GET("/beneficiaries", handleListBeneficiaries(app))
+			g.POST("/beneficiaries", handleCreateBeneficiary(app))
+			g.DELETE("/beneficiaries/{id}", handleDeleteBeneficiary(app))
+
+			// Cards.
+			g.GET("/cards", handleListCards(app))
+			g.POST("/cards", handleIssueCard(app))
+			g.POST("/cards/{id}/freeze", setCardStatus(app, "frozen"))
+			g.POST("/cards/{id}/unfreeze", setCardStatus(app, "active"))
+
+			// Exchange (fiat FX + crypto buy/sell/convert) and wallet.
+			g.POST("/exchange/quote", handleExchangeQuote(app))
+			g.POST("/exchange/execute", handleExchangeExecute(app))
+			g.GET("/wallet", handleGetWallet(app))
+			g.GET("/crypto/prices", handleCryptoPrices(app))
 
 			return e.Next()
 		},
 	})
+}
+
+// handleAccountSummary returns a compact list of the caller's accounts.
+func handleAccountSummary(app core.App) func(*core.RequestEvent) error {
+	return func(e *core.RequestEvent) error {
+		records, err := app.FindRecordsByFilter(
+			collections.AccountCollectionName, "owner = {:userId}", "-created", 10, 0,
+			map[string]any{"userId": e.Auth.Id},
+		)
+		if err != nil {
+			return apis.NewBadRequestError("failed to fetch accounts", nil)
+		}
+		out := make([]accountView, 0, len(records))
+		for _, r := range records {
+			out = append(out, viewAccount(r))
+		}
+		return e.JSON(http.StatusOK, out)
+	}
 }
 
 // -- Transfer (internal move between own accounts) --
@@ -107,10 +159,22 @@ func handleTransfer(app core.App) func(*core.RequestEvent) error {
 			return e.JSON(http.StatusUnprocessableEntity, map[string]string{"error": err.Error()})
 		}
 
+		status := "pending"
+		if Sandbox() {
+			// Instant, deterministic settlement for the demo.
+			if err := settle(app, debit); err != nil {
+				return apis.NewInternalServerError("settlement failed", err)
+			}
+			if err := settle(app, credit); err != nil {
+				return apis.NewInternalServerError("settlement failed", err)
+			}
+			status = "completed"
+		}
+
 		return e.JSON(http.StatusCreated, map[string]any{
 			"debitId":  debit.Id,
 			"creditId": credit.Id,
-			"status":   "pending",
+			"status":   status,
 		})
 	}
 }
@@ -173,9 +237,18 @@ func handleOutboundPayment(app core.App) func(*core.RequestEvent) error {
 			return e.JSON(http.StatusUnprocessableEntity, map[string]string{"error": err.Error()})
 		}
 
+		status := "pending"
+		if Sandbox() {
+			// Simulated SWIFT/SEPA rail: settle immediately in the demo.
+			if err := settle(app, tx); err != nil {
+				return apis.NewInternalServerError("settlement failed", err)
+			}
+			status = "completed"
+		}
+
 		return e.JSON(http.StatusCreated, map[string]any{
 			"transactionId": tx.Id,
-			"status":        "pending",
+			"status":        status,
 		})
 	}
 }
@@ -220,119 +293,6 @@ func handleGetBalances(app core.App) func(*core.RequestEvent) error {
 				Available: int64(math.Round(b.GetFloat("available"))),
 				Held:      int64(math.Round(b.GetFloat("held"))),
 			})
-		}
-
-		return e.JSON(http.StatusOK, result)
-	}
-}
-
-// -- FX Quote --
-
-type fxQuoteRequest struct {
-	SellCurrency string `json:"sellCurrency"`
-	BuyCurrency  string `json:"buyCurrency"`
-	Amount       int64  `json:"amount"`
-}
-
-type fxQuoteResponse struct {
-	SellCurrency string  `json:"sellCurrency"`
-	BuyCurrency  string  `json:"buyCurrency"`
-	SellAmount   int64   `json:"sellAmount"`
-	BuyAmount    int64   `json:"buyAmount"`
-	Rate         float64 `json:"rate"`
-	QuoteID      string  `json:"quoteId"`
-	ExpiresAt    string  `json:"expiresAt"`
-}
-
-func handleFXQuote(app core.App) func(*core.RequestEvent) error {
-	return func(e *core.RequestEvent) error {
-		var req fxQuoteRequest
-		if err := e.BindBody(&req); err != nil {
-			return e.JSON(http.StatusBadRequest, map[string]string{"error": "invalid payload"})
-		}
-
-		if req.SellCurrency == "" || req.BuyCurrency == "" || req.Amount <= 0 {
-			return e.JSON(http.StatusBadRequest, map[string]string{"error": "missing required fields"})
-		}
-
-		forexURL := os.Getenv("FOREX_SERVICE_URL")
-		if forexURL == "" {
-			return e.JSON(http.StatusServiceUnavailable, map[string]string{"error": "FX service not configured"})
-		}
-
-		body, _ := json.Marshal(req)
-		client := &http.Client{Timeout: 10 * time.Second}
-		resp, err := client.Post(forexURL+"/v1/quote", "application/json", bytes.NewReader(body))
-		if err != nil {
-			return e.JSON(http.StatusBadGateway, map[string]string{"error": "FX service unavailable"})
-		}
-		defer resp.Body.Close()
-
-		if resp.StatusCode >= 400 {
-			return e.JSON(resp.StatusCode, map[string]string{"error": "FX quote failed"})
-		}
-
-		var quote fxQuoteResponse
-		if err := json.NewDecoder(resp.Body).Decode(&quote); err != nil {
-			return e.JSON(http.StatusBadGateway, map[string]string{"error": "invalid FX response"})
-		}
-
-		return e.JSON(http.StatusOK, quote)
-	}
-}
-
-// -- FX Execute --
-
-type fxExecuteRequest struct {
-	AccountID string `json:"accountId"`
-	QuoteID   string `json:"quoteId"`
-}
-
-func handleFXExecute(app core.App) func(*core.RequestEvent) error {
-	return func(e *core.RequestEvent) error {
-		var req fxExecuteRequest
-		if err := e.BindBody(&req); err != nil {
-			return e.JSON(http.StatusBadRequest, map[string]string{"error": "invalid payload"})
-		}
-
-		if req.AccountID == "" || req.QuoteID == "" {
-			return e.JSON(http.StatusBadRequest, map[string]string{"error": "missing required fields"})
-		}
-
-		// Verify ownership.
-		account, err := app.FindRecordById(collections.AccountCollectionName, req.AccountID)
-		if err != nil {
-			return apis.NewNotFoundError("account not found", nil)
-		}
-		if account.GetString("owner") != e.Auth.Id {
-			return apis.NewForbiddenError("not your account", nil)
-		}
-
-		forexURL := os.Getenv("FOREX_SERVICE_URL")
-		if forexURL == "" {
-			return e.JSON(http.StatusServiceUnavailable, map[string]string{"error": "FX service not configured"})
-		}
-
-		payload := map[string]any{
-			"accountId": req.AccountID,
-			"quoteId":   req.QuoteID,
-		}
-		body, _ := json.Marshal(payload)
-
-		client := &http.Client{Timeout: 30 * time.Second}
-		resp, err := client.Post(forexURL+"/v1/execute", "application/json", bytes.NewReader(body))
-		if err != nil {
-			return e.JSON(http.StatusBadGateway, map[string]string{"error": "FX service unavailable"})
-		}
-		defer resp.Body.Close()
-
-		if resp.StatusCode >= 400 {
-			return e.JSON(resp.StatusCode, map[string]string{"error": "FX execution failed"})
-		}
-
-		var result map[string]any
-		if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-			return e.JSON(http.StatusBadGateway, map[string]string{"error": "invalid FX response"})
 		}
 
 		return e.JSON(http.StatusOK, result)
