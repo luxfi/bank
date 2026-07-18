@@ -19,12 +19,18 @@ func RegisterRoutes(app core.App) {
 			e.Router.GET("/v1/bank/health", func(re *core.RequestEvent) error {
 				return re.JSON(http.StatusOK, map[string]any{"status": "ok", "sandbox": Sandbox()})
 			})
+			// Sandbox-only password login → mints a superuser token.
+			if Sandbox() {
+				e.Router.POST("/v1/bank/login", handleSandboxLogin(app))
+			}
 			e.Router.GET("/v1/bank/config", func(re *core.RequestEvent) error {
 				return re.JSON(http.StatusOK, map[string]any{
-					"sandbox":  Sandbox(),
-					"fiat":     SupportedFiat,
-					"crypto":   SupportedCrypto,
-					"network":  "lux-testnet",
+					"sandbox":   Sandbox(),
+					"demoLogin": Sandbox(),
+					"demoEmail": DemoEmail(),
+					"fiat":      SupportedFiat,
+					"crypto":    SupportedCrypto,
+					"network":   "lux-testnet",
 					"disclaimer": "Demo — banking services provided by our licensed BaaS partner; " +
 						"sandbox environment, not for real deposits. Placeholder terms, pending counsel review.",
 				})

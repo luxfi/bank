@@ -2,14 +2,26 @@ import { IAM_TOKEN_KEY } from '@/lib/iam'
 
 const BASE_URL = import.meta.env.VITE_BANK_API_URL || ''
 
-// The IAM SDK owns the access token (sessionStorage). The client only reads it.
+// The sandbox demo login stores a bankd superuser token under its own key so it
+// never collides with the IAM SDK's token. Either authorizes bankd; the demo
+// token takes precedence when present.
+export const DEMO_TOKEN_KEY = 'bank_demo_token'
+
 export function getToken(): string | null {
   try {
-    return sessionStorage.getItem(IAM_TOKEN_KEY)
+    return sessionStorage.getItem(DEMO_TOKEN_KEY) || sessionStorage.getItem(IAM_TOKEN_KEY)
   } catch {
     return null
   }
 }
+
+// -- Sandbox password login (demo only) --
+
+export const sandboxLogin = (email: string, password: string) =>
+  request<{ token: string; user: { id: string; email: string } }>('/v1/bank/login', {
+    method: 'POST',
+    body: JSON.stringify({ email, password }),
+  })
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const headers: Record<string, string> = {

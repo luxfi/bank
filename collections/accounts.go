@@ -21,12 +21,13 @@ func EnsureAccountCollection(app core.App) error {
 	c.ViewRule = &ownerRule
 
 	c.Fields.Add(
-		// Owner — relation to the "users" auth collection.
-		&core.RelationField{
-			Name:         "owner",
-			CollectionId: "_users_auth_",
-			Required:     true,
-			MaxSelect:    1,
+		// Owner — the authenticated principal id. A plain id (not a relation)
+		// so it can hold either an IAM-mapped users record id or, for the
+		// sandbox demo login, a _superusers record id. Ownership is enforced
+		// in the custom /v1/bank routes by comparing to the request auth id.
+		&core.TextField{
+			Name:     "owner",
+			Required: true,
 		},
 
 		// CurrencyCloud external account id.

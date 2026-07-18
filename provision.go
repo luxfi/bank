@@ -171,42 +171,35 @@ func issueCardRecord(app core.App, accountID, holder, currency string) *core.Rec
 	return card
 }
 
-// SeedSandbox creates a demo customer with a fully-funded account on first boot
-// (sandbox only). The login itself is IAM-native (lux.id); this record makes
-// the admin/API views alive and mirrors what every new signup receives.
+// SeedSandbox seeds the hero demo identity on boot (sandbox only):
+//   - a _superusers record (so the shared DB is writable/seedable and the
+//     demo login can mint a superuser token — the only local token bankd's
+//     external-auth mode accepts),
+//   - a bcrypt-hashed sandbox credential for that email (never plaintext),
+//   - a fully-funded customer account owned by the superuser id.
+//
+// The hero logs in at app.lux.financial with email + password (sandbox login),
+// landing on a populated dashboard. Real signups still use IAM (lux.id).
 func SeedSandbox(app core.App) {
 	if !Sandbox() {
 		return
 	}
-	const demoEmail = "demo@lux.financial"
+	email := DemoEmail()
 
-	users, err := app.FindCollectionByNameOrId("users")
+	su, err := ensureDemoSuperuser(app, email, DemoPassword())
 	if err != nil {
+		app.Logger().Warn("seed: demo superuser failed", "err", err)
 		return
 	}
-	existing, _ := app.FindFirstRecordByFilter("users", "email = {:e}", map[string]any{"e": demoEmail})
-	if existing == nil {
-		existing = core.NewRecord(users)
-		existing.Set("email", demoEmail)
-		existing.Set("name", "Demo Customer")
-		existing.Set("verified", true)
-		// IAM-native Base auth collections have no local password; the record is
-		// a passive directory mirror (tokenKey is auto-generated on save).
-		if err := app.Save(existing); err != nil {
-			app.Logger().Warn("seed: demo user create failed", "err", err)
+
+	if primaryAccount(app, su.Id) == nil {
+		if _, err := ProvisionCustomer(app, su, KYC{
+			Name: "Lux Demo", Country: "US", EntityType: "individual",
+			DOB: "1990-01-01", AddressLine: "1 Market St", City: "San Francisco", PostalCode: "94105",
+		}); err != nil {
+			app.Logger().Warn("seed: provisioning failed", "err", err)
 			return
 		}
 	}
-
-	if primaryAccount(app, existing.Id) != nil {
-		return // already provisioned
-	}
-	if _, err := ProvisionCustomer(app, existing, KYC{
-		Name: "Demo Customer", Country: "US", EntityType: "individual",
-		DOB: "1990-01-01", AddressLine: "1 Market St", City: "San Francisco", PostalCode: "94105",
-	}); err != nil {
-		app.Logger().Warn("seed: provisioning failed", "err", err)
-		return
-	}
-	app.Logger().Info("sandbox seed: demo customer ready", "email", demoEmail)
+	app.Logger().Info("sandbox seed: hero customer ready", "email", email)
 }

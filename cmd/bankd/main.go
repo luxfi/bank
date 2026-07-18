@@ -88,6 +88,7 @@ func main() {
 			collections.EnsureWalletCollection,
 			collections.EnsureConversionCollection,
 			collections.EnsureCardCollection,
+			collections.EnsureCredentialCollection,
 		} {
 			if err := ensure(app); err != nil {
 				return err
