@@ -3,10 +3,10 @@
 @import '@fontsource-variable/geist-mono';
 
 /* -----------------------------------------------------------------------------
-   Lux Financial — design tokens
-   Adopts the @hanzo/gui philosophy: true-black surface, Geist type, hairline
-   borders, one restrained accent, calm 120–200ms motion. Monochrome-first with
-   semantic emerald/red only for money direction.
+   Design tokens — @hanzo/gui structure. The @theme block is the LUX (dark)
+   default; `:root[data-brand="acm"]` overrides every color for a real light
+   theme. Components reference the CSS variables only, so switching data-brand
+   flips backgrounds, text, borders, cards, accents everywhere at runtime.
 -------------------------------------------------------------------------------*/
 @theme {
   --font-sans: 'Geist Variable', ui-sans-serif, system-ui, -apple-system, sans-serif;
@@ -23,13 +23,52 @@
   --color-fg-muted: #a1a1aa;
   --color-fg-subtle: #71717a;
 
-  --color-accent: #8b7cff;      /* single restrained accent (focus, crypto, active) */
+  --color-accent: #8b7cff;
   --color-accent-fg: #ffffff;
   --color-positive: #34d399;
   --color-negative: #f87171;
 
+  /* Primary button + decorative glow + focus ring resolve per brand. */
+  --btn-primary-bg: #fafafa;
+  --btn-primary-fg: #0a0a0a;
+  --color-glow: rgba(139, 124, 255, 0.12);
+  --color-glow-2: rgba(52, 211, 153, 0.05);
+  --color-focus-ring: rgba(139, 124, 255, 0.20);
+  --color-selection: rgba(139, 124, 255, 0.35);
+
   --radius-card: 16px;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ACM — light theme, blue accent. */
+:root[data-brand='acm'] {
+  color-scheme: light;
+  --color-bg: #f5f7fa;
+  --color-surface: #ffffff;
+  --color-surface-2: #f1f4f8;
+  --color-surface-3: #e6eaf1;
+  --color-border: rgba(15, 23, 42, 0.10);
+  --color-border-strong: rgba(15, 23, 42, 0.18);
+
+  --color-fg: #0b1220;
+  --color-fg-muted: #4b5563;
+  --color-fg-subtle: #94a3b8;
+
+  --color-accent: #1f4fff;
+  --color-accent-fg: #ffffff;
+  --color-positive: #059669;
+  --color-negative: #dc2626;
+
+  --btn-primary-bg: #1f4fff;
+  --btn-primary-fg: #ffffff;
+  --color-glow: rgba(31, 79, 255, 0.10);
+  --color-glow-2: rgba(31, 79, 255, 0.05);
+  --color-focus-ring: rgba(31, 79, 255, 0.20);
+  --color-selection: rgba(31, 79, 255, 0.28);
+}
+
+:root {
+  color-scheme: dark;
 }
 
 @layer base {
@@ -38,7 +77,6 @@
   }
   html {
     -webkit-text-size-adjust: 100%;
-    color-scheme: dark;
   }
   body {
     background: var(--color-bg);
@@ -47,22 +85,21 @@
     font-feature-settings: 'cv01', 'ss01';
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    transition: background-color 200ms var(--ease-out), color 200ms var(--ease-out);
   }
-  /* Subtle brand ambience — a single low radial glow behind the app. */
   .app-ambience::before {
     content: '';
     position: fixed;
     inset: 0;
     pointer-events: none;
     background:
-      radial-gradient(600px circle at 15% -5%, rgba(139, 124, 255, 0.10), transparent 60%),
-      radial-gradient(700px circle at 100% 0%, rgba(52, 211, 153, 0.05), transparent 55%);
+      radial-gradient(600px circle at 15% -5%, var(--color-glow), transparent 60%),
+      radial-gradient(700px circle at 100% 0%, var(--color-glow-2), transparent 55%);
     z-index: 0;
   }
   ::selection {
-    background: rgba(139, 124, 255, 0.35);
+    background: var(--color-selection);
   }
-  /* Tabular figures everywhere money is shown. */
   .tnum {
     font-variant-numeric: tabular-nums;
     font-feature-settings: 'tnum';
@@ -96,11 +133,11 @@
   }
   .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  .btn-primary { background: #fafafa; color: #0a0a0a; }
-  .btn-primary:hover:not(:disabled) { background: #ffffff; transform: translateY(-1px); }
+  .btn-primary { background: var(--btn-primary-bg); color: var(--btn-primary-fg); }
+  .btn-primary:hover:not(:disabled) { filter: brightness(1.06); transform: translateY(-1px); }
 
   .btn-secondary { background: transparent; color: var(--color-fg); border: 1px solid var(--color-border-strong); }
-  .btn-secondary:hover:not(:disabled) { background: var(--color-surface-2); border-color: rgba(255,255,255,0.28); }
+  .btn-secondary:hover:not(:disabled) { background: var(--color-surface-2); }
 
   .btn-ghost { background: transparent; color: var(--color-fg-muted); }
   .btn-ghost:hover:not(:disabled) { background: var(--color-surface-2); color: var(--color-fg); }
@@ -119,7 +156,7 @@
   .input:focus {
     outline: none;
     border-color: var(--color-accent);
-    box-shadow: 0 0 0 3px rgba(139, 124, 255, 0.18);
+    box-shadow: 0 0 0 3px var(--color-focus-ring);
   }
   select.input { appearance: none; background-image: none; }
 
@@ -154,7 +191,19 @@
     to { opacity: 1; transform: none; }
   }
 
-  /* Hide scrollbars on horizontal scroll rows while keeping scroll. */
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { scrollbar-width: none; }
+
+  /* Decorative brand-accent radial glow (hero cards). Adapts to the accent. */
+  .accent-glow {
+    background: radial-gradient(circle, color-mix(in srgb, var(--color-accent) 16%, transparent), transparent 65%);
+  }
+  /* Rich payment-card face — dark in both themes, tinted by the brand accent. */
+  .card-face {
+    background:
+      radial-gradient(120% 120% at 0% 0%,
+        color-mix(in srgb, var(--color-accent) 45%, #10131f) 0%,
+        #12131c 45%,
+        #0a0b12 100%);
+  }
 }

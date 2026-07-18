@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { useOverview } from '@/hooks/overview'
+import { useBrand } from '@/hooks/brand'
 import { Money, AssetAvatar, SectionHeader, StatusBadge, Skeleton, formatUSD, Icon } from '@/components/ui'
 import { capitalize } from '@/lib/format'
 
 export function Accounts() {
   const { overview, loading } = useOverview()
+  const brand = useBrand()
   if (loading) return <Skeleton className="h-72 rounded-[var(--radius-card)]" />
   if (!overview?.account) return null
 
@@ -22,7 +24,7 @@ export function Accounts() {
       <div className="card p-5">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="font-medium text-lg truncate">{a.entityName}</p>
+            <p className="font-medium text-lg truncate">{a.entityName === 'Lux Demo' ? brand.demoName : a.entityName}</p>
             <p className="text-sm text-[var(--color-fg-subtle)] capitalize">{a.entityType} · {a.country}</p>
           </div>
           <div className="flex gap-2 shrink-0">

@@ -1,17 +1,20 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { useAuth } from '@/hooks/useAuth'
+import { useBrand } from '@/hooks/brand'
+import { REAL_DEMO_EMAIL } from '@/lib/brand'
 import { AuthShell } from '@/pages/Signup'
 import { Button, Field, Icon } from '@/components/ui'
 
-// Hero demo credential (public sandbox). Prefilled so the demo is one click.
-const DEMO_EMAIL = 'z@lux.financial'
+// Public sandbox demo password (all brands authenticate against the one seeded
+// bankd credential; the brand's demoEmail is display-only).
 const DEMO_PASSWORD = 'IloveLux2026!!!'
 
 export function Login() {
   const { isAuthenticated, isLoading, login, demoLogin } = useAuth()
+  const brand = useBrand()
   const navigate = useNavigate()
-  const [email, setEmail] = useState(DEMO_EMAIL)
+  const [email, setEmail] = useState(brand.demoEmail)
   const [password, setPassword] = useState(DEMO_PASSWORD)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -24,8 +27,10 @@ export function Login() {
     e.preventDefault()
     setBusy(true)
     setError(null)
+    // The brand's prefilled demo email maps to the real seeded credential.
+    const apiEmail = email.trim() === brand.demoEmail ? REAL_DEMO_EMAIL : email.trim()
     try {
-      await demoLogin(email.trim(), password)
+      await demoLogin(apiEmail, password)
       navigate('/app', { replace: true })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Sign-in failed')
@@ -51,7 +56,7 @@ export function Login() {
       </div>
 
       <Button variant="secondary" className="w-full" onClick={() => login()}>
-        <Icon name="shield" className="w-4 h-4" /> Sign in with Lux ID
+        <Icon name="shield" className="w-4 h-4" /> Sign in with SSO
       </Button>
 
       <p className="text-[0.72rem] text-[var(--color-fg-subtle)] text-center">
