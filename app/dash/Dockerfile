@@ -4,7 +4,9 @@
 # server (dashd) that serves it and forwards /v1 to bankd — no nginx/caddy.
 
 # ---- web build ----
-FROM node:20-alpine AS web
+# Node 22: corepack pulls the latest pnpm, which requires the node:sqlite
+# built-in (absent on Node 20).
+FROM node:22-alpine AS web
 WORKDIR /app
 RUN corepack enable
 COPY package.json pnpm-lock.yaml ./
