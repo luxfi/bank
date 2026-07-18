@@ -130,17 +130,25 @@ export function Skeleton({ className = '' }: { className?: string }) {
 // -- Asset avatar (fiat flag-ish disc or crypto disc) --
 
 const assetColors: Record<string, string> = {
-  LUX: 'from-white/90 to-white/60 text-black',
   BTC: 'from-amber-400 to-orange-500 text-black',
   ETH: 'from-indigo-400 to-violet-500 text-white',
   DAI: 'from-yellow-300 to-amber-400 text-black',
 }
 export function AssetAvatar({ code, className = 'w-9 h-9' }: { code: string; className?: string }) {
-  const crypto = assetColors[code.toUpperCase()]
+  const c = code.toUpperCase()
+  // LUX ▼ mark — theme-aware disc so it reads on both dark and light surfaces.
+  if (c === 'LUX') {
+    return (
+      <div className={`${className} rounded-full grid place-items-center bg-[var(--color-fg)] text-[var(--color-bg)]`}>
+        <Triangle />
+      </div>
+    )
+  }
+  const crypto = assetColors[c]
   if (crypto) {
     return (
       <div className={`${className} rounded-full grid place-items-center bg-gradient-to-br ${crypto} text-[0.65rem] font-bold`}>
-        {code.toUpperCase() === 'LUX' ? <Triangle /> : code.toUpperCase().slice(0, 3)}
+        {c.slice(0, 3)}
       </div>
     )
   }

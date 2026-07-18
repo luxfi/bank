@@ -1,5 +1,6 @@
 import { Link } from 'react-router'
 import { Wordmark } from '@/components/Brand'
+import { useBrand } from '@/hooks/brand'
 import { Icon, SandboxBadge } from '@/components/ui'
 
 const STATS: [string, string][] = [
@@ -72,7 +73,7 @@ function Hero() {
 function HeroPreview() {
   return (
     <div className="relative rounded-2xl border border-[color:var(--color-border)] bg-gradient-to-br from-[var(--color-surface-2)] to-[var(--color-surface)] p-6 md:p-8 text-left overflow-hidden">
-      <div className="absolute -top-24 -right-16 w-80 h-80 rounded-full bg-[radial-gradient(circle,rgba(139,124,255,0.18),transparent_65%)]" />
+      <div className="absolute -top-24 -right-16 w-80 h-80 rounded-full accent-glow" />
       <p className="text-sm text-[var(--color-fg-muted)] relative">Total balance</p>
       <p className="text-4xl md:text-5xl font-semibold tracking-tight tnum mt-1 relative">$17,700.00</p>
       <div className="grid grid-cols-3 gap-3 mt-6 relative">
@@ -125,8 +126,8 @@ function Features() {
 function Closing() {
   return (
     <section className="mx-auto max-w-6xl px-5 md:px-8 py-16">
-      <div className="relative overflow-hidden rounded-2xl border border-[color:var(--color-border)] bg-gradient-to-br from-[#161230] to-[var(--color-surface)] p-10 md:p-16 text-center">
-        <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[32rem] h-[32rem] rounded-full bg-[radial-gradient(circle,rgba(139,124,255,0.16),transparent_65%)]" />
+      <div className="relative overflow-hidden rounded-2xl border border-[color:var(--color-border)] bg-gradient-to-br from-[var(--color-surface-2)] to-[var(--color-surface)] p-10 md:p-16 text-center">
+        <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[32rem] h-[32rem] rounded-full accent-glow" />
         <h2 className="relative text-3xl md:text-4xl font-semibold tracking-tight">Ready in two minutes</h2>
         <p className="relative text-[var(--color-fg-muted)] mt-3 max-w-md mx-auto">No branches, no paperwork. Sign up with your Lux ID and start moving money today.</p>
         <div className="relative mt-8">
@@ -138,6 +139,7 @@ function Closing() {
 }
 
 function Footer() {
+  const brand = useBrand()
   return (
     <footer className="border-t border-[color:var(--color-border)] mt-8">
       <div className="mx-auto max-w-6xl px-5 md:px-8 py-10 space-y-4">
@@ -147,8 +149,8 @@ function Footer() {
         </div>
         <p className="text-xs text-[var(--color-fg-subtle)] max-w-2xl leading-relaxed">
           Demo — banking services provided by our licensed BaaS partner. Sandbox environment, not for
-          real deposits; crypto is Lux testnet only. Placeholder terms shown for demonstration and
-          pending counsel review. © {new Date().getFullYear()} Lux Financial.
+          real deposits; crypto is testnet only. Placeholder terms shown for demonstration and
+          pending counsel review. © {new Date().getFullYear()} {brand.legalName}.
         </p>
       </div>
     </footer>

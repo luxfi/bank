@@ -1,7 +1,6 @@
-// Lux brand mark — the canonical downward triangle (▼). The triangle alone IS
-// the mark; we do NOT spell "Lux" by gluing "ux" onto it. Black/white only;
-// the triangle inherits currentColor so it themes with its container.
+import { useBrand } from '@/hooks/brand'
 
+// Lux ▼ mark — the downward triangle. Inherits currentColor.
 export function Triangle({ className = 'h-6 w-6' }: { className?: string }) {
   return (
     <svg viewBox="0 0 100 100" className={className} aria-hidden="true" fill="currentColor">
@@ -10,21 +9,24 @@ export function Triangle({ className = 'h-6 w-6' }: { className?: string }) {
   )
 }
 
-// Brand lockup: the ▼ mark followed by the plain product name. `label={null}`
-// renders the mark alone (e.g. a compact nav). No "ux" glyph trickery.
-export function Wordmark({
-  className = '',
-  mark = 'h-[1.1em] w-[1.1em]',
-  label = 'Lux Financial' as string | null,
-}: {
-  className?: string
-  mark?: string
-  label?: string | null
-}) {
+// Brand lockup — resolves at runtime from the active brand:
+//   - lux: ▼ triangle + "Lux Financial"
+//   - acm: plain bold lowercase "acm" (no mark), like acmglobaltech.com
+export function Wordmark({ className = '', showLabel = true }: { className?: string; showLabel?: boolean }) {
+  const brand = useBrand()
+
+  if (brand.wordmark === 'plain') {
+    return (
+      <span className={`inline-flex items-center font-bold tracking-tight lowercase ${className}`}>
+        {brand.wordmarkLabel}
+      </span>
+    )
+  }
+
   return (
     <span className={`inline-flex items-center gap-2 font-semibold tracking-tight ${className}`}>
-      <Triangle className={mark} />
-      {label ? <span>{label}</span> : null}
+      <Triangle className="h-[1.1em] w-[1.1em]" />
+      {showLabel && <span>{brand.wordmarkLabel}</span>}
     </span>
   )
 }

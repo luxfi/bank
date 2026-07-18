@@ -30,13 +30,13 @@ export function Wallet() {
       </div>
 
       {/* Wallet hero */}
-      <div className="relative overflow-hidden rounded-[var(--radius-card)] border border-[color:var(--color-border)] bg-gradient-to-br from-[#171433] to-[var(--color-surface)] p-6">
-        <div className="absolute -top-16 -right-10 w-56 h-56 rounded-full bg-[radial-gradient(circle,rgba(139,124,255,0.25),transparent_65%)]" />
+      <div className="relative overflow-hidden rounded-[var(--radius-card)] border border-[color:var(--color-border)] bg-gradient-to-br from-[var(--color-surface-2)] to-[var(--color-surface)] p-6">
+        <div className="absolute -top-16 -right-10 w-56 h-56 rounded-full accent-glow" />
         <p className="text-sm text-[var(--color-fg-muted)] relative">Crypto value</p>
         <p className="text-3xl md:text-4xl font-semibold tracking-tight tnum mt-1 relative">{formatUSD(totalUsd)}</p>
         <button
           onClick={() => { navigator.clipboard?.writeText(addr); setCopied(true); setTimeout(() => setCopied(false), 1500) }}
-          className="relative mt-4 inline-flex items-center gap-2 rounded-full bg-black/30 border border-white/10 px-3 py-1.5 text-xs font-mono hover:bg-black/50 transition-colors"
+          className="relative mt-4 inline-flex items-center gap-2 rounded-full bg-[var(--color-surface-3)] border border-[color:var(--color-border)] px-3 py-1.5 text-xs font-mono hover:brightness-95 transition"
         >
           <Icon name="wallet" className="w-3.5 h-3.5" />
           {shortAddress(addr)}

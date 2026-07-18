@@ -1,5 +1,7 @@
 import { NavLink, Outlet, Link, useNavigate } from 'react-router'
 import { useAuth } from '@/hooks/useAuth'
+import { useBrand } from '@/hooks/brand'
+import { REAL_DEMO_EMAIL } from '@/lib/brand'
 import { OverviewProvider, useOverview } from '@/hooks/overview'
 import { Wordmark } from '@/components/Brand'
 import { Icon, SandboxBadge, Spinner } from '@/components/ui'
@@ -44,9 +46,14 @@ function Shell() {
 function AppShell() {
   const { user, logout } = useAuth()
   const { overview } = useOverview()
+  const brand = useBrand()
   const navigate = useNavigate()
-  const email = (user?.email as string) || ''
-  const name = overview?.account?.entityName || (user?.name as string) || 'Your account'
+  // The seeded demo identity displays under the active brand (e.g. ACM Demo /
+  // z@acmglobaltech.com for brand=acm); real IAM customers show their own.
+  const rawEmail = (user?.email as string) || ''
+  const isDemo = rawEmail === REAL_DEMO_EMAIL
+  const email = isDemo ? brand.demoEmail : rawEmail
+  const name = isDemo ? brand.demoName : overview?.account?.entityName || (user?.name as string) || 'Your account'
 
   function signOut() {
     logout()

@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router'
+import { BrandProvider } from '@/hooks/brand'
 import { AuthProvider, useAuth } from '@/hooks/useAuth'
 import { Layout } from '@/components/Layout'
 import { Landing } from '@/pages/Landing'
@@ -29,6 +30,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 export function App() {
   return (
     <BrowserRouter>
+      <BrandProvider>
       <AuthProvider>
         <Routes>
           <Route path="/" element={<Landing />} />
@@ -54,6 +56,7 @@ export function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AuthProvider>
+      </BrandProvider>
     </BrowserRouter>
   )
 }

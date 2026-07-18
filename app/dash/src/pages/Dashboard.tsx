@@ -1,5 +1,6 @@
 import { Link } from 'react-router'
 import { useOverview } from '@/hooks/overview'
+import { useBrand } from '@/hooks/brand'
 import { Money, Icon, SectionHeader, AssetAvatar, Skeleton, EmptyState, formatUSD } from '@/components/ui'
 import { TxnRow } from '@/components/TxnRow'
 import { CardFace } from '@/components/CardFace'
@@ -13,6 +14,7 @@ const actions = [
 
 export function Dashboard() {
   const { overview, loading } = useOverview()
+  const brand = useBrand()
 
   if (loading) return <DashboardSkeleton />
   if (!overview?.onboarded) return null
@@ -21,14 +23,17 @@ export function Dashboard() {
   const totalUsd = balances.reduce((s, b) => s + b.valueUsd, 0)
   const txns = overview.recentTransactions ?? []
   const cards = overview.cards ?? []
-  const firstName = (overview.account?.entityName || '').split(' ')[0]
+  // Display the seeded demo identity under the active brand (avoid leaking the
+  // seed's "Lux Demo" name onto a white-label surface).
+  const rawName = overview.account?.entityName || ''
+  const firstName = (rawName === 'Lux Demo' ? brand.demoName : rawName).split(' ')[0]
 
   return (
     <div className="space-y-6 md:space-y-8">
       {/* Total balance hero */}
       <section className="rise">
         <div className="relative overflow-hidden rounded-[var(--radius-card)] border border-[color:var(--color-border)] bg-gradient-to-br from-[var(--color-surface-2)] to-[var(--color-surface)] p-6 md:p-8">
-          <div className="absolute -top-24 -right-16 w-72 h-72 rounded-full bg-[radial-gradient(circle,rgba(139,124,255,0.18),transparent_65%)]" />
+          <div className="absolute -top-24 -right-16 w-72 h-72 rounded-full accent-glow" />
           <p className="text-sm text-[var(--color-fg-muted)]">
             {firstName ? `Welcome back, ${firstName}` : 'Total balance'}
           </p>
