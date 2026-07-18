@@ -195,6 +195,17 @@ func handleOverview(app core.App) func(*core.RequestEvent) error {
 	}
 }
 
+// handleListTransactions returns the caller's full activity feed.
+func handleListTransactions(app core.App) func(*core.RequestEvent) error {
+	return func(e *core.RequestEvent) error {
+		acct, err := requireAccount(app, e)
+		if err != nil {
+			return err
+		}
+		return e.JSON(http.StatusOK, viewTxns(app, acct.Id, 200))
+	}
+}
+
 func buildOverview(app core.App, acct *core.Record) map[string]any {
 	return map[string]any{
 		"sandbox":            Sandbox(),

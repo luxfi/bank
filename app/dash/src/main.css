@@ -1,1 +1,160 @@
 @import 'tailwindcss';
+@import '@fontsource-variable/geist';
+@import '@fontsource-variable/geist-mono';
+
+/* -----------------------------------------------------------------------------
+   Lux Financial — design tokens
+   Adopts the @hanzo/gui philosophy: true-black surface, Geist type, hairline
+   borders, one restrained accent, calm 120–200ms motion. Monochrome-first with
+   semantic emerald/red only for money direction.
+-------------------------------------------------------------------------------*/
+@theme {
+  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: 'Geist Mono Variable', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --color-bg: #000000;
+  --color-surface: #0b0b0c;
+  --color-surface-2: #141416;
+  --color-surface-3: #1c1c1f;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-strong: rgba(255, 255, 255, 0.16);
+
+  --color-fg: #fafafa;
+  --color-fg-muted: #a1a1aa;
+  --color-fg-subtle: #71717a;
+
+  --color-accent: #8b7cff;      /* single restrained accent (focus, crypto, active) */
+  --color-accent-fg: #ffffff;
+  --color-positive: #34d399;
+  --color-negative: #f87171;
+
+  --radius-card: 16px;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+    color-scheme: dark;
+  }
+  body {
+    background: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv01', 'ss01';
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  /* Subtle brand ambience — a single low radial glow behind the app. */
+  .app-ambience::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(600px circle at 15% -5%, rgba(139, 124, 255, 0.10), transparent 60%),
+      radial-gradient(700px circle at 100% 0%, rgba(52, 211, 153, 0.05), transparent 55%);
+    z-index: 0;
+  }
+  ::selection {
+    background: rgba(139, 124, 255, 0.35);
+  }
+  /* Tabular figures everywhere money is shown. */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+  }
+}
+
+@layer components {
+  .card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+  }
+  .card-2 {
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.625rem 1.1rem;
+    transition: all 160ms var(--ease-out);
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .btn-primary { background: #fafafa; color: #0a0a0a; }
+  .btn-primary:hover:not(:disabled) { background: #ffffff; transform: translateY(-1px); }
+
+  .btn-secondary { background: transparent; color: var(--color-fg); border: 1px solid var(--color-border-strong); }
+  .btn-secondary:hover:not(:disabled) { background: var(--color-surface-2); border-color: rgba(255,255,255,0.28); }
+
+  .btn-ghost { background: transparent; color: var(--color-fg-muted); }
+  .btn-ghost:hover:not(:disabled) { background: var(--color-surface-2); color: var(--color-fg); }
+
+  .input {
+    width: 100%;
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 0.7rem 0.85rem;
+    font-size: 0.95rem;
+    color: var(--color-fg);
+    transition: border-color 160ms var(--ease-out), box-shadow 160ms var(--ease-out);
+  }
+  .input::placeholder { color: var(--color-fg-subtle); }
+  .input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(139, 124, 255, 0.18);
+  }
+  select.input { appearance: none; background-image: none; }
+
+  .label { font-size: 0.8rem; font-weight: 500; color: var(--color-fg-muted); }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    padding: 0.2rem 0.55rem;
+    border-radius: 9999px;
+    border: 1px solid var(--color-border);
+  }
+
+  .skeleton {
+    background: linear-gradient(90deg, var(--color-surface-2) 25%, var(--color-surface-3) 37%, var(--color-surface-2) 63%);
+    background-size: 400% 100%;
+    animation: shimmer 1.4s ease infinite;
+    border-radius: 8px;
+  }
+  @keyframes shimmer {
+    0% { background-position: 100% 0; }
+    100% { background-position: -100% 0; }
+  }
+
+  .rise { animation: rise 0.45s var(--ease-out) both; }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* Hide scrollbars on horizontal scroll rows while keeping scroll. */
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { scrollbar-width: none; }
+}

@@ -36,6 +36,7 @@ func RegisterRoutes(app core.App) {
 			// Onboarding + dashboard.
 			g.POST("/onboard", handleOnboard(app))
 			g.GET("/overview", handleOverview(app))
+			g.GET("/transactions", handleListTransactions(app))
 			g.GET("/account/summary", handleAccountSummary(app))
 
 			// Money movement.

@@ -1,76 +1,47 @@
 import { Link } from 'react-router'
-import { Triangle, Wordmark } from '@/components/Brand'
-
-// Customer-focused B2C landing for the consumer bank (Lux Financial). The
-// institutional story lives on the main site (lux.financial); this page sells
-// the personal/business account and routes new customers into signup.
+import { Wordmark } from '@/components/Brand'
+import { Icon, SandboxBadge } from '@/components/ui'
 
 const STATS: [string, string][] = [
   ['30+', 'Currencies'],
-  ['<2 min', 'To open an account'],
-  ['T+0', 'Internal transfers'],
-  ['24/7', 'Access'],
+  ['<2 min', 'To open'],
+  ['T+0', 'Settlement'],
+  ['0', 'Branches'],
 ]
 
 const FEATURES = [
-  {
-    title: 'Multi-currency accounts',
-    body: 'Hold 30+ currencies in one account — personal or business. See available and pending balances in real time.',
-  },
-  {
-    title: 'Send money worldwide',
-    body: 'Pay people and businesses globally with the right rail chosen for you. Clear fees up front, status tracked end to end.',
-  },
-  {
-    title: 'Convert at great rates',
-    body: 'Lock an FX rate and convert between your balances instantly — institutional pricing, no hidden spread.',
-  },
-  {
-    title: 'A crypto wallet, built in',
-    body: 'Every account comes with a non-custodial MPC wallet — your keys protected by threshold cryptography, not a single point of failure.',
-  },
-  {
-    title: 'Bank-grade security',
-    body: 'Hanzo IAM sign-in, KMS-managed secrets, and continuous compliance — KYC, sanctions, and AML screening built in.',
-  },
-  {
-    title: 'Open in minutes',
-    body: 'Sign up, verify, and start moving money the same day. No branches, no paperwork, no waiting.',
-  },
+  { icon: 'bank', title: 'Multi-currency accounts', body: 'Hold and manage 30+ currencies in one account. Real-time available and pending balances.' },
+  { icon: 'send', title: 'Global payments', body: 'Pay people and businesses worldwide over SWIFT/SEPA rails. Clear fees, tracked end to end.' },
+  { icon: 'swap', title: 'Instant exchange', body: 'Convert between currencies and crypto at institutional rates — no hidden spread.' },
+  { icon: 'wallet', title: 'Built-in crypto wallet', body: 'Every account ships with a non-custodial wallet secured by threshold MPC — no single key.' },
+  { icon: 'card', title: 'Virtual cards', body: 'Issue, freeze and manage virtual cards in a tap. Spend online anywhere.' },
+  { icon: 'shield', title: 'Bank-grade security', body: 'Lux ID sign-in, KMS-managed secrets, and continuous KYC / AML / sanctions screening.' },
 ]
 
 export function Landing() {
   return (
-    <div className="min-h-full bg-white text-black dark:bg-black dark:text-white">
-      <Nav />
-      <Hero />
-      <Stats />
-      <Features />
-      <Closing />
-      <Footer />
+    <div className="app-ambience min-h-screen">
+      <div className="relative z-10">
+        <Nav />
+        <Hero />
+        <Stats />
+        <Features />
+        <Closing />
+        <Footer />
+      </div>
     </div>
   )
 }
 
 function Nav() {
   return (
-    <header className="sticky top-0 z-20 border-b border-black/10 bg-white/80 backdrop-blur dark:border-white/10 dark:bg-black/70">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Wordmark className="text-xl" />
-        <nav className="flex items-center gap-2 text-sm">
-          <a href="#features" className="hidden px-3 py-2 opacity-70 hover:opacity-100 sm:inline">
-            Features
-          </a>
-          <Link to="/login" className="px-3 py-2 opacity-70 hover:opacity-100">
-            Sign in
-          </Link>
-          <Link
-            to="/signup"
-            className="rounded-full bg-black px-4 py-2 font-medium text-white dark:bg-white dark:text-black"
-          >
-            Open account
-          </Link>
-        </nav>
+    <header className="sticky top-0 z-20 border-b border-[color:var(--color-border)] bg-[var(--color-bg)]/70 backdrop-blur-xl">
+      <div className="mx-auto max-w-6xl flex items-center justify-between px-5 md:px-8 h-16">
+        <Wordmark className="text-lg" />
+        <div className="flex items-center gap-2 md:gap-3">
+          <Link to="/login" className="btn btn-ghost hidden sm:inline-flex">Sign in</Link>
+          <Link to="/signup" className="btn btn-primary">Open account</Link>
+        </div>
       </div>
     </header>
   )
@@ -78,46 +49,52 @@ function Nav() {
 
 function Hero() {
   return (
-    <section className="relative overflow-hidden">
-      <Triangle className="pointer-events-none absolute -right-16 -top-24 h-[34rem] w-[34rem] text-black/[0.03] dark:text-white/[0.04]" />
-      <div className="mx-auto max-w-6xl px-6 py-24 md:py-36">
-        <span className="inline-flex items-center gap-2 rounded-full border border-black/15 px-3 py-1 text-xs font-medium opacity-70 dark:border-white/15">
-          Personal & business banking
-        </span>
-        <h1 className="mt-6 max-w-3xl text-5xl font-semibold leading-[1.05] tracking-tight md:text-7xl">
-          Money without borders.
-        </h1>
-        <p className="mt-6 max-w-xl text-lg opacity-70 md:text-xl">
-          One account to hold, send, and convert money across 30+ currencies — with a built-in
-          non-custodial crypto wallet. Open yours in minutes.
-        </p>
-        <div className="mt-10 flex flex-wrap items-center gap-3">
-          <Link
-            to="/signup"
-            className="rounded-full bg-black px-6 py-3 font-medium text-white dark:bg-white dark:text-black"
-          >
-            Open an account
-          </Link>
-          <Link
-            to="/login"
-            className="rounded-full border border-black/20 px-6 py-3 font-medium hover:bg-black/[0.03] dark:border-white/20 dark:hover:bg-white/[0.05]"
-          >
-            Sign in
-          </Link>
-        </div>
+    <section className="mx-auto max-w-6xl px-5 md:px-8 pt-16 md:pt-28 pb-16 text-center">
+      <div className="flex justify-center mb-6"><SandboxBadge /></div>
+      <h1 className="text-4xl md:text-6xl font-semibold tracking-tight leading-[1.05] max-w-3xl mx-auto">
+        Banking without borders.
+        <br />
+        <span className="text-[var(--color-fg-muted)]">Money and crypto, together.</span>
+      </h1>
+      <p className="mt-5 text-lg text-[var(--color-fg-muted)] max-w-xl mx-auto">
+        Open a multi-currency account with a built-in crypto wallet in under two minutes.
+        Send globally, convert instantly, spend anywhere.
+      </p>
+      <div className="mt-8 flex items-center justify-center gap-3">
+        <Link to="/signup" className="btn btn-primary text-base px-6 py-3">Open your account <Icon name="chevron" className="w-4 h-4" /></Link>
+        <Link to="/login" className="btn btn-secondary text-base px-6 py-3">Sign in</Link>
       </div>
+      <div className="mt-16 max-w-3xl mx-auto"><HeroPreview /></div>
     </section>
+  )
+}
+
+function HeroPreview() {
+  return (
+    <div className="relative rounded-2xl border border-[color:var(--color-border)] bg-gradient-to-br from-[var(--color-surface-2)] to-[var(--color-surface)] p-6 md:p-8 text-left overflow-hidden">
+      <div className="absolute -top-24 -right-16 w-80 h-80 rounded-full bg-[radial-gradient(circle,rgba(139,124,255,0.18),transparent_65%)]" />
+      <p className="text-sm text-[var(--color-fg-muted)] relative">Total balance</p>
+      <p className="text-4xl md:text-5xl font-semibold tracking-tight tnum mt-1 relative">$17,700.00</p>
+      <div className="grid grid-cols-3 gap-3 mt-6 relative">
+        {[['USD', '$12,500.00'], ['EUR', '€3,200.00'], ['250 LUX', '$3,125.00']].map(([c, v]) => (
+          <div key={c} className="card-2 p-3">
+            <p className="text-xs text-[var(--color-fg-subtle)]">{c}</p>
+            <p className="font-medium tnum text-sm mt-0.5">{v}</p>
+          </div>
+        ))}
+      </div>
+    </div>
   )
 }
 
 function Stats() {
   return (
-    <section className="border-y border-black/10 dark:border-white/10">
-      <div className="mx-auto grid max-w-6xl grid-cols-2 gap-px md:grid-cols-4">
-        {STATS.map(([v, l]) => (
-          <div key={l} className="px-6 py-10 text-center">
-            <div className="text-4xl font-semibold tracking-tight">{v}</div>
-            <div className="mt-1 text-sm opacity-60">{l}</div>
+    <section className="mx-auto max-w-6xl px-5 md:px-8 py-10">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {STATS.map(([n, l]) => (
+          <div key={l} className="card-2 p-5 text-center">
+            <p className="text-2xl md:text-3xl font-semibold tracking-tight">{n}</p>
+            <p className="text-xs text-[var(--color-fg-subtle)] mt-1">{l}</p>
           </div>
         ))}
       </div>
@@ -127,16 +104,17 @@ function Stats() {
 
 function Features() {
   return (
-    <section id="features" className="mx-auto max-w-6xl px-6 py-24">
-      <h2 className="max-w-2xl text-3xl font-semibold tracking-tight md:text-4xl">
-        Everything your money needs, in one account.
-      </h2>
-      <div className="mt-12 grid gap-px overflow-hidden rounded-2xl border border-black/10 bg-black/10 sm:grid-cols-2 lg:grid-cols-3 dark:border-white/10 dark:bg-white/10">
+    <section className="mx-auto max-w-6xl px-5 md:px-8 py-16">
+      <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-center">Everything, in one account</h2>
+      <p className="text-center text-[var(--color-fg-muted)] mt-3 max-w-lg mx-auto">A complete banking-as-a-service stack — accounts, payments, FX, cards and crypto.</p>
+      <div className="grid md:grid-cols-3 gap-4 mt-10">
         {FEATURES.map((f) => (
-          <div key={f.title} className="bg-white p-8 dark:bg-black">
-            <Triangle className="h-5 w-5 opacity-90" />
-            <h3 className="mt-5 text-lg font-semibold">{f.title}</h3>
-            <p className="mt-2 text-sm leading-relaxed opacity-60">{f.body}</p>
+          <div key={f.title} className="card p-6">
+            <span className="w-11 h-11 rounded-xl grid place-items-center bg-[var(--color-surface-2)] border text-[var(--color-fg)] mb-4">
+              <Icon name={f.icon} className="w-5 h-5" />
+            </span>
+            <h3 className="font-medium">{f.title}</h3>
+            <p className="text-sm text-[var(--color-fg-muted)] mt-1.5 leading-relaxed">{f.body}</p>
           </div>
         ))}
       </div>
@@ -146,17 +124,14 @@ function Features() {
 
 function Closing() {
   return (
-    <section className="bg-black text-white dark:bg-white dark:text-black">
-      <div className="mx-auto flex max-w-6xl flex-col items-start gap-6 px-6 py-20 md:flex-row md:items-center md:justify-between">
-        <h2 className="max-w-xl text-3xl font-semibold tracking-tight md:text-4xl">
-          Open your account today.
-        </h2>
-        <Link
-          to="/signup"
-          className="rounded-full bg-white px-6 py-3 font-medium text-black dark:bg-black dark:text-white"
-        >
-          Get started
-        </Link>
+    <section className="mx-auto max-w-6xl px-5 md:px-8 py-16">
+      <div className="relative overflow-hidden rounded-2xl border border-[color:var(--color-border)] bg-gradient-to-br from-[#161230] to-[var(--color-surface)] p-10 md:p-16 text-center">
+        <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[32rem] h-[32rem] rounded-full bg-[radial-gradient(circle,rgba(139,124,255,0.16),transparent_65%)]" />
+        <h2 className="relative text-3xl md:text-4xl font-semibold tracking-tight">Ready in two minutes</h2>
+        <p className="relative text-[var(--color-fg-muted)] mt-3 max-w-md mx-auto">No branches, no paperwork. Sign up with your Lux ID and start moving money today.</p>
+        <div className="relative mt-8">
+          <Link to="/signup" className="btn btn-primary text-base px-7 py-3">Open your account</Link>
+        </div>
       </div>
     </section>
   )
@@ -164,9 +139,18 @@ function Closing() {
 
 function Footer() {
   return (
-    <footer className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 py-10 text-sm opacity-60 sm:flex-row">
-      <Wordmark />
-      <span>© Lux Financial. Banking, FX, and a non-custodial wallet.</span>
+    <footer className="border-t border-[color:var(--color-border)] mt-8">
+      <div className="mx-auto max-w-6xl px-5 md:px-8 py-10 space-y-4">
+        <div className="flex items-center justify-between flex-wrap gap-4">
+          <Wordmark />
+          <SandboxBadge />
+        </div>
+        <p className="text-xs text-[var(--color-fg-subtle)] max-w-2xl leading-relaxed">
+          Demo — banking services provided by our licensed BaaS partner. Sandbox environment, not for
+          real deposits; crypto is Lux testnet only. Placeholder terms shown for demonstration and
+          pending counsel review. © {new Date().getFullYear()} Lux Financial.
+        </p>
+      </div>
     </footer>
   )
 }

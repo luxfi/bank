@@ -1,32 +1,52 @@
-import { useState } from 'react'
 import { NavLink, Outlet, Link, useNavigate } from 'react-router'
 import { useAuth } from '@/hooks/useAuth'
+import { OverviewProvider, useOverview } from '@/hooks/overview'
 import { Wordmark } from '@/components/Brand'
+import { Icon, SandboxBadge, Spinner } from '@/components/ui'
+import { Onboarding } from '@/pages/Onboarding'
 
 const nav = [
-  { to: '/app', label: 'Dashboard' },
-  { to: '/app/accounts', label: 'Accounts' },
-  { to: '/app/transactions', label: 'Transactions' },
-  { to: '/app/payments', label: 'Payments' },
-  { to: '/app/conversions', label: 'Conversions' },
-  { to: '/app/beneficiaries', label: 'Beneficiaries' },
-  { to: '/app/documents', label: 'Documents' },
+  { to: '/app', label: 'Home', icon: 'home', primary: true },
+  { to: '/app/cards', label: 'Cards', icon: 'card', primary: true },
+  { to: '/app/send', label: 'Send', icon: 'send', primary: true },
+  { to: '/app/exchange', label: 'Exchange', icon: 'swap', primary: true },
+  { to: '/app/wallet', label: 'Wallet', icon: 'wallet', primary: true },
+  { to: '/app/accounts', label: 'Accounts', icon: 'bank', primary: false },
+  { to: '/app/activity', label: 'Activity', icon: 'activity', primary: false },
 ] as const
 
-function linkClass({ isActive }: { isActive: boolean }) {
-  return `block rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-    isActive
-      ? 'bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900'
-      : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white'
-  }`
+export function Layout() {
+  return (
+    <OverviewProvider>
+      <Shell />
+    </OverviewProvider>
+  )
 }
 
-export function Layout() {
-  const { user, logout } = useAuth()
-  const navigate = useNavigate()
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+function Shell() {
+  const { overview, loading, refresh } = useOverview()
 
+  if (loading) {
+    return (
+      <div className="min-h-screen grid place-items-center text-[var(--color-fg-subtle)]">
+        <div className="flex items-center gap-3 text-sm">
+          <Spinner /> Loading your account…
+        </div>
+      </div>
+    )
+  }
+  if (overview && !overview.onboarded) {
+    return <Onboarding onDone={refresh} />
+  }
+  return <AppShell />
+}
+
+function AppShell() {
+  const { user, logout } = useAuth()
+  const { overview } = useOverview()
+  const navigate = useNavigate()
   const email = (user?.email as string) || ''
+  const name = overview?.account?.entityName || (user?.name as string) || 'Your account'
 
   function signOut() {
     logout()
@@ -34,68 +54,76 @@ export function Layout() {
   }
 
   return (
-    <div className="flex h-full">
-      {/* Mobile overlay */}
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 z-30 bg-black/50 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
+    <div className="app-ambience min-h-screen">
+      <div className="relative z-10 flex">
+        {/* Desktop sidebar */}
+        <aside className="hidden lg:flex fixed inset-y-0 left-0 w-60 flex-col border-r border-[color:var(--color-border)] bg-[var(--color-surface)]/60 backdrop-blur-xl">
+          <div className="h-16 flex items-center px-5">
+            <Link to="/app"><Wordmark /></Link>
+          </div>
+          <nav className="flex-1 px-3 space-y-1">
+            {nav.map((n) => (
+              <NavLink key={n.to} to={n.to} end={n.to === '/app'} className={sideLink}>
+                <Icon name={n.icon} className="w-[18px] h-[18px]" />
+                {n.label}
+              </NavLink>
+            ))}
+          </nav>
+          <div className="p-3 border-t border-[color:var(--color-border)]">
+            <div className="px-2 py-1.5">
+              <p className="text-sm font-medium truncate">{name}</p>
+              <p className="text-xs text-[var(--color-fg-subtle)] truncate">{email}</p>
+            </div>
+            <button onClick={signOut} className="mt-1 w-full btn btn-ghost justify-start">
+              <Icon name="logout" className="w-[18px] h-[18px]" /> Sign out
+            </button>
+          </div>
+        </aside>
 
-      {/* Sidebar */}
-      <aside
-        className={`fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950 transition-transform lg:static lg:translate-x-0 ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
-      >
-        <div className="flex h-14 items-center border-b border-gray-200 px-4 dark:border-gray-800">
-          <Link to="/app" className="text-lg">
-            <Wordmark />
-          </Link>
+        {/* Main */}
+        <div className="flex-1 lg:ml-60 min-w-0">
+          {/* Top bar */}
+          <header className="sticky top-0 z-20 h-14 lg:h-16 flex items-center justify-between gap-3 px-4 md:px-8 border-b border-[color:var(--color-border)] bg-[var(--color-bg)]/80 backdrop-blur-xl">
+            <div className="lg:hidden"><Link to="/app"><Wordmark /></Link></div>
+            <div className="hidden lg:block text-sm text-[var(--color-fg-muted)] truncate">{name}</div>
+            <div className="flex items-center gap-2">
+              <SandboxBadge />
+              <button onClick={signOut} className="lg:hidden btn btn-ghost px-2" aria-label="Sign out">
+                <Icon name="logout" className="w-[18px] h-[18px]" />
+              </button>
+            </div>
+          </header>
+
+          <main className="px-4 md:px-8 py-5 md:py-8 pb-28 lg:pb-10 max-w-5xl mx-auto">
+            <Outlet />
+          </main>
         </div>
-        <nav className="flex-1 space-y-1 overflow-y-auto p-3">
-          {nav.map((n) => (
-            <NavLink
-              key={n.to}
-              to={n.to}
-              end={n.to === '/app'}
-              className={linkClass}
-              onClick={() => setSidebarOpen(false)}
-            >
-              {n.label}
+      </div>
+
+      {/* Mobile bottom tab bar */}
+      <nav className="lg:hidden fixed bottom-0 inset-x-0 z-30 border-t border-[color:var(--color-border)] bg-[var(--color-bg)]/90 backdrop-blur-xl pb-[env(safe-area-inset-bottom)]">
+        <div className="grid grid-cols-5">
+          {nav.filter((n) => n.primary).map((n) => (
+            <NavLink key={n.to} to={n.to} end={n.to === '/app'} className={tabLink}>
+              <Icon name={n.icon} className="w-[22px] h-[22px]" />
+              <span className="text-[0.62rem] font-medium">{n.label}</span>
             </NavLink>
           ))}
-        </nav>
-        <div className="border-t border-gray-200 p-3 dark:border-gray-800">
-          <p className="truncate text-xs text-gray-500 dark:text-gray-400">{email}</p>
-          <button
-            onClick={signOut}
-            className="mt-2 w-full rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
-          >
-            Sign out
-          </button>
         </div>
-      </aside>
-
-      {/* Main */}
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <header className="flex h-14 items-center border-b border-gray-200 px-4 dark:border-gray-800 lg:hidden">
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="mr-3 rounded-md p-1.5 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800"
-            aria-label="Open menu"
-          >
-            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
-          <Wordmark className="text-lg" />
-        </header>
-        <main className="flex-1 overflow-y-auto p-4 md:p-6">
-          <Outlet />
-        </main>
-      </div>
+      </nav>
     </div>
   )
+}
+
+function sideLink({ isActive }: { isActive: boolean }) {
+  return `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
+    isActive
+      ? 'bg-[var(--color-surface-2)] text-[var(--color-fg)]'
+      : 'text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] hover:bg-[var(--color-surface-2)]/60'
+  }`
+}
+function tabLink({ isActive }: { isActive: boolean }) {
+  return `flex flex-col items-center justify-center gap-1 py-2.5 transition-colors ${
+    isActive ? 'text-[var(--color-fg)]' : 'text-[var(--color-fg-subtle)]'
+  }`
 }

@@ -7,15 +7,21 @@ import { Signup } from '@/pages/Signup'
 import { Callback } from '@/pages/Callback'
 import { Dashboard } from '@/pages/Dashboard'
 import { Accounts } from '@/pages/Accounts'
-import { Transactions } from '@/pages/Transactions'
-import { Beneficiaries } from '@/pages/Beneficiaries'
-import { Payments } from '@/pages/Payments'
-import { Conversions } from '@/pages/Conversions'
-import { Documents } from '@/pages/Documents'
+import { Cards } from '@/pages/Cards'
+import { Send } from '@/pages/Send'
+import { Exchange } from '@/pages/Exchange'
+import { Wallet } from '@/pages/Wallet'
+import { Activity } from '@/pages/Activity'
+import { Spinner } from '@/components/ui'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth()
-  if (isLoading) return <div className="grid h-full place-items-center text-sm text-gray-500">Loading…</div>
+  if (isLoading)
+    return (
+      <div className="min-h-screen grid place-items-center text-[var(--color-fg-subtle)]">
+        <Spinner className="w-6 h-6" />
+      </div>
+    )
   if (!isAuthenticated) return <Navigate to="/login" replace />
   return <>{children}</>
 }
@@ -39,11 +45,11 @@ export function App() {
           >
             <Route index element={<Dashboard />} />
             <Route path="accounts" element={<Accounts />} />
-            <Route path="transactions" element={<Transactions />} />
-            <Route path="beneficiaries" element={<Beneficiaries />} />
-            <Route path="payments" element={<Payments />} />
-            <Route path="conversions" element={<Conversions />} />
-            <Route path="documents" element={<Documents />} />
+            <Route path="cards" element={<Cards />} />
+            <Route path="send" element={<Send />} />
+            <Route path="exchange" element={<Exchange />} />
+            <Route path="wallet" element={<Wallet />} />
+            <Route path="activity" element={<Activity />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

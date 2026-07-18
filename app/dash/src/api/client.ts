@@ -17,191 +17,214 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     ...(init?.headers as Record<string, string>),
   }
   const token = getToken()
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`
-  }
+  if (token) headers['Authorization'] = `Bearer ${token}`
 
   const res = await fetch(`${BASE_URL}${path}`, { ...init, headers })
 
   if (res.status === 401 || res.status === 403) {
-    window.location.href = '/login'
-    throw new Error('Unauthorized')
+    // Only bounce to login from inside the authed app.
+    if (window.location.pathname.startsWith('/app')) window.location.href = '/login'
+    const body = await res.json().catch(() => ({}))
+    throw new Error(body.message || body.error || 'Unauthorized')
   }
-
   if (!res.ok) {
     const body = await res.json().catch(() => ({}))
     throw new Error(body.message || body.error || `Request failed: ${res.status}`)
   }
-
   if (res.status === 204) return undefined as T
   return res.json()
 }
 
-// -- Auth --
-//
-// Sign-in / sign-up are owned entirely by the IAM SDK (@hanzo/iam, OIDC+PKCE
-// against lux.id) — see lib/iam.ts. There are no password endpoints here; the
-// SDK stores the JWT, which getToken() reads and bankd validates via JWKS.
+// -- Domain types (mirror bankd JSON) --
 
-// onboard provisions the signed-in customer: a multi-currency account, its
-// opening balance, and a non-custodial MPC crypto wallet. Idempotent.
-export async function onboard(): Promise<{ account: Record<string, unknown>; wallet: Record<string, unknown> }> {
-  return request('/v1/bank/onboard', { method: 'POST', body: JSON.stringify({}) })
+export interface Balance {
+  currency: string
+  available: number
+  held: number
+  decimals: number
+  kind: 'fiat' | 'crypto'
+  valueUsd: number
 }
-
-
-// -- Collection CRUD --
-
-export interface ListResult<T> {
-  page: number
-  perPage: number
-  totalItems: number
-  totalPages: number
-  items: T[]
+export interface AccountView {
+  id: string
+  entityName: string
+  entityType: string
+  country: string
+  currency: string
+  status: string
+  kycStatus: string
+  iban: string
 }
-
-export interface ListParams {
-  page?: number
-  perPage?: number
-  sort?: string
-  filter?: string
-  expand?: string
+export interface Wallet {
+  id: string
+  currency: string
+  address: string
+  network: string
+  status: string
 }
-
-function buildQuery(params?: ListParams): string {
-  if (!params) return ''
-  const parts: string[] = []
-  if (params.page) parts.push(`page=${params.page}`)
-  if (params.perPage) parts.push(`perPage=${params.perPage}`)
-  if (params.sort) parts.push(`sort=${encodeURIComponent(params.sort)}`)
-  if (params.filter) parts.push(`filter=${encodeURIComponent(params.filter)}`)
-  if (params.expand) parts.push(`expand=${encodeURIComponent(params.expand)}`)
-  return parts.length ? `?${parts.join('&')}` : ''
+export interface CardView {
+  id: string
+  holderName: string
+  brand: string
+  type: string
+  last4: string
+  display: string
+  expMonth: number
+  expYear: number
+  currency: string
+  status: string
+  design: string
 }
-
-export async function listRecords<T = Record<string, unknown>>(
-  collection: string,
-  params?: ListParams,
-): Promise<ListResult<T>> {
-  return request(`/v1/collections/${collection}/records${buildQuery(params)}`)
-}
-
-export async function getRecord<T = Record<string, unknown>>(
-  collection: string,
-  id: string,
-  expand?: string,
-): Promise<T> {
-  const q = expand ? `?expand=${encodeURIComponent(expand)}` : ''
-  return request(`/v1/collections/${collection}/records/${id}${q}`)
-}
-
-export async function createRecord<T = Record<string, unknown>>(
-  collection: string,
-  data: Record<string, unknown>,
-): Promise<T> {
-  return request(`/v1/collections/${collection}/records`, {
-    method: 'POST',
-    body: JSON.stringify(data),
-  })
-}
-
-export async function updateRecord<T = Record<string, unknown>>(
-  collection: string,
-  id: string,
-  data: Record<string, unknown>,
-): Promise<T> {
-  return request(`/v1/collections/${collection}/records/${id}`, {
-    method: 'PATCH',
-    body: JSON.stringify(data),
-  })
-}
-
-export async function deleteRecord(collection: string, id: string): Promise<void> {
-  return request(`/v1/collections/${collection}/records/${id}`, {
-    method: 'DELETE',
-  })
-}
-
-// -- Custom routes --
-
-export async function getBalances(accountId: string) {
-  return request<{ currency: string; available: number; held: number }[]>(
-    `/v1/bank/accounts/${accountId}/balances`,
-  )
-}
-
-export async function sendPayment(data: {
-  accountId: string
-  beneficiaryId: string
+export interface Txn {
+  id: string
+  type: string
+  direction: 'credit' | 'debit'
   amount: number
   currency: string
+  decimals: number
+  status: string
   reference: string
-}) {
-  return request<{ transactionId: string; status: string }>(
-    '/v1/bank/payments/outbound',
-    { method: 'POST', body: JSON.stringify(data) },
-  )
+  created: string
+}
+export interface Overview {
+  sandbox: boolean
+  onboarded: boolean
+  account?: AccountView
+  balances?: Balance[]
+  wallet?: Wallet | null
+  cards?: CardView[]
+  recentTransactions?: Txn[]
+}
+export interface Beneficiary {
+  id: string
+  name: string
+  bankAccountHolder: string
+  currency: string
+  country: string
+  paymentType: string
+  bankDetails: { iban?: string; bic?: string; accountNumber?: string; sortCode?: string }
+  verified: boolean
 }
 
-export async function createTransfer(data: {
+// -- Public config --
+
+export interface Config {
+  sandbox: boolean
+  fiat: string[]
+  crypto: string[]
+  network: string
+  disclaimer: string
+}
+export const getConfig = () => request<Config>('/v1/bank/config')
+
+// -- Onboarding + dashboard --
+
+export interface KYC {
+  name?: string
+  dob?: string
+  addressLine?: string
+  city?: string
+  postalCode?: string
+  country?: string
+  entityType?: string
+}
+export const onboard = (kyc: KYC = {}) =>
+  request<Overview>('/v1/bank/onboard', { method: 'POST', body: JSON.stringify(kyc) })
+
+export const getOverview = () => request<Overview>('/v1/bank/overview')
+
+export const listTransactions = () => request<Txn[]>('/v1/bank/transactions')
+
+// -- Money movement --
+
+export const createTransfer = (data: {
   fromAccountId: string
   toAccountId: string
   amount: number
   currency: string
   reference: string
-}) {
-  return request<{ debitId: string; creditId: string; status: string }>(
-    '/v1/bank/transfers',
-    { method: 'POST', body: JSON.stringify(data) },
-  )
-}
-
-export async function getFXQuote(data: {
-  sellCurrency: string
-  buyCurrency: string
-  amount: number
-}) {
-  return request<{
-    sellCurrency: string
-    buyCurrency: string
-    sellAmount: number
-    buyAmount: number
-    rate: number
-    quoteId: string
-    expiresAt: string
-  }>('/v1/bank/fx/quote', { method: 'POST', body: JSON.stringify(data) })
-}
-
-export async function executeFX(data: { accountId: string; quoteId: string }) {
-  return request<Record<string, unknown>>('/v1/bank/fx/execute', {
+}) =>
+  request<{ debitId: string; creditId: string; status: string }>('/v1/bank/transfers', {
     method: 'POST',
     body: JSON.stringify(data),
   })
+
+export const sendPayment = (data: {
+  accountId: string
+  beneficiaryId: string
+  amount: number
+  currency: string
+  reference: string
+}) =>
+  request<{ transactionId: string; status: string }>('/v1/bank/payments/outbound', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+
+// -- Beneficiaries --
+
+export const listBeneficiaries = () => request<Beneficiary[]>('/v1/bank/beneficiaries')
+export const createBeneficiary = (data: {
+  name: string
+  bankAccountHolder?: string
+  currency: string
+  country?: string
+  iban?: string
+  bic?: string
+  accountNumber?: string
+  sortCode?: string
+  paymentType?: string
+}) => request<{ id: string }>('/v1/bank/beneficiaries', { method: 'POST', body: JSON.stringify(data) })
+export const deleteBeneficiary = (id: string) =>
+  request<{ deleted: string }>(`/v1/bank/beneficiaries/${id}`, { method: 'DELETE' })
+
+// -- Cards --
+
+export const listCards = () => request<CardView[]>('/v1/bank/cards')
+export const issueCard = (currency?: string) =>
+  request<{ card: CardView; cvv: string }>('/v1/bank/cards', {
+    method: 'POST',
+    body: JSON.stringify({ currency }),
+  })
+export const freezeCard = (id: string) =>
+  request<CardView>(`/v1/bank/cards/${id}/freeze`, { method: 'POST' })
+export const unfreezeCard = (id: string) =>
+  request<CardView>(`/v1/bank/cards/${id}/unfreeze`, { method: 'POST' })
+
+// -- Exchange (fiat FX + crypto buy/sell/convert) --
+
+export interface Quote {
+  fromCurrency: string
+  toCurrency: string
+  fromAmount: number
+  toAmount: number
+  fromDecimals: number
+  toDecimals: number
+  rate: number
+  expiresAt: string
 }
+export const exchangeQuote = (fromCurrency: string, toCurrency: string, amount: number) =>
+  request<Quote>('/v1/bank/exchange/quote', {
+    method: 'POST',
+    body: JSON.stringify({ fromCurrency, toCurrency, amount }),
+  })
+export const exchangeExecute = (fromCurrency: string, toCurrency: string, amount: number) =>
+  request<{
+    fromCurrency: string
+    toCurrency: string
+    fromAmount: number
+    toAmount: number
+    rate: number
+    balances: Balance[]
+  }>('/v1/bank/exchange/execute', {
+    method: 'POST',
+    body: JSON.stringify({ fromCurrency, toCurrency, amount }),
+  })
 
-// -- File upload (for documents) --
+// -- Wallet / crypto --
 
-export async function uploadFile(
-  collection: string,
-  id: string,
-  field: string,
-  file: File,
-): Promise<Record<string, unknown>> {
-  const form = new FormData()
-  form.append(field, file)
-
-  const headers: Record<string, string> = {}
-  const token = getToken()
-  if (token) headers['Authorization'] = `Bearer ${token}`
-
-  const res = await fetch(
-    `${BASE_URL}/v1/collections/${collection}/records/${id}`,
-    { method: 'PATCH', headers, body: form },
-  )
-
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}))
-    throw new Error(body.message || `Upload failed: ${res.status}`)
-  }
-  return res.json()
-}
+export interface CryptoPrice { asset: string; usd: number; decimals: number }
+export const getWallet = () =>
+  request<{ wallet: Wallet; holdings: Balance[]; network: string; sandbox: boolean }>('/v1/bank/wallet')
+export const getCryptoPrices = () =>
+  request<{ prices: CryptoPrice[]; sandbox: boolean }>('/v1/bank/crypto/prices')

@@ -1,110 +1,74 @@
-import { useState, useEffect } from 'react'
-import { useRecords } from '@/hooks/useRecords'
-import { getBalances } from '@/api/client'
-import { StatusBadge } from '@/components/StatusBadge'
-import { BalanceCard } from '@/components/BalanceCard'
-import { formatDate } from '@/lib/format'
-
-interface Account {
-  id: string
-  entityName: string
-  entityType: string
-  country: string
-  currency: string
-  status: string
-  kycStatus: string
-  riskRating: string
-  created: string
-}
-
-interface Balance {
-  currency: string
-  available: number
-  held: number
-}
+import { useState } from 'react'
+import { useOverview } from '@/hooks/overview'
+import { Money, AssetAvatar, SectionHeader, StatusBadge, Skeleton, formatUSD, Icon } from '@/components/ui'
+import { capitalize } from '@/lib/format'
 
 export function Accounts() {
-  const { data, loading } = useRecords<Account>({
-    collection: 'accounts',
-    perPage: 50,
-    sort: '-created',
-  })
+  const { overview, loading } = useOverview()
+  if (loading) return <Skeleton className="h-72 rounded-[var(--radius-card)]" />
+  if (!overview?.account) return null
 
-  const [selected, setSelected] = useState<string | null>(null)
-  const [balances, setBalances] = useState<Balance[]>([])
-
-  useEffect(() => {
-    if (!selected) {
-      setBalances([])
-      return
-    }
-    getBalances(selected).then(setBalances).catch(() => setBalances([]))
-  }, [selected])
-
-  const accounts = data?.items || []
+  const a = overview.account
+  const balances = overview.balances ?? []
+  const totalUsd = balances.reduce((s, b) => s + b.valueUsd, 0)
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Accounts</h1>
-
-      {loading && <p className="text-sm text-gray-500">Loading...</p>}
-
-      <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-800">
-        <table className="w-full text-left text-sm">
-          <thead>
-            <tr className="border-b border-gray-200 bg-gray-50 text-xs font-medium uppercase text-gray-500 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400">
-              <th className="px-4 py-3">Name</th>
-              <th className="px-4 py-3">Type</th>
-              <th className="px-4 py-3">Country</th>
-              <th className="px-4 py-3">Currency</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">KYC</th>
-              <th className="px-4 py-3">Created</th>
-            </tr>
-          </thead>
-          <tbody>
-            {accounts.map((a) => (
-              <tr
-                key={a.id}
-                onClick={() => setSelected(selected === a.id ? null : a.id)}
-                className={`cursor-pointer border-b border-gray-100 transition-colors hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-900 ${
-                  selected === a.id ? 'bg-gray-50 dark:bg-gray-900' : ''
-                }`}
-              >
-                <td className="px-4 py-3 font-medium">{a.entityName}</td>
-                <td className="px-4 py-3 capitalize">{a.entityType}</td>
-                <td className="px-4 py-3">{a.country}</td>
-                <td className="px-4 py-3">{a.currency}</td>
-                <td className="px-4 py-3"><StatusBadge status={a.status} /></td>
-                <td className="px-4 py-3"><StatusBadge status={a.kycStatus} /></td>
-                <td className="px-4 py-3 text-gray-500 dark:text-gray-400">{formatDate(a.created)}</td>
-              </tr>
-            ))}
-            {accounts.length === 0 && !loading && (
-              <tr>
-                <td colSpan={7} className="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
-                  No accounts
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+      <div>
+        <h1 className="text-2xl font-semibold tracking-tight">Accounts</h1>
+        <p className="text-sm text-[var(--color-fg-muted)] mt-0.5">One multi-currency account, {balances.length} balances.</p>
       </div>
 
-      {/* Balances panel */}
-      {selected && (
-        <div>
-          <h2 className="mb-3 text-lg font-medium">Balances</h2>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {balances.map((b) => (
-              <BalanceCard key={b.currency} {...b} />
-            ))}
-            {balances.length === 0 && (
-              <p className="text-sm text-gray-500 dark:text-gray-400">No balances</p>
-            )}
+      <div className="card p-5">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <p className="font-medium text-lg truncate">{a.entityName}</p>
+            <p className="text-sm text-[var(--color-fg-subtle)] capitalize">{a.entityType} · {a.country}</p>
+          </div>
+          <div className="flex gap-2 shrink-0">
+            <StatusBadge status={a.status} />
+            <StatusBadge status={a.kycStatus} />
           </div>
         </div>
-      )}
+        <div className="mt-4 pt-4 border-t border-[color:var(--color-border)]">
+          <IbanRow iban={a.iban} />
+        </div>
+      </div>
+
+      <section>
+        <SectionHeader title="Balances" action={<span className="text-sm tnum text-[var(--color-fg-muted)]">{formatUSD(totalUsd)}</span>} />
+        <div className="card divide-y divide-[color:var(--color-border)]">
+          {balances.map((b) => (
+            <div key={b.currency} className="flex items-center gap-3 px-4 py-3.5">
+              <AssetAvatar code={b.currency} />
+              <div className="min-w-0 flex-1">
+                <p className="font-medium">{b.currency}</p>
+                <p className="text-xs text-[var(--color-fg-subtle)]">{capitalize(b.kind)}</p>
+              </div>
+              <div className="text-right">
+                <Money minor={b.available} currency={b.currency} decimals={b.decimals} className="font-medium" />
+                <p className="text-xs text-[var(--color-fg-subtle)] tnum">{formatUSD(b.valueUsd)}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
+  )
+}
+
+function IbanRow({ iban }: { iban: string }) {
+  const [copied, setCopied] = useState(false)
+  return (
+    <button
+      onClick={() => { navigator.clipboard?.writeText(iban); setCopied(true); setTimeout(() => setCopied(false), 1500) }}
+      className="w-full flex items-center gap-3 text-left group"
+    >
+      <div className="flex-1 min-w-0">
+        <p className="text-xs text-[var(--color-fg-subtle)]">Account number (IBAN)</p>
+        <p className="font-mono text-sm truncate">{iban || '—'}</p>
+      </div>
+      <span className="text-[var(--color-fg-muted)] group-hover:text-[var(--color-fg)]"><Icon name={copied ? 'check' : 'copy'} className="w-4 h-4" /></span>
+    </button>
   )
 }

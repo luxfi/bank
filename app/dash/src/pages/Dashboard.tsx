@@ -1,111 +1,116 @@
-import { useState, useEffect } from 'react'
-import { useRecords } from '@/hooks/useRecords'
-import { getBalances } from '@/api/client'
-import { BalanceCard } from '@/components/BalanceCard'
-import { TransactionRow } from '@/components/TransactionRow'
+import { Link } from 'react-router'
+import { useOverview } from '@/hooks/overview'
+import { Money, Icon, SectionHeader, AssetAvatar, Skeleton, EmptyState, formatUSD } from '@/components/ui'
+import { TxnRow } from '@/components/TxnRow'
+import { CardFace } from '@/components/CardFace'
 
-interface Account {
-  id: string
-  entityName: string
-  entityType: string
-  currency: string
-  status: string
-}
-
-interface Balance {
-  currency: string
-  available: number
-  held: number
-}
-
-interface Transaction {
-  id: string
-  type: string
-  direction: string
-  amount: number
-  currency: string
-  status: string
-  reference: string
-  created: string
-}
+const actions = [
+  { to: '/app/send', label: 'Send', icon: 'send' },
+  { to: '/app/exchange', label: 'Exchange', icon: 'swap' },
+  { to: '/app/wallet', label: 'Crypto', icon: 'coins' },
+  { to: '/app/cards', label: 'Cards', icon: 'card' },
+] as const
 
 export function Dashboard() {
-  const { data: accountsData } = useRecords<Account>({
-    collection: 'accounts',
-    perPage: 50,
-    sort: '-created',
-  })
+  const { overview, loading } = useOverview()
 
-  const [balances, setBalances] = useState<Balance[]>([])
+  if (loading) return <DashboardSkeleton />
+  if (!overview?.onboarded) return null
 
-  const { data: txData } = useRecords<Transaction>({
-    collection: 'transactions',
-    perPage: 10,
-    sort: '-created',
-  })
-
-  // Fetch balances for the first account.
-  useEffect(() => {
-    const first = accountsData?.items?.[0]
-    if (!first) return
-    getBalances(first.id).then(setBalances).catch(() => {})
-  }, [accountsData])
-
-  const accounts = accountsData?.items || []
-  const transactions = txData?.items || []
+  const balances = overview.balances ?? []
+  const totalUsd = balances.reduce((s, b) => s + b.valueUsd, 0)
+  const txns = overview.recentTransactions ?? []
+  const cards = overview.cards ?? []
+  const firstName = (overview.account?.entityName || '').split(' ')[0]
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Dashboard</h1>
-
-      {/* Account summary */}
-      {accounts.length > 0 && (
-        <div>
-          <h2 className="mb-3 text-sm font-medium text-gray-500 dark:text-gray-400">
-            {accounts[0].entityName} - {accounts[0].entityType}
-          </h2>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {balances.map((b) => (
-              <BalanceCard key={b.currency} {...b} />
-            ))}
-            {balances.length === 0 && (
-              <p className="col-span-full text-sm text-gray-500 dark:text-gray-400">
-                No balances available
-              </p>
-            )}
-          </div>
+    <div className="space-y-6 md:space-y-8">
+      {/* Total balance hero */}
+      <section className="rise">
+        <div className="relative overflow-hidden rounded-[var(--radius-card)] border border-[color:var(--color-border)] bg-gradient-to-br from-[var(--color-surface-2)] to-[var(--color-surface)] p-6 md:p-8">
+          <div className="absolute -top-24 -right-16 w-72 h-72 rounded-full bg-[radial-gradient(circle,rgba(139,124,255,0.18),transparent_65%)]" />
+          <p className="text-sm text-[var(--color-fg-muted)]">
+            {firstName ? `Welcome back, ${firstName}` : 'Total balance'}
+          </p>
+          <p className="text-4xl md:text-5xl font-semibold tracking-tight tnum mt-1.5">{formatUSD(totalUsd)}</p>
+          <p className="text-xs text-[var(--color-fg-subtle)] mt-2">
+            Across {balances.length} balance{balances.length === 1 ? '' : 's'} · estimated in USD
+          </p>
         </div>
+      </section>
+
+      {/* Quick actions */}
+      <section className="grid grid-cols-4 gap-2 md:gap-3">
+        {actions.map((a) => (
+          <Link key={a.to} to={a.to} className="card-2 flex flex-col items-center gap-2 py-4 hover:bg-[var(--color-surface-3)] transition-colors">
+            <span className="w-10 h-10 rounded-full grid place-items-center bg-[var(--color-surface-3)] border">
+              <Icon name={a.icon} className="w-[18px] h-[18px]" />
+            </span>
+            <span className="text-xs font-medium">{a.label}</span>
+          </Link>
+        ))}
+      </section>
+
+      {/* Balances */}
+      <section>
+        <SectionHeader
+          title="Balances"
+          action={<Link to="/app/accounts" className="text-xs text-[var(--color-fg-muted)] hover:text-[var(--color-fg)]">See all</Link>}
+        />
+        <div className="card divide-y divide-[color:var(--color-border)]">
+          {balances.map((b) => (
+            <div key={b.currency} className="flex items-center gap-3 px-4 py-3.5">
+              <AssetAvatar code={b.currency} />
+              <div className="min-w-0 flex-1">
+                <p className="font-medium">{b.currency}</p>
+                <p className="text-xs text-[var(--color-fg-subtle)] capitalize">{b.kind}</p>
+              </div>
+              <div className="text-right">
+                <Money minor={b.available} currency={b.currency} decimals={b.decimals} className="font-medium" />
+                <p className="text-xs text-[var(--color-fg-subtle)] tnum">{formatUSD(b.valueUsd)}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Cards preview */}
+      {cards.length > 0 && (
+        <section>
+          <SectionHeader
+            title="Cards"
+            action={<Link to="/app/cards" className="text-xs text-[var(--color-fg-muted)] hover:text-[var(--color-fg)]">Manage</Link>}
+          />
+          <Link to="/app/cards" className="block max-w-sm">
+            <CardFace card={cards[0]} />
+          </Link>
+        </section>
       )}
 
-      {accounts.length === 0 && (
-        <p className="text-sm text-gray-500 dark:text-gray-400">No accounts found</p>
-      )}
-
-      {/* Recent transactions */}
-      <div>
-        <h2 className="mb-3 text-lg font-medium">Recent transactions</h2>
-        {transactions.length === 0 ? (
-          <p className="text-sm text-gray-500 dark:text-gray-400">No transactions yet</p>
+      {/* Recent activity */}
+      <section>
+        <SectionHeader
+          title="Recent activity"
+          action={<Link to="/app/activity" className="text-xs text-[var(--color-fg-muted)] hover:text-[var(--color-fg)]">See all</Link>}
+        />
+        {txns.length === 0 ? (
+          <EmptyState icon="activity" title="No activity yet" body="Your transactions will appear here as you move money." />
         ) : (
-          <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-800">
-            <table className="w-full text-left">
-              <thead>
-                <tr className="border-b border-gray-200 bg-gray-50 text-xs font-medium uppercase text-gray-500 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400">
-                  <th className="px-4 py-3">Type</th>
-                  <th className="px-4 py-3">Amount</th>
-                  <th className="px-4 py-3">Status</th>
-                  <th className="px-4 py-3">Date</th>
-                </tr>
-              </thead>
-              <tbody className="[&_td]:px-4">
-                {transactions.map((tx) => (
-                  <TransactionRow key={tx.id} tx={tx} />
-                ))}
-              </tbody>
-            </table>
+          <div className="card divide-y divide-[color:var(--color-border)]">
+            {txns.map((t) => <TxnRow key={t.id} txn={t} />)}
           </div>
         )}
-      </div>
+      </section>
+    </div>
+  )
+}
+
+function DashboardSkeleton() {
+  return (
+    <div className="space-y-8">
+      <Skeleton className="h-40 rounded-[var(--radius-card)]" />
+      <div className="grid grid-cols-4 gap-3">{Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-24 rounded-xl" />)}</div>
+      <Skeleton className="h-56 rounded-[var(--radius-card)]" />
     </div>
   )
 }
