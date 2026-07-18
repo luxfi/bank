@@ -2,11 +2,12 @@ FROM golang:1.26.4-alpine AS builder
 
 RUN apk add --no-cache gcc musl-dev git
 
-# luxfi deps are private-style (some tags re-published); trust the committed
-# go.sum and skip the public checksum DB rather than fail on a re-tag.
-ENV GOSUMDB=off \
-    GOPRIVATE=github.com/luxfi/*,github.com/hanzoai/* \
-    GONOSUMDB=github.com/luxfi/*,github.com/hanzoai/*
+# All modules resolve through the public Go proxy (GOPROXY default). Disable
+# only the checksum DB — some luxfi tags were re-published, so sumdb would
+# reject them; go.sum still enforces integrity. Do NOT set GOPRIVATE here: it
+# would force direct git for luxfi/hanzoai modules, which needs credentials the
+# container build doesn't have.
+ENV GOSUMDB=off GOFLAGS=-mod=mod
 
 WORKDIR /src
 COPY go.mod go.sum ./
