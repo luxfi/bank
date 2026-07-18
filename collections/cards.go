@@ -17,10 +17,10 @@ func EnsureCardCollection(app core.App) error {
 
 	c := core.NewBaseCollection(CardCollectionName, CardCollectionName)
 
-	// Owner-scoped read; mutations happen through custom /v1/bank routes only.
-	rule := `account.owner = @request.auth.id`
-	c.ListRule = &rule
-	c.ViewRule = &rule
+	// Owner-scoped read (public in sandbox); mutations via custom /v1/bank routes only.
+	rule := readRule(`account.owner = @request.auth.id`)
+	c.ListRule = rule
+	c.ViewRule = rule
 
 	c.Fields.Add(
 		&core.RelationField{

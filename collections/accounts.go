@@ -15,10 +15,11 @@ func EnsureAccountCollection(app core.App) error {
 
 	c := core.NewBaseCollection(AccountCollectionName, AccountCollectionName)
 
-	// API rules: list/view scoped to owner; create/update/delete superuser only (nil).
-	ownerRule := `owner = @request.auth.id`
-	c.ListRule = &ownerRule
-	c.ViewRule = &ownerRule
+	// API rules: list/view scoped to owner in prod; public in sandbox so the
+	// seeded demo records are readable. Mutations superuser only (nil).
+	r := readRule(`owner = @request.auth.id`)
+	c.ListRule = r
+	c.ViewRule = r
 
 	c.Fields.Add(
 		// Owner — the authenticated principal id. A plain id (not a relation)

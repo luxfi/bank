@@ -33,9 +33,9 @@ func EnsureWalletCollection(app core.App) error {
 		&core.AutodateField{Name: "updated", OnCreate: true, OnUpdate: true},
 	)
 
-	listRule := `account.owner = @request.auth.id`
-	c.ListRule = &listRule
-	c.ViewRule = &listRule
+	listRule := readRule(`account.owner = @request.auth.id`)
+	c.ListRule = listRule
+	c.ViewRule = listRule
 
 	return app.Save(c)
 }

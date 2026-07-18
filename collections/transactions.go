@@ -18,10 +18,10 @@ func EnsureTransactionCollection(app core.App) error {
 
 	c := core.NewBaseCollection(TransactionCollectionName, TransactionCollectionName)
 
-	// API rules: list/view scoped to account owner; mutations superuser only (nil).
-	txRule := `account.owner = @request.auth.id`
-	c.ListRule = &txRule
-	c.ViewRule = &txRule
+	// API rules: list/view scoped to account owner (public in sandbox); mutations superuser only (nil).
+	txRule := readRule(`account.owner = @request.auth.id`)
+	c.ListRule = txRule
+	c.ViewRule = txRule
 
 	c.Fields.Add(
 		// Source account.
