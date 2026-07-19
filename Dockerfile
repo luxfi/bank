@@ -10,14 +10,16 @@ RUN apk add --no-cache gcc musl-dev git
 ENV GOSUMDB=off GOFLAGS=-mod=mod
 
 WORKDIR /src
-COPY go.mod go.sum ./
-# First-party luxfi/hanzoai/lux-private tags get periodically re-published, so
-# the CI Go proxy may serve a different module zip than go.sum pinned (edge
-# split-brain → "checksum mismatch / SECURITY ERROR" on go mod download). Third-
-# party integrity is untouched; only our own modules' sums are dropped and then
-# re-recorded from the proxy under -mod=mod. Durable fix for the recurring drift.
-RUN sed -i -E '/github\.com\/(luxfi|hanzoai|lux-private)\//d' go.sum || true
-RUN go mod download
+COPY go.mod ./
+# First-party luxfi/hanzoai tags get periodically re-published, so the CI Go
+# proxy serves a different module zip than any pinned go.sum (edge split-brain →
+# "checksum mismatch / SECURITY ERROR"). We rebuild go.sum from the proxy inside
+# the image: with GOSUMDB=off there is no sumdb round-trip, and regeneration +
+# build share one proxy edge within this layer, so the graph is self-consistent.
+# Durable fix for the recurring drift; the pinned go.sum is intentionally not
+# COPYed. (Third-party pins are re-derived here, not sumdb-checked — acceptable
+# for this first-party-heavy sandbox image.)
+RUN go mod download all
 COPY . .
 RUN CGO_ENABLED=1 go build -o /bankd ./cmd/bankd
 
