@@ -16,8 +16,10 @@ export function Wordmark({ className = '', showLabel = true }: { className?: str
   const brand = useBrand()
 
   if (brand.wordmark === 'plain') {
+    // Intrinsic large size + heavy weight so the acm wordmark reads as the brand
+    // (callers pass no text-size → it must not inherit a tiny ~14px).
     return (
-      <span className={`inline-flex items-center font-bold tracking-tight lowercase ${className}`}>
+      <span className={`inline-flex items-center text-xl font-extrabold leading-none tracking-tight lowercase ${className}`}>
         {brand.wordmarkLabel}
       </span>
     )
