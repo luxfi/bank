@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: lux-build-linux-amd64
+    runs-on: lux-build
     strategy:
       fail-fast: false
       matrix:
