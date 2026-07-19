@@ -27,7 +27,11 @@ RUN set -e; for i in 1 2 3 4 5 6 7 8; do \
       sed -i "\|^$path $ver|d" go.sum; \
     done
 COPY . .
-RUN CGO_ENABLED=1 go build -o /bankd ./cmd/bankd
+# Build offline against the module cache the step above populated. The proxy can
+# serve inconsistent bytes for a re-published tag across requests, so re-fetching
+# at build time would reintroduce the checksum mismatch; GOPROXY=off pins the
+# build to the exact zips already downloaded + summed above.
+RUN CGO_ENABLED=1 GOPROXY=off go build -o /bankd ./cmd/bankd
 
 FROM alpine:3.22
 RUN apk add --no-cache ca-certificates
