@@ -1,7 +1,9 @@
 name: Docker
 
 # Builds both images on a version tag (semver-only): bankd + the customer dash.
-# Single-arch linux/amd64 on the lux self-hosted runner. No QEMU, no cross-org.
+# Single-arch linux/amd64 on the luxfi ARC pool. ARC v0.14 routes by scale-set
+# NAME (lux-build-linux-amd64), not labels — a [self-hosted,linux,amd64] label
+# array never dispatches (jobs queue forever). Must name the pool. No cross-org.
 
 on:
   workflow_dispatch:
@@ -14,7 +16,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: [self-hosted, linux, amd64]
+    runs-on: lux-build-linux-amd64
     strategy:
       fail-fast: false
       matrix:
