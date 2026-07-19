@@ -202,4 +202,8 @@ func SeedSandbox(app core.App) {
 		}
 	}
 	app.Logger().Info("sandbox seed: hero customer ready", "email", email)
+
+	// Curated book of business so the admin console reads like a live
+	// institution (not a one-customer sandbox). Idempotent.
+	seedPortfolio(app)
 }
