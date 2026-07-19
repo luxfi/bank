@@ -10,16 +10,22 @@ RUN apk add --no-cache gcc musl-dev git
 ENV GOSUMDB=off GOFLAGS=-mod=mod
 
 WORKDIR /src
-COPY go.mod ./
+COPY go.mod go.sum ./
 # First-party luxfi/hanzoai tags get periodically re-published, so the CI Go
-# proxy serves a different module zip than any pinned go.sum (edge split-brain →
-# "checksum mismatch / SECURITY ERROR"). We rebuild go.sum from the proxy inside
-# the image: with GOSUMDB=off there is no sumdb round-trip, and regeneration +
-# build share one proxy edge within this layer, so the graph is self-consistent.
-# Durable fix for the recurring drift; the pinned go.sum is intentionally not
-# COPYed. (Third-party pins are re-derived here, not sumdb-checked — acceptable
-# for this first-party-heavy sandbox image.)
-RUN go mod download all
+# proxy serves a different module zip than the pinned go.sum (edge split-brain →
+# "checksum mismatch / SECURITY ERROR"). Self-heal: attempt the download, and if
+# a mismatch names a module, drop just that module's sum lines and retry (it gets
+# re-recorded from the proxy under -mod=mod). Only re-published modules are
+# touched — proxy-absent pins (e.g. genesis/pubsub) keep their valid sums. Fixes
+# the whole recurring drift class in one place, however many tags drifted.
+RUN set -e; for i in 1 2 3 4 5 6 7 8; do \
+      if out=$(go mod download 2>&1); then echo "go mod download ok"; break; fi; \
+      mod=$(printf '%s\n' "$out" | sed -n 's/^verifying \(.*\): checksum mismatch$/\1/p' | head -1); \
+      if [ -z "$mod" ]; then printf '%s\n' "$out"; exit 1; fi; \
+      path=${mod%@*}; ver=${mod#*@}; \
+      echo "drift: re-recording $path $ver from proxy"; \
+      sed -i "\|^$path $ver|d" go.sum; \
+    done
 COPY . .
 RUN CGO_ENABLED=1 go build -o /bankd ./cmd/bankd
 
