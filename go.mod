@@ -91,13 +91,12 @@ require (
 	github.com/luxfi/dkg v0.4.0 // indirect
 	github.com/luxfi/fhe v1.8.8 // indirect
 	github.com/luxfi/formatting v1.1.1 // indirect
-	github.com/luxfi/genesis v1.16.6
 	github.com/luxfi/geth v1.20.1 // indirect
 	github.com/luxfi/go-bip32 v1.1.0 // indirect
 	github.com/luxfi/go-bip39 v1.2.0 // indirect
 	github.com/luxfi/ids v1.3.2 // indirect
-	github.com/luxfi/keys v1.4.0 // indirect
-	github.com/luxfi/kms v1.11.4 // indirect
+	github.com/luxfi/keys v1.4.1 // indirect
+	github.com/luxfi/kms v1.12.11 // indirect
 	github.com/luxfi/lattice/v7 v7.1.4 // indirect
 	github.com/luxfi/lens v0.2.1 // indirect
 	github.com/luxfi/log v1.4.3 // indirect
