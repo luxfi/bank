@@ -185,3 +185,5 @@ require (
 )
 
 // For local development, uncomment:
+
+exclude github.com/luxfi/genesis v1.5.21
