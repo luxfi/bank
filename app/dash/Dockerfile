@@ -15,7 +15,8 @@ COPY . .
 RUN pnpm build
 
 # ---- server build ----
-FROM golang:1.26-alpine AS srv
+FROM golang:1.26.5-alpine AS srv
+ENV GOTOOLCHAIN=auto
 WORKDIR /src
 COPY server/go.mod ./
 RUN go mod download
