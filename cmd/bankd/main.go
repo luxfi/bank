@@ -55,7 +55,7 @@ func main() {
 	// Defaults pin the Lux brand; every value overridable via env.
 	platform.MustRegister(app, platform.PlatformConfig{
 		IAMEndpoint:            envOr("IAM_ENDPOINT", "https://lux.id"),
-		KMSEndpoint:            envOr("KMS_ENDPOINT", "https://kms.lux.network"),
+		KMSEndpoint:            envOr("KMS_ENDPOINT", "https://kms.lux.cloud"),
 		IAMClientID:            envOr("IAM_CLIENT_ID", "lux-bank"),
 		IAMClientSecret:        os.Getenv("IAM_CLIENT_SECRET"),
 		IAMOrg:                 envOr("IAM_ORG", "lux"),
