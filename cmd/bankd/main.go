@@ -54,8 +54,11 @@ func main() {
 	// activates per-principal SQLite isolation (one encrypted DB per org/user).
 	// Defaults pin the Lux brand; every value overridable via env.
 	platform.MustRegister(app, platform.PlatformConfig{
-		IAMEndpoint:            envOr("IAM_ENDPOINT", "https://lux.id"),
-		KMSEndpoint:            envOr("KMS_ENDPOINT", "https://kms.lux.cloud"),
+		IAMEndpoint: envOr("IAM_ENDPOINT", "https://lux.id"),
+		// KMS is reached over native ZAP, not HTTP — an http(s) endpoint is
+		// rejected outright. Empty selects the in-cluster ZAP default; set
+		// KMS_ENDPOINT to zap://host:9999 (or host:9999) to point elsewhere.
+		KMSEndpoint:            os.Getenv("KMS_ENDPOINT"),
 		IAMClientID:            envOr("IAM_CLIENT_ID", "lux-bank"),
 		IAMClientSecret:        os.Getenv("IAM_CLIENT_SECRET"),
 		IAMOrg:                 envOr("IAM_ORG", "lux"),
