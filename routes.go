@@ -77,6 +77,9 @@ func RegisterRoutes(app core.App) {
 			g.POST("/cards/{id}/freeze", setCardStatus(app, "frozen"))
 			g.POST("/cards/{id}/unfreeze", setCardStatus(app, "active"))
 
+			// Issuer card account (provider-neutral; see issuer.go).
+			registerIssuerRoutes(g)
+
 			// Exchange (fiat FX + crypto buy/sell/convert) and wallet.
 			g.POST("/exchange/quote", handleExchangeQuote(app))
 			g.POST("/exchange/execute", handleExchangeExecute(app))
