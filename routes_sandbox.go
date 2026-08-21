@@ -440,13 +440,16 @@ func handleExchangeQuote(app core.App) func(*core.RequestEvent) error {
 		if !supportedAsset(from) || !supportedAsset(to) || from == to || req.Amount <= 0 {
 			return apis.NewBadRequestError("invalid currency pair or amount", nil)
 		}
-		toMinor, rate := convertMinor(req.Amount, from, to)
+		toMinor, rate, err := exchangeRate(e.Request.Context(), from, to, req.Amount)
+		if err != nil {
+			return e.JSON(http.StatusServiceUnavailable, map[string]string{"error": "exchange unavailable"})
+		}
 		return e.JSON(http.StatusOK, map[string]any{
 			"fromCurrency": from, "toCurrency": to,
 			"fromAmount": req.Amount, "toAmount": toMinor,
 			"fromDecimals": decimalsFor(from), "toDecimals": decimalsFor(to),
 			"rate": rate, "expiresAt": time.Now().Add(60 * time.Second).UTC().Format(time.RFC3339),
-			"sandbox": true,
+			"sandbox": Sandbox(),
 		})
 	}
 }
@@ -465,7 +468,10 @@ func handleExchangeExecute(app core.App) func(*core.RequestEvent) error {
 		if !supportedAsset(from) || !supportedAsset(to) || from == to || req.Amount <= 0 {
 			return apis.NewBadRequestError("invalid currency pair or amount", nil)
 		}
-		toMinor, rate := convertMinor(req.Amount, from, to)
+		toMinor, rate, err := exchangeRate(e.Request.Context(), from, to, req.Amount)
+		if err != nil {
+			return e.JSON(http.StatusServiceUnavailable, map[string]string{"error": "exchange unavailable"})
+		}
 		ref := "Exchange " + from + " → " + to
 
 		debit, err := newTx(app, map[string]any{
