@@ -1,0 +1,31 @@
+{
+  "name": "@luxfi/bank",
+  "version": "1.0.0",
+  "description": "Typed client for the Lux banking API (/v1/bank) — accounts, payments, cards, crypto, FX, and membership plans.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luxfi/bank.git",
+    "directory": "sdk"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.0"
+  }
+}

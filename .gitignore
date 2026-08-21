@@ -19,3 +19,5 @@ test-results/
 *.log
 tmp/
 .DS_Store
+sdk/node_modules/
+sdk/dist/
