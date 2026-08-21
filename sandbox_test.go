@@ -70,3 +70,33 @@ func TestLuxTestnetAddressDeterministic(t *testing.T) {
 		t.Errorf("distinct seeds produced same address")
 	}
 }
+
+func TestValidAddress(t *testing.T) {
+	cases := []struct {
+		asset, addr string
+		want        bool
+	}{
+		{"ETH", "0x1234567890abcdef1234567890abcdef12345678", true},
+		{"LUX", "0x1234567890abcdef1234567890abcdef12345678", true},
+		{"ETH", "0x1234", false},
+		{"ETH", "1234567890abcdef1234567890abcdef12345678xx", false},
+		{"BTC", "bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4", true},
+		{"BTC", "0x1234567890abcdef1234567890abcdef12345678", false},
+		{"BTC", "short", false},
+	}
+	for _, c := range cases {
+		if got := validAddress(c.asset, c.addr); got != c.want {
+			t.Errorf("validAddress(%q, %q) = %v, want %v", c.asset, c.addr, got, c.want)
+		}
+	}
+}
+
+func TestTxHashShape(t *testing.T) {
+	h := txHash()
+	if len(h) != 66 || h[:2] != "0x" {
+		t.Errorf("txHash = %q, want 0x + 64 hex", h)
+	}
+	if h == txHash() {
+		t.Error("txHash not random")
+	}
+}

@@ -263,3 +263,23 @@ export const getWallet = () =>
   request<{ wallet: Wallet; holdings: Balance[]; network: string; sandbox: boolean }>('/v1/bank/wallet')
 export const getCryptoPrices = () =>
   request<{ prices: CryptoPrice[]; sandbox: boolean }>('/v1/bank/crypto/prices')
+
+export interface CryptoMove {
+  txHash: string
+  network: string
+  asset: string
+  amount: number
+  toAddress?: string
+  balances: Balance[]
+}
+export const sendCrypto = (asset: string, amount: number, toAddress: string) =>
+  request<CryptoMove>('/v1/bank/crypto/send', {
+    method: 'POST',
+    body: JSON.stringify({ asset, amount, toAddress }),
+  })
+// Sandbox-only testnet faucet.
+export const depositCrypto = (asset: string, amount: number) =>
+  request<CryptoMove>('/v1/bank/crypto/deposit', {
+    method: 'POST',
+    body: JSON.stringify({ asset, amount }),
+  })

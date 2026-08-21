@@ -91,6 +91,13 @@ func RegisterRoutes(app core.App) {
 			g.GET("/wallet", handleGetWallet(app))
 			g.GET("/crypto/prices", handleCryptoPrices(app))
 
+			// Crypto movement — send on-chain; the deposit faucet is
+			// sandbox-only so the full testnet loop is exercisable.
+			g.POST("/crypto/send", handleCryptoSend(app))
+			if Sandbox() {
+				g.POST("/crypto/deposit", handleCryptoDeposit(app))
+			}
+
 			return e.Next()
 		},
 	})
