@@ -8,8 +8,11 @@ const AccountCollectionName = "accounts"
 // Schema mirrors the NestJS bank: owner (auth user), account holder info,
 // CurrencyCloud account ID, status, and KYC state.
 func EnsureAccountCollection(app core.App) error {
-	_, err := app.FindCollectionByNameOrId(AccountCollectionName)
-	if err == nil {
+	if existing, err := app.FindCollectionByNameOrId(AccountCollectionName); err == nil {
+		if existing.Fields.GetByName("plan") == nil {
+			existing.Fields.Add(planField())
+			return app.Save(existing)
+		}
 		return nil
 	}
 
@@ -88,6 +91,8 @@ func EnsureAccountCollection(app core.App) error {
 			Values:    []string{"low", "medium", "high"},
 			MaxSelect: 1,
 		},
+
+		planField(),
 
 		// Free-form metadata blob (e.g. CurrencyCloud extra fields).
 		&core.JSONField{

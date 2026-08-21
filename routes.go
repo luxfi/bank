@@ -19,6 +19,11 @@ func RegisterRoutes(app core.App) {
 			e.Router.GET("/v1/bank/health", func(re *core.RequestEvent) error {
 				return re.JSON(http.StatusOK, map[string]any{"status": "ok", "sandbox": Sandbox()})
 			})
+			// Membership ladder — one source for lux.finance, lux.credit,
+			// and the dash pricing surfaces.
+			e.Router.GET("/v1/bank/plans", func(re *core.RequestEvent) error {
+				return re.JSON(http.StatusOK, collections.Plans)
+			})
 			// Sandbox-only password login → mints a superuser token.
 			if Sandbox() {
 				e.Router.POST("/v1/bank/login", handleSandboxLogin(app))

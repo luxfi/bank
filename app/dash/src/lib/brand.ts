@@ -22,7 +22,7 @@ export const BRANDS: Record<BrandId, Brand> = {
     id: 'lux',
     productName: 'Lux Financial',
     legalName: 'Lux Financial',
-    domain: 'lux.financial',
+    domain: 'lux.finance',
     theme: 'dark',
     wordmark: 'triangle',
     wordmarkLabel: 'Lux Financial',

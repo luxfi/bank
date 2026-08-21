@@ -80,6 +80,10 @@ func RegisterAccountHooks(app core.App) {
 		if !ok {
 			limits = accountLimits["individual"]
 		}
+		// A membership plan overrides the entity-type defaults.
+		if plan, ok := collections.PlanByID(account.GetString("plan")); ok {
+			limits.daily, limits.monthly = plan.DailyLimit, plan.MonthlyLimit
+		}
 
 		amount := int64(math.Round(e.Record.GetFloat("amount")))
 

@@ -1,7 +1,9 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { Wordmark } from '@/components/Brand'
 import { useBrand } from '@/hooks/brand'
 import { useConfig } from '@/lib/config'
+import { getPlans, type Plan } from '@/api/client'
 import { Icon, SandboxBadge } from '@/components/ui'
 
 const STATS: [string, string][] = [
@@ -12,11 +14,11 @@ const STATS: [string, string][] = [
 ]
 
 const FEATURES = [
-  { icon: 'bank', title: 'Multi-currency accounts', body: 'Hold and manage 30+ currencies in one account. Real-time available and pending balances.' },
-  { icon: 'send', title: 'Global payments', body: 'Pay people and businesses worldwide over SWIFT/SEPA rails. Clear fees, tracked end to end.' },
-  { icon: 'swap', title: 'Instant exchange', body: 'Convert between currencies and crypto at institutional rates — no hidden spread.' },
+  { icon: 'bank', title: 'Multi-currency IBAN accounts', body: 'Hold 30+ currencies with a dedicated IBAN. Real-time available and pending balances.' },
+  { icon: 'send', title: 'Global payments & instant FX', body: 'SWIFT, SEPA, ACH and wires worldwide, with conversion at institutional rates — no hidden spread.' },
   { icon: 'wallet', title: 'Built-in crypto wallet', body: 'Every account ships with a non-custodial wallet secured by threshold MPC — no single key.' },
-  { icon: 'card', title: 'Virtual cards', body: 'Issue, freeze and manage virtual cards in a tap. Spend online anywhere.' },
+  { icon: 'card', title: 'Cards, virtual to metal', body: 'Issue a virtual card in a tap; carry plastic or metal on higher tiers. Pairs with lux.credit.' },
+  { icon: 'coins', title: 'Earn & borrow — Liquid Protocol', body: 'Collateralize crypto in non-custodial vaults and borrow against it while yield repays you. Lux’s native lending protocol, built in.' },
   { icon: 'shield', title: 'Bank-grade security', body: 'Lux ID sign-in, KMS-managed secrets, and continuous KYC / AML / sanctions screening.' },
 ]
 
@@ -28,6 +30,7 @@ export function Landing() {
         <Hero />
         <Stats />
         <Features />
+        <Plans />
         <Closing />
         <Footer />
       </div>
@@ -120,6 +123,52 @@ function Features() {
           </div>
         ))}
       </div>
+    </section>
+  )
+}
+
+const money = (minor: number) => `$${(minor / 100).toLocaleString()}`
+
+function Plans() {
+  const [plans, setPlans] = useState<Plan[] | null>(null)
+  useEffect(() => {
+    getPlans().then(setPlans).catch(() => {})
+  }, [])
+  if (!plans?.length) return null
+  return (
+    <section className="mx-auto max-w-6xl px-5 md:px-8 py-16" id="plans">
+      <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-center">Membership</h2>
+      <p className="text-center text-[var(--color-fg-muted)] mt-3 max-w-lg mx-auto">
+        One ladder, Silver to Sovereign. Every tier pairs with a lux.credit card.
+      </p>
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-10">
+        {plans.map((p) => (
+          <div key={p.id} className={`card p-6 flex flex-col ${p.id === 'black' ? 'border-[color:var(--color-fg)]' : ''}`}>
+            <h3 className="font-medium text-lg">{p.name}</h3>
+            <p className="mt-2">
+              <span className="text-3xl font-semibold tracking-tight tnum">{money(p.monthly)}</span>
+              <span className="text-sm text-[var(--color-fg-subtle)]"> / month</span>
+            </p>
+            <ul className="mt-4 space-y-2 text-sm text-[var(--color-fg-muted)] flex-1">
+              <li>{p.card === 'virtual' ? 'Virtual card' : p.card === 'plastic' ? 'Plastic card' : 'Metal card'}{p.iban ? ' + IBAN account' : ''}</li>
+              <li>{money(p.dailyLimit)} / day · {money(p.monthlyLimit)} / month</li>
+              <li>FX from {p.fxPct}% · {p.freeWires > 0 ? `${p.freeWires} free wire${p.freeWires > 1 ? 's' : ''}/mo` : `wires ${money(p.wireFee)}`}</li>
+              {p.perks.map((perk) => (
+                <li key={perk} className="text-[var(--color-fg-subtle)]">{perk}</li>
+              ))}
+            </ul>
+            <Link
+              to="/signup"
+              className={`btn mt-6 w-full justify-center ${p.id === 'black' ? 'btn-primary' : 'btn-secondary'}`}
+            >
+              {p.invite ? 'Request invitation' : `Choose ${p.name}`}
+            </Link>
+          </div>
+        ))}
+      </div>
+      <p className="text-center text-xs text-[var(--color-fg-subtle)] mt-6">
+        Full fee schedule in your agreement. Cards issued by our banking partner.
+      </p>
     </section>
   )
 }

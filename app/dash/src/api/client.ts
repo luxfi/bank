@@ -130,6 +130,28 @@ export interface Config {
 }
 export const getConfig = () => request<Config>('/v1/bank/config')
 
+// -- Membership plans --
+
+export interface Plan {
+  id: string
+  name: string
+  monthly: number // minor units
+  card: 'virtual' | 'plastic' | 'metal'
+  iban: boolean
+  freeACH: number
+  freeWires: number
+  achFee: number
+  wireFee: number
+  fxPct: number
+  depositPct: number
+  dailyLimit: number
+  monthlyLimit: number
+  holders: number
+  invite?: boolean
+  perks: string[]
+}
+export const getPlans = () => request<Plan[]>('/v1/bank/plans')
+
 // -- Onboarding + dashboard --
 
 export interface KYC {
