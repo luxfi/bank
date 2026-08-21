@@ -1,5 +1,6 @@
 import type { ReactNode, ButtonHTMLAttributes } from 'react'
 import { formatMoney, formatUSD, capitalize } from '@/lib/format'
+import { useConfig } from '@/lib/config'
 
 // -- Icons (inline; no icon dependency) --
 
@@ -194,6 +195,8 @@ export function Field({ label, children, hint }: { label: string; children: Reac
 // -- Sandbox badge --
 
 export function SandboxBadge({ className = '' }: { className?: string }) {
+  const config = useConfig()
+  if (config && !config.sandbox) return null
   return (
     <span className={`chip text-amber-300 border-[color:rgba(251,191,36,0.35)] bg-[color:rgba(251,191,36,0.06)] ${className}`}>
       <span className="w-1.5 h-1.5 rounded-full bg-amber-300" />

@@ -24,15 +24,27 @@ func RegisterRoutes(app core.App) {
 				e.Router.POST("/v1/bank/login", handleSandboxLogin(app))
 			}
 			e.Router.GET("/v1/bank/config", func(re *core.RequestEvent) error {
+				network := "lux-mainnet"
+				disclaimer := "Banking services are provided by SF Private Bank LTD, International Banking License (L17601/SFPB) " +
+					"under Union of Comoros Offshore Finance Authority (FSA Offshore), and SF Neobanq Kommanditbolag " +
+					"registered in Stockholm (969802-1251), issued by Bolagsverket."
+				if Sandbox() {
+					network = "lux-testnet"
+					disclaimer = "Demo — " + disclaimer + " Sandbox environment, not for real deposits."
+				}
 				return re.JSON(http.StatusOK, map[string]any{
-					"sandbox":   Sandbox(),
-					"demoLogin": Sandbox(),
-					"demoEmail": DemoEmail(),
-					"fiat":      SupportedFiat,
-					"crypto":    SupportedCrypto,
-					"network":   "lux-testnet",
-					"disclaimer": "Demo — banking services provided by our licensed BaaS partner; " +
-						"sandbox environment, not for real deposits. Placeholder terms, pending counsel review.",
+					"sandbox":    Sandbox(),
+					"demoLogin":  Sandbox(),
+					"demoEmail":  DemoEmail(),
+					"fiat":       SupportedFiat,
+					"crypto":     SupportedCrypto,
+					"network":    network,
+					"disclaimer": disclaimer,
+					"partner": map[string]string{
+						"name":    "SF Private Bank",
+						"terms":   "https://www.sf-privatebank.com/terms",
+						"privacy": "https://www.sf-privatebank.com/privacy-policy",
+					},
 				})
 			})
 

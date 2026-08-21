@@ -1,6 +1,7 @@
 import { Link } from 'react-router'
 import { Wordmark } from '@/components/Brand'
 import { useBrand } from '@/hooks/brand'
+import { useConfig } from '@/lib/config'
 import { Icon, SandboxBadge } from '@/components/ui'
 
 const STATS: [string, string][] = [
@@ -140,6 +141,10 @@ function Closing() {
 
 function Footer() {
   const brand = useBrand()
+  const config = useConfig()
+  const disclaimer =
+    config?.disclaimer ??
+    'Banking services are provided by our licensed banking partner.'
   return (
     <footer className="border-t border-[color:var(--color-border)] mt-8">
       <div className="mx-auto max-w-6xl px-5 md:px-8 py-10 space-y-4">
@@ -148,10 +153,19 @@ function Footer() {
           <SandboxBadge />
         </div>
         <p className="text-xs text-[var(--color-fg-subtle)] max-w-2xl leading-relaxed">
-          Demo — banking services provided by our licensed BaaS partner. Sandbox environment, not for
-          real deposits; crypto is testnet only. Placeholder terms shown for demonstration and
-          pending counsel review. © {new Date().getFullYear()} {brand.legalName}.
+          {disclaimer} © {new Date().getFullYear()} {brand.legalName}.
         </p>
+        {config?.partner && (
+          <p className="text-xs text-[var(--color-fg-subtle)]">
+            <a href={config.partner.terms} target="_blank" rel="noopener noreferrer" className="underline hover:text-[var(--color-fg-muted)]">
+              {config.partner.name} Terms
+            </a>
+            <span className="mx-2">·</span>
+            <a href={config.partner.privacy} target="_blank" rel="noopener noreferrer" className="underline hover:text-[var(--color-fg-muted)]">
+              {config.partner.name} Privacy Policy
+            </a>
+          </p>
+        )}
       </div>
     </footer>
   )

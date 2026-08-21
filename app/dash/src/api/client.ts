@@ -126,6 +126,7 @@ export interface Config {
   crypto: string[]
   network: string
   disclaimer: string
+  partner?: { name: string; terms: string; privacy: string }
 }
 export const getConfig = () => request<Config>('/v1/bank/config')
 
