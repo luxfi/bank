@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { shot } from './demo'
 
 const TIERS = [
   { name: 'Silver', price: '$29' },
@@ -19,6 +20,8 @@ test('landing renders the membership ladder from live plans', async ({ page }) =
     await expect(card.getByRole('heading', { name: tier.name })).toBeVisible()
     await expect(card.getByText(tier.price, { exact: true })).toBeVisible()
   }
+
+  await shot(page, 'landing-plans')
 })
 
 test('plans come from the bank API, not hardcoded markup', async ({ page }) => {

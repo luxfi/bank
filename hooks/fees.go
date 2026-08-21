@@ -171,9 +171,13 @@ func getMonthlyVolume(app core.App, accountId string) int64 {
 		return 0
 	}
 
+	// Normalize to USD cents so the volume-discount tier is currency-neutral —
+	// summing raw minor units would let crypto micro-units inflate volume ~10^4x
+	// and grant the discount by accident.
 	var total int64
 	for _, r := range records {
-		total += int64(math.Round(r.GetFloat("amount")))
+		amt := int64(math.Round(r.GetFloat("amount")))
+		total += collections.USDCents(amt, r.GetString("currency"))
 	}
 	return total
 }

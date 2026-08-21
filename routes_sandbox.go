@@ -37,11 +37,11 @@ type balanceView struct {
 }
 
 type walletView struct {
-	ID      string `json:"id"`
+	ID       string `json:"id"`
 	Currency string `json:"currency"`
-	Address string `json:"address"`
-	Network string `json:"network"`
-	Status  string `json:"status"`
+	Address  string `json:"address"`
+	Network  string `json:"network"`
+	Status   string `json:"status"`
 }
 
 type cardView struct {
@@ -59,15 +59,17 @@ type cardView struct {
 }
 
 type txView struct {
-	ID        string  `json:"id"`
-	Type      string  `json:"type"`
-	Direction string  `json:"direction"`
-	Amount    int64   `json:"amount"`
-	Currency  string  `json:"currency"`
-	Decimals  int     `json:"decimals"`
-	Status    string  `json:"status"`
-	Reference string  `json:"reference"`
-	Created   string  `json:"created"`
+	ID        string `json:"id"`
+	Type      string `json:"type"`
+	Direction string `json:"direction"`
+	Amount    int64  `json:"amount"`
+	Currency  string `json:"currency"`
+	Decimals  int    `json:"decimals"`
+	Status    string `json:"status"`
+	Reference string `json:"reference"`
+	TxHash    string `json:"txHash,omitempty"`
+	Network   string `json:"network,omitempty"`
+	Created   string `json:"created"`
 }
 
 // -----------------------------------------------------------------------------
@@ -147,11 +149,17 @@ func viewTxns(app core.App, accountID string, limit int) []txView {
 	out := make([]txView, 0, len(recs))
 	for _, t := range recs {
 		cur := t.GetString("currency")
+		var meta struct {
+			TxHash  string `json:"txHash"`
+			Network string `json:"network"`
+		}
+		_ = t.UnmarshalJSONField("metadata", &meta)
 		out = append(out, txView{
 			ID: t.Id, Type: t.GetString("type"), Direction: t.GetString("direction"),
 			Amount:   int64(math.Round(t.GetFloat("amount"))),
 			Currency: cur, Decimals: decimalsFor(cur), Status: t.GetString("status"),
-			Reference: t.GetString("reference"), Created: t.GetString("created"),
+			Reference: t.GetString("reference"), TxHash: meta.TxHash, Network: meta.Network,
+			Created: t.GetString("created"),
 		})
 	}
 	return out
@@ -426,7 +434,7 @@ func handleCryptoPrices(app core.App) func(*core.RequestEvent) error {
 		for _, a := range SupportedCrypto {
 			out = append(out, p{Asset: a, USD: cryptoUSD[a], Decimals: cryptoDecimals})
 		}
-		return e.JSON(http.StatusOK, map[string]any{"prices": out, "sandbox": true})
+		return e.JSON(http.StatusOK, map[string]any{"prices": out, "sandbox": Sandbox()})
 	}
 }
 
@@ -527,7 +535,7 @@ func handleGetWallet(app core.App) func(*core.RequestEvent) error {
 			}
 		}
 		return e.JSON(http.StatusOK, map[string]any{
-			"wallet": w, "holdings": holdings, "network": "lux-testnet", "sandbox": true,
+			"wallet": w, "holdings": holdings, "network": networkName(), "sandbox": Sandbox(),
 		})
 	}
 }

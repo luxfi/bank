@@ -105,7 +105,7 @@ func ProvisionCustomer(app core.App, user *core.Record, kyc KYC) (*core.Record, 
 		w.Set("currency", "LUX")
 		w.Set("walletId", "mpc:"+user.Id)
 		w.Set("address", luxTestnetAddress(user.Id))
-		w.Set("network", "lux-testnet")
+		w.Set("network", networkName())
 		w.Set("status", "active")
 		_ = app.Save(w)
 	}

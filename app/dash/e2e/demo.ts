@@ -15,9 +15,13 @@ export async function signIn(page: Page) {
 }
 
 // holding locates a row in the wallet's Holdings list. Each row links to the
-// exchange pair for that asset, which is the stable handle on it.
+// exchange pair for that asset, which is the stable handle on it. Scoped to the
+// Holdings section: the Sell tile above points at the same LUX→USD pair.
 export function holding(page: Page, asset: string) {
-  return page.locator(`a[href="/app/exchange?from=${asset}&to=USD"]`)
+  return page
+    .locator('section')
+    .filter({ has: page.getByRole('heading', { name: 'Holdings' }) })
+    .locator(`a[href="/app/exchange?from=${asset}&to=USD"]`)
 }
 
 // holdingAmount reads the major-unit balance shown for an asset, or null when
@@ -28,4 +32,12 @@ export async function holdingAmount(page: Page, asset: string): Promise<number |
   const text = await row.innerText()
   const match = text.match(new RegExp(`([\\d,]+(?:\\.\\d+)?)\\s+${asset}`))
   return match ? parseFloat(match[1].replace(/,/g, '')) : null
+}
+
+// Every flow leaves a full-page image behind, so a run is reviewable as
+// pictures and not just green ticks.
+const SHOTS = '/private/tmp/claude-501/-Users-z-work-lux-bank/eff825d9-0580-46e8-b87b-70e71cfa9ee4/scratchpad/visual-e2e'
+
+export function shot(page: Page, name: string) {
+  return page.screenshot({ path: `${SHOTS}/${name}.png`, fullPage: true })
 }

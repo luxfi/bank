@@ -28,6 +28,16 @@ type cryptoDepositReq struct {
 	Amount int64  `json:"amount"`
 }
 
+// networkName is the on-chain network for the current mode. The literal is
+// derived here, never hardcoded at call sites, so a production deployment never
+// mislabels itself as testnet.
+func networkName() string {
+	if Sandbox() {
+		return "lux-testnet"
+	}
+	return "lux-mainnet"
+}
+
 // txHash returns a random display hash for a sandbox testnet transaction.
 func txHash() string {
 	var b [32]byte
@@ -142,6 +152,14 @@ func handleCryptoSend(app core.App) func(*core.RequestEvent) error {
 		if err != nil {
 			return err
 		}
+		// The sandbox settles on-chain sends against the internal testnet
+		// ledger. Live mode has no chain signer/broadcaster yet, so it must
+		// refuse rather than debit funds against a fabricated receipt that is
+		// never broadcast — the same discipline the exchange applies when
+		// forexd is absent. Real mainnet send lands behind this guard.
+		if !Sandbox() {
+			return e.JSON(http.StatusServiceUnavailable, map[string]string{"error": "on-chain send unavailable"})
+		}
 		var req cryptoSendReq
 		if err := e.BindBody(&req); err != nil {
 			return apis.NewBadRequestError("invalid payload", err)
@@ -159,7 +177,7 @@ func handleCryptoSend(app core.App) func(*core.RequestEvent) error {
 			"amount": req.Amount, "currency": asset, "status": "pending",
 			"reference": "Send " + asset + " to " + req.ToAddress,
 			"metadata": map[string]any{
-				"txHash": hash, "toAddress": req.ToAddress, "network": "lux-testnet",
+				"txHash": hash, "toAddress": req.ToAddress, "network": networkName(),
 			},
 		})
 		if err != nil {
@@ -169,7 +187,7 @@ func handleCryptoSend(app core.App) func(*core.RequestEvent) error {
 			return apis.NewInternalServerError("settlement failed", err)
 		}
 		return e.JSON(http.StatusOK, map[string]any{
-			"txHash": hash, "network": "lux-testnet", "asset": asset,
+			"txHash": hash, "network": networkName(), "asset": asset,
 			"amount": req.Amount, "toAddress": req.ToAddress,
 			"balances": viewBalances(app, acct.Id),
 		})
@@ -202,7 +220,7 @@ func handleCryptoDeposit(app core.App) func(*core.RequestEvent) error {
 			"account": acct.Id, "type": "deposit", "direction": "credit",
 			"amount": req.Amount, "currency": asset, "status": "pending",
 			"reference": "Testnet deposit " + asset,
-			"metadata":  map[string]any{"txHash": hash, "network": "lux-testnet"},
+			"metadata":  map[string]any{"txHash": hash, "network": networkName()},
 		})
 		if err != nil {
 			return e.JSON(http.StatusUnprocessableEntity, map[string]string{"error": err.Error()})
@@ -211,7 +229,7 @@ func handleCryptoDeposit(app core.App) func(*core.RequestEvent) error {
 			return apis.NewInternalServerError("settlement failed", err)
 		}
 		return e.JSON(http.StatusOK, map[string]any{
-			"txHash": hash, "network": "lux-testnet", "asset": asset, "amount": req.Amount,
+			"txHash": hash, "network": networkName(), "asset": asset, "amount": req.Amount,
 			"balances": viewBalances(app, acct.Id),
 		})
 	}

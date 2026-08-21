@@ -30,7 +30,7 @@ export function Wallet() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Crypto wallet</h1>
-          <p className="text-sm text-[var(--color-fg-muted)] mt-0.5">Non-custodial · {data.network}</p>
+          <p className="text-sm text-[var(--color-fg-muted)] mt-0.5">{data.network}</p>
         </div>
         <SandboxBadge />
       </div>

@@ -27,10 +27,14 @@ export function Exchange() {
     getConfig().then((c) => setAssets([...c.fiat, ...c.crypto])).catch(() => setAssets(['USD', 'EUR', 'GBP', 'LUX', 'BTC', 'ETH', 'DAI']))
   }, [])
 
+  // Editing any leg of the trade retires the last confirmation — it described a
+  // conversion that is no longer the one on screen.
+  const edit = <T,>(set: (v: T) => void) => (v: T) => { set(v); setDone(null) }
+
   // Debounced quote.
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
   useEffect(() => {
-    setError(null); setDone(null)
+    setError(null)
     if (!fromMinor || from === to) { setQuote(null); return }
     clearTimeout(timer.current)
     setQuoting(true)
@@ -47,7 +51,7 @@ export function Exchange() {
   }, [from, to, fromMinor])
 
   function flip() {
-    setFrom(to); setTo(from); setAmount(''); setQuote(null)
+    setFrom(to); setTo(from); setAmount(''); setQuote(null); setDone(null)
   }
 
   async function execute() {
@@ -77,11 +81,11 @@ export function Exchange() {
         <div className="card-2 p-4">
           <div className="flex items-center justify-between mb-2">
             <span className="label">You pay</span>
-            {fromBal && <button onClick={() => setAmount(String(fromBal.available / 10 ** fromBal.decimals))} className="text-xs text-[var(--color-fg-muted)] hover:text-[var(--color-fg)]">Max {formatMoney(fromBal.available, from, fromBal.decimals)}</button>}
+            {fromBal && <button onClick={() => edit(setAmount)(String(fromBal.available / 10 ** fromBal.decimals))} className="text-xs text-[var(--color-fg-muted)] hover:text-[var(--color-fg)]">Max {formatMoney(fromBal.available, from, fromBal.decimals)}</button>}
           </div>
           <div className="flex items-center gap-3">
-            <input className="flex-1 bg-transparent text-2xl font-semibold tnum outline-none placeholder:text-[var(--color-fg-subtle)]" inputMode="decimal" placeholder="0.00" value={amount} onChange={(e) => setAmount(e.target.value)} />
-            <AssetPicker value={from} onChange={setFrom} assets={assets} exclude={to} />
+            <input className="flex-1 bg-transparent text-2xl font-semibold tnum outline-none placeholder:text-[var(--color-fg-subtle)]" inputMode="decimal" placeholder="0.00" value={amount} onChange={(e) => edit(setAmount)(e.target.value)} />
+            <AssetPicker value={from} onChange={edit(setFrom)} assets={assets} exclude={to} />
           </div>
         </div>
 
@@ -102,7 +106,7 @@ export function Exchange() {
             <div className="flex-1 text-2xl font-semibold tnum text-[var(--color-fg)]">
               {quote ? formatMoney(quote.toAmount, to, quote.toDecimals).replace(` ${to}`, '') : '0.00'}
             </div>
-            <AssetPicker value={to} onChange={setTo} assets={assets} exclude={from} />
+            <AssetPicker value={to} onChange={edit(setTo)} assets={assets} exclude={from} />
           </div>
         </div>
 
