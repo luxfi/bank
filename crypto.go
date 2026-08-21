@@ -8,6 +8,7 @@ import (
 
 	"github.com/hanzoai/base/apis"
 	"github.com/hanzoai/base/core"
+	"golang.org/x/crypto/sha3"
 )
 
 // -----------------------------------------------------------------------------
@@ -34,17 +35,104 @@ func txHash() string {
 	return "0x" + hex.EncodeToString(b[:])
 }
 
-// validAddress checks the destination shape per asset family: EVM assets
-// take 0x + 40 hex; BTC takes a base58/bech32-length string.
+// validAddress checks the destination against the asset's chain family with a
+// real checksum, not just a length window — a transposed character must be
+// rejected before it becomes irreversible on-chain loss. EVM assets (LUX, ETH,
+// DAI) require an EIP-55 checksummed (or all-one-case) 0x address; BTC requires
+// a bech32 address whose polymod checks out.
 func validAddress(asset, addr string) bool {
 	if strings.ToUpper(asset) == "BTC" {
-		return len(addr) >= 26 && len(addr) <= 62 && !strings.HasPrefix(addr, "0x")
+		return validBech32(addr)
 	}
+	return validEVMAddress(addr)
+}
+
+func validEVMAddress(addr string) bool {
 	if len(addr) != 42 || !strings.HasPrefix(addr, "0x") {
 		return false
 	}
-	_, err := hex.DecodeString(addr[2:])
-	return err == nil
+	body := addr[2:]
+	if _, err := hex.DecodeString(body); err != nil {
+		return false
+	}
+	// All-lowercase or all-uppercase carries no checksum; accept it.
+	if body == strings.ToLower(body) || body == strings.ToUpper(body) {
+		return true
+	}
+	return body == eip55(strings.ToLower(body))
+}
+
+// eip55 returns the EIP-55 mixed-case checksum of a 40-char lowercase hex body.
+func eip55(lower string) string {
+	h := sha3.NewLegacyKeccak256()
+	h.Write([]byte(lower))
+	digest := h.Sum(nil)
+	out := []byte(lower)
+	for i, c := range out {
+		if c < 'a' || c > 'f' {
+			continue
+		}
+		if (digest[i/2]>>(4-4*(uint(i)%2)))&0xf >= 8 {
+			out[i] = c - 32
+		}
+	}
+	return string(out)
+}
+
+const bech32Charset = "qpzry9x8gf2tvdw0s3jn54khce6mua7l"
+
+// validBech32 verifies a bech32/bech32m string's HRP separator, charset, and
+// polymod checksum (BIP-173 / BIP-350). Sufficient to catch typos; it does not
+// decode the witness program.
+func validBech32(s string) bool {
+	if len(s) < 8 || len(s) > 90 {
+		return false
+	}
+	lower := strings.ToLower(s)
+	if lower != s && strings.ToUpper(s) != s {
+		return false // mixed case is invalid in bech32
+	}
+	s = lower
+	pos := strings.LastIndexByte(s, '1')
+	if pos < 1 || pos+7 > len(s) {
+		return false
+	}
+	hrp, data := s[:pos], s[pos+1:]
+	values := make([]int, 0, len(data))
+	for i := 0; i < len(data); i++ {
+		idx := strings.IndexByte(bech32Charset, data[i])
+		if idx < 0 {
+			return false
+		}
+		values = append(values, idx)
+	}
+	poly := bech32Polymod(hrp, values)
+	return poly == 1 || poly == 0x2bc830a3 // bech32 (v0) or bech32m (v1+)
+}
+
+func bech32Polymod(hrp string, values []int) uint32 {
+	gen := []uint32{0x3b6a57b2, 0x26508e6d, 0x1ea119fa, 0x3d4233dd, 0x2a1462b3}
+	chk := uint32(1)
+	step := func(v int) {
+		b := chk >> 25
+		chk = (chk&0x1ffffff)<<5 ^ uint32(v)
+		for i := 0; i < 5; i++ {
+			if (b>>uint(i))&1 == 1 {
+				chk ^= gen[i]
+			}
+		}
+	}
+	for i := 0; i < len(hrp); i++ {
+		step(int(hrp[i]) >> 5)
+	}
+	step(0)
+	for i := 0; i < len(hrp); i++ {
+		step(int(hrp[i]) & 31)
+	}
+	for _, v := range values {
+		step(v)
+	}
+	return chk
 }
 
 // handleCryptoSend debits the wallet balance and records the on-chain send.

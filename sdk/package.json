@@ -1,6 +1,6 @@
 {
   "name": "@luxfi/bank",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Typed client for the Lux banking API (/v1/bank) — accounts, payments, cards, crypto, FX, and membership plans.",
   "license": "MIT",
   "repository": {

@@ -15,13 +15,8 @@ func EnsureBalanceCollection(app core.App) error {
 
 	c := core.NewBaseCollection(BalanceCollectionName, BalanceCollectionName)
 
-	// Prod: superuser only (read via custom routes). Sandbox: public read so the
-	// seeded demo balances are visible to the admin/anonymous reader.
-	if sandboxOpenReads() {
-		open := ""
-		c.ListRule = &open
-		c.ViewRule = &open
-	}
+	// Superuser only (nil rules) in every mode — balances are read through the
+	// authenticated /v1/bank routes, never as anonymous collection reads.
 
 	c.Fields.Add(
 		&core.RelationField{

@@ -1,30 +1,11 @@
 package collections
 
-import (
-	"os"
-	"strings"
-)
-
-// sandboxOpenReads reports whether the daemon runs in sandbox/demo mode, in
-// which the seeded (fake, testnet) records are world-readable so the admin
-// surface and any anonymous reader can see the shared demo data. Mirrors
-// bank.Sandbox() (kept here to avoid a package import cycle). Default on.
-func sandboxOpenReads() bool {
-	switch strings.ToLower(strings.TrimSpace(os.Getenv("BANK_SANDBOX"))) {
-	case "false", "0", "no", "off":
-		return false
-	default:
-		return true
-	}
-}
-
-// readRule returns a public ("") list/view rule in sandbox mode, otherwise the
-// given owner-scoped production rule. Applied to the demo-visible collections.
+// readRule returns the owner-scoped list/view rule for a collection. Records
+// carrying customer PII are never world-readable, in any mode — even the
+// sandbox demo data (seeded DOB / address) stays behind the owner rule. The
+// demo dashboard reads through the authenticated /v1/bank routes, so nothing
+// depends on anonymous collection reads.
 func readRule(ownerScoped string) *string {
-	if sandboxOpenReads() {
-		open := ""
-		return &open
-	}
 	s := ownerScoped
 	return &s
 }

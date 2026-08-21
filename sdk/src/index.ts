@@ -1,6 +1,6 @@
 // @luxfi/bank — typed client for the Lux banking API (/v1/bank).
 // One surface: accounts, transfers, payments, beneficiaries, cards (with the
-// provider-neutral issuer lifecycle), crypto, exchange, FX, membership plans.
+// provider-neutral issuer lifecycle), crypto, exchange, and membership plans.
 // Sandbox and production serve the identical contract (LP-3040).
 
 export interface BankConfig {
@@ -151,15 +151,6 @@ export interface ExchangeResult {
   balances: Balance[]
 }
 
-export interface FXQuote {
-  sellCurrency: string
-  buyCurrency: string
-  sellAmount: number
-  buyAmount: number
-  rate: number
-  quoteId: string
-  expiresAt: string
-}
 
 /** The issuer's normalized card-lifecycle state; branch on this pair only. */
 export interface IssuerState {
@@ -197,6 +188,9 @@ export interface Overview {
   transactions: Transaction[]
   [k: string]: unknown
 }
+
+// enc encodes a path segment so an id can never traverse or inject into the URL.
+const enc = encodeURIComponent
 
 // -- Client --
 
@@ -274,13 +268,13 @@ export class Bank {
 
   // Per-account reads
   balances(accountId: string) {
-    return this.request<Balance[]>('GET', `/v1/bank/accounts/${accountId}/balances`)
+    return this.request<Balance[]>('GET', `/v1/bank/accounts/${enc(accountId)}/balances`)
   }
   wallets(accountId: string) {
-    return this.request<Wallet[]>('GET', `/v1/bank/accounts/${accountId}/wallets`)
+    return this.request<Wallet[]>('GET', `/v1/bank/accounts/${enc(accountId)}/wallets`)
   }
   accountTransactions(accountId: string) {
-    return this.request<Transaction[]>('GET', `/v1/bank/accounts/${accountId}/transactions`)
+    return this.request<Transaction[]>('GET', `/v1/bank/accounts/${enc(accountId)}/transactions`)
   }
 
   // Beneficiaries
@@ -291,7 +285,7 @@ export class Bank {
     return this.request<Beneficiary>('POST', '/v1/bank/beneficiaries', beneficiary)
   }
   deleteBeneficiary(id: string) {
-    return this.request<void>('DELETE', `/v1/bank/beneficiaries/${id}`)
+    return this.request<void>('DELETE', `/v1/bank/beneficiaries/${enc(id)}`)
   }
 
   // Cards — ledger
@@ -302,10 +296,10 @@ export class Bank {
     return this.request<Card>('POST', '/v1/bank/cards', card)
   }
   freezeCard(id: string) {
-    return this.request<Card>('POST', `/v1/bank/cards/${id}/freeze`)
+    return this.request<Card>('POST', `/v1/bank/cards/${enc(id)}/freeze`)
   }
   unfreezeCard(id: string) {
-    return this.request<Card>('POST', `/v1/bank/cards/${id}/unfreeze`)
+    return this.request<Card>('POST', `/v1/bank/cards/${enc(id)}/unfreeze`)
   }
 
   // Cards — issuer lifecycle (provider-neutral; branch on status/nextAction)
@@ -359,13 +353,6 @@ export class Bank {
     return this.request<ExchangeResult>('POST', '/v1/bank/exchange/execute', { fromCurrency, toCurrency, amount })
   }
 
-  // Dealt FX
-  fxQuote(sellCurrency: string, buyCurrency: string, amount: number) {
-    return this.request<FXQuote>('POST', '/v1/bank/fx/quote', { sellCurrency, buyCurrency, amount })
-  }
-  fxExecute(accountId: string, quoteId: string) {
-    return this.request<Record<string, unknown>>('POST', '/v1/bank/fx/execute', { accountId, quoteId })
-  }
 
   // Sandbox demo login (sandbox deployments only)
   sandboxLogin(email: string, password: string) {

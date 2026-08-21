@@ -37,10 +37,16 @@ func RegisterRoutes(app core.App) {
 					network = "lux-testnet"
 					disclaimer = "Demo — " + disclaimer + " Sandbox environment, not for real deposits."
 				}
+				// The demo email is only surfaced in sandbox — production must
+				// never publish a login identity from an unauthenticated route.
+				demoEmail := ""
+				if Sandbox() {
+					demoEmail = DemoEmail()
+				}
 				return re.JSON(http.StatusOK, map[string]any{
 					"sandbox":    Sandbox(),
 					"demoLogin":  Sandbox(),
-					"demoEmail":  DemoEmail(),
+					"demoEmail":  demoEmail,
 					"fiat":       SupportedFiat,
 					"crypto":     SupportedCrypto,
 					"network":    network,

@@ -66,8 +66,10 @@ func RegisterComplianceHooks(app core.App) {
 			)
 		}
 
-		// AML screening for transactions above threshold.
-		amount := int64(math.Round(e.Record.GetFloat("amount")))
+		// AML screening above threshold — normalized to USD cents so a
+		// high-value crypto send can't slip under a USD threshold (and a
+		// trivial stablecoin transfer isn't needlessly screened).
+		amount := collections.USDCents(int64(math.Round(e.Record.GetFloat("amount"))), e.Record.GetString("currency"))
 		if amount >= amlThreshold {
 			if err := screenAML(app, accountId, e.Record); err != nil {
 				return apis.NewForbiddenError("transaction blocked by AML screening", nil)

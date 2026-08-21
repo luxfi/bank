@@ -53,7 +53,7 @@ func RegisterPaymentHooks(app core.App) {
 		currency := e.Record.GetString("currency")
 
 		// Atomic balance check + hold within a transaction to prevent races.
-		err := app.RunInTransaction(func(txApp core.App) error {
+		err := e.App.RunInTransaction(func(txApp core.App) error {
 			bal, err := txApp.FindFirstRecordByFilter(
 				collections.BalanceCollectionName,
 				`account = {:accountId} && currency = {:currency}`,
@@ -140,15 +140,15 @@ func RegisterPaymentHooks(app core.App) {
 		case newStatus == "completed" && direction == "debit":
 			// Funds were already removed from available during hold.
 			// Just release the hold counter.
-			updateBalance(app, accountId, currency, 0, -amount)
+			updateBalance(e.App, accountId, currency, 0, -amount)
 
 		case newStatus == "completed" && direction == "credit":
 			// Incoming funds: credit available.
-			updateBalance(app, accountId, currency, amount, 0)
+			updateBalance(e.App, accountId, currency, amount, 0)
 
 		case (newStatus == "failed" || newStatus == "cancelled") && direction == "debit":
 			// Reverse hold: restore available, release held.
-			updateBalance(app, accountId, currency, amount, -amount)
+			updateBalance(e.App, accountId, currency, amount, -amount)
 		}
 
 		return nil
@@ -165,44 +165,41 @@ func RegisterPaymentHooks(app core.App) {
 	})
 }
 
-// updateBalance atomically adjusts available and held amounts.
+// updateBalance adjusts available and held by the given deltas atomically.
+// The read-modify-write runs inside a transaction so it serializes against the
+// pre-create hold (which is also transactional) — without it, a settlement's
+// stale read clobbers a concurrent hold and the ledger can be made to mint
+// funds. The floor check rejects any settlement that would drive available
+// below zero.
 func updateBalance(app core.App, accountId, currency string, availableDelta, heldDelta int64) {
-	bal, err := app.FindFirstRecordByFilter(
-		collections.BalanceCollectionName,
-		`account = {:accountId} && currency = {:currency}`,
-		map[string]any{"accountId": accountId, "currency": currency},
-	)
-	if err != nil {
-		// For credits to a new currency, create the balance record.
-		if availableDelta > 0 && heldDelta == 0 {
-			createBalance(app, accountId, currency, availableDelta)
-		} else {
-			app.Logger().Error("payments: balance not found",
-				slog.String("accountId", accountId),
-				slog.String("currency", currency),
-			)
-		}
-		return
-	}
-
-	newAvailable := int64(math.Round(bal.GetFloat("available"))) + availableDelta
-	newHeld := int64(math.Round(bal.GetFloat("held"))) + heldDelta
-
-	// F13: Floor check — never allow negative available balance.
-	if newAvailable < 0 {
-		app.Logger().Error("payments: balance floor violation — available would go negative",
-			slog.String("accountId", accountId),
-			slog.String("currency", currency),
-			slog.Int64("newAvailable", newAvailable),
+	err := app.RunInTransaction(func(txApp core.App) error {
+		bal, err := txApp.FindFirstRecordByFilter(
+			collections.BalanceCollectionName,
+			`account = {:accountId} && currency = {:currency}`,
+			map[string]any{"accountId": accountId, "currency": currency},
 		)
-		return
-	}
+		if err != nil {
+			// For credits to a new currency, create the balance record.
+			if availableDelta > 0 && heldDelta == 0 {
+				createBalance(txApp, accountId, currency, availableDelta)
+				return nil
+			}
+			return fmt.Errorf("balance not found for %s/%s", accountId, currency)
+		}
 
-	bal.Set("available", newAvailable)
-	bal.Set("held", newHeld)
+		newAvailable := int64(math.Round(bal.GetFloat("available"))) + availableDelta
+		newHeld := int64(math.Round(bal.GetFloat("held"))) + heldDelta
 
-	if err := app.Save(bal); err != nil {
-		app.Logger().Error("payments: failed to update balance", slog.String("error", err.Error()))
+		if newAvailable < 0 {
+			return fmt.Errorf("balance floor violation: %s/%s would go to %d", accountId, currency, newAvailable)
+		}
+
+		bal.Set("available", newAvailable)
+		bal.Set("held", newHeld)
+		return txApp.Save(bal)
+	})
+	if err != nil {
+		app.Logger().Error("payments: balance update rejected", slog.String("error", err.Error()))
 	}
 }
 

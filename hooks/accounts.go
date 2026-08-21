@@ -85,16 +85,18 @@ func RegisterAccountHooks(app core.App) {
 			limits.daily, limits.monthly = plan.DailyLimit, plan.MonthlyLimit
 		}
 
-		amount := int64(math.Round(e.Record.GetFloat("amount")))
+		// Normalize the incoming amount to USD cents so it is comparable to the
+		// USD-denominated limits and the USD-normalized running totals.
+		amount := collections.USDCents(int64(math.Round(e.Record.GetFloat("amount"))), e.Record.GetString("currency"))
 
 		// Check daily limit.
 		dailySpent := getDailySpent(app, accountId)
 		if dailySpent+amount > limits.daily {
 			app.Logger().Warn("accounts: daily limit exceeded",
 				slog.String("accountId", accountId),
-				slog.Int64("dailySpent", dailySpent),
-				slog.Int64("amount", amount),
-				slog.Int64("limit", limits.daily),
+				slog.Int64("dailySpentUsdCents", dailySpent),
+				slog.Int64("amountUsdCents", amount),
+				slog.Int64("limitUsdCents", limits.daily),
 			)
 			return apis.NewForbiddenError("daily transaction limit exceeded", nil)
 		}
@@ -104,9 +106,9 @@ func RegisterAccountHooks(app core.App) {
 		if monthlySpent+amount > limits.monthly {
 			app.Logger().Warn("accounts: monthly limit exceeded",
 				slog.String("accountId", accountId),
-				slog.Int64("monthlySpent", monthlySpent),
-				slog.Int64("amount", amount),
-				slog.Int64("limit", limits.monthly),
+				slog.Int64("monthlySpentUsdCents", monthlySpent),
+				slog.Int64("amountUsdCents", amount),
+				slog.Int64("limitUsdCents", limits.monthly),
 			)
 			return apis.NewForbiddenError("monthly transaction limit exceeded", nil)
 		}
@@ -142,43 +144,34 @@ func RegisterAccountHooks(app core.App) {
 	})
 }
 
-// getDailySpent sums debit transaction amounts for today.
+// getDailySpent sums today's debits as USD cents. Amounts are minor units in
+// their own currency (cents for fiat, micro-units for crypto), so each is
+// normalized to USD before summing — otherwise a crypto send and a fiat
+// payment would be added as if they shared a unit, and the sum compared to a
+// USD-denominated limit would be meaningless.
 func getDailySpent(app core.App, accountId string) int64 {
-	records, err := app.FindRecordsByFilter(
-		collections.TransactionCollectionName,
+	return sumDebitsUSDCents(app,
 		`account = {:accountId} && direction = "debit" && status != "failed" && status != "cancelled" && created >= @todayStart`,
-		"",
-		0,
-		0,
-		map[string]any{"accountId": accountId},
-	)
-	if err != nil {
-		return 0
-	}
-	var total int64
-	for _, r := range records {
-		total += int64(math.Round(r.GetFloat("amount")))
-	}
-	return total
+		map[string]any{"accountId": accountId})
 }
 
-// getMonthlySpent sums debit transaction amounts for the last 30 days.
+// getMonthlySpent sums the last 30 days of debits as USD cents.
 func getMonthlySpent(app core.App, accountId string) int64 {
 	thirtyDaysAgo := time.Now().UTC().AddDate(0, 0, -30).Format("2006-01-02 15:04:05.000Z")
-	records, err := app.FindRecordsByFilter(
-		collections.TransactionCollectionName,
+	return sumDebitsUSDCents(app,
 		`account = {:accountId} && direction = "debit" && status != "failed" && status != "cancelled" && created >= {:since}`,
-		"",
-		0,
-		0,
-		map[string]any{"accountId": accountId, "since": thirtyDaysAgo},
-	)
+		map[string]any{"accountId": accountId, "since": thirtyDaysAgo})
+}
+
+func sumDebitsUSDCents(app core.App, filter string, params map[string]any) int64 {
+	records, err := app.FindRecordsByFilter(collections.TransactionCollectionName, filter, "", 0, 0, params)
 	if err != nil {
 		return 0
 	}
 	var total int64
 	for _, r := range records {
-		total += int64(math.Round(r.GetFloat("amount")))
+		amt := int64(math.Round(r.GetFloat("amount")))
+		total += collections.USDCents(amt, r.GetString("currency"))
 	}
 	return total
 }

@@ -61,25 +61,35 @@ func ProvisionCustomer(app core.App, user *core.Record, kyc KYC) (*core.Record, 
 	if err != nil {
 		return nil, err
 	}
+	// Only the sandbox auto-approves. On real rails an account opens pending,
+	// unverified, and medium-risk; status/kycStatus/riskRating transition only
+	// from the compliance service, never from self-asserted onboarding data.
+	// entityType is likewise self-declared here and must NOT be trusted to set
+	// the limit tier outside sandbox — the compliance review sets the tier when
+	// it approves. (See LP-3040 §Security.)
+	status, kyc0, risk, method := "pending", "not_started", "medium", "iam"
+	if Sandbox() {
+		status, kyc0, risk, method = "active", "approved", "low", "sandbox-auto"
+	}
 	acct := core.NewRecord(acctColl)
 	acct.Set("owner", user.Id)
 	acct.Set("entityName", name)
 	acct.Set("entityType", entityType)
 	acct.Set("country", country)
 	acct.Set("currency", "USD")
-	acct.Set("status", "active")
-	acct.Set("kycStatus", "approved") // sandbox: auto-approve
-	acct.Set("riskRating", "low")
+	acct.Set("status", status)
+	acct.Set("kycStatus", kyc0)
+	acct.Set("riskRating", risk)
 	acct.Set("metadata", map[string]any{
-		"sandbox": true,
+		"sandbox": Sandbox(),
 		"kyc": map[string]any{
 			"dob":         kyc.DOB,
 			"addressLine": kyc.AddressLine,
 			"city":        kyc.City,
 			"postalCode":  kyc.PostalCode,
 			"country":     country,
-			"approvedAt":  time.Now().UTC().Format(time.RFC3339),
-			"method":      "sandbox-auto",
+			"submittedAt": time.Now().UTC().Format(time.RFC3339),
+			"method":      method,
 		},
 		"iban": sandboxIBAN("USD"),
 	})

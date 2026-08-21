@@ -56,74 +56,22 @@ func Sandbox() bool {
 // FX + asset pricing (sandbox tables)
 // -----------------------------------------------------------------------------
 
-// perUSD holds units of each fiat currency per 1 USD. Sandbox reference rates.
-var perUSD = map[string]float64{
-	"USD": 1.00,
-	"EUR": 0.92,
-	"GBP": 0.79,
-	"JPY": 157.0,
-	"CHF": 0.89,
-	"CAD": 1.37,
-	"AUD": 1.52,
-	"SGD": 1.35,
-	"AED": 3.67,
-	"HKD": 7.81,
-}
+// Pricing is decomplected into collections/pricing.go so the hooks package
+// can normalize transaction value to USD without importing this one. The
+// lowercase names below stay as thin aliases for the local call sites.
+var cryptoUSD = collections.CryptoUSD
+var perUSD = collections.PerUSD
 
-// cryptoUSD holds the USD price of one whole unit of each supported asset.
-// All codes are 3 chars (ISO-width) so they validate against the existing
-// currency fields without a schema change — DAI is the sandbox stablecoin.
-var cryptoUSD = map[string]float64{
-	"LUX": 12.50,
-	"BTC": 64000.0,
-	"ETH": 3400.0,
-	"DAI": 1.00,
-}
+const cryptoDecimals = collections.CryptoDecimals
 
 // SupportedFiat / SupportedCrypto drive the UI pickers.
 var SupportedFiat = []string{"USD", "EUR", "GBP", "JPY", "CHF", "CAD", "AUD", "SGD", "AED", "HKD"}
 var SupportedCrypto = []string{"LUX", "BTC", "ETH", "DAI"}
 
-// cryptoDecimals is the fixed-point precision used to store crypto balances in
-// the balances collection (integer micro-units, 6 dp) — enough resolution for
-// the demo and safely within int64 for every listed asset.
-const cryptoDecimals = 6
-
-func isCrypto(cur string) bool {
-	_, ok := cryptoUSD[strings.ToUpper(cur)]
-	return ok
-}
-
-// decimalsFor returns the minor-unit precision for a currency.
-func decimalsFor(cur string) int {
-	cur = strings.ToUpper(cur)
-	if isCrypto(cur) {
-		return cryptoDecimals
-	}
-	switch cur {
-	case "JPY", "KRW":
-		return 0
-	default:
-		return 2
-	}
-}
-
-// unitPriceUSD returns the USD value of one whole unit of the currency.
-func unitPriceUSD(cur string) float64 {
-	cur = strings.ToUpper(cur)
-	if p, ok := cryptoUSD[cur]; ok {
-		return p
-	}
-	if r, ok := perUSD[cur]; ok && r != 0 {
-		return 1.0 / r
-	}
-	return 0
-}
-
-// minorToUSD converts a minor-unit amount in cur to a USD float value.
-func minorToUSD(minor int64, cur string) float64 {
-	return float64(minor) / math.Pow10(decimalsFor(cur)) * unitPriceUSD(cur)
-}
+func isCrypto(cur string) bool                 { return collections.IsCrypto(cur) }
+func decimalsFor(cur string) int               { return collections.DecimalsFor(cur) }
+func unitPriceUSD(cur string) float64          { return collections.UnitPriceUSD(cur) }
+func minorToUSD(minor int64, c string) float64 { return collections.MinorToUSD(minor, c) }
 
 // usdToMinor converts a USD float value into minor units of cur.
 func usdToMinor(usd float64, cur string) int64 {
