@@ -142,8 +142,18 @@ func main() {
 
 	// ---- start ----
 
-	// Override default listen address to port 8070.
-	app.RootCmd.SetArgs([]string{"serve", "--http", "0.0.0.0:8070"})
+	// Run bare (the k8s/demo case) as `serve` on BANKD_HTTP (default :8070);
+	// otherwise honor the CLI verbatim so `serve --http`, `migrate`, and
+	// `--help` all work instead of being overridden.
+	if len(os.Args) > 1 {
+		app.RootCmd.SetArgs(os.Args[1:])
+	} else {
+		addr := os.Getenv("BANKD_HTTP")
+		if addr == "" {
+			addr = "0.0.0.0:8070"
+		}
+		app.RootCmd.SetArgs([]string{"serve", "--http", addr})
+	}
 
 	if err := app.Start(); err != nil {
 		log.Fatal(err)

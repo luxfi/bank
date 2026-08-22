@@ -87,9 +87,12 @@ func CalculateFee(entityType, txType string, amount, monthlyVolume int64, rail .
 		return
 
 	default:
-		// Deposits, withdrawals, etc. — percentage only.
-		feeAmount = amount * rateBP / 10000
-		return
+		// Deposits, withdrawals, on-chain crypto sends and the testnet faucet
+		// carry no platform fee here — the schedule prices rails (payment) and
+		// FX (conversion), both of which arrive as those types. Charging the
+		// tier bp on a withdrawal wrote a fee row that was never debited, and on
+		// a crypto amount it was bp on micro-units. No fee, no phantom row.
+		return 0, feeType
 	}
 }
 
