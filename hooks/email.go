@@ -46,6 +46,10 @@ func RegisterEmailHooks(app core.App) {
 }
 
 func sendTransactionEmail(app core.App, record *core.Record) {
+	// Best-effort notification: a failure (or a DB access racing daemon
+	// shutdown) must never crash the process from this detached goroutine.
+	defer func() { _ = recover() }()
+
 	accountId := record.GetString("account")
 	account, err := app.FindRecordById(collections.AccountCollectionName, accountId)
 	if err != nil {
@@ -78,6 +82,8 @@ func sendTransactionEmail(app core.App, record *core.Record) {
 }
 
 func sendDocumentEmail(app core.App, record *core.Record, status string) {
+	defer func() { _ = recover() }()
+
 	accountId := record.GetString("account")
 	account, err := app.FindRecordById(collections.AccountCollectionName, accountId)
 	if err != nil {
