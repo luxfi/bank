@@ -81,6 +81,18 @@ func TestCurrencyCloudWebhooks(t *testing.T) {
 		ExpectedContent: []string{`"ignored"`},
 	})
 
+	txWithCCID(t, app, acct.Id, "cc-conv-1")
+	conv := `{"id":"cc-conv-1","status":"completed"}`
+	run(t, app, tests.ApiScenario{
+		Name:            "cc conversion webhook reconciles",
+		Method:          http.MethodPost,
+		URL:             "/v1/bank/webhooks/currencycloud/conversion",
+		Body:            strings.NewReader(conv),
+		Headers:         map[string]string{"Content-Type": "application/json", "X-Signature": hmacSign(secret, conv)},
+		ExpectedStatus:  200,
+		ExpectedContent: []string{`"status"`},
+	})
+
 	ifx := `{"transaction_id":"ifx-1","status":"settled"}`
 	run(t, app, tests.ApiScenario{
 		Name:            "ifx settlement webhook reconciles",

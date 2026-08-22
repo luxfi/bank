@@ -116,6 +116,27 @@ func TestRouteToForex(t *testing.T) {
 	}
 }
 
+// Freezing an account writes an immutable audit-log entry — covers the
+// account-status audit branch and the audit hooks.
+func TestAccountFreezeAudits(t *testing.T) {
+	app := newBankApp(t)
+	id, _ := seedPrincipal(t, app)
+	acct := primaryAccount(app, id)
+
+	acct.Set("status", "suspended")
+	if err := app.Save(acct); err != nil {
+		t.Fatalf("freeze: %v", err)
+	}
+	recs, err := app.FindRecordsByFilter(collections.AuditCollectionName,
+		"account = {:a}", "-created", 0, 0, map[string]any{"a": acct.Id})
+	if err != nil {
+		t.Fatalf("find audit: %v", err)
+	}
+	if len(recs) == 0 {
+		t.Error("expected an audit-log entry after freezing the account")
+	}
+}
+
 // The document create hook refuses an unrecognized document type before base
 // even validates the record's fields.
 func TestDocumentTypeValidation(t *testing.T) {
