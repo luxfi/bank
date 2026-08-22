@@ -18,7 +18,12 @@ import (
 
 // Allowed status transitions. Any transition not listed is rejected.
 var allowedTransitions = map[string][]string{
-	"pending":    {"processing", "failed", "cancelled"},
+	// pending may reach any terminal state directly: an external webhook
+	// (CurrencyCloud, IFX) authoritatively reports settlement without bankd
+	// ever observing the intermediate "processing" step. The settlement hook
+	// fires once on any transition into "completed", so a direct
+	// pending -> completed releases the hold / credits exactly once.
+	"pending":    {"processing", "completed", "failed", "cancelled"},
 	"processing": {"completed", "failed", "cancelled"},
 }
 

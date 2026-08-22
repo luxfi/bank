@@ -43,11 +43,18 @@ func newBankApp(t testing.TB) *tests.TestApp {
 		}
 	}
 
+	// Register every hook exactly as cmd/bankd does, so tests exercise the
+	// same wiring — including the webhook routes and the document/wallet hooks.
+	hooks.RegisterCurrencyCloudWebhooks(app)
 	hooks.RegisterComplianceHooks(app)
 	hooks.RegisterPaymentHooks(app)
 	hooks.RegisterAccountHooks(app)
 	hooks.RegisterFeeHooks(app)
 	hooks.RegisterAuditHooks(app)
+	hooks.RegisterDocumentHooks(app)
+	hooks.RegisterWalletHooks(app)
+	hooks.RegisterEmailHooks(app)
+	hooks.RegisterCronJobs(app)
 	RegisterRoutes(app)
 
 	return app
