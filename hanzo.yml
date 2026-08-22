@@ -1,0 +1,69 @@
+# luxfi/bank — built by platform.hanzo.ai, delivered by cd.hanzo.ai.
+#
+# THIS FILE IS THE OPT-IN. A push to git.hanzo.ai fires the platform webhook,
+# which reads this document at the pushed sha, runs the gates, builds one image
+# per `images:` entry, and — on a matching branch — rolls the `deploy:` services.
+# There is no arcd, no GitHub Actions build, and no operator reconcile loop:
+# the only GitHub workflow is mirror.yml, which nudges the forge and nothing more.
+#
+# Two artifacts, one repo: bankd (the Go BaaS API on hanzoai/base) and bank-dash
+# (the Vite SPA the customer uses). Each is its own image with its own lifecycle.
+
+images:
+  - name: bankd
+    context: .
+    dockerfile: ./Dockerfile
+    repo: ghcr.io/luxfi/bank
+  - name: bank-dash
+    context: .
+    dockerfile: ./app/dash/Dockerfile
+    repo: ghcr.io/luxfi/bank-dash
+
+build:
+  matrix:
+    - { os: linux, arch: amd64 }   # arm64 paused (DOKS has no arm64 droplets)
+  tag-pattern: "{{git.branch}}"     # a v* tag pushes that immutable version
+  push: true
+  dispatch: native
+
+# Gates run before any image is published. Offline and deterministic — a red
+# gate means the code is wrong, never that something was unreachable. bankd's
+# binary links Base with CGO_ENABLED=0 (the way Base ships), so the gate builds
+# it that way too.
+test:
+  - name: bankd
+    run: |
+      set -e
+      go build ./...
+      CGO_ENABLED=0 go test -count=1 ./...
+  - name: dash
+    run: |
+      set -e
+      cd app/dash
+      pnpm install --frozen-lockfile
+      pnpm exec tsc --noEmit
+      pnpm build
+
+# Delivery. cd.hanzo.ai rolls the freshly built tag onto each service's
+# Deployment on the lux cluster — app.lux.financial (bankd/bank-dash) and the
+# sandbox.lux.financial demo stack (bankd-sandbox/bank-dash-sandbox) advance
+# together off the same two images.
+deploy:
+  cluster: do-sfo3-lux-k8s
+  namespace: lux-bank
+  # Quoted to dodge YAML 1.1 boolean coercion of a bare `on:` key.
+  "on": [main]
+  services:
+    - name: bankd
+      image: bankd
+    - name: bank-dash
+      image: bank-dash
+    - name: bankd-sandbox
+      image: bankd
+    - name: bank-dash-sandbox
+      image: bank-dash
+
+# The KMS tenant this repo's build/deploy secrets come from. Stated, not
+# derived: the owner-derived default is not reliably populated on git.hanzo.ai.
+kms:
+  org: lux
