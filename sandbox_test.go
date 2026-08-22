@@ -76,14 +76,14 @@ func TestValidAddress(t *testing.T) {
 		asset, addr string
 		want        bool
 	}{
-		{"ETH", "0x1234567890abcdef1234567890abcdef12345678", true}, // all-lowercase, no checksum
-		{"LUX", "0x1234567890ABCDEF1234567890ABCDEF12345678", true}, // all-uppercase, no checksum
-		{"ETH", "0x52908400098527886E0F7030069857D2E4169EE7", true}, // valid EIP-55 checksum
+		{"ETH", "0x1234567890abcdef1234567890abcdef12345678", true},  // all-lowercase, no checksum
+		{"LUX", "0x1234567890ABCDEF1234567890ABCDEF12345678", true},  // all-uppercase, no checksum
+		{"ETH", "0x52908400098527886E0F7030069857D2E4169EE7", true},  // valid EIP-55 checksum
 		{"ETH", "0x52908400098527886E0F7030069857D2E4169Ee7", false}, // one char wrong case → checksum fail
 		{"ETH", "0x1234", false},
 		{"ETH", "1234567890abcdef1234567890abcdef12345678xx", false},
-		{"BTC", "bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4", true},   // valid bech32
-		{"BTC", "bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t5", false},  // last char flipped → polymod fail
+		{"BTC", "bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4", true},  // valid bech32
+		{"BTC", "bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t5", false}, // last char flipped → polymod fail
 		{"BTC", "0x1234567890abcdef1234567890abcdef12345678", false},
 		{"BTC", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", false}, // length-window garbage now rejected
 		{"BTC", "short", false},
