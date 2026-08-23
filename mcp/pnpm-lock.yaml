@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@luxfi/bank':
-        specifier: file:../sdk
-        version: file:../sdk
+        specifier: ^1.4.0
+        version: 1.4.0
       '@modelcontextprotocol/sdk':
         specifier: ^1.30.0
         version: 1.30.0(zod@3.25.76)
@@ -33,8 +33,8 @@ packages:
     peerDependencies:
       hono: ^4
 
-  '@luxfi/bank@file:../sdk':
-    resolution: {directory: ../sdk, type: directory}
+  '@luxfi/bank@1.4.0':
+    resolution: {integrity: sha512-YpCb3Qx6LEdt4h4wzUQqLnvOcT1fQX/xBj9DnMPawP0SpP4IEE3jJ2nGAxnlNfZ35k8PUb/h1Ikv/uvjS3QaeA==}
 
   '@modelcontextprotocol/sdk@1.30.0':
     resolution: {integrity: sha512-xKd8OIzlqNzcqcNumGAa6g+PW2kjD5vrpcKOnfldAUPP3j7lnqMPwlTXQm8gF+UwH72z0lqaRbjr9hqGz0eITA==}
@@ -417,7 +417,7 @@ snapshots:
     dependencies:
       hono: 4.13.3
 
-  '@luxfi/bank@file:../sdk': {}
+  '@luxfi/bank@1.4.0': {}
 
   '@modelcontextprotocol/sdk@1.30.0(zod@3.25.76)':
     dependencies:

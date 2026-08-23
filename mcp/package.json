@@ -1,6 +1,6 @@
 {
   "name": "@luxfi/bank-mcp",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "MCP server for the Lux banking API \u2014 gives agents typed bank tools (accounts, payments, cards, crypto, exchange, plans) over the @luxfi/bank client.",
   "license": "MIT",
   "type": "module",
@@ -19,7 +19,7 @@
     "test": "node --test test/tools.test.ts"
   },
   "dependencies": {
-    "@luxfi/bank": "file:../sdk",
+    "@luxfi/bank": "^1.4.0",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "zod": "^3.23.0"
   },

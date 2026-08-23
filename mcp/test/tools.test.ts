@@ -20,7 +20,11 @@ function find(name: string) {
 }
 
 test('the full tool set is present and well-formed', () => {
-  assert.equal(tools.length, 22)
+  assert.equal(tools.length, 28)
+  // Earn (Liquid Protocol vaults) tools are present.
+  for (const n of ['bank_vaults', 'bank_earn_vaults', 'bank_earn_deposit', 'bank_earn_borrow', 'bank_earn_repay', 'bank_earn_withdraw']) {
+    assert.ok(tools.some((t) => t.name === n), `${n} present`)
+  }
   const names = new Set(tools.map((t) => t.name))
   assert.equal(names.size, tools.length, 'names are unique')
   for (const tool of tools) {

@@ -101,4 +101,14 @@ export const tools: BankTool[] = [
   t('bank_card_account', 'Issuer card-account state: status, KYC, virtualAccount, cards. Branch on status/nextAction.', {}, (b) => b.cardAccount()),
   t('bank_create_virtual_card', 'Create the virtual-card account (start the issuer KYC/consent lifecycle).', {}, (b) => b.createVirtualCard()),
   t('bank_order_virtual_card', 'Order the virtual card once the issuer reports approved / order_card.', {}, (b) => b.orderVirtualCard()),
+
+  // Earn — Liquid Protocol vaults (deposit yield-bearing collateral, borrow the
+  // synthetic against it, the yield repays it). deposit/withdraw amounts are in
+  // the vault's underlying minor units; borrow/repay are in USD cents.
+  t('bank_vaults', 'List the Liquid Protocol vault catalog (collateral, synthetic, APY, max LTV, TVL).', {}, (b) => b.vaults()),
+  t('bank_earn_vaults', "The vault catalog with the caller's position folded into each entry (collateral, debt, LTV, self-repay horizon).", {}, (b) => b.earnVaults()),
+  t('bank_earn_deposit', 'Deposit collateral into a vault (amount in the underlying asset minor units).', { vault: z.string(), amount: minor }, (b, a) => b.earnDeposit(a.vault, a.amount)),
+  t('bank_earn_borrow', 'Borrow the vault synthetic against collateral, up to the max LTV (amount in USD cents).', { vault: z.string(), amount: minor }, (b, a) => b.earnBorrow(a.vault, a.amount)),
+  t('bank_earn_repay', 'Repay vault debt (amount in USD cents).', { vault: z.string(), amount: minor }, (b, a) => b.earnRepay(a.vault, a.amount)),
+  t('bank_earn_withdraw', 'Withdraw collateral from a vault while it stays sufficiently collateralized (amount in underlying minor units).', { vault: z.string(), amount: minor }, (b, a) => b.earnWithdraw(a.vault, a.amount)),
 ]
