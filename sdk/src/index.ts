@@ -12,13 +12,15 @@ export interface BankConfig {
 }
 
 export class BankError extends Error {
-  constructor(
-    message: string,
-    readonly status: number,
-    readonly body: unknown,
-  ) {
+  readonly status: number
+  readonly body: unknown
+  // Fields declared explicitly (not via constructor parameter properties) so
+  // the source runs under type-stripping runtimes — Node's native TS, Deno, bun.
+  constructor(message: string, status: number, body: unknown) {
     super(message)
     this.name = 'BankError'
+    this.status = status
+    this.body = body
   }
 }
 
