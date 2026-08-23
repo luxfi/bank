@@ -299,8 +299,9 @@ export class Bank {
   cards() {
     return this.request<Card[]>('GET', '/v1/bank/cards')
   }
-  issueCard(card: Record<string, unknown>) {
-    return this.request<Card>('POST', '/v1/bank/cards', card)
+  // Returns the new card plus its CVV, shown once and never stored server-side.
+  issueCard(currency?: string) {
+    return this.request<{ card: Card; cvv: string }>('POST', '/v1/bank/cards', { currency })
   }
   freezeCard(id: string) {
     return this.request<Card>('POST', `/v1/bank/cards/${enc(id)}/freeze`)
