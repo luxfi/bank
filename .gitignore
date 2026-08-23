@@ -21,3 +21,5 @@ tmp/
 .DS_Store
 sdk/node_modules/
 sdk/dist/
+mcp/node_modules/
+mcp/dist/
