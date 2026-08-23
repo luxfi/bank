@@ -57,17 +57,26 @@ func TestUnitPriceUSD(t *testing.T) {
 	}
 }
 
-func TestLuxTestnetAddressDeterministic(t *testing.T) {
-	a := luxTestnetAddress("user-123")
-	b := luxTestnetAddress("user-123")
+func TestChainAddressDeterministic(t *testing.T) {
+	cb := chain()
+	a := cb.Address("user-123", "ETH")
+	b := cb.Address("user-123", "ETH")
 	if a != b {
 		t.Errorf("address not deterministic: %s != %s", a, b)
 	}
 	if len(a) != 42 || a[:2] != "0x" {
-		t.Errorf("address %q malformed (want 0x + 40 hex)", a)
+		t.Errorf("EVM address %q malformed (want 0x + 40 hex)", a)
 	}
-	if luxTestnetAddress("other") == a {
+	if cb.Address("other", "ETH") == a {
 		t.Errorf("distinct seeds produced same address")
+	}
+	// Each asset gets its own address; BTC is bech32, not 0x.
+	if cb.Address("user-123", "DAI") == a {
+		t.Errorf("distinct assets produced same address")
+	}
+	btc := cb.Address("user-123", "BTC")
+	if !validAddress("BTC", btc) {
+		t.Errorf("BTC address %q not a valid bech32 address", btc)
 	}
 }
 
@@ -96,11 +105,11 @@ func TestValidAddress(t *testing.T) {
 }
 
 func TestTxHashShape(t *testing.T) {
-	h := txHash()
+	h := simTxHash()
 	if len(h) != 66 || h[:2] != "0x" {
-		t.Errorf("txHash = %q, want 0x + 64 hex", h)
+		t.Errorf("simTxHash = %q, want 0x + 64 hex", h)
 	}
-	if h == txHash() {
-		t.Error("txHash not random")
+	if h == simTxHash() {
+		t.Error("simTxHash not random")
 	}
 }

@@ -53,7 +53,16 @@ export function Activity() {
       {txns === null ? (
         <div className="space-y-2">{Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-16 rounded-xl" />)}</div>
       ) : groups.length === 0 ? (
-        <EmptyState icon="activity" title="Nothing here yet" body="Your transactions will appear here as you move money." />
+        filter === 'all' ? (
+          <EmptyState icon="activity" title="Nothing here yet" body="Your transactions will appear here as you move money." />
+        ) : (
+          <EmptyState
+            icon="activity"
+            title={filter === 'credit' ? 'Nothing came in' : 'Nothing went out'}
+            body="Every transaction on this account is under All."
+            action={<button onClick={() => setFilter('all')} className="btn btn-secondary">Show all</button>}
+          />
+        )
       ) : (
         <div className="space-y-5">
           {groups.map(([day, items]) => (

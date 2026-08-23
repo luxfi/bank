@@ -4,7 +4,7 @@ import {
   type Beneficiary,
 } from '@/api/client'
 import { useOverview } from '@/hooks/overview'
-import { Button, Icon, Field, Modal, EmptyState, StatusBadge, SectionHeader, AssetAvatar } from '@/components/ui'
+import { Button, Icon, Field, Modal, EmptyState, StatusBadge, SectionHeader, AssetAvatar, CopyRow, Skeleton } from '@/components/ui'
 import { formatMoney, shortAddress } from '@/lib/format'
 
 export function Send() {
@@ -15,6 +15,8 @@ export function Send() {
 
   const balances = overview?.balances?.filter((b) => b.kind === 'fiat') ?? []
   const account = overview?.account
+  // One deposit address per crypto asset; an older bankd sends only the first.
+  const cryptoWallets = overview?.wallets ?? (overview?.wallet ? [overview.wallet] : [])
 
   async function load() {
     try { setBens(await listBeneficiaries()) } catch { setBens([]) }
@@ -28,13 +30,16 @@ export function Send() {
         <p className="text-sm text-[var(--color-fg-muted)] mt-0.5">Pay recipients worldwide over simulated SWIFT/SEPA rails.</p>
       </div>
 
-      <SendForm
-        balances={balances}
-        beneficiaries={bens ?? []}
-        accountId={account?.id ?? ''}
-        onSent={async (msg) => { setNotice(msg); await refresh() }}
-        onAdd={() => setAddOpen(true)}
-      />
+      {bens === null ? (
+        <Skeleton className="h-72 rounded-[var(--radius-card)]" />
+      ) : bens.length > 0 && (
+        <SendForm
+          balances={balances}
+          beneficiaries={bens}
+          accountId={account?.id ?? ''}
+          onSent={async (msg) => { setNotice(msg); await refresh() }}
+        />
+      )}
 
       {notice && (
         <div className="card-2 p-4 flex items-center gap-3 text-sm rise">
@@ -48,10 +53,21 @@ export function Send() {
         <section>
           <SectionHeader title="Receive" />
           <div className="card divide-y divide-[color:var(--color-border)]">
-            <CopyRow label="Account (IBAN)" value={account.iban || '—'} />
-            {overview?.wallet?.address && (
-              <CopyRow label={`Crypto · ${overview.wallet.network}`} value={overview.wallet.address} display={shortAddress(overview.wallet.address)} />
-            )}
+            <CopyRow
+              label="Account (IBAN)"
+              value={account.iban}
+              empty="No IBAN on this account yet"
+              className="px-4 py-3.5"
+            />
+            {cryptoWallets.map((w) => (
+              <CopyRow
+                key={w.currency}
+                label={`${w.currency} · ${w.network}`}
+                value={w.address}
+                display={shortAddress(w.address)}
+                className="px-4 py-3.5"
+              />
+            ))}
           </div>
         </section>
       )}
@@ -62,7 +78,9 @@ export function Send() {
           title="Recipients"
           action={<button onClick={() => setAddOpen(true)} className="text-xs text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] flex items-center gap-1"><Icon name="plus" className="w-3.5 h-3.5" /> Add</button>}
         />
-        {bens === null ? null : bens.length === 0 ? (
+        {bens === null ? (
+          <div className="space-y-2">{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-16 rounded-xl" />)}</div>
+        ) : bens.length === 0 ? (
           <EmptyState icon="send" title="No recipients yet" body="Add a recipient to send them money." action={<Button onClick={() => setAddOpen(true)}>Add recipient</Button>} />
         ) : (
           <div className="card divide-y divide-[color:var(--color-border)]">
@@ -95,13 +113,12 @@ export function Send() {
 }
 
 function SendForm({
-  balances, beneficiaries, accountId, onSent, onAdd,
+  balances, beneficiaries, accountId, onSent,
 }: {
   balances: { currency: string; available: number; decimals: number }[]
   beneficiaries: Beneficiary[]
   accountId: string
   onSent: (msg: string) => void
-  onAdd: () => void
 }) {
   const [benId, setBenId] = useState('')
   const [amount, setAmount] = useState('')
@@ -129,12 +146,6 @@ function SendForm({
     } finally {
       setSending(false)
     }
-  }
-
-  if (beneficiaries.length === 0) {
-    return (
-      <EmptyState icon="send" title="Add a recipient to send" body="You’ll be able to send money once you’ve added someone to pay." action={<Button onClick={onAdd}>Add recipient</Button>} />
-    )
   }
 
   return (
@@ -210,21 +221,5 @@ function AddBeneficiary({ onClose, onCreated }: { onClose: () => void; onCreated
         </div>
       </div>
     </Modal>
-  )
-}
-
-function CopyRow({ label, value, display }: { label: string; value: string; display?: string }) {
-  const [copied, setCopied] = useState(false)
-  return (
-    <button
-      onClick={() => { navigator.clipboard?.writeText(value); setCopied(true); setTimeout(() => setCopied(false), 1500) }}
-      className="w-full flex items-center gap-3 px-4 py-3.5 text-left hover:bg-[var(--color-surface-2)]/50 transition-colors"
-    >
-      <div className="min-w-0 flex-1">
-        <p className="text-xs text-[var(--color-fg-subtle)]">{label}</p>
-        <p className="font-mono text-sm truncate">{display ?? value}</p>
-      </div>
-      <span className="text-[var(--color-fg-muted)]"><Icon name={copied ? 'check' : 'copy'} className="w-4 h-4" /></span>
-    </button>
   )
 }

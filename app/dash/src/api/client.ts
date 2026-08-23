@@ -190,8 +190,19 @@ export const exchangeExecute = (fromCurrency: string, toCurrency: string, amount
 
 // -- Wallet / crypto --
 
-export const getWallet = () =>
-  request<{ wallet: Wallet; holdings: Balance[]; network: string; sandbox: boolean }>('/v1/bank/wallet')
+// A deposit address is per asset — BTC lands on a bech32 address, the EVM
+// assets (LUX, ETH, DAI) each on their own 0x one. `wallets` carries one per
+// supported asset; `wallet` is the first of them, and is all an older bankd
+// sends, so callers fall back to it.
+export interface WalletBundle {
+  wallet: Wallet
+  wallets?: Wallet[]
+  holdings: Balance[]
+  network: string
+  sandbox: boolean
+}
+
+export const getWallet = () => request<WalletBundle>('/v1/bank/wallet')
 export const getCryptoPrices = () =>
   request<{ prices: CryptoPrice[]; sandbox: boolean }>('/v1/bank/crypto/prices')
 

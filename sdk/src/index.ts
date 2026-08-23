@@ -194,6 +194,7 @@ export interface Overview {
   account?: Account
   balances?: Balance[]
   wallet?: Wallet | null
+  wallets?: Wallet[]
   cards?: Card[]
   recentTransactions?: Transaction[]
 }
@@ -339,7 +340,7 @@ export class Bank {
 
   // Crypto
   wallet() {
-    return this.request<{ wallet: Wallet; holdings: Balance[]; network: string; sandbox: boolean }>(
+    return this.request<{ wallet: Wallet; wallets: Wallet[]; holdings: Balance[]; network: string; sandbox: boolean }>(
       'GET',
       '/v1/bank/wallet',
     )

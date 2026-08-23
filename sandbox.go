@@ -2,8 +2,6 @@ package bank
 
 import (
 	"crypto/rand"
-	"crypto/sha256"
-	"encoding/hex"
 	"fmt"
 	"math"
 	"math/big"
@@ -174,13 +172,6 @@ func settle(app core.App, rec *core.Record) error {
 // Identity generation (sandbox / testnet)
 // -----------------------------------------------------------------------------
 
-// luxTestnetAddress derives a deterministic, display-only Lux testnet (EVM)
-// address from a seed. Not a real key — the production wallet is provisioned by
-// threshold MPC (see onboard notes); this is a stable sandbox stand-in.
-func luxTestnetAddress(seed string) string {
-	sum := sha256.Sum256([]byte("lux-testnet:" + seed))
-	return "0x" + hex.EncodeToString(sum[12:32])
-}
 
 // randDigits returns n cryptographically-random decimal digits.
 func randDigits(n int) string {

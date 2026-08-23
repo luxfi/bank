@@ -77,12 +77,13 @@ type txView struct {
 // -----------------------------------------------------------------------------
 
 func viewAccount(acct *core.Record) accountView {
-	iban := ""
-	if md, ok := acct.Get("metadata").(map[string]any); ok {
-		if s, ok := md["iban"].(string); ok {
-			iban = s
-		}
+	// metadata is stored as JSON, so Record.Get returns types.JSONRaw, not a
+	// map — unmarshal it the same way viewTxns reads its metadata.
+	var md struct {
+		IBAN string `json:"iban"`
 	}
+	_ = acct.UnmarshalJSONField("metadata", &md)
+	iban := md.IBAN
 	return accountView{
 		ID: acct.Id, EntityName: acct.GetString("entityName"),
 		EntityType: acct.GetString("entityType"), Country: acct.GetString("country"),
@@ -112,16 +113,36 @@ func viewBalances(app core.App, accountID string) []balanceView {
 	return out
 }
 
+// viewWallets returns one wallet per crypto asset, each with its own
+// chain-derived deposit address (BTC is bech32, EVM assets are 0x). Ordered by
+// SupportedCrypto so the receive UI is stable.
+func viewWallets(app core.App, accountID string) []walletView {
+	recs, _ := app.FindRecordsByFilter(collections.WalletCollectionName,
+		"account = {:a}", "currency", 0, 0, map[string]any{"a": accountID})
+	byCur := make(map[string]walletView, len(recs))
+	for _, w := range recs {
+		byCur[w.GetString("currency")] = walletView{
+			ID: w.Id, Currency: w.GetString("currency"), Address: w.GetString("address"),
+			Network: w.GetString("network"), Status: w.GetString("status"),
+		}
+	}
+	out := make([]walletView, 0, len(byCur))
+	for _, asset := range SupportedCrypto {
+		if v, ok := byCur[asset]; ok {
+			out = append(out, v)
+		}
+	}
+	return out
+}
+
+// viewWallet returns the primary wallet (first supported asset) for the
+// single-wallet views. Nil when the account has no wallet.
 func viewWallet(app core.App, accountID string) *walletView {
-	w, _ := app.FindFirstRecordByFilter(collections.WalletCollectionName,
-		"account = {:a}", map[string]any{"a": accountID})
-	if w == nil {
+	ws := viewWallets(app, accountID)
+	if len(ws) == 0 {
 		return nil
 	}
-	return &walletView{
-		ID: w.Id, Currency: w.GetString("currency"), Address: w.GetString("address"),
-		Network: w.GetString("network"), Status: w.GetString("status"),
-	}
+	return &ws[0]
 }
 
 func viewCards(app core.App, accountID string) []cardView {
@@ -220,6 +241,7 @@ func buildOverview(app core.App, acct *core.Record) map[string]any {
 		"account":            viewAccount(acct),
 		"balances":           viewBalances(app, acct.Id),
 		"wallet":             viewWallet(app, acct.Id),
+		"wallets":            viewWallets(app, acct.Id),
 		"cards":              viewCards(app, acct.Id),
 		"recentTransactions": viewTxns(app, acct.Id, 8),
 	}
@@ -516,8 +538,8 @@ func handleGetWallet(app core.App) func(*core.RequestEvent) error {
 		if err != nil {
 			return err
 		}
-		w := viewWallet(app, acct.Id)
-		if w == nil {
+		wallets := viewWallets(app, acct.Id)
+		if len(wallets) == 0 {
 			return apis.NewNotFoundError("no wallet", nil)
 		}
 		// Crypto holdings only.
@@ -529,7 +551,8 @@ func handleGetWallet(app core.App) func(*core.RequestEvent) error {
 			}
 		}
 		return e.JSON(http.StatusOK, map[string]any{
-			"wallet": w, "holdings": holdings, "network": networkName(), "sandbox": Sandbox(),
+			"wallet": &wallets[0], "wallets": wallets, "holdings": holdings,
+			"network": networkName(), "sandbox": Sandbox(),
 		})
 	}
 }

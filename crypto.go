@@ -1,7 +1,6 @@
 package bank
 
 import (
-	"crypto/rand"
 	"encoding/hex"
 	"net/http"
 	"strings"
@@ -36,13 +35,6 @@ func networkName() string {
 		return "lux-testnet"
 	}
 	return "lux-mainnet"
-}
-
-// txHash returns a random display hash for a sandbox testnet transaction.
-func txHash() string {
-	var b [32]byte
-	rand.Read(b[:])
-	return "0x" + hex.EncodeToString(b[:])
 }
 
 // validAddress checks the destination against the asset's chain family with a
@@ -171,13 +163,19 @@ func handleCryptoSend(app core.App) func(*core.RequestEvent) error {
 		if !validAddress(asset, req.ToAddress) {
 			return apis.NewBadRequestError("invalid destination address", nil)
 		}
-		hash := txHash()
+		// Broadcast through the chain backend (sandbox simulates; a real backend
+		// signs + broadcasts). The bank ledger movement below is independent of
+		// the chain — the backend only owns the on-chain half.
+		hash, err := chain().Send(asset, req.ToAddress, req.Amount)
+		if err != nil {
+			return errJSON(e, http.StatusBadGateway, "on-chain send failed")
+		}
 		tx, err := newTx(app, map[string]any{
 			"account": acct.Id, "type": "withdrawal", "direction": "debit",
 			"amount": req.Amount, "currency": asset, "status": "pending",
 			"reference": "Send " + asset + " to " + req.ToAddress,
 			"metadata": map[string]any{
-				"txHash": hash, "toAddress": req.ToAddress, "network": networkName(),
+				"txHash": hash, "toAddress": req.ToAddress, "network": chain().Network(),
 			},
 		})
 		if err != nil {
@@ -215,12 +213,12 @@ func handleCryptoDeposit(app core.App) func(*core.RequestEvent) error {
 		if minorToUSD(req.Amount, asset) > 25_000 {
 			return apis.NewBadRequestError("faucet limit is $25,000 equivalent per request", nil)
 		}
-		hash := txHash()
+		hash := simTxHash()
 		tx, err := newTx(app, map[string]any{
 			"account": acct.Id, "type": "deposit", "direction": "credit",
 			"amount": req.Amount, "currency": asset, "status": "pending",
 			"reference": "Testnet deposit " + asset,
-			"metadata":  map[string]any{"txHash": hash, "network": networkName()},
+			"metadata":  map[string]any{"txHash": hash, "network": chain().Network()},
 		})
 		if err != nil {
 			return errJSON(e, http.StatusUnprocessableEntity, err.Error())
@@ -229,7 +227,7 @@ func handleCryptoDeposit(app core.App) func(*core.RequestEvent) error {
 			return apis.NewInternalServerError("settlement failed", err)
 		}
 		return e.JSON(http.StatusOK, map[string]any{
-			"txHash": hash, "network": networkName(), "asset": asset, "amount": req.Amount,
+			"txHash": hash, "network": chain().Network(), "asset": asset, "amount": req.Amount,
 			"balances": viewBalances(app, acct.Id),
 		})
 	}

@@ -1,4 +1,4 @@
-import type { ReactNode, ButtonHTMLAttributes } from 'react'
+import { useState, type ReactNode, type ButtonHTMLAttributes } from 'react'
 import { formatMoney, formatUSD, capitalize } from '@/lib/format'
 import { useConfig } from '@/lib/config'
 
@@ -119,6 +119,41 @@ export function EmptyState({ icon, title, body, action }: { icon: string; title:
       <p className="text-sm text-[var(--color-fg-subtle)] mt-1 max-w-xs">{body}</p>
       {action && <div className="mt-5">{action}</div>}
     </div>
+  )
+}
+
+// -- Copyable identifier row (IBAN, wallet address) --
+//
+// A missing identifier is a state, not a value: the row says what is missing
+// and stays inert rather than offering a copy button for an empty string.
+
+export function CopyRow({
+  label, value, display, empty = 'Not available', className = '',
+}: { label: string; value?: string; display?: string; empty?: string; className?: string }) {
+  const [copied, setCopied] = useState(false)
+  if (!value) {
+    return (
+      <div className={`flex items-center gap-3 ${className}`}>
+        <div className="min-w-0 flex-1">
+          <p className="text-xs text-[var(--color-fg-subtle)]">{label}</p>
+          <p className="text-sm text-[var(--color-fg-muted)]">{empty}</p>
+        </div>
+      </div>
+    )
+  }
+  return (
+    <button
+      onClick={() => { navigator.clipboard?.writeText(value); setCopied(true); setTimeout(() => setCopied(false), 1500) }}
+      className={`w-full flex items-center gap-3 text-left group hover:bg-[var(--color-surface-2)]/50 transition-colors ${className}`}
+    >
+      <div className="min-w-0 flex-1">
+        <p className="text-xs text-[var(--color-fg-subtle)]">{label}</p>
+        <p className="font-mono text-sm truncate">{display ?? value}</p>
+      </div>
+      <span className="text-[var(--color-fg-muted)] group-hover:text-[var(--color-fg)]">
+        <Icon name={copied ? 'check' : 'copy'} className="w-4 h-4" />
+      </span>
+    </button>
   )
 }
 

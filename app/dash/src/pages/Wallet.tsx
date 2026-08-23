@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
-import { getWallet, sendCrypto, depositCrypto, type Wallet as WalletT, type Balance } from '@/api/client'
+import { getWallet, sendCrypto, depositCrypto, type WalletBundle, type Wallet as WalletT, type Balance } from '@/api/client'
 import { useConfig } from '@/lib/config'
 import { Money, Icon, AssetAvatar, SectionHeader, Skeleton, EmptyState, SandboxBadge, formatUSD } from '@/components/ui'
 import { shortAddress } from '@/lib/format'
@@ -8,7 +8,7 @@ import { shortAddress } from '@/lib/format'
 const CRYPTO_DECIMALS = 6
 
 export function Wallet() {
-  const [data, setData] = useState<{ wallet: WalletT; holdings: Balance[]; network: string } | null>(null)
+  const [data, setData] = useState<WalletBundle | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
   const [panel, setPanel] = useState<'send' | 'receive' | null>(null)
@@ -60,7 +60,9 @@ export function Wallet() {
       </div>
 
       {panel === 'send' && <SendPanel holdings={data.holdings} onDone={setHoldings} />}
-      {panel === 'receive' && <ReceivePanel address={addr} network={data.network} onDeposit={setHoldings} />}
+      {panel === 'receive' && (
+        <ReceivePanel wallets={data.wallets ?? [data.wallet]} network={data.network} onDeposit={setHoldings} />
+      )}
 
       {/* Holdings */}
       <section>
@@ -157,8 +159,12 @@ function SendPanel({ holdings, onDone }: { holdings: Balance[]; onDone: (b: Bala
   )
 }
 
-function ReceivePanel({ address, network, onDeposit }: { address: string; network: string; onDeposit: (b: Balance[]) => void }) {
+function ReceivePanel({
+  wallets, network, onDeposit,
+}: { wallets: WalletT[]; network: string; onDeposit: (b: Balance[]) => void }) {
   const config = useConfig()
+  const [asset, setAsset] = useState(wallets[0].currency)
+  const address = (wallets.find((w) => w.currency === asset) ?? wallets[0]).address
   const [copied, setCopied] = useState(false)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -177,6 +183,19 @@ function ReceivePanel({ address, network, onDeposit }: { address: string; networ
 
   return (
     <div className="card p-4 space-y-3">
+      {wallets.length > 1 && (
+        <div className="flex flex-wrap gap-1.5">
+          {wallets.map((w) => (
+            <button
+              key={w.currency}
+              onClick={() => setAsset(w.currency)}
+              className={`chip ${w.currency === asset ? 'bg-[var(--color-fg)] text-[var(--color-bg)] border-transparent' : 'text-[var(--color-fg-muted)]'}`}
+            >
+              {w.currency}
+            </button>
+          ))}
+        </div>
+      )}
       <p className="text-xs text-[var(--color-fg-muted)]">Your {network} deposit address</p>
       <button
         onClick={() => { navigator.clipboard?.writeText(address); setCopied(true); setTimeout(() => setCopied(false), 1500) }}
@@ -184,6 +203,11 @@ function ReceivePanel({ address, network, onDeposit }: { address: string; networ
       >
         {address} {copied ? '✓' : ''}
       </button>
+      <p className="text-[0.7rem] text-[var(--color-fg-subtle)]">
+        {wallets.length > 1
+          ? `Send only ${asset} to this address.`
+          : 'One account wallet address — every asset on this network arrives here.'}
+      </p>
       {config?.sandbox && (
         <div className="space-y-2">
           <p className="text-xs text-[var(--color-fg-muted)]">Testnet faucet</p>

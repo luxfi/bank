@@ -10,6 +10,7 @@ export function Cards() {
   const [busy, setBusy] = useState<string | null>(null)
   const [issuing, setIssuing] = useState(false)
   const [reveal, setReveal] = useState<{ card: CardView; cvv: string } | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   async function load() {
     try {
@@ -21,22 +22,26 @@ export function Cards() {
   useEffect(() => { void load() }, [])
 
   async function toggleFreeze(c: CardView) {
-    setBusy(c.id)
+    setBusy(c.id); setError(null)
     try {
       const updated = c.status === 'frozen' ? await unfreezeCard(c.id) : await freezeCard(c.id)
       setCards((prev) => (prev ?? []).map((x) => (x.id === c.id ? updated : x)))
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not change the card')
     } finally {
       setBusy(null)
     }
   }
 
   async function newCard() {
-    setIssuing(true)
+    setIssuing(true); setError(null)
     try {
       const res = await issueCard()
       setReveal(res)
       await load()
       await refresh()
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not issue a card')
     } finally {
       setIssuing(false)
     }
@@ -51,6 +56,8 @@ export function Cards() {
         </div>
         <Button onClick={newCard} loading={issuing}><Icon name="plus" className="w-4 h-4" /> New card</Button>
       </div>
+
+      {error && <p className="text-sm text-[var(--color-negative)]">{error}</p>}
 
       {cards === null ? (
         <Skeleton className="h-56 max-w-sm rounded-2xl" />

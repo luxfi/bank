@@ -1,7 +1,6 @@
-import { useState } from 'react'
 import { useOverview } from '@/hooks/overview'
 import { useBrand } from '@/hooks/brand'
-import { Money, AssetAvatar, SectionHeader, StatusBadge, Skeleton, formatUSD, Icon } from '@/components/ui'
+import { Money, AssetAvatar, SectionHeader, StatusBadge, Skeleton, formatUSD, CopyRow, EmptyState } from '@/components/ui'
 import { capitalize } from '@/lib/format'
 
 export function Accounts() {
@@ -33,12 +32,15 @@ export function Accounts() {
           </div>
         </div>
         <div className="mt-4 pt-4 border-t border-[color:var(--color-border)]">
-          <IbanRow iban={a.iban} />
+          <CopyRow label="Account number (IBAN)" value={a.iban} empty="No IBAN on this account yet" />
         </div>
       </div>
 
       <section>
         <SectionHeader title="Balances" action={<span className="text-sm tnum text-[var(--color-fg-muted)]">{formatUSD(totalUsd)}</span>} />
+        {balances.length === 0 ? (
+          <EmptyState icon="bank" title="No balances yet" body="Fund the account or convert into a currency to see it here." />
+        ) : (
         <div className="card divide-y divide-[color:var(--color-border)]">
           {balances.map((b) => (
             <div key={b.currency} className="flex items-center gap-3 px-4 py-3.5">
@@ -54,23 +56,8 @@ export function Accounts() {
             </div>
           ))}
         </div>
+        )}
       </section>
     </div>
-  )
-}
-
-function IbanRow({ iban }: { iban: string }) {
-  const [copied, setCopied] = useState(false)
-  return (
-    <button
-      onClick={() => { navigator.clipboard?.writeText(iban); setCopied(true); setTimeout(() => setCopied(false), 1500) }}
-      className="w-full flex items-center gap-3 text-left group"
-    >
-      <div className="flex-1 min-w-0">
-        <p className="text-xs text-[var(--color-fg-subtle)]">Account number (IBAN)</p>
-        <p className="font-mono text-sm truncate">{iban || '—'}</p>
-      </div>
-      <span className="text-[var(--color-fg-muted)] group-hover:text-[var(--color-fg)]"><Icon name={copied ? 'check' : 'copy'} className="w-4 h-4" /></span>
-    </button>
   )
 }

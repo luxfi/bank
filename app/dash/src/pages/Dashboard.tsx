@@ -62,6 +62,9 @@ export function Dashboard() {
           title="Balances"
           action={<Link to="/app/accounts" className="text-xs text-[var(--color-fg-muted)] hover:text-[var(--color-fg)]">See all</Link>}
         />
+        {balances.length === 0 ? (
+          <EmptyState icon="bank" title="No balances yet" body="Fund the account or convert into a currency to see it here." />
+        ) : (
         <div className="card divide-y divide-[color:var(--color-border)]">
           {balances.map((b) => (
             <div key={b.currency} className="flex items-center gap-3 px-4 py-3.5">
@@ -77,6 +80,7 @@ export function Dashboard() {
             </div>
           ))}
         </div>
+        )}
       </section>
 
       {/* Cards preview */}

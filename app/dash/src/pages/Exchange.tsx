@@ -84,7 +84,7 @@ export function Exchange() {
             {fromBal && <button onClick={() => edit(setAmount)(String(fromBal.available / 10 ** fromBal.decimals))} className="text-xs text-[var(--color-fg-muted)] hover:text-[var(--color-fg)]">Max {formatMoney(fromBal.available, from, fromBal.decimals)}</button>}
           </div>
           <div className="flex items-center gap-3">
-            <input className="flex-1 bg-transparent text-2xl font-semibold tnum outline-none placeholder:text-[var(--color-fg-subtle)]" inputMode="decimal" placeholder="0.00" value={amount} onChange={(e) => edit(setAmount)(e.target.value)} />
+            <input className="flex-1 min-w-0 bg-transparent text-2xl font-semibold tnum outline-none placeholder:text-[var(--color-fg-subtle)]" inputMode="decimal" placeholder="0.00" value={amount} onChange={(e) => edit(setAmount)(e.target.value)} />
             <AssetPicker value={from} onChange={edit(setFrom)} assets={assets} exclude={to} />
           </div>
         </div>
@@ -103,7 +103,7 @@ export function Exchange() {
             {quoting && <span className="text-xs text-[var(--color-fg-subtle)]">Fetching rate…</span>}
           </div>
           <div className="flex items-center gap-3">
-            <div className="flex-1 text-2xl font-semibold tnum text-[var(--color-fg)]">
+            <div className="flex-1 min-w-0 truncate text-2xl font-semibold tnum text-[var(--color-fg)]">
               {quote ? formatMoney(quote.toAmount, to, quote.toDecimals).replace(` ${to}`, '') : '0.00'}
             </div>
             <AssetPicker value={to} onChange={edit(setTo)} assets={assets} exclude={from} />
@@ -135,7 +135,7 @@ export function Exchange() {
 
 function AssetPicker({ value, onChange, assets, exclude }: { value: string; onChange: (v: string) => void; assets: string[]; exclude?: string }) {
   return (
-    <div className="relative flex items-center gap-2 rounded-full bg-[var(--color-surface-3)] border pl-1.5 pr-2 py-1.5">
+    <div className="relative shrink-0 flex items-center gap-2 rounded-full bg-[var(--color-surface-3)] border pl-1.5 pr-2 py-1.5">
       <AssetAvatar code={value} className="w-6 h-6" />
       <select
         value={value}

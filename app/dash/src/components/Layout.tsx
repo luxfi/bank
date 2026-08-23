@@ -4,7 +4,7 @@ import { useBrand } from '@/hooks/brand'
 import { REAL_DEMO_EMAIL } from '@/lib/brand'
 import { OverviewProvider, useOverview } from '@/hooks/overview'
 import { Wordmark } from '@/components/Brand'
-import { Icon, SandboxBadge, Spinner } from '@/components/ui'
+import { Button, EmptyState, Icon, SandboxBadge, Spinner } from '@/components/ui'
 import { Onboarding } from '@/pages/Onboarding'
 
 const nav = [
@@ -26,7 +26,7 @@ export function Layout() {
 }
 
 function Shell() {
-  const { overview, loading, refresh } = useOverview()
+  const { overview, loading, error, refresh } = useOverview()
 
   if (loading) {
     return (
@@ -37,7 +37,23 @@ function Shell() {
       </div>
     )
   }
-  if (overview && !overview.onboarded) {
+  // Nothing came back: show why, and a way out. Without this every page below
+  // renders its own blank frame.
+  if (!overview) {
+    return (
+      <div className="min-h-screen grid place-items-center px-6">
+        <div className="w-full max-w-sm">
+          <EmptyState
+            icon="shield"
+            title="Could not load your account"
+            body={error ?? 'The bank did not answer.'}
+            action={<Button onClick={() => void refresh()}>Try again</Button>}
+          />
+        </div>
+      </div>
+    )
+  }
+  if (!overview.onboarded) {
     return <Onboarding onDone={refresh} />
   }
   return <AppShell />

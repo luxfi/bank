@@ -97,17 +97,22 @@ func ProvisionCustomer(app core.App, user *core.Record, kyc KYC) (*core.Record, 
 		return nil, err
 	}
 
-	// Crypto wallet (Lux testnet). Production uses threshold MPC keygen; the
-	// sandbox derives a stable display address from the principal.
+	// Crypto wallets — one per supported asset, each with its own chain-derived
+	// deposit address (a BTC address is bech32, an EVM asset is 0x). Production
+	// provisions keys by threshold MPC; the sandbox derives stable display
+	// addresses from the principal via the chain backend.
 	if walletColl, err := app.FindCollectionByNameOrId(collections.WalletCollectionName); err == nil {
-		w := core.NewRecord(walletColl)
-		w.Set("account", acct.Id)
-		w.Set("currency", "LUX")
-		w.Set("walletId", "mpc:"+user.Id)
-		w.Set("address", luxTestnetAddress(user.Id))
-		w.Set("network", networkName())
-		w.Set("status", "active")
-		_ = app.Save(w)
+		cb := chain()
+		for _, asset := range SupportedCrypto {
+			w := core.NewRecord(walletColl)
+			w.Set("account", acct.Id)
+			w.Set("currency", asset)
+			w.Set("walletId", "mpc:"+asset+":"+user.Id)
+			w.Set("address", cb.Address(user.Id, asset))
+			w.Set("network", cb.Network())
+			w.Set("status", "active")
+			_ = app.Save(w)
+		}
 	}
 
 	if Sandbox() {

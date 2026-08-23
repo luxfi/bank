@@ -73,6 +73,51 @@ custom HTTP routes, and scheduled jobs.
 | POST | /v1/bank/webhooks/payments/callback | HMAC | Payment status callback from forex service |
 | GET | /v1/bank/health | None | Health check |
 | GET | /v1/bank/account/summary | JWT | Account summary |
+| POST | /v1/bank/cards/account | JWT | Open issuer card account (cardholder profile) |
+| GET | /v1/bank/cards/account | JWT | Issuer account state (status, KYC, virtualAccount, cards) |
+| GET | /v1/bank/cards/kyc | JWT | Issuer KYC status |
+| POST | /v1/bank/cards/virtual | JWT | Create virtual-card account |
+| GET | /v1/bank/cards/virtual/kyc-url | JWT | Hosted issuer KYC URL (never log/persist) |
+| GET | /v1/bank/cards/virtual/consent-url | JWT | Consent-agreement URL (never log/persist) |
+| POST | /v1/bank/cards/virtual/order | JWT | Order the virtual card once approved |
+
+### Issuer abstraction (issuer.go)
+
+`Issuer` is the banking counterparty for card accounts + provider-scoped
+KYC/consent + card ordering. Implementations: `sfprivate` (SF Private Bank —
+Account Management + Virtual Cards API), `simIssuer` (sandbox, deterministic).
+Selection: sandbox mode -> sim; live -> `BANK_ISSUER` (default `sfprivate`;
+`banxe` lands when its partner API reference is issued). Env: `SFPRIVATE_URL`,
+`SFPRIVATE_API_KEY` (KMS: providers/lux/sfprivate-api-key). Issuer KYC never
+substitutes for platform KYC and vice versa.
+
+### Chain backend (chain.go)
+
+`ChainBackend` is the on-chain half of the wallet — the same seam shape as
+`Issuer` and `FXProvider`. Three methods: `Network()` (lux-testnet /
+lux-mainnet), `Address(seed, asset)` (deterministic deposit address — bech32
+for BTC, 0x for EVM assets, distinct per asset), `Send(asset, to, amount)`
+(broadcast, returns tx hash). `chain()` selects it. `simChain` is the sandbox:
+deterministic display addresses (real bech32 checksum so a BTC receive address
+passes the bank's own `validAddress`), random testnet tx hashes, no broadcast.
+No real backend yet — live mode has none, so `handleCryptoSend` refuses
+on-chain sends outside sandbox and never reaches `chain()`. A real backend
+(chain RPC + signer + broadcast) drops in behind this interface. The bank
+ledger hold/settle stays on the bank side; the backend owns only the chain.
+
+Each account provisions one wallet per `SupportedCrypto` asset, each with its
+own `Address(...)`. `GET /v1/bank/wallet` and the overview expose a per-asset
+`wallets` array (plus the single `wallet` = wallets[0] for compat).
+
+### Membership plans (collections/plans.go)
+
+One published ladder — Silver $29 / Gold $99 / Black $299 / Sovereign $999
+(minor units in code), served by public `GET /v1/bank/plans` and rendered by
+the dash Landing and lux.credit (static mirror in lux-apps/credit
+src/content/plans.ts — update together). Accounts carry an optional `plan`
+select; when set it overrides entity-type limits in hooks/accounts.go.
+Surfaces: lux.finance = B2C (bank-dash), app.lux.financial = platform,
+sandbox.lux.financial = demo, lux.credit = card marketing/signup funnel.
 
 ### External Services (env vars)
 
