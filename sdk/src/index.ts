@@ -241,7 +241,7 @@ export class Bank {
 
   // Onboarding + dashboard
   onboard(profile: Record<string, unknown>) {
-    return this.request<{ account: Account }>('POST', '/v1/bank/onboard', profile)
+    return this.request<Overview>('POST', '/v1/bank/onboard', profile)
   }
   overview() {
     return this.request<Overview>('GET', '/v1/bank/overview')
@@ -289,10 +289,10 @@ export class Bank {
     return this.request<Beneficiary[]>('GET', '/v1/bank/beneficiaries')
   }
   createBeneficiary(beneficiary: Record<string, unknown>) {
-    return this.request<Beneficiary>('POST', '/v1/bank/beneficiaries', beneficiary)
+    return this.request<{ id: string }>('POST', '/v1/bank/beneficiaries', beneficiary)
   }
   deleteBeneficiary(id: string) {
-    return this.request<void>('DELETE', `/v1/bank/beneficiaries/${enc(id)}`)
+    return this.request<{ deleted: string }>('DELETE', `/v1/bank/beneficiaries/${enc(id)}`)
   }
 
   // Cards — ledger
