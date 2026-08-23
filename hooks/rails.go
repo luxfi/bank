@@ -1,6 +1,6 @@
 package hooks
 
-// Payment rail detection based on currency + jurisdiction.
+// Payment rails and their flat fees.
 // IOM MTL covers EU e-money (SEPA), UK (FPS), and international (SWIFT).
 // All rails route through the forex service which has CurrencyCloud, LMAX, Circle.
 
@@ -17,52 +17,6 @@ const (
 	RailInterac  PaymentRail = "interac"   // CAD, Canada
 	RailInternal PaymentRail = "internal"  // Same-platform transfer
 )
-
-// EUR-zone countries (SEPA participants).
-var sepaCountries = map[string]bool{
-	"AT": true, "BE": true, "BG": true, "HR": true, "CY": true,
-	"CZ": true, "DK": true, "EE": true, "FI": true, "FR": true,
-	"DE": true, "GR": true, "HU": true, "IS": true, "IE": true,
-	"IT": true, "LV": true, "LI": true, "LT": true, "LU": true,
-	"MT": true, "MC": true, "NL": true, "NO": true, "PL": true,
-	"PT": true, "RO": true, "SM": true, "SK": true, "SI": true,
-	"ES": true, "SE": true, "CH": true, "GB": true, "IM": true, // IOM included
-}
-
-// DetectRail determines the appropriate payment rail for a transaction.
-func DetectRail(currency, senderCountry, recipientCountry string) PaymentRail {
-	// Internal transfers (same platform) are handled separately.
-
-	switch currency {
-	case "EUR":
-		if sepaCountries[senderCountry] && sepaCountries[recipientCountry] {
-			return RailSEPA
-		}
-		return RailSWIFT
-
-	case "GBP":
-		if (senderCountry == "GB" || senderCountry == "IM") &&
-			(recipientCountry == "GB" || recipientCountry == "IM") {
-			return RailFPS
-		}
-		return RailSWIFT
-
-	case "USD":
-		if senderCountry == "US" && recipientCountry == "US" {
-			return RailACH
-		}
-		return RailWire
-
-	case "CAD":
-		if senderCountry == "CA" && recipientCountry == "CA" {
-			return RailInterac
-		}
-		return RailSWIFT
-
-	default:
-		return RailSWIFT
-	}
-}
 
 // RailFee returns the flat fee in minor units for a given rail.
 func RailFee(rail PaymentRail) int64 {

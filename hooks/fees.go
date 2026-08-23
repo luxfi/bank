@@ -18,17 +18,6 @@ var tierFees = map[string]int64{
 	"business":   30, // 0.30%
 }
 
-// Additional fee per payment type (flat, minor units).
-var paymentTypeFees = map[string]map[string]int64{
-	"payment": {
-		"wire_fee": 2500, // $25.00 flat wire fee
-		"sepa_fee": 500,  // $5.00 flat SEPA fee
-	},
-	"conversion": {
-		"conversion_spread": 0, // calculated as bp on amount
-	},
-}
-
 // Conversion spread in basis points.
 const conversionSpreadBP = 25 // 0.25%
 

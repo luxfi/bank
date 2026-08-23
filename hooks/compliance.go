@@ -159,94 +159,54 @@ func RegisterComplianceHooks(app core.App) {
 	})
 }
 
-// screenAML calls the external compliance service for AML checks.
-// Returns nil if clear, error if blocked or service unavailable.
-func screenAML(app core.App, accountId string, record *core.Record) error {
-	complianceURL := os.Getenv("COMPLIANCE_SERVICE_URL")
-	if complianceURL == "" {
-		app.Logger().Warn("compliance: COMPLIANCE_SERVICE_URL not set, AML check skipped")
-		return nil // fail open when service not configured (dev mode)
+// screen runs one payload through the compliance service, the single place
+// that reads COMPLIANCE_SERVICE_URL and applies fail policy. A missing service
+// always allows (dev mode). blockValue is the result string that rejects
+// ("blocked" or "match"); failOpen decides whether an unreachable service
+// allows (true) or blocks (false). Callers declare the payload and the policy;
+// this owns the mechanism.
+func screen(app core.App, kind, blockValue string, failOpen bool, payload map[string]any) error {
+	url := os.Getenv("COMPLIANCE_SERVICE_URL")
+	if url == "" {
+		return nil
 	}
+	result, err := callComplianceService(url+"/v1/screen", payload)
+	if err != nil {
+		if failOpen {
+			return nil
+		}
+		app.Logger().Error("compliance: "+kind+" service error", slog.String("error", err.Error()))
+		return err
+	}
+	if result == blockValue {
+		return apis.NewForbiddenError(kind+" blocked", nil)
+	}
+	return nil
+}
 
-	payload := map[string]any{
-		"type":      "aml",
-		"accountId": accountId,
+// screenAML — transaction AML, fail-closed.
+func screenAML(app core.App, accountId string, record *core.Record) error {
+	return screen(app, "AML", "blocked", false, map[string]any{
+		"type": "aml", "accountId": accountId,
 		"amount":    record.GetFloat("amount"),
 		"currency":  record.GetString("currency"),
 		"direction": record.GetString("direction"),
-	}
-
-	result, err := callComplianceService(complianceURL+"/v1/screen", payload)
-	if err != nil {
-		app.Logger().Error("compliance: AML service error", slog.String("error", err.Error()))
-		// Fail closed: block transaction if we can't reach compliance service.
-		return err
-	}
-
-	if result == "blocked" {
-		app.Logger().Warn("compliance: AML screening blocked transaction",
-			slog.String("accountId", accountId),
-			slog.String("transactionType", record.GetString("type")),
-		)
-		return apis.NewForbiddenError("AML screening blocked", nil)
-	}
-
-	return nil
+	})
 }
 
-// screenSanctions checks a name/country against the sanctions list.
+// screenSanctions — name/country sanctions, fail-closed.
 func screenSanctions(app core.App, name, country string) error {
-	complianceURL := os.Getenv("COMPLIANCE_SERVICE_URL")
-	if complianceURL == "" {
-		return nil
-	}
-
-	payload := map[string]any{
-		"type":    "sanctions",
-		"name":    name,
-		"country": country,
-	}
-
-	result, err := callComplianceService(complianceURL+"/v1/screen", payload)
-	if err != nil {
-		app.Logger().Error("compliance: sanctions service error", slog.String("error", err.Error()))
-		return err // fail closed
-	}
-
-	if result == "blocked" {
-		app.Logger().Warn("compliance: sanctions match",
-			slog.String("name", name),
-			slog.String("country", country),
-		)
-		return apis.NewForbiddenError("sanctions match", nil)
-	}
-
-	return nil
+	return screen(app, "sanctions", "blocked", false, map[string]any{
+		"type": "sanctions", "name": name, "country": country,
+	})
 }
 
-// screenPEP checks if a person/entity is politically exposed.
+// screenPEP — politically-exposed-person, fail-open (a screening outage does
+// not block onboarding).
 func screenPEP(app core.App, name, country string) error {
-	complianceURL := os.Getenv("COMPLIANCE_SERVICE_URL")
-	if complianceURL == "" {
-		return nil
-	}
-
-	payload := map[string]any{
-		"type":    "pep",
-		"name":    name,
-		"country": country,
-	}
-
-	result, err := callComplianceService(complianceURL+"/v1/screen", payload)
-	if err != nil {
-		return nil // PEP check failure is not blocking
-	}
-
-	if result == "match" {
-		return apis.NewForbiddenError("PEP match", nil) // used as signal, not HTTP error
-	}
-
-	return nil
+	return screen(app, "PEP", "match", true, map[string]any{
+		"type": "pep", "name": name, "country": country,
+	})
 }
 
 // complianceResponse is the expected shape from the compliance service.

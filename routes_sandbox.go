@@ -248,10 +248,6 @@ func handleListBeneficiaries(app core.App) func(*core.RequestEvent) error {
 		}
 		recs, _ := app.FindRecordsByFilter(collections.BeneficiaryCollectionName,
 			"account = {:a}", "-created", 0, 0, map[string]any{"a": acct.Id})
-		type bv struct {
-			ID, Name, BankAccountHolder, Currency, Country, PaymentType string
-			BankDetails                                                 any
-		}
 		out := make([]map[string]any, 0, len(recs))
 		for _, b := range recs {
 			out = append(out, map[string]any{
