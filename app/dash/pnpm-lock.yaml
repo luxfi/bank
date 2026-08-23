@@ -17,6 +17,9 @@ importers:
       '@hanzo/iam':
         specifier: ^0.11.0
         version: 0.11.0(react@19.2.4)
+      '@luxfi/bank':
+        specifier: file:../../sdk
+        version: file:../../sdk
       react:
         specifier: ^19.0.0
         version: 19.2.4
@@ -323,6 +326,9 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
+
+  '@luxfi/bank@file:../../sdk':
+    resolution: {directory: ../../sdk, type: directory}
 
   '@playwright/test@1.62.1':
     resolution: {integrity: sha512-DTcUc8qii+cpHvtOwggMtBRMjKZHXYWdw8syRYu2vtzuq4Wxphqq4NfCs5Zt44L6mA8rfDfj+PHnxFc/FeK6mQ==}
@@ -1136,6 +1142,8 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
+
+  '@luxfi/bank@file:../../sdk': {}
 
   '@playwright/test@1.62.1':
     dependencies:

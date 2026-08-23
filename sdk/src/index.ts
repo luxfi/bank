@@ -105,15 +105,20 @@ export interface Transaction {
   decimals: number
   status: string
   reference: string
+  txHash?: string
+  network?: string
   created: string
 }
 
 export interface Beneficiary {
   id: string
   name: string
+  bankAccountHolder: string
   currency: string
   country: string
-  [k: string]: unknown
+  paymentType: string
+  bankDetails: { iban?: string; bic?: string; accountNumber?: string; sortCode?: string }
+  verified: boolean
 }
 
 export interface CryptoPrice {
@@ -180,13 +185,15 @@ export interface CardholderProfile {
   }
 }
 
+// Mirrors bankd's buildOverview — the single dashboard payload.
 export interface Overview {
-  account: Account
-  balances: Balance[]
-  wallet: Wallet | null
-  cards: Card[]
-  transactions: Transaction[]
-  [k: string]: unknown
+  sandbox: boolean
+  onboarded: boolean
+  account?: Account
+  balances?: Balance[]
+  wallet?: Wallet | null
+  cards?: Card[]
+  recentTransactions?: Transaction[]
 }
 
 // enc encodes a path segment so an id can never traverse or inject into the URL.

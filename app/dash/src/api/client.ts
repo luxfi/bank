@@ -1,5 +1,36 @@
 import { IAM_TOKEN_KEY } from '@/lib/iam'
 
+// Domain types: ONE scheme. The @luxfi/bank SDK mirrors bankd's Go view
+// structs, so every shape has a single definition, imported here and shared by
+// the SDK and the dash. Historical dash names are kept as aliases (AccountView
+// = Account, CardView = Card, Txn = Transaction) so pages need no change.
+import type {
+  Balance,
+  Wallet,
+  Config,
+  Plan,
+  CryptoPrice,
+  CryptoMove,
+  Overview,
+  Beneficiary,
+  Account as AccountView,
+  Card as CardView,
+  Transaction as Txn,
+} from '@luxfi/bank'
+export type {
+  Balance,
+  Wallet,
+  Config,
+  Plan,
+  CryptoPrice,
+  CryptoMove,
+  Overview,
+  Beneficiary,
+  AccountView,
+  CardView,
+  Txn,
+}
+
 const BASE_URL = import.meta.env.VITE_BANK_API_URL || ''
 
 // The sandbox demo login stores a bankd superuser token under its own key so it
@@ -47,109 +78,10 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return res.json()
 }
 
-// -- Domain types (mirror bankd JSON) --
-
-export interface Balance {
-  currency: string
-  available: number
-  held: number
-  decimals: number
-  kind: 'fiat' | 'crypto'
-  valueUsd: number
-}
-export interface AccountView {
-  id: string
-  entityName: string
-  entityType: string
-  country: string
-  currency: string
-  status: string
-  kycStatus: string
-  iban: string
-}
-export interface Wallet {
-  id: string
-  currency: string
-  address: string
-  network: string
-  status: string
-}
-export interface CardView {
-  id: string
-  holderName: string
-  brand: string
-  type: string
-  last4: string
-  display: string
-  expMonth: number
-  expYear: number
-  currency: string
-  status: string
-  design: string
-}
-export interface Txn {
-  id: string
-  type: string
-  direction: 'credit' | 'debit'
-  amount: number
-  currency: string
-  decimals: number
-  status: string
-  reference: string
-  created: string
-}
-export interface Overview {
-  sandbox: boolean
-  onboarded: boolean
-  account?: AccountView
-  balances?: Balance[]
-  wallet?: Wallet | null
-  cards?: CardView[]
-  recentTransactions?: Txn[]
-}
-export interface Beneficiary {
-  id: string
-  name: string
-  bankAccountHolder: string
-  currency: string
-  country: string
-  paymentType: string
-  bankDetails: { iban?: string; bic?: string; accountNumber?: string; sortCode?: string }
-  verified: boolean
-}
-
-// -- Public config --
-
-export interface Config {
-  sandbox: boolean
-  fiat: string[]
-  crypto: string[]
-  network: string
-  disclaimer: string
-  partner?: { name: string; terms: string; privacy: string }
-}
 export const getConfig = () => request<Config>('/v1/bank/config')
 
 // -- Membership plans --
 
-export interface Plan {
-  id: string
-  name: string
-  monthly: number // minor units
-  card: 'virtual' | 'plastic' | 'metal'
-  iban: boolean
-  freeACH: number
-  freeWires: number
-  achFee: number
-  wireFee: number
-  fxPct: number
-  depositPct: number
-  dailyLimit: number
-  monthlyLimit: number
-  holders: number
-  invite?: boolean
-  perks: string[]
-}
 export const getPlans = () => request<Plan[]>('/v1/bank/plans')
 
 // -- Onboarding + dashboard --
@@ -258,20 +190,11 @@ export const exchangeExecute = (fromCurrency: string, toCurrency: string, amount
 
 // -- Wallet / crypto --
 
-export interface CryptoPrice { asset: string; usd: number; decimals: number }
 export const getWallet = () =>
   request<{ wallet: Wallet; holdings: Balance[]; network: string; sandbox: boolean }>('/v1/bank/wallet')
 export const getCryptoPrices = () =>
   request<{ prices: CryptoPrice[]; sandbox: boolean }>('/v1/bank/crypto/prices')
 
-export interface CryptoMove {
-  txHash: string
-  network: string
-  asset: string
-  amount: number
-  toAddress?: string
-  balances: Balance[]
-}
 export const sendCrypto = (asset: string, amount: number, toAddress: string) =>
   request<CryptoMove>('/v1/bank/crypto/send', {
     method: 'POST',
