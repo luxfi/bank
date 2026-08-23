@@ -1,0 +1,4 @@
+
+# hanzogui compiler cache (generated on build)
+.hanzogui/
+.gui/

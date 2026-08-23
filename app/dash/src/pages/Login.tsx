@@ -5,6 +5,7 @@ import { useBrand } from '@/hooks/brand'
 import { REAL_DEMO_EMAIL } from '@/lib/brand'
 import { AuthShell } from '@/pages/Signup'
 import { Button, Field, Icon } from '@/components/ui'
+import { View } from '@/gui'
 
 // Public sandbox demo password (all brands authenticate against the one seeded
 // bankd credential; the brand's demoEmail is display-only).
@@ -40,7 +41,7 @@ export function Login() {
 
   return (
     <AuthShell title="Welcome back" subtitle="Sign in to your sandbox account.">
-      <form onSubmit={submit} className="space-y-4">
+      <form onSubmit={submit} style={{ display: 'grid', gap: 16 }}>
         <Field label="Email">
           <input className="input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" />
         </Field>
@@ -51,9 +52,9 @@ export function Login() {
         <Button type="submit" className="w-full" loading={busy}>Sign in</Button>
       </form>
 
-      <div className="flex items-center gap-3 text-xs text-[var(--color-fg-subtle)]">
-        <span className="flex-1 h-px bg-[var(--color-border)]" /> or <span className="flex-1 h-px bg-[var(--color-border)]" />
-      </div>
+      <View style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', gap: 12 }} className="text-xs text-[var(--color-fg-subtle)]">
+        <span className="h-px bg-[var(--color-border)]" /><span>or</span><span className="h-px bg-[var(--color-border)]" />
+      </View>
 
       <Button variant="secondary" className="w-full" onClick={() => login()}>
         <Icon name="shield" className="w-4 h-4" /> Sign in with SSO

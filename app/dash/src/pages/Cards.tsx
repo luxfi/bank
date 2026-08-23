@@ -6,6 +6,7 @@ import { TxnRow } from '@/components/TxnRow'
 import { Button, Icon, EmptyState, Skeleton, StatusBadge, Modal, PageHeader, SectionHeader, Money } from '@/components/ui'
 import { formatMoney } from '@/lib/format'
 import { limitOf, spent } from '@/lib/limits'
+import { View } from '@/gui'
 
 export function Cards() {
   const { overview, refresh } = useOverview()
@@ -57,7 +58,7 @@ export function Cards() {
   const payments = txns.filter((t) => t.type === 'card').slice(0, 8)
 
   return (
-    <div className="space-y-6 md:space-y-8">
+    <View className="gap-6 md:gap-8" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
       <PageHeader
         title="Cards"
         subtitle="Virtual cards for online spending."
@@ -79,29 +80,35 @@ export function Cards() {
         // The cards keep their own column at desktop width; what a card is for —
         // what it may spend and what it has spent — sits beside them instead of
         // leaving two thirds of the screen blank.
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] items-start">
-          <div className="space-y-6">
+        <View
+          className="gap-6 grid-cols-[minmax(0,1fr)] lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)]"
+          style={{ display: 'grid', alignItems: 'start' }}
+        >
+          <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', gap: 24 }}>
             {cards.map((c) => (
-              <div key={c.id} className="space-y-3">
+              <View key={c.id} style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', gap: 12 }}>
                 <CardFace card={c} />
-                <div className="card-2 p-4 flex items-center justify-between gap-3 flex-wrap">
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2">
+                <View
+                  className="card-2 p-4 gap-3"
+                  style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', alignItems: 'center' }}
+                >
+                  <View className="min-w-0" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
+                    <View style={{ display: 'grid', gridAutoFlow: 'column', justifyContent: 'start', alignItems: 'center', gap: 8 }}>
                       <span className="text-sm font-medium">Virtual · {c.currency}</span>
                       <StatusBadge status={c.status} />
-                    </div>
+                    </View>
                     <p className="text-xs text-[var(--color-fg-subtle)] mt-0.5">•••• {c.last4}</p>
-                  </div>
+                  </View>
                   <Button variant="secondary" loading={busy === c.id} onClick={() => toggleFreeze(c)}>
                     <Icon name={c.status === 'frozen' ? 'unlock' : 'lock'} className="w-4 h-4" />
                     {c.status === 'frozen' ? 'Unfreeze' : 'Freeze'}
                   </Button>
-                </div>
-              </div>
+                </View>
+              </View>
             ))}
-          </div>
+          </View>
 
-          <div className="space-y-6">
+          <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', gap: 24 }}>
             <Limits
               currency={cards[0].currency}
               entityType={overview?.account?.entityType ?? 'individual'}
@@ -112,28 +119,28 @@ export function Cards() {
               {payments.length === 0 ? (
                 <EmptyState icon="card" title="No card spending yet" body="Payments made on this card land here." />
               ) : (
-                <div className="card divide-y divide-[color:var(--color-border)] overflow-hidden">
+                <View className="card divide-y divide-[color:var(--color-border)] overflow-hidden" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
                   {payments.map((t) => <TxnRow key={t.id} txn={t} />)}
-                </div>
+                </View>
               )}
             </section>
-          </div>
-        </div>
+          </View>
+        </View>
       )}
 
       {reveal && (
         <Modal onClose={() => setReveal(null)}>
-          <div className="space-y-4">
-            <div>
+          <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', gap: 16 }}>
+            <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
               <h3 className="text-lg font-semibold">Your new card is ready</h3>
               <p className="text-sm text-[var(--color-fg-muted)] mt-0.5">Save the number and CVV now — they’re shown once.</p>
-            </div>
+            </View>
             <CardFace card={reveal.card} cvv={reveal.cvv} pan={reveal.pan} />
             <Button className="w-full" onClick={() => setReveal(null)}>Done</Button>
-          </div>
+          </View>
         </Modal>
       )}
-    </div>
+    </View>
   )
 }
 
@@ -147,37 +154,37 @@ function Limits({ currency, entityType, txns }: { currency: string; entityType: 
   return (
     <section>
       <SectionHeader title="Spend limits" />
-      <div className="card p-5 space-y-4">
-        <div className="flex items-end justify-between gap-3">
-          <div>
+      <View className="card p-5" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', gap: 16 }}>
+        <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', alignItems: 'end', gap: 12 }}>
+          <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
             <p className="text-xs text-[var(--color-fg-subtle)]">Spent this month</p>
             <p className="text-2xl font-semibold tracking-tight tnum mt-0.5">
               <Money minor={used} currency={currency} />
             </p>
-          </div>
+          </View>
           <p className="text-sm text-[var(--color-fg-muted)] tnum">
             of {formatMoney(monthly, currency)}
           </p>
-        </div>
+        </View>
         {/* Any spend at all shows as something: a tenth of a percent still drew
             money down, and a bar that renders as empty says it did not. */}
-        <div className="h-1.5 rounded-full bg-[var(--color-surface-3)] overflow-hidden">
+        <View className="h-1.5 rounded-full bg-[var(--color-surface-3)] overflow-hidden" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
           <div className="h-full rounded-full bg-[var(--color-fg)]" style={{ width: `${pct}%`, minWidth: used > 0 ? '0.375rem' : 0 }} />
-        </div>
-        <div className="grid grid-cols-2 gap-3 pt-1">
-          <div className="card-2 p-3">
+        </View>
+        <View className="grid-cols-2 gap-3 pt-1" style={{ display: 'grid', alignContent: 'start' }}>
+          <View className="card-2 p-3" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
             <p className="text-xs text-[var(--color-fg-subtle)]">Daily limit</p>
             <p className="text-sm font-medium tnum mt-0.5">{formatMoney(daily, currency)}</p>
-          </div>
-          <div className="card-2 p-3">
+          </View>
+          <View className="card-2 p-3" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
             <p className="text-xs text-[var(--color-fg-subtle)]">Remaining</p>
             <p className="text-sm font-medium tnum mt-0.5">{formatMoney(Math.max(0, monthly - used), currency)}</p>
-          </div>
-        </div>
+          </View>
+        </View>
         <p className="text-[0.7rem] text-[var(--color-fg-subtle)]">
           <span className="capitalize">{entityType}</span> tier
         </p>
-      </div>
+      </View>
     </section>
   )
 }

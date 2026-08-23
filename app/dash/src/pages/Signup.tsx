@@ -3,28 +3,35 @@ import { useNavigate, Link } from 'react-router'
 import { useAuth } from '@/hooks/useAuth'
 import { Wordmark } from '@/components/Brand'
 import { Button, SandboxBadge } from '@/components/ui'
+import { View } from '@/gui'
 
 // Shared shell for the auth screens — true-black, centered, brand + sandbox.
+// Grid-native: the page is a two-row grid (header, then a centered body), and
+// the body centers its card with place-items — no flexbox anywhere.
 export function AuthShell({ title, subtitle, children }: { title: string; subtitle: string; children: ReactNode }) {
   return (
-    <div className="app-ambience min-h-screen flex flex-col">
-      <header className="relative z-10 flex items-center justify-between px-5 md:px-8 h-16">
+    <View className="app-ambience" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: '100vh' }}>
+      <header
+        className="relative z-10 px-5 md:px-8"
+        style={{ display: 'grid', gridTemplateColumns: 'auto 1fr auto', alignItems: 'center', height: 64 }}
+      >
         <Link to="/"><Wordmark className="text-lg" /></Link>
+        <span />
         <SandboxBadge />
       </header>
-      <div className="relative z-10 flex-1 grid place-items-center px-5 pb-16">
-        <div className="w-full max-w-sm">
-          <div className="text-center mb-6">
+      <View className="relative z-10 px-5 pb-16" style={{ display: 'grid', placeItems: 'center' }}>
+        <View style={{ display: 'grid', gap: 24, width: '100%', maxWidth: 384 }}>
+          <View style={{ display: 'grid', gap: 6, textAlign: 'center' }}>
             <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
-            <p className="text-sm text-[var(--color-fg-muted)] mt-1.5">{subtitle}</p>
-          </div>
-          <div className="card p-6 space-y-4 rise">{children}</div>
-          <p className="text-center text-[0.7rem] text-[var(--color-fg-subtle)] mt-6 max-w-xs mx-auto">
+            <p className="text-sm text-[var(--color-fg-muted)]">{subtitle}</p>
+          </View>
+          <View className="card p-6 rise" style={{ display: 'grid', gap: 16 }}>{children}</View>
+          <p className="text-center text-[0.7rem] text-[var(--color-fg-subtle)] max-w-xs mx-auto">
             Demo — sandbox environment, not for real deposits. Banking services via our licensed BaaS partner.
           </p>
-        </div>
-      </div>
-    </div>
+        </View>
+      </View>
+    </View>
   )
 }
 

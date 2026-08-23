@@ -3,6 +3,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { onboard, type KYC } from '@/api/client'
 import { Wordmark } from '@/components/Brand'
 import { Button, Icon, SandboxBadge } from '@/components/ui'
+import { View } from '@/gui'
 
 const COUNTRIES = [
   ['US', 'United States'], ['GB', 'United Kingdom'], ['DE', 'Germany'], ['FR', 'France'],
@@ -43,33 +44,36 @@ export function Onboarding({ onDone }: { onDone: () => Promise<void> }) {
   }
 
   return (
-    <div className="app-ambience min-h-screen">
-      <div className="relative z-10 max-w-lg mx-auto px-5 py-8">
-        <div className="flex items-center justify-between mb-8">
+    <View className="app-ambience" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', minHeight: '100vh' }}>
+      <View className="relative z-10 max-w-lg mx-auto px-5 py-8" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', alignContent: 'start', width: '100%' }}>
+        <View className="mb-8" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', alignItems: 'center' }}>
           <Wordmark className="text-lg" />
           <SandboxBadge />
-        </div>
+        </View>
 
-        <div className="mb-6">
+        <View className="mb-6" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
           <h1 className="text-2xl font-semibold tracking-tight">Open your account</h1>
           <p className="text-sm text-[var(--color-fg-muted)] mt-1">
             A few details and you’re in. Sandbox verification is instant — no documents needed.
           </p>
-        </div>
+        </View>
 
-        {/* Step indicator */}
-        <div className="flex items-center gap-2 mb-6">
+        {/* Step indicator — one equal track per step. */}
+        <View
+          className="mb-6"
+          style={{ display: 'grid', gridTemplateColumns: `repeat(${STEPS.length}, minmax(0,1fr))`, alignItems: 'center', gap: 8 }}
+        >
           {STEPS.map((s, i) => (
-            <div key={s} className="flex-1">
-              <div className={`h-1 rounded-full ${i <= step ? 'bg-[var(--color-fg)]' : 'bg-[var(--color-surface-3)]'}`} />
+            <View key={s} style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
+              <View className={`h-1 rounded-full ${i <= step ? 'bg-[var(--color-fg)]' : 'bg-[var(--color-surface-3)]'}`} style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }} />
               <p className={`text-[0.7rem] mt-1.5 ${i === step ? 'text-[var(--color-fg)]' : 'text-[var(--color-fg-subtle)]'}`}>{s}</p>
-            </div>
+            </View>
           ))}
-        </div>
+        </View>
 
-        <div className="card p-6 rise">
+        <View className="card p-6 rise" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
           {step === 0 && (
-            <div className="space-y-4">
+            <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', gap: 16 }}>
               <Segmented
                 value={form.entityType || 'individual'}
                 onChange={(v) => set('entityType', v)}
@@ -81,71 +85,78 @@ export function Onboarding({ onDone }: { onDone: () => Promise<void> }) {
               <Field label="Date of birth">
                 <input className="input" type="date" value={form.dob} onChange={(e) => set('dob', e.target.value)} />
               </Field>
-            </div>
+            </View>
           )}
 
           {step === 1 && (
-            <div className="space-y-4">
+            <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', gap: 16 }}>
               <Field label="Address">
                 <input className="input" value={form.addressLine} onChange={(e) => set('addressLine', e.target.value)} placeholder="1 Market Street" />
               </Field>
-              <div className="grid grid-cols-2 gap-3">
+              <View className="grid-cols-2 gap-3" style={{ display: 'grid', alignContent: 'start' }}>
                 <Field label="City">
                   <input className="input" value={form.city} onChange={(e) => set('city', e.target.value)} placeholder="San Francisco" />
                 </Field>
                 <Field label="Postal code">
                   <input className="input" value={form.postalCode} onChange={(e) => set('postalCode', e.target.value)} placeholder="94105" />
                 </Field>
-              </div>
+              </View>
               <Field label="Country">
                 <select className="input" value={form.country} onChange={(e) => set('country', e.target.value)}>
                   {COUNTRIES.map(([c, n]) => <option key={c} value={c}>{n}</option>)}
                 </select>
               </Field>
-            </div>
+            </View>
           )}
 
           {step === 2 && (
-            <div className="space-y-3">
+            <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', gap: 12 }}>
               <Review label="Name" value={form.name} />
               <Review label="Type" value={form.entityType === 'business' ? 'Business' : 'Personal'} />
               <Review label="Date of birth" value={form.dob} />
               <Review label="Address" value={[form.addressLine, form.city, form.postalCode, form.country].filter(Boolean).join(', ')} />
-              <div className="flex items-start gap-2 text-xs text-[var(--color-fg-subtle)] pt-2">
-                <Icon name="shield" className="w-4 h-4 mt-0.5 shrink-0" />
+              <View
+                className="text-xs text-[var(--color-fg-subtle)] pt-2"
+                style={{ display: 'grid', gridTemplateColumns: 'auto minmax(0,1fr)', alignItems: 'start', gap: 8 }}
+              >
+                <Icon name="shield" className="w-4 h-4 mt-0.5" />
                 <span>Sandbox environment — instant approval. In production this is a full KYC/AML review.</span>
-              </div>
-            </div>
+              </View>
+            </View>
           )}
 
           {error && <p className="text-sm text-[var(--color-negative)] mt-4">{error}</p>}
 
-          <div className="flex items-center gap-3 mt-6">
+          {/* One or two buttons, always sharing the width equally. */}
+          <View
+            className="mt-6"
+            style={{ display: 'grid', gridAutoFlow: 'column', gridAutoColumns: 'minmax(0,1fr)', alignItems: 'center', gap: 12 }}
+          >
             {step > 0 && (
-              <Button variant="secondary" onClick={() => setStep((s) => s - 1)} className="flex-1">Back</Button>
+              <Button variant="secondary" onClick={() => setStep((s) => s - 1)}>Back</Button>
             )}
             {step < 2 ? (
-              <Button onClick={() => setStep((s) => s + 1)} disabled={!canNext} className="flex-1">
+              <Button onClick={() => setStep((s) => s + 1)} disabled={!canNext}>
                 Continue
               </Button>
             ) : (
-              <Button onClick={submit} loading={submitting} className="flex-1">Open account</Button>
+              <Button onClick={submit} loading={submitting}>Open account</Button>
             )}
-          </div>
-        </div>
+          </View>
+        </View>
 
         <p className="text-center text-[0.7rem] text-[var(--color-fg-subtle)] mt-6 max-w-sm mx-auto">
           Demo — banking services provided by our licensed BaaS partner. Sandbox environment, not for
           real deposits. Placeholder terms, pending counsel review.
         </p>
-      </div>
-    </div>
+      </View>
+    </View>
   )
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <label className="block space-y-1.5">
+    <label style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', gap: 6 }}>
       <span className="label">{label}</span>
       {children}
     </label>
@@ -154,16 +165,16 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 function Review({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center justify-between text-sm">
+    <View className="text-sm" style={{ display: 'grid', gridTemplateColumns: 'auto minmax(0,1fr)', alignItems: 'center', gap: 12 }}>
       <span className="text-[var(--color-fg-subtle)]">{label}</span>
       <span className="font-medium text-right">{value || '—'}</span>
-    </div>
+    </View>
   )
 }
 
 function Segmented({ value, onChange, options }: { value: string; onChange: (v: string) => void; options: readonly (readonly [string, string])[] }) {
   return (
-    <div className="grid grid-cols-2 gap-1 p-1 rounded-full bg-[var(--color-surface-2)] border">
+    <View className="grid-cols-2 gap-1 p-1 rounded-full bg-[var(--color-surface-2)] border" style={{ display: 'grid', alignContent: 'start' }}>
       {options.map(([v, label]) => (
         <button
           key={v}
@@ -175,6 +186,6 @@ function Segmented({ value, onChange, options }: { value: string; onChange: (v: 
           {label}
         </button>
       ))}
-    </div>
+    </View>
   )
 }

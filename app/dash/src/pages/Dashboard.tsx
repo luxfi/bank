@@ -7,6 +7,7 @@ import { TxnRow } from '@/components/TxnRow'
 import { CardFace } from '@/components/CardFace'
 import { capitalize, formatPercent } from '@/lib/format'
 import { pair } from '@/lib/pair'
+import { View } from '@/gui'
 
 const actions = [
   { to: '/app/send', label: 'Send', icon: 'send' },
@@ -33,13 +34,18 @@ export function Dashboard() {
   const firstName = (rawName === 'Lux Demo' ? brand.demoName : rawName).split(' ')[0]
 
   return (
-    <div className="space-y-6 md:space-y-8">
+    <View className="gap-6 md:gap-8" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
       {/* Total balance hero. The right of it carries the mix behind the
           figure — what the total is made of, at a glance. */}
       <section className="relative overflow-hidden rounded-[var(--radius-card)] border border-[color:var(--color-border)] bg-gradient-to-br from-[var(--color-surface-2)] to-[var(--color-surface)] p-6 md:p-8">
         <div className="absolute -top-24 -right-16 w-72 h-72 rounded-full accent-glow" />
-        <div className="relative flex flex-col gap-7 md:flex-row md:items-end md:justify-between md:gap-12">
-          <div className="min-w-0">
+        {/* Figure on the left, the mix it is made of on the right — one column
+            on a phone, two from md up. */}
+        <View
+          className="relative gap-7 grid-cols-[minmax(0,1fr)] md:gap-12 md:grid-cols-[minmax(0,1fr)_auto]"
+          style={{ display: 'grid', alignItems: 'end' }}
+        >
+          <View className="min-w-0" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
             <p className="text-sm text-[var(--color-fg-muted)]">
               {firstName ? `Welcome back, ${firstName}` : 'Total balance'}
             </p>
@@ -47,12 +53,12 @@ export function Dashboard() {
             <p className="text-xs text-[var(--color-fg-subtle)] mt-2">
               Across {balances.length} balance{balances.length === 1 ? '' : 's'} · estimated in USD
             </p>
-          </div>
+          </View>
           <Allocation
             items={balances.map((b) => ({ code: b.currency, valueUsd: b.valueUsd }))}
-            className="w-full md:w-52 lg:w-60 md:shrink-0"
+            className="w-full md:w-52 lg:w-60"
           />
-        </div>
+        </View>
       </section>
 
       {/* Quick actions */}
@@ -69,7 +75,7 @@ export function Dashboard() {
         {balances.length === 0 ? (
           <EmptyState icon="bank" title="No balances yet" body="Fund the account or convert into a currency to see it here." />
         ) : (
-        <div className="card divide-y divide-[color:var(--color-border)] overflow-hidden">
+        <View className="card divide-y divide-[color:var(--color-border)] overflow-hidden" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
           {balances.map((b) => (
             <AssetRow
               key={b.currency}
@@ -80,7 +86,7 @@ export function Dashboard() {
               valueUsd={b.valueUsd}
             />
           ))}
-        </div>
+        </View>
         )}
       </section>
 
@@ -93,20 +99,23 @@ export function Dashboard() {
             action={<Link to="/app/earn" className="text-xs text-[var(--color-fg-muted)] hover:text-[var(--color-fg)]">Manage</Link>}
           />
           <Link to="/app/earn" className="card lift block p-5">
-            <div className="flex items-center gap-3 sm:gap-4">
-              <span className="w-10 h-10 rounded-full grid place-items-center bg-[var(--color-surface-3)] border shrink-0">
+            <View
+              className="gap-3 sm:gap-4"
+              style={{ display: 'grid', gridTemplateColumns: 'auto minmax(0,1fr) auto auto', alignItems: 'center' }}
+            >
+              <span className="w-10 h-10 rounded-full grid place-items-center bg-[var(--color-surface-3)] border">
                 <Icon name="earn" className="w-[18px] h-[18px]" />
               </span>
-              <div className="min-w-0 flex-1">
+              <View className="min-w-0" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
                 <p className="text-xs text-[var(--color-fg-subtle)]">Net position</p>
                 <p className="text-xl font-semibold tracking-tight tnum truncate">{formatUSD(earn.netUsd / 100)}</p>
-              </div>
-              <div className="text-right shrink-0">
+              </View>
+              <View className="text-right" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
                 <p className="tnum font-medium text-[var(--color-positive)]">{formatPercent(earn.netApy)}</p>
                 <p className="text-xs text-[var(--color-fg-subtle)]">Net APY</p>
-              </div>
-              <Icon name="chevron" className="w-4 h-4 shrink-0 text-[var(--color-fg-subtle)]" />
-            </div>
+              </View>
+              <Icon name="chevron" className="w-4 h-4 text-[var(--color-fg-subtle)]" />
+            </View>
             <p className="text-xs text-[var(--color-fg-subtle)] mt-3">
               {formatUSD(earn.collateralUsd / 100)} of collateral against {formatUSD(earn.debt / 100)} borrowed —
               the yield repays it.
@@ -137,21 +146,21 @@ export function Dashboard() {
         {txns.length === 0 ? (
           <EmptyState icon="activity" title="No activity yet" body="Your transactions will appear here as you move money." />
         ) : (
-          <div className="card divide-y divide-[color:var(--color-border)] overflow-hidden">
+          <View className="card divide-y divide-[color:var(--color-border)] overflow-hidden" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
             {pair(txns).map((e) => <TxnRow key={e.key} txn={e.txn} into={e.into} />)}
-          </div>
+          </View>
         )}
       </section>
-    </div>
+    </View>
   )
 }
 
 function DashboardSkeleton() {
   return (
-    <div className="space-y-8">
+    <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', gap: 32 }}>
       <Skeleton className="h-40 rounded-[var(--radius-card)]" />
-      <div className="grid grid-cols-4 gap-3">{Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-24 rounded-xl" />)}</div>
+      <View className="grid-cols-4 gap-3" style={{ display: 'grid', alignContent: 'start' }}>{Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-24 rounded-xl" />)}</View>
       <Skeleton className="h-56 rounded-[var(--radius-card)]" />
-    </div>
+    </View>
   )
 }

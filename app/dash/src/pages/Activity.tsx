@@ -4,6 +4,7 @@ import { TxnRow } from '@/components/TxnRow'
 import { EmptyState, PageHeader, Skeleton } from '@/components/ui'
 import { formatDateShort } from '@/lib/format'
 import { pair, type Entry } from '@/lib/pair'
+import { View } from '@/gui'
 
 const FILTERS = [
   ['all', 'All'],
@@ -35,10 +36,13 @@ export function Activity() {
   }, [txns, filter])
 
   return (
-    <div className="space-y-6 md:space-y-8">
+    <View className="gap-6 md:gap-8" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)' }}>
       <PageHeader title="Activity" subtitle="Every movement across your account." />
 
-      <div className="inline-flex gap-1 p-1 rounded-full bg-[var(--color-surface-2)] border">
+      <View
+        className="p-1 rounded-full bg-[var(--color-surface-2)] border"
+        style={{ display: 'grid', gridAutoFlow: 'column', gap: 4, justifySelf: 'start' }}
+      >
         {FILTERS.map(([v, label]) => (
           <button
             key={v}
@@ -53,10 +57,10 @@ export function Activity() {
             {label}
           </button>
         ))}
-      </div>
+      </View>
 
       {txns === null ? (
-        <div className="space-y-2">{Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-16 rounded-xl" />)}</div>
+        <View style={{ display: 'grid', gap: 8 }}>{Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-16 rounded-xl" />)}</View>
       ) : groups.length === 0 ? (
         filter === 'all' ? (
           <EmptyState icon="activity" title="Nothing here yet" body="Your transactions will appear here as you move money." />
@@ -69,17 +73,17 @@ export function Activity() {
           />
         )
       ) : (
-        <div className="space-y-5">
+        <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 20 }}>
           {groups.map(([day, items]) => (
-            <div key={day}>
-              <p className="text-xs font-medium text-[var(--color-fg-subtle)] mb-2 px-1">{day}</p>
-              <div className="card divide-y divide-[color:var(--color-border)] overflow-hidden">
+            <View key={day} style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 8 }}>
+              <p className="text-xs font-medium text-[var(--color-fg-subtle)] px-1">{day}</p>
+              <View className="card divide-y divide-[color:var(--color-border)] overflow-hidden" style={{ display: 'grid' }}>
                 {items.map((e) => <TxnRow key={e.key} txn={e.txn} into={e.into} />)}
-              </div>
-            </div>
+              </View>
+            </View>
           ))}
-        </div>
+        </View>
       )}
-    </div>
+    </View>
   )
 }

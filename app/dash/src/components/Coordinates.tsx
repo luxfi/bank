@@ -1,5 +1,6 @@
 import type { AccountView } from '@/api/client'
-import { CopyRow } from '@/components/ui'
+import { CopyRow, stack } from '@/components/ui'
+import { View } from '@/gui'
 
 // What someone needs in order to wire money in. Which lines those are is a
 // property of the market, not of the screen: a US account is reached by routing
@@ -15,7 +16,7 @@ export function Coordinates({ account }: { account: AccountView }) {
     return <CopyRow label="Account number (IBAN)" value={account.iban} empty="No IBAN on this account yet" />
   }
   return (
-    <div className="grid gap-4 sm:grid-cols-2">
+    <View className="sm:grid-cols-2" style={stack(16)}>
       <CopyRow label="Bank" value={r.bankName} mono={false} />
       <CopyRow label="Account holder" value={r.accountHolder} mono={false} />
       {r.routingNumber && <CopyRow label="Routing number (ABA)" value={r.routingNumber} />}
@@ -24,10 +25,10 @@ export function Coordinates({ account }: { account: AccountView }) {
       {r.iban && <CopyRow label="IBAN" value={r.iban} />}
       {r.swift && <CopyRow label="SWIFT / BIC" value={r.swift} />}
       {r.bankAddress && (
-        <div className="sm:col-span-2">
+        <View className="sm:col-span-2" style={stack()}>
           <CopyRow label="Bank address" value={r.bankAddress} mono={false} />
-        </div>
+        </View>
       )}
-    </div>
+    </View>
   )
 }
