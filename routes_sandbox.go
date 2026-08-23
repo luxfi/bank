@@ -253,6 +253,7 @@ func buildOverview(app core.App, acct *core.Record) map[string]any {
 		"wallet":             viewWallet(app, acct.Id),
 		"wallets":            viewWallets(app, acct.Id),
 		"cards":              viewCards(app, acct.Id),
+		"earn":               viewEarnSummary(app, acct.Id),
 		"recentTransactions": viewTxns(app, acct.Id, 8),
 	}
 }

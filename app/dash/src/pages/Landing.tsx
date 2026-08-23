@@ -18,7 +18,7 @@ const FEATURES = [
   { icon: 'send', title: 'Global payments & instant FX', body: 'SWIFT, SEPA, ACH and wires worldwide, with conversion at institutional rates — no hidden spread.' },
   { icon: 'wallet', title: 'Built-in crypto wallet', body: 'Every account ships with a non-custodial wallet secured by threshold MPC — no single key.' },
   { icon: 'card', title: 'Cards, virtual to metal', body: 'Issue a virtual card in a tap; carry plastic or metal on higher tiers. Pairs with lux.credit.' },
-  { icon: 'coins', title: 'Earn & borrow — Liquid Protocol', body: 'Collateralize crypto in non-custodial vaults and borrow against it while yield repays you. Lux’s native lending protocol, built in.' },
+  { icon: 'earn', title: 'Earn & borrow — Liquid Protocol', body: 'Collateralize crypto in non-custodial vaults and borrow against it while yield repays you. Lux’s native lending protocol, built in.' },
   { icon: 'shield', title: 'Bank-grade security', body: 'Lux ID sign-in, KMS-managed secrets, and continuous KYC / AML / sanctions screening.' },
 ]
 

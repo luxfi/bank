@@ -14,6 +14,7 @@ const nav = [
   { to: '/app/send', label: 'Send', icon: 'send', primary: true },
   { to: '/app/exchange', label: 'Exchange', icon: 'swap', primary: true },
   { to: '/app/wallet', label: 'Wallet', icon: 'wallet', primary: true },
+  { to: '/app/earn', label: 'Earn', icon: 'earn', primary: true },
   { to: '/app/accounts', label: 'Accounts', icon: 'bank', primary: false },
   { to: '/app/activity', label: 'Activity', icon: 'activity', primary: false },
 ] as const
@@ -159,16 +160,21 @@ function AppShell() {
 
       {/* Mobile bottom tab bar */}
       <nav aria-label="Primary" className="lg:hidden fixed bottom-0 inset-x-0 z-30 border-t border-[color:var(--color-border)] bg-[var(--color-bg)]/90 backdrop-blur-xl pb-[env(safe-area-inset-bottom)]">
-        <div className="grid grid-cols-6">
+        {/* The track is sized from the nav itself (+1 for More), so adding a
+            destination never leaves a column count behind to fix by hand. */}
+        <div
+          className="grid"
+          style={{ gridTemplateColumns: `repeat(${nav.filter((n) => n.primary).length + 1}, minmax(0, 1fr))` }}
+        >
           {nav.filter((n) => n.primary).map((n) => (
             <NavLink key={n.to} to={n.to} end={n.to === '/app'} className={tabLink}>
               <Icon name={n.icon} className="w-[22px] h-[22px]" />
-              <span className="text-[0.62rem] font-medium">{n.label}</span>
+              <span className="text-[0.62rem] font-medium max-w-full truncate px-0.5">{n.label}</span>
             </NavLink>
           ))}
           <button type="button" onClick={() => setMoreOpen((v) => !v)} className={tabLink({ isActive: moreOpen })}>
             <Icon name="menu" className="w-[22px] h-[22px]" />
-            <span className="text-[0.62rem] font-medium">More</span>
+            <span className="text-[0.62rem] font-medium max-w-full truncate px-0.5">More</span>
           </button>
         </div>
       </nav>
@@ -184,7 +190,7 @@ function sideLink({ isActive }: { isActive: boolean }) {
   }`
 }
 function tabLink({ isActive }: { isActive: boolean }) {
-  return `tab flex flex-col items-center justify-center gap-1 py-2.5 ${
+  return `tab min-w-0 flex flex-col items-center justify-center gap-1 py-2.5 ${
     isActive ? 'text-[var(--color-fg)]' : 'text-[var(--color-fg-subtle)]'
   }`
 }

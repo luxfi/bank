@@ -24,6 +24,11 @@ func RegisterRoutes(app core.App) {
 			e.Router.GET("/v1/bank/plans", func(re *core.RequestEvent) error {
 				return re.JSON(http.StatusOK, collections.Plans)
 			})
+			// Liquid Protocol vault catalog — the Earn markets, public like
+			// the plan ladder (positions live behind auth at /earn/vaults).
+			e.Router.GET("/v1/bank/vaults", func(re *core.RequestEvent) error {
+				return re.JSON(http.StatusOK, collections.Vaults)
+			})
 			// Sandbox-only password login → mints a superuser token.
 			if Sandbox() {
 				e.Router.POST("/v1/bank/login", handleSandboxLogin(app))
@@ -103,6 +108,9 @@ func RegisterRoutes(app core.App) {
 			if Sandbox() {
 				g.POST("/crypto/deposit", handleCryptoDeposit(app))
 			}
+
+			// Earn — Liquid Protocol vaults (deposit / borrow / repay / withdraw).
+			registerEarnRoutes(app, g)
 
 			return e.Next()
 		},

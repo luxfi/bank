@@ -12,6 +12,7 @@ import { Cards } from '@/pages/Cards'
 import { Send } from '@/pages/Send'
 import { Exchange } from '@/pages/Exchange'
 import { Wallet } from '@/pages/Wallet'
+import { Earn } from '@/pages/Earn'
 import { Activity } from '@/pages/Activity'
 import { NotFound } from '@/pages/NotFound'
 import { Spinner } from '@/components/ui'
@@ -52,6 +53,7 @@ export function App() {
             <Route path="send" element={<Send />} />
             <Route path="exchange" element={<Exchange />} />
             <Route path="wallet" element={<Wallet />} />
+            <Route path="earn" element={<Earn />} />
             <Route path="activity" element={<Activity />} />
             <Route path="*" element={<NotFound />} />
           </Route>

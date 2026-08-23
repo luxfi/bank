@@ -37,6 +37,7 @@ func newBankApp(t testing.TB) *tests.TestApp {
 		collections.EnsureSessionCollection,
 		collections.EnsureCredentialCollection,
 		collections.EnsureDocumentCollection,
+		collections.EnsurePositionCollection,
 	} {
 		if err := ensure(app); err != nil {
 			t.Fatalf("ensure collection: %v", err)

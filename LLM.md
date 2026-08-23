@@ -103,6 +103,26 @@ one place (`cardBIN`); `maskedPAN`/`sandboxPAN` derive the stored mask and the
 one-time full number from it, and `POST /cards` returns `pan` once (never
 stored — only the mask + last4 persist).
 
+### Earn — Liquid Protocol vaults (liquid.go, collections/vaults.go)
+
+The Liquid Protocol self-repaying-loan layer, folded into the bank. A vault is a
+curated market (catalog in `collections.Vaults`, like Plans): deposit a
+yield-bearing collateral asset, borrow the vault's synthetic x-token against it
+up to `MaxLTV`, and the collateral yield (APY) repays the debt. Money moves
+through the same transaction ledger as everything else (a settled `earn`-type
+transaction, so it validates debits against live balances and shows in Activity,
+carrying no wire fee and no forex routing); the `positions` collection (one per
+account per vault: collateral in underlying minor units, debt in USD cents) is
+the vault-specific state. `earnAction` is the one handler behind all four verbs
+(deposit/borrow/repay/withdraw) — it enforces the LTV ceiling on borrow and the
+collateralization floor on withdraw. Sandbox settles instantly; a real on-chain
+Liquid backend drops in behind these routes unchanged.
+
+Routes: public `GET /v1/bank/vaults` (catalog, like /plans); authed
+`GET /v1/bank/earn/vaults` (catalog + the caller's positions folded in),
+`POST /v1/bank/earn/{deposit,borrow,repay,withdraw}`. The overview carries an
+`earn` summary (collateralUsd, debt, netUsd, yieldUsdYear, positions, netApy).
+
 ### Chain backend (chain.go)
 
 `ChainBackend` is the on-chain half of the wallet — the same seam shape as

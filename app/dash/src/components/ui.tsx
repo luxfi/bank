@@ -1,4 +1,5 @@
 import { useState, type ReactNode, type ButtonHTMLAttributes } from 'react'
+import { createPortal } from 'react-dom'
 import { Link } from 'react-router'
 import { formatMoney, formatUSD, capitalize } from '@/lib/format'
 import { useConfig } from '@/lib/config'
@@ -26,6 +27,9 @@ const paths: Record<string, string> = {
   shield: 'M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3Z',
   bank: 'M3 10h18M5 10v8m4-8v8m6-8v8m4-8v8M12 3 3 8h18l-9-5ZM3 21h18',
   menu: 'M4 6h16M4 12h16M4 18h16',
+  close: 'M6 6l12 12M18 6 6 18',
+  // A sprout: one stem, two leaves. Yield that grows on what you already hold.
+  earn: 'M12 21V11M12 11c0-5 4-8 9-8 0 5-4 8-9 8ZM12 16c0-4.5-3.5-8-9-8 0 4.5 3.5 8 9 8Z',
 }
 
 export function Icon({ name, className = 'w-5 h-5' }: { name: keyof typeof paths | string; className?: string }) {
@@ -295,14 +299,20 @@ function Triangle() {
 
 // -- Modal / bottom sheet --
 
+// A dialog belongs to the viewport, not to whatever panel opened it. Rendering
+// into the body puts it outside the shell's stacking context, so it covers the
+// mobile tab bar instead of losing its bottom edge — and its own bar under it —
+// to a nav that sits higher in the tree.
+
 export function Modal({ children, onClose }: { children: ReactNode; onClose: () => void }) {
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 grid place-items-end sm:place-items-center p-0 sm:p-4" role="dialog" aria-modal="true">
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative z-10 w-full sm:max-w-md card p-5 rounded-t-2xl sm:rounded-2xl rise max-h-[92vh] overflow-y-auto">
+      <div className="relative z-10 w-full sm:max-w-md card p-5 rounded-t-2xl sm:rounded-2xl rise max-h-[92vh] overflow-y-auto pb-[calc(1.25rem+env(safe-area-inset-bottom))] sm:pb-5">
         {children}
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }
 

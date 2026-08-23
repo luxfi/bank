@@ -46,10 +46,12 @@ func EnsureTransactionCollection(app core.App) error {
 
 		// Transaction type. `card` is a card purchase — a debit like a payment
 		// but on the card rail, so it carries no wire fee and is not routed to
-		// forex; the Cards screen lists these specifically.
+		// forex; the Cards screen lists these specifically. `earn` is a Liquid
+		// Protocol vault movement (deposit/borrow/repay/withdraw), carrying no
+		// fee and no forex routing.
 		&core.SelectField{
 			Name:      "type",
-			Values:    []string{"payment", "card", "conversion", "deposit", "withdrawal", "fee"},
+			Values:    []string{"payment", "card", "conversion", "deposit", "withdrawal", "earn", "fee"},
 			Required:  true,
 			MaxSelect: 1,
 		},

@@ -226,7 +226,42 @@ func fundSandbox(app core.App, acct *core.Record, holder string) error {
 
 	// One virtual card, active.
 	issueCardRecord(app, acct.Id, holder, "USD")
+
+	// An open Earn position so the Liquid vaults screen reads like a real book:
+	// staked LUX collateral with a modest self-repaying xUSD loan against it.
+	seedPositions(app, acct.Id)
 	return nil
+}
+
+// seedPositions opens a demo vault position (collateral in the vault's
+// underlying minor units, debt in USD cents) directly — seed state, not a
+// user action, so it does not move the wallet balances.
+func seedPositions(app core.App, accountID string) {
+	col, err := app.FindCollectionByNameOrId(collections.PositionCollectionName)
+	if err != nil {
+		return
+	}
+	seeds := []struct {
+		vault      string
+		collateral int64 // underlying minor units
+		debt       int64 // USD cents
+	}{
+		{"stlux", 180_000000, 1_200_00}, // 180 LUX collateral, $1,200 borrowed
+		{"wsteth", 1_500000, 3_000_00},  // 1.5 ETH collateral, $3,000 borrowed
+	}
+	for _, s := range seeds {
+		if positionFor(app, accountID, s.vault) != nil {
+			continue
+		}
+		p := core.NewRecord(col)
+		p.Set("account", accountID)
+		p.Set("vault", s.vault)
+		p.Set("collateral", s.collateral)
+		p.Set("debt", s.debt)
+		if err := app.Save(p); err != nil {
+			app.Logger().Warn("seed position failed", "vault", s.vault, "err", err)
+		}
+	}
 }
 
 // cardBIN is the Visa sandbox test BIN. It lives in exactly one place; both the

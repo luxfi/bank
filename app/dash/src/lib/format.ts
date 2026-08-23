@@ -98,6 +98,25 @@ export function relativeTime(iso: string): string {
   return formatDateShort(iso)
 }
 
+// formatPercent renders a rate that is already a percentage (8.2 → "8.20%").
+// Ratios (LTV, 0..1) are scaled by the caller, so there is one function and one
+// convention rather than two that differ by a factor of a hundred.
+export function formatPercent(value: number, digits = 2): string {
+  if (!isFinite(value)) return '—'
+  return `${value.toFixed(digits)}%`
+}
+
+// formatHorizon renders a span of days at the scale a person thinks in. A
+// self-repaying loan clears over years, and saying "2137 days" hides that.
+export function formatHorizon(days: number): string {
+  if (!isFinite(days) || days <= 0) return '—'
+  if (days < 45) return `~${Math.round(days)} day${Math.round(days) === 1 ? '' : 's'}`
+  const months = days / 30.44
+  if (months < 24) return `~${Math.round(months)} months`
+  const years = days / 365
+  return `~${years < 10 ? years.toFixed(1) : Math.round(years)} years`
+}
+
 export function capitalize(s: string): string {
   return s ? s.charAt(0).toUpperCase() + s.slice(1) : s
 }

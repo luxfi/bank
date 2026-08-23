@@ -1,11 +1,11 @@
 import { Link } from 'react-router'
 import { useOverview } from '@/hooks/overview'
 import { useBrand } from '@/hooks/brand'
-import { SectionHeader, ActionTile, AssetRow, Skeleton, EmptyState, formatUSD } from '@/components/ui'
+import { SectionHeader, ActionTile, AssetRow, Icon, Skeleton, EmptyState, formatUSD } from '@/components/ui'
 import { Allocation } from '@/components/Allocation'
 import { TxnRow } from '@/components/TxnRow'
 import { CardFace } from '@/components/CardFace'
-import { capitalize } from '@/lib/format'
+import { capitalize, formatPercent } from '@/lib/format'
 import { pair } from '@/lib/pair'
 
 const actions = [
@@ -26,6 +26,7 @@ export function Dashboard() {
   const totalUsd = balances.reduce((s, b) => s + b.valueUsd, 0)
   const txns = overview.recentTransactions ?? []
   const cards = overview.cards ?? []
+  const earn = overview.earn
   // Display the seeded demo identity under the active brand (avoid leaking the
   // seed's "Lux Demo" name onto a white-label surface).
   const rawName = overview.account?.entityName || ''
@@ -82,6 +83,37 @@ export function Dashboard() {
         </div>
         )}
       </section>
+
+      {/* Earn — only for an account that has collateral working. What it is
+          worth net of the debt, and what that debt is being repaid at. */}
+      {earn && earn.positions > 0 && (
+        <section>
+          <SectionHeader
+            title="Earn"
+            action={<Link to="/app/earn" className="text-xs text-[var(--color-fg-muted)] hover:text-[var(--color-fg)]">Manage</Link>}
+          />
+          <Link to="/app/earn" className="card lift block p-5">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <span className="w-10 h-10 rounded-full grid place-items-center bg-[var(--color-surface-3)] border shrink-0">
+                <Icon name="earn" className="w-[18px] h-[18px]" />
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="text-xs text-[var(--color-fg-subtle)]">Net position</p>
+                <p className="text-xl font-semibold tracking-tight tnum truncate">{formatUSD(earn.netUsd / 100)}</p>
+              </div>
+              <div className="text-right shrink-0">
+                <p className="tnum font-medium text-[var(--color-positive)]">{formatPercent(earn.netApy)}</p>
+                <p className="text-xs text-[var(--color-fg-subtle)]">Net APY</p>
+              </div>
+              <Icon name="chevron" className="w-4 h-4 shrink-0 text-[var(--color-fg-subtle)]" />
+            </div>
+            <p className="text-xs text-[var(--color-fg-subtle)] mt-3">
+              {formatUSD(earn.collateralUsd / 100)} of collateral against {formatUSD(earn.debt / 100)} borrowed —
+              the yield repays it.
+            </p>
+          </Link>
+        </section>
+      )}
 
       {/* Cards preview */}
       {cards.length > 0 && (

@@ -203,6 +203,45 @@ export interface CardholderProfile {
 }
 
 // Mirrors bankd's buildOverview — the single dashboard payload.
+// Vault is a Liquid Protocol market: deposit yield-bearing collateral, borrow
+// the synthetic x-token against it up to maxLtv, and the collateral yield
+// repays the debt.
+export interface Vault {
+  id: string
+  name: string
+  collateral: string
+  underlying: string
+  synthetic: string
+  apy: number
+  maxLtv: number
+  tvlUsd: number
+  description: string
+}
+
+// Position is the caller's stake in one vault, with derived figures (values in
+// USD cents; ltv 0..1; borrowable is additional headroom in USD cents).
+export interface Position {
+  vault: string
+  collateral: number
+  collateralUsd: number
+  debt: number
+  ltv: number
+  borrowable: number
+  yieldUsdYear: number
+  selfRepayDays: number
+}
+
+export type VaultView = Vault & { position?: Position | null }
+
+export interface EarnSummary {
+  collateralUsd: number
+  debt: number
+  netUsd: number
+  yieldUsdYear: number
+  positions: number
+  netApy: number
+}
+
 export interface Overview {
   sandbox: boolean
   onboarded: boolean
@@ -211,6 +250,7 @@ export interface Overview {
   wallet?: Wallet | null
   wallets?: Wallet[]
   cards?: Card[]
+  earn?: EarnSummary
   recentTransactions?: Transaction[]
 }
 
@@ -370,6 +410,27 @@ export class Bank {
   depositCrypto(asset: string, amount: number) {
     return this.request<CryptoMove>('POST', '/v1/bank/crypto/deposit', { asset, amount })
   }
+
+  // Earn — Liquid Protocol vaults. `vaults()` is the public catalog; the rest
+  // are the caller's positions and movements. deposit/withdraw amounts are in
+  // the vault's underlying minor units; borrow/repay are in USD cents.
+  vaults() {
+    return this.request<Vault[]>('GET', '/v1/bank/vaults')
+  }
+  earnVaults() {
+    return this.request<VaultView[]>('GET', '/v1/bank/earn/vaults')
+  }
+  private earnMove(action: 'deposit' | 'borrow' | 'repay' | 'withdraw', vault: string, amount: number) {
+    return this.request<{ vault: string; position: Position; balances: Balance[] }>(
+      'POST',
+      `/v1/bank/earn/${action}`,
+      { vault, amount },
+    )
+  }
+  earnDeposit(vault: string, amount: number) { return this.earnMove('deposit', vault, amount) }
+  earnBorrow(vault: string, amount: number) { return this.earnMove('borrow', vault, amount) }
+  earnRepay(vault: string, amount: number) { return this.earnMove('repay', vault, amount) }
+  earnWithdraw(vault: string, amount: number) { return this.earnMove('withdraw', vault, amount) }
 
   // Exchange (fiat FX + crypto buy/sell/convert)
   exchangeQuote(fromCurrency: string, toCurrency: string, amount: number) {

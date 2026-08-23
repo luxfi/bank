@@ -13,6 +13,10 @@ import type {
   CryptoMove,
   Overview,
   Beneficiary,
+  Vault,
+  VaultView,
+  Position,
+  EarnSummary,
   Account as AccountView,
   Card as CardView,
   Transaction as Txn,
@@ -26,6 +30,10 @@ export type {
   CryptoMove,
   Overview,
   Beneficiary,
+  Vault,
+  VaultView,
+  Position,
+  EarnSummary,
   AccountView,
   CardView,
   Txn,
@@ -216,4 +224,28 @@ export const depositCrypto = (asset: string, amount: number) =>
   request<CryptoMove>('/v1/bank/crypto/deposit', {
     method: 'POST',
     body: JSON.stringify({ asset, amount }),
+  })
+
+// -- Earn (Liquid Protocol vaults) --
+//
+// `listVaults` is the public catalog; `getEarnVaults` is the same catalog with
+// the caller's position folded into each entry, so one call drives the screen.
+// The four movements share a shape: deposit/withdraw carry the vault's
+// underlying minor units, borrow/repay carry USD cents.
+
+export const listVaults = () => request<Vault[]>('/v1/bank/vaults')
+export const getEarnVaults = () => request<VaultView[]>('/v1/bank/earn/vaults')
+
+export interface EarnMove {
+  vault: string
+  position: Position
+  balances: Balance[]
+}
+
+export type EarnAction = 'deposit' | 'borrow' | 'repay' | 'withdraw'
+
+export const earnMove = (action: EarnAction, vault: string, amount: number) =>
+  request<EarnMove>(`/v1/bank/earn/${action}`, {
+    method: 'POST',
+    body: JSON.stringify({ vault, amount }),
   })
