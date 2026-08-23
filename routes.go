@@ -139,13 +139,13 @@ type transferRequest struct {
 
 func handleTransfer(app core.App) func(*core.RequestEvent) error {
 	return func(e *core.RequestEvent) error {
-		var req transferRequest
-		if err := e.BindBody(&req); err != nil {
-			return e.JSON(http.StatusBadRequest, map[string]string{"error": "invalid payload"})
+		req, err := bindBody[transferRequest](e)
+		if err != nil {
+			return errJSON(e, http.StatusBadRequest, "invalid payload")
 		}
 
 		if req.FromAccountID == "" || req.ToAccountID == "" || req.Amount <= 0 || req.Currency == "" {
-			return e.JSON(http.StatusBadRequest, map[string]string{"error": "missing required fields"})
+			return errJSON(e, http.StatusBadRequest, "missing required fields")
 		}
 
 		// Verify caller owns the source account.
@@ -182,7 +182,7 @@ func handleTransfer(app core.App) func(*core.RequestEvent) error {
 		debit.Set("reference", req.Reference)
 
 		if err := app.Save(debit); err != nil {
-			return e.JSON(http.StatusUnprocessableEntity, map[string]string{"error": err.Error()})
+			return errJSON(e, http.StatusUnprocessableEntity, err.Error())
 		}
 
 		// Create matching credit transaction.
@@ -196,7 +196,7 @@ func handleTransfer(app core.App) func(*core.RequestEvent) error {
 		credit.Set("reference", req.Reference)
 
 		if err := app.Save(credit); err != nil {
-			return e.JSON(http.StatusUnprocessableEntity, map[string]string{"error": err.Error()})
+			return errJSON(e, http.StatusUnprocessableEntity, err.Error())
 		}
 
 		status := "pending"
@@ -231,13 +231,13 @@ type outboundPaymentRequest struct {
 
 func handleOutboundPayment(app core.App) func(*core.RequestEvent) error {
 	return func(e *core.RequestEvent) error {
-		var req outboundPaymentRequest
-		if err := e.BindBody(&req); err != nil {
-			return e.JSON(http.StatusBadRequest, map[string]string{"error": "invalid payload"})
+		req, err := bindBody[outboundPaymentRequest](e)
+		if err != nil {
+			return errJSON(e, http.StatusBadRequest, "invalid payload")
 		}
 
 		if req.AccountID == "" || req.BeneficiaryID == "" || req.Amount <= 0 || req.Currency == "" {
-			return e.JSON(http.StatusBadRequest, map[string]string{"error": "missing required fields"})
+			return errJSON(e, http.StatusBadRequest, "missing required fields")
 		}
 
 		// Verify ownership.
@@ -274,7 +274,7 @@ func handleOutboundPayment(app core.App) func(*core.RequestEvent) error {
 		tx.Set("reference", req.Reference)
 
 		if err := app.Save(tx); err != nil {
-			return e.JSON(http.StatusUnprocessableEntity, map[string]string{"error": err.Error()})
+			return errJSON(e, http.StatusUnprocessableEntity, err.Error())
 		}
 
 		status := "pending"

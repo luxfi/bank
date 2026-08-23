@@ -97,7 +97,7 @@ func issuerJSON(call func(context.Context, Issuer, string, json.RawMessage) (jso
 		}
 		out, err := call(e.Request.Context(), issuer(), e.Auth.Id, body)
 		if err != nil {
-			return e.JSON(http.StatusBadGateway, map[string]string{"error": err.Error()})
+			return errJSON(e, http.StatusBadGateway, err.Error())
 		}
 		if len(out) == 0 {
 			out = json.RawMessage(`{"status":"success"}`)
@@ -113,7 +113,7 @@ func issuerURL(call func(Issuer, context.Context, string) (string, error)) func(
 	return func(e *core.RequestEvent) error {
 		u, err := call(issuer(), e.Request.Context(), e.Auth.Id)
 		if err != nil {
-			return e.JSON(http.StatusBadGateway, map[string]string{"error": err.Error()})
+			return errJSON(e, http.StatusBadGateway, err.Error())
 		}
 		return e.JSON(http.StatusOK, map[string]string{"url": u})
 	}

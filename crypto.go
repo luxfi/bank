@@ -158,10 +158,10 @@ func handleCryptoSend(app core.App) func(*core.RequestEvent) error {
 		// never broadcast — the same discipline the exchange applies when
 		// forexd is absent. Real mainnet send lands behind this guard.
 		if !Sandbox() {
-			return e.JSON(http.StatusServiceUnavailable, map[string]string{"error": "on-chain send unavailable"})
+			return errJSON(e, http.StatusServiceUnavailable, "on-chain send unavailable")
 		}
-		var req cryptoSendReq
-		if err := e.BindBody(&req); err != nil {
+		req, err := bindBody[cryptoSendReq](e)
+		if err != nil {
 			return apis.NewBadRequestError("invalid payload", err)
 		}
 		asset := strings.ToUpper(req.Asset)
@@ -181,7 +181,7 @@ func handleCryptoSend(app core.App) func(*core.RequestEvent) error {
 			},
 		})
 		if err != nil {
-			return e.JSON(http.StatusUnprocessableEntity, map[string]string{"error": err.Error()})
+			return errJSON(e, http.StatusUnprocessableEntity, err.Error())
 		}
 		if err := settle(app, tx); err != nil {
 			return apis.NewInternalServerError("settlement failed", err)
@@ -203,8 +203,8 @@ func handleCryptoDeposit(app core.App) func(*core.RequestEvent) error {
 		if err != nil {
 			return err
 		}
-		var req cryptoDepositReq
-		if err := e.BindBody(&req); err != nil {
+		req, err := bindBody[cryptoDepositReq](e)
+		if err != nil {
 			return apis.NewBadRequestError("invalid payload", err)
 		}
 		asset := strings.ToUpper(req.Asset)
@@ -223,7 +223,7 @@ func handleCryptoDeposit(app core.App) func(*core.RequestEvent) error {
 			"metadata":  map[string]any{"txHash": hash, "network": networkName()},
 		})
 		if err != nil {
-			return e.JSON(http.StatusUnprocessableEntity, map[string]string{"error": err.Error()})
+			return errJSON(e, http.StatusUnprocessableEntity, err.Error())
 		}
 		if err := settle(app, tx); err != nil {
 			return apis.NewInternalServerError("settlement failed", err)

@@ -182,8 +182,7 @@ func requireAccount(app core.App, e *core.RequestEvent) (*core.Record, error) {
 // optional sandbox KYC body; auto-approves and funds the account in sandbox.
 func handleOnboard(app core.App) func(*core.RequestEvent) error {
 	return func(e *core.RequestEvent) error {
-		var kyc KYC
-		_ = e.BindBody(&kyc) // body is optional
+		kyc, _ := bindBody[KYC](e) // body is optional
 		acct, err := ProvisionCustomer(app, e.Auth, kyc)
 		if err != nil {
 			return apis.NewBadRequestError("failed to open account", err)
@@ -268,8 +267,8 @@ func handleCreateBeneficiary(app core.App) func(*core.RequestEvent) error {
 		if err != nil {
 			return err
 		}
-		var req beneficiaryReq
-		if err := e.BindBody(&req); err != nil {
+		req, err := bindBody[beneficiaryReq](e)
+		if err != nil {
 			return apis.NewBadRequestError("invalid payload", err)
 		}
 		if req.Name == "" || req.Currency == "" {
@@ -345,10 +344,9 @@ func handleIssueCard(app core.App) func(*core.RequestEvent) error {
 		if err != nil {
 			return err
 		}
-		var body struct {
+		body, _ := bindBody[struct {
 			Currency string `json:"currency"`
-		}
-		_ = e.BindBody(&body)
+		}](e)
 		currency := strings.ToUpper(body.Currency)
 		if currency == "" {
 			currency = acct.GetString("currency")
@@ -436,8 +434,8 @@ func handleCryptoPrices(app core.App) func(*core.RequestEvent) error {
 
 func handleExchangeQuote(app core.App) func(*core.RequestEvent) error {
 	return func(e *core.RequestEvent) error {
-		var req exchangeReq
-		if err := e.BindBody(&req); err != nil {
+		req, err := bindBody[exchangeReq](e)
+		if err != nil {
 			return apis.NewBadRequestError("invalid payload", err)
 		}
 		from, to := strings.ToUpper(req.FromCurrency), strings.ToUpper(req.ToCurrency)
@@ -446,7 +444,7 @@ func handleExchangeQuote(app core.App) func(*core.RequestEvent) error {
 		}
 		toMinor, rate, err := exchangeRate(e.Request.Context(), from, to, req.Amount)
 		if err != nil {
-			return e.JSON(http.StatusServiceUnavailable, map[string]string{"error": "exchange unavailable"})
+			return errJSON(e, http.StatusServiceUnavailable, "exchange unavailable")
 		}
 		return e.JSON(http.StatusOK, map[string]any{
 			"fromCurrency": from, "toCurrency": to,
@@ -464,8 +462,8 @@ func handleExchangeExecute(app core.App) func(*core.RequestEvent) error {
 		if err != nil {
 			return err
 		}
-		var req exchangeReq
-		if err := e.BindBody(&req); err != nil {
+		req, err := bindBody[exchangeReq](e)
+		if err != nil {
 			return apis.NewBadRequestError("invalid payload", err)
 		}
 		from, to := strings.ToUpper(req.FromCurrency), strings.ToUpper(req.ToCurrency)
@@ -474,7 +472,7 @@ func handleExchangeExecute(app core.App) func(*core.RequestEvent) error {
 		}
 		toMinor, rate, err := exchangeRate(e.Request.Context(), from, to, req.Amount)
 		if err != nil {
-			return e.JSON(http.StatusServiceUnavailable, map[string]string{"error": "exchange unavailable"})
+			return errJSON(e, http.StatusServiceUnavailable, "exchange unavailable")
 		}
 		ref := "Exchange " + from + " → " + to
 
@@ -486,7 +484,7 @@ func handleExchangeExecute(app core.App) func(*core.RequestEvent) error {
 			"reference": ref,
 		})
 		if err != nil {
-			return e.JSON(http.StatusUnprocessableEntity, map[string]string{"error": err.Error()})
+			return errJSON(e, http.StatusUnprocessableEntity, err.Error())
 		}
 		if err := settle(app, debit); err != nil {
 			return apis.NewInternalServerError("settlement failed", err)
