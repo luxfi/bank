@@ -89,7 +89,7 @@ const usd = (n: number) => n.toLocaleString('en-US', { style: 'currency', curren
 
 function HeroPreview() {
   return (
-    <div className="relative rounded-2xl border border-[color:var(--color-border)] bg-gradient-to-br from-[var(--color-surface-2)] to-[var(--color-surface)] p-6 md:p-8 text-left overflow-hidden">
+    <div className="relative rounded-[var(--radius-card)] border border-[color:var(--color-border)] bg-gradient-to-br from-[var(--color-surface-2)] to-[var(--color-surface)] p-6 md:p-8 text-left overflow-hidden">
       <div className="absolute -top-24 -right-16 w-80 h-80 rounded-full accent-glow" />
       <p className="text-sm text-[var(--color-fg-muted)] relative">Total balance</p>
       <p className="text-4xl md:text-5xl font-semibold tracking-tight tnum mt-1 relative">{usd(DEMO_TOTAL)}</p>
@@ -160,7 +160,7 @@ function Plans() {
       </p>
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-10">
         {plans.map((p) => (
-          <div key={p.id} className={`card p-6 flex flex-col ${p.id === 'black' ? 'border-[color:var(--color-fg)]' : ''}`}>
+          <div key={p.id} className={`card lift p-6 flex flex-col ${p.id === 'black' ? 'border-[color:var(--color-fg)]' : ''}`}>
             <h3 className="font-medium text-lg">{p.name}</h3>
             <p className="mt-2">
               <span className="text-3xl font-semibold tracking-tight tnum">{money(p.monthly)}</span>
@@ -193,7 +193,7 @@ function Plans() {
 function Closing() {
   return (
     <section className="mx-auto max-w-6xl px-5 md:px-8 py-16">
-      <div className="relative overflow-hidden rounded-2xl border border-[color:var(--color-border)] bg-gradient-to-br from-[var(--color-surface-2)] to-[var(--color-surface)] p-10 md:p-16 text-center">
+      <div className="relative overflow-hidden rounded-[var(--radius-card)] border border-[color:var(--color-border)] bg-gradient-to-br from-[var(--color-surface-2)] to-[var(--color-surface)] p-10 md:p-16 text-center">
         <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[32rem] h-[32rem] rounded-full accent-glow" />
         <h2 className="relative text-3xl md:text-4xl font-semibold tracking-tight">Ready in two minutes</h2>
         <p className="relative text-[var(--color-fg-muted)] mt-3 max-w-md mx-auto">No branches, no paperwork. Sign up with your Lux ID and start moving money today.</p>

@@ -2,7 +2,10 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { getWallet, sendCrypto, depositCrypto, type WalletBundle, type Wallet as WalletT, type Balance } from '@/api/client'
 import { useConfig } from '@/lib/config'
-import { Money, Icon, AssetAvatar, SectionHeader, Skeleton, EmptyState, formatUSD } from '@/components/ui'
+import {
+  Icon, AssetAvatar, ActionTile, AssetRow, PageHeader, SectionHeader, Skeleton, EmptyState, formatUSD,
+} from '@/components/ui'
+import { Allocation } from '@/components/Allocation'
 import { shortAddress } from '@/lib/format'
 
 const CRYPTO_DECIMALS = 6
@@ -26,36 +29,42 @@ export function Wallet() {
     setData((d) => (d ? { ...d, holdings: balances.filter((b) => b.kind === 'crypto') } : d))
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 md:space-y-8">
       {/* The shell header already flies the sandbox flag; a second one here
           just says it twice. */}
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Crypto wallet</h1>
-        <p className="text-sm text-[var(--color-fg-muted)] mt-0.5">{data.network}</p>
-      </div>
+      <PageHeader title="Crypto wallet" subtitle={data.network} />
 
-      {/* Wallet hero */}
-      <div className="relative overflow-hidden rounded-[var(--radius-card)] border border-[color:var(--color-border)] bg-gradient-to-br from-[var(--color-surface-2)] to-[var(--color-surface)] p-6">
+      {/* Wallet hero. The mix on the right is what the figure on the left is
+          made of — the same block the dashboard total carries. */}
+      <div className="relative overflow-hidden rounded-[var(--radius-card)] border border-[color:var(--color-border)] bg-gradient-to-br from-[var(--color-surface-2)] to-[var(--color-surface)] p-6 md:p-8">
         <div className="absolute -top-16 -right-10 w-56 h-56 rounded-full accent-glow" />
-        <p className="text-sm text-[var(--color-fg-muted)] relative">Crypto value</p>
-        <p className="text-3xl md:text-4xl font-semibold tracking-tight tnum mt-1 relative">{formatUSD(totalUsd)}</p>
-        <button
-          onClick={() => { navigator.clipboard?.writeText(addr); setCopied(true); setTimeout(() => setCopied(false), 1500) }}
-          className="relative mt-4 inline-flex items-center gap-2 rounded-full bg-[var(--color-surface-3)] border border-[color:var(--color-border)] px-3 py-1.5 text-xs font-mono hover:brightness-95 transition"
-        >
-          <Icon name="wallet" className="w-3.5 h-3.5" />
-          {shortAddress(addr)}
-          <Icon name={copied ? 'check' : 'copy'} className="w-3.5 h-3.5" />
-        </button>
+        <div className="relative flex flex-col gap-7 md:flex-row md:items-end md:justify-between md:gap-12">
+          <div className="min-w-0">
+            <p className="text-sm text-[var(--color-fg-muted)]">Crypto value</p>
+            <p className="text-3xl md:text-4xl font-semibold tracking-tight tnum mt-1">{formatUSD(totalUsd)}</p>
+            <button
+              onClick={() => { navigator.clipboard?.writeText(addr); setCopied(true); setTimeout(() => setCopied(false), 1500) }}
+              className="tile mt-4 inline-flex items-center gap-2 rounded-full bg-[var(--color-surface-3)] border border-[color:var(--color-border)] px-3 py-1.5 text-xs font-mono"
+            >
+              <Icon name="wallet" className="w-3.5 h-3.5" />
+              {shortAddress(addr)}
+              <Icon name={copied ? 'check' : 'copy'} className="w-3.5 h-3.5" />
+            </button>
+          </div>
+          <Allocation
+            items={data.holdings.map((h) => ({ code: h.currency, valueUsd: h.valueUsd }))}
+            className="w-full md:w-52 lg:w-60 md:shrink-0"
+          />
+        </div>
       </div>
 
       {/* Actions */}
       <div className="grid grid-cols-5 gap-2 md:gap-3">
-        <TradeAction to="/app/exchange?from=USD&to=LUX" label="Buy" icon="arrowDown" />
-        <TradeAction to="/app/exchange?from=LUX&to=USD" label="Sell" icon="arrowUp" />
-        <TradeAction to="/app/exchange?from=LUX&to=DAI" label="Convert" icon="swap" />
-        <PanelAction label="Send" icon="send" active={panel === 'send'} onClick={() => setPanel(panel === 'send' ? null : 'send')} />
-        <PanelAction label="Receive" icon="arrowDown" active={panel === 'receive'} onClick={() => setPanel(panel === 'receive' ? null : 'receive')} />
+        <ActionTile to="/app/exchange?from=USD&to=LUX" label="Buy" icon="arrowDown" />
+        <ActionTile to="/app/exchange?from=LUX&to=USD" label="Sell" icon="arrowUp" />
+        <ActionTile to="/app/exchange?from=LUX&to=DAI" label="Convert" icon="swap" />
+        <ActionTile label="Send" icon="send" active={panel === 'send'} onClick={() => setPanel(panel === 'send' ? null : 'send')} />
+        <ActionTile label="Receive" icon="arrowDown" active={panel === 'receive'} onClick={() => setPanel(panel === 'receive' ? null : 'receive')} />
       </div>
 
       {panel === 'send' && <SendPanel holdings={data.holdings} onDone={setHoldings} />}
@@ -70,19 +79,16 @@ export function Wallet() {
           <EmptyState icon="coins" title="No crypto yet" body="Buy LUX, BTC, ETH or DAI to fund your wallet."
             action={<Link to="/app/exchange?from=USD&to=LUX" className="btn btn-primary">Buy crypto</Link>} />
         ) : (
-          <div className="card divide-y divide-[color:var(--color-border)]">
+          <div className="card divide-y divide-[color:var(--color-border)] overflow-hidden">
             {data.holdings.map((h) => (
-              <Link key={h.currency} to={`/app/exchange?from=${h.currency}&to=USD`} className="flex items-center gap-3 px-4 py-3.5 hover:bg-[var(--color-surface-2)]/50 transition-colors">
-                <AssetAvatar code={h.currency} />
-                <div className="min-w-0 flex-1">
-                  <p className="font-medium">{h.currency}</p>
-                  <p className="text-xs text-[var(--color-fg-subtle)]">Testnet</p>
-                </div>
-                <div className="text-right">
-                  <Money minor={h.available} currency={h.currency} decimals={h.decimals} className="font-medium" />
-                  <p className="text-xs text-[var(--color-fg-subtle)] tnum">{formatUSD(h.valueUsd)}</p>
-                </div>
-              </Link>
+              <AssetRow
+                key={h.currency}
+                code={h.currency}
+                note="Testnet"
+                minor={h.available}
+                decimals={h.decimals}
+                valueUsd={h.valueUsd}
+              />
             ))}
           </div>
         )}
@@ -92,24 +98,6 @@ export function Wallet() {
         Testnet assets only. In production this wallet is secured by threshold MPC — no single key.
       </p>
     </div>
-  )
-}
-
-function TradeAction({ to, label, icon }: { to: string; label: string; icon: string }) {
-  return (
-    <Link to={to} className="card-2 flex flex-col items-center gap-2 py-4 hover:bg-[var(--color-surface-3)] transition-colors">
-      <span className="w-10 h-10 rounded-full grid place-items-center bg-[var(--color-surface-3)] border"><Icon name={icon} className="w-[18px] h-[18px]" /></span>
-      <span className="text-xs font-medium">{label}</span>
-    </Link>
-  )
-}
-
-function PanelAction({ label, icon, active, onClick }: { label: string; icon: string; active: boolean; onClick: () => void }) {
-  return (
-    <button onClick={onClick} className={`card-2 flex flex-col items-center gap-2 py-4 transition-colors ${active ? 'bg-[var(--color-surface-3)]' : 'hover:bg-[var(--color-surface-3)]'}`}>
-      <span className="w-10 h-10 rounded-full grid place-items-center bg-[var(--color-surface-3)] border"><Icon name={icon} className="w-[18px] h-[18px]" /></span>
-      <span className="text-xs font-medium">{label}</span>
-    </button>
   )
 }
 
@@ -142,7 +130,7 @@ function SendPanel({ holdings, onDone }: { holdings: Balance[]; onDone: (b: Bala
   }
 
   return (
-    <div className="card p-4 space-y-3">
+    <div className="card p-5 space-y-3">
       <div className="flex gap-2">
         <select value={asset} onChange={(e) => setAsset(e.target.value)} className="input w-28">
           {(holdings.length ? holdings.map((h) => h.currency) : ['LUX', 'BTC', 'ETH', 'DAI']).map((c) => (
@@ -184,41 +172,54 @@ function ReceivePanel({
   }
 
   return (
-    <div className="card p-4 space-y-3">
+    <div className="card p-5 space-y-4">
+      {/* An address belongs to an asset, so the asset is picked first and the
+          whole block below — mark, address, warning — answers to it. */}
       {wallets.length > 1 && (
         <div className="flex flex-wrap gap-1.5">
           {wallets.map((w) => (
             <button
               key={w.currency}
               onClick={() => setAsset(w.currency)}
-              className={`chip ${w.currency === asset ? 'bg-[var(--color-fg)] text-[var(--color-bg)] border-transparent' : 'text-[var(--color-fg-muted)]'}`}
+              className={`chip tile px-3 py-1 ${
+                w.currency === asset
+                  ? 'bg-[var(--color-fg)] text-[var(--color-bg)] border-transparent'
+                  : 'text-[var(--color-fg-muted)]'
+              }`}
             >
               {w.currency}
             </button>
           ))}
         </div>
       )}
-      <p className="text-xs text-[var(--color-fg-muted)]">Your {network} deposit address</p>
-      {/* The whole field copies, and now says so. The icon is decoration for
-          the eye — the button's accessible name stays the address itself. */}
-      <button
-        onClick={() => { navigator.clipboard?.writeText(address); setCopied(true); setTimeout(() => setCopied(false), 1500) }}
-        className="w-full flex items-start gap-3 text-left rounded-lg bg-[var(--color-surface-2)] border border-[color:var(--color-border)] px-3 py-2.5 hover:brightness-95 transition group"
-      >
-        <span className="font-mono text-sm break-all flex-1 min-w-0">{address}</span>
-        <span className={`shrink-0 mt-0.5 ${copied ? 'text-[var(--color-positive)]' : 'text-[var(--color-fg-muted)] group-hover:text-[var(--color-fg)]'}`}>
-          <Icon name={copied ? 'check' : 'copy'} className="w-4 h-4" />
-        </span>
-      </button>
-      <p className="text-[0.7rem] text-[var(--color-fg-subtle)]">
-        {wallets.length > 1
-          ? `Send only ${asset} to this address.`
-          : 'One account wallet address — every asset on this network arrives here.'}
-      </p>
+
+      <div>
+        <p className="label">Your {network} deposit address</p>
+        <div className="mt-2 flex items-start gap-3">
+          <AssetAvatar code={asset} className="w-9 h-9 shrink-0 mt-0.5" />
+          {/* The whole field copies, and now says so. The icon is decoration
+              for the eye — the button's accessible name stays the address. */}
+          <button
+            onClick={() => { navigator.clipboard?.writeText(address); setCopied(true); setTimeout(() => setCopied(false), 1500) }}
+            className="row min-w-0 flex-1 flex items-start gap-3 text-left rounded-xl bg-[var(--color-surface-2)] border border-[color:var(--color-border)] px-3.5 py-2.5 group"
+          >
+            <span className="font-mono text-sm break-all flex-1 min-w-0 leading-relaxed">{address}</span>
+            <span className={`shrink-0 mt-0.5 ${copied ? 'text-[var(--color-positive)]' : 'text-[var(--color-fg-muted)] group-hover:text-[var(--color-fg)]'}`}>
+              <Icon name={copied ? 'check' : 'copy'} className="w-4 h-4" />
+            </span>
+          </button>
+        </div>
+        <p className="mt-2 text-[0.7rem] text-[var(--color-fg-subtle)]">
+          {wallets.length > 1
+            ? `Send only ${asset} to this address.`
+            : 'One account wallet address — every asset on this network arrives here.'}
+        </p>
+      </div>
+
       {config?.sandbox && (
-        <div className="space-y-2">
-          <p className="text-xs text-[var(--color-fg-muted)]">Testnet faucet</p>
-          <div className="grid grid-cols-4 gap-2">
+        <div className="pt-1 border-t border-[color:var(--color-border)]">
+          <p className="label mt-4">Testnet faucet</p>
+          <div className="mt-2 flex flex-wrap gap-2">
             {[['LUX', 100], ['BTC', 0.1], ['ETH', 1], ['DAI', 1000]].map(([a, n]) => (
               <button key={a as string} onClick={() => faucet(a as string, n as number)} disabled={busy} className="btn btn-secondary justify-center text-xs">
                 +{n} {a}
@@ -227,7 +228,7 @@ function ReceivePanel({
           </div>
         </div>
       )}
-      {error && <p className="text-xs text-red-400">{error}</p>}
+      {error && <p className="text-xs text-[var(--color-negative)]">{error}</p>}
     </div>
   )
 }

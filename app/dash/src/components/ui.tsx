@@ -1,4 +1,5 @@
 import { useState, type ReactNode, type ButtonHTMLAttributes } from 'react'
+import { Link } from 'react-router'
 import { formatMoney, formatUSD, capitalize } from '@/lib/format'
 import { useConfig } from '@/lib/config'
 
@@ -101,10 +102,76 @@ export function Card({ children, className = '' }: { children: ReactNode; classN
 
 export function SectionHeader({ title, action }: { title: string; action?: ReactNode }) {
   return (
-    <div className="flex items-center justify-between mb-3">
+    <div className="flex items-center justify-between gap-3 mb-3">
       <h2 className="text-sm font-semibold text-[var(--color-fg-muted)] uppercase tracking-wide">{title}</h2>
       {action}
     </div>
+  )
+}
+
+// -- Page header --
+//
+// Every screen opens the same way: what it is, then what it is for. One
+// component so the two lines never drift apart across pages.
+
+export function PageHeader({ title, subtitle, action }: { title: string; subtitle: string; action?: ReactNode }) {
+  return (
+    <div className="flex items-start justify-between gap-4">
+      <div className="min-w-0">
+        <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
+        <p className="text-sm text-[var(--color-fg-muted)] mt-0.5">{subtitle}</p>
+      </div>
+      {action}
+    </div>
+  )
+}
+
+// -- Action tile --
+//
+// The square affordances that open the next screen (Send, Exchange, Buy…) or
+// toggle a panel in place. Both shapes carry the same weight and the same
+// press, because to the hand they are the same thing.
+
+export function ActionTile({
+  label, icon, to, onClick, active,
+}: { label: string; icon: string; to?: string; onClick?: () => void; active?: boolean }) {
+  const face = (
+    <>
+      <span className="w-10 h-10 rounded-full grid place-items-center bg-[var(--color-surface-3)] border">
+        <Icon name={icon} className="w-[18px] h-[18px]" />
+      </span>
+      <span className="text-xs font-medium">{label}</span>
+    </>
+  )
+  const cls = 'card-2 tile flex flex-col items-center gap-2 py-4'
+  return to ? (
+    <Link to={to} className={cls}>{face}</Link>
+  ) : (
+    <button type="button" onClick={onClick} aria-pressed={active} className={cls}>{face}</button>
+  )
+}
+
+// -- Asset row --
+//
+// One line of a holdings list: the mark, what it is, how much is there and what
+// that is worth. Dashboard, Accounts and Wallet all show the same line, and it
+// goes the same place — the pair that trades this asset.
+
+export function AssetRow({
+  code, note, minor, decimals, valueUsd,
+}: { code: string; note: string; minor: number; decimals?: number; valueUsd: number }) {
+  return (
+    <Link to={`/app/exchange?from=${code}&to=${code === 'USD' ? 'EUR' : 'USD'}`} className="row flex items-center gap-3 px-4 py-3.5">
+      <AssetAvatar code={code} />
+      <div className="min-w-0 flex-1">
+        <p className="font-medium">{code}</p>
+        <p className="text-xs text-[var(--color-fg-subtle)]">{note}</p>
+      </div>
+      <div className="text-right shrink-0">
+        <Money minor={minor} currency={code} decimals={decimals} className="font-medium" />
+        <p className="text-xs text-[var(--color-fg-subtle)] tnum">{formatUSD(valueUsd)}</p>
+      </div>
+    </Link>
   )
 }
 
@@ -145,7 +212,7 @@ export function CopyRow({
   return (
     <button
       onClick={() => { navigator.clipboard?.writeText(value); setCopied(true); setTimeout(() => setCopied(false), 1500) }}
-      className={`w-full flex items-center gap-3 text-left group hover:bg-[var(--color-surface-2)]/50 transition-colors ${className}`}
+      className={`row w-full flex items-center gap-3 text-left group rounded-lg ${className}`}
     >
       <div className="min-w-0 flex-1">
         <p className="text-xs text-[var(--color-fg-subtle)]">{label}</p>

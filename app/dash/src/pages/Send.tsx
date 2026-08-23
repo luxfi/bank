@@ -4,7 +4,7 @@ import {
   type Beneficiary,
 } from '@/api/client'
 import { useOverview } from '@/hooks/overview'
-import { Button, Icon, Field, Modal, EmptyState, StatusBadge, SectionHeader, AssetAvatar, CopyRow, Skeleton } from '@/components/ui'
+import { Button, Icon, Field, Modal, EmptyState, StatusBadge, PageHeader, SectionHeader, AssetAvatar, CopyRow, Skeleton } from '@/components/ui'
 import { Coordinates } from '@/components/Coordinates'
 import { formatMoney, shortAddress } from '@/lib/format'
 
@@ -25,11 +25,8 @@ export function Send() {
   useEffect(() => { void load() }, [])
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Send &amp; receive</h1>
-        <p className="text-sm text-[var(--color-fg-muted)] mt-0.5">Pay recipients worldwide over simulated SWIFT/SEPA rails.</p>
-      </div>
+    <div className="space-y-6 md:space-y-8">
+      <PageHeader title="Send &amp; receive" subtitle="Pay recipients worldwide over simulated SWIFT/SEPA rails." />
 
       {bens === null ? (
         <Skeleton className="h-72 rounded-[var(--radius-card)]" />
@@ -53,22 +50,28 @@ export function Send() {
       {account && (
         <section>
           <SectionHeader title="Receive" />
-          <div className="space-y-3">
-            <div className="card p-4 space-y-3">
-              <p className="label">Bank transfer · {account.currency}</p>
-              <Coordinates account={account} />
+          {/* Two ways in, each named: the wire coordinates, then one deposit
+              address per asset. Both are labelled the way every other list on
+              the app is, so neither reads as a stray card. */}
+          <div className="space-y-5">
+            <div>
+              <p className="label mb-2 block">Bank transfer · {account.currency}</p>
+              <div className="card p-5"><Coordinates account={account} /></div>
             </div>
             {cryptoWallets.length > 0 && (
-              <div className="card divide-y divide-[color:var(--color-border)]">
-                {cryptoWallets.map((w) => (
-                  <CopyRow
-                    key={w.currency}
-                    label={`${w.currency} · ${w.network}`}
-                    value={w.address}
-                    display={shortAddress(w.address)}
-                    className="px-4 py-3.5"
-                  />
-                ))}
+              <div>
+                <p className="label mb-2 block">Crypto · {cryptoWallets[0].network}</p>
+                <div className="card divide-y divide-[color:var(--color-border)] overflow-hidden">
+                  {cryptoWallets.map((w) => (
+                    <CopyRow
+                      key={w.currency}
+                      label={`${w.currency} · ${w.network}`}
+                      value={w.address}
+                      display={shortAddress(w.address)}
+                      className="px-4 py-3.5"
+                    />
+                  ))}
+                </div>
               </div>
             )}
           </div>
@@ -86,9 +89,9 @@ export function Send() {
         ) : bens.length === 0 ? (
           <EmptyState icon="send" title="No recipients yet" body="Add a recipient to send them money." action={<Button onClick={() => setAddOpen(true)}>Add recipient</Button>} />
         ) : (
-          <div className="card divide-y divide-[color:var(--color-border)]">
+          <div className="card divide-y divide-[color:var(--color-border)] overflow-hidden">
             {bens.map((b) => (
-              <div key={b.id} className="flex items-center gap-3 px-4 py-3.5">
+              <div key={b.id} className="row flex items-center gap-3 px-4 py-3.5">
                 <AssetAvatar code={b.currency} />
                 <div className="min-w-0 flex-1">
                   <p className="font-medium truncate">{b.name}</p>

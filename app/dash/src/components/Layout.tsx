@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { NavLink, Outlet, Link, useNavigate } from 'react-router'
+import { NavLink, Outlet, Link, useNavigate, useLocation } from 'react-router'
 import { useAuth } from '@/hooks/useAuth'
 import { useBrand } from '@/hooks/brand'
 import { REAL_DEMO_EMAIL } from '@/lib/brand'
@@ -65,6 +65,7 @@ function AppShell() {
   const { overview } = useOverview()
   const brand = useBrand()
   const navigate = useNavigate()
+  const { pathname } = useLocation()
   const [moreOpen, setMoreOpen] = useState(false)
   // The seeded demo identity displays under the active brand (e.g. ACM Demo /
   // z@acmglobaltech.com for brand=acm); real IAM customers show their own.
@@ -119,7 +120,8 @@ function AppShell() {
             </div>
           </header>
 
-          <main className="px-4 md:px-8 py-5 md:py-8 pb-28 lg:pb-10 max-w-5xl mx-auto">
+          {/* Keyed on the route so each screen arrives instead of cutting in. */}
+          <main key={pathname} className="enter px-4 md:px-8 py-5 md:py-8 pb-28 lg:pb-10 max-w-5xl mx-auto">
             <Outlet />
           </main>
         </div>
@@ -140,14 +142,14 @@ function AppShell() {
                 key={n.to}
                 to={n.to}
                 onClick={() => setMoreOpen(false)}
-                className="flex items-center gap-3 px-4 py-3.5 text-sm font-medium border-b border-[color:var(--color-border)] text-[var(--color-fg)]"
+                className="row flex items-center gap-3 px-4 py-3.5 text-sm font-medium border-b border-[color:var(--color-border)] text-[var(--color-fg)]"
               >
                 <Icon name={n.icon} className="w-[18px] h-[18px]" /> {n.label}
               </NavLink>
             ))}
             <button
               onClick={() => { setMoreOpen(false); signOut() }}
-              className="flex w-full items-center gap-3 px-4 py-3.5 text-sm font-medium text-[var(--color-fg-muted)]"
+              className="row flex w-full items-center gap-3 px-4 py-3.5 text-sm font-medium text-[var(--color-fg-muted)]"
             >
               <Icon name="logout" className="w-[18px] h-[18px]" /> Sign out
             </button>
@@ -175,14 +177,14 @@ function AppShell() {
 }
 
 function sideLink({ isActive }: { isActive: boolean }) {
-  return `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
+  return `nav-link flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium ${
     isActive
       ? 'bg-[var(--color-surface-2)] text-[var(--color-fg)]'
       : 'text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] hover:bg-[var(--color-surface-2)]/60'
   }`
 }
 function tabLink({ isActive }: { isActive: boolean }) {
-  return `flex flex-col items-center justify-center gap-1 py-2.5 transition-colors ${
+  return `tab flex flex-col items-center justify-center gap-1 py-2.5 ${
     isActive ? 'text-[var(--color-fg)]' : 'text-[var(--color-fg-subtle)]'
   }`
 }

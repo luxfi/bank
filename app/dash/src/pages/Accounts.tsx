@@ -1,6 +1,6 @@
 import { useOverview } from '@/hooks/overview'
 import { useBrand } from '@/hooks/brand'
-import { Money, AssetAvatar, SectionHeader, StatusBadge, Skeleton, formatUSD, EmptyState } from '@/components/ui'
+import { AssetRow, PageHeader, SectionHeader, StatusBadge, Skeleton, formatUSD, EmptyState } from '@/components/ui'
 import { Coordinates } from '@/components/Coordinates'
 import { capitalize } from '@/lib/format'
 
@@ -15,14 +15,11 @@ export function Accounts() {
   const totalUsd = balances.reduce((s, b) => s + b.valueUsd, 0)
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Accounts</h1>
-        <p className="text-sm text-[var(--color-fg-muted)] mt-0.5">One multi-currency account, {balances.length} balances.</p>
-      </div>
+    <div className="space-y-6 md:space-y-8">
+      <PageHeader title="Accounts" subtitle={`One multi-currency account, ${balances.length} balances.`} />
 
       <div className="card p-5">
-        <div className="flex items-start justify-between gap-3">
+        <div className="flex items-start justify-between gap-3 flex-wrap">
           <div className="min-w-0">
             <p className="font-medium text-lg truncate">{a.entityName === 'Lux Demo' ? brand.demoName : a.entityName}</p>
             <p className="text-sm text-[var(--color-fg-subtle)] capitalize">{a.entityType} · {a.country}</p>
@@ -43,19 +40,16 @@ export function Accounts() {
         {balances.length === 0 ? (
           <EmptyState icon="bank" title="No balances yet" body="Fund the account or convert into a currency to see it here." />
         ) : (
-        <div className="card divide-y divide-[color:var(--color-border)]">
+        <div className="card divide-y divide-[color:var(--color-border)] overflow-hidden">
           {balances.map((b) => (
-            <div key={b.currency} className="flex items-center gap-3 px-4 py-3.5">
-              <AssetAvatar code={b.currency} />
-              <div className="min-w-0 flex-1">
-                <p className="font-medium">{b.currency}</p>
-                <p className="text-xs text-[var(--color-fg-subtle)]">{capitalize(b.kind)}</p>
-              </div>
-              <div className="text-right">
-                <Money minor={b.available} currency={b.currency} decimals={b.decimals} className="font-medium" />
-                <p className="text-xs text-[var(--color-fg-subtle)] tnum">{formatUSD(b.valueUsd)}</p>
-              </div>
-            </div>
+            <AssetRow
+              key={b.currency}
+              code={b.currency}
+              note={capitalize(b.kind)}
+              minor={b.available}
+              decimals={b.decimals}
+              valueUsd={b.valueUsd}
+            />
           ))}
         </div>
         )}

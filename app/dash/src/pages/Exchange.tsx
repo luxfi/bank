@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { getConfig, exchangeQuote, exchangeExecute, listTransactions, type Quote } from '@/api/client'
 import { useOverview } from '@/hooks/overview'
-import { Button, Icon, AssetAvatar, SectionHeader, EmptyState, Skeleton } from '@/components/ui'
+import { Button, Icon, AssetAvatar, PageHeader, SectionHeader, EmptyState, Skeleton } from '@/components/ui'
 import { TxnRow } from '@/components/TxnRow'
 import { formatMoney, toMinor } from '@/lib/format'
 import { pair, type Entry } from '@/lib/pair'
@@ -76,14 +76,13 @@ export function Exchange() {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Exchange</h1>
-        <p className="text-sm text-[var(--color-fg-muted)] mt-0.5">Convert between currencies and crypto at sandbox rates.</p>
-      </div>
+    <div className="space-y-6 md:space-y-8">
+      <PageHeader title="Exchange" subtitle="Convert between currencies and crypto at sandbox rates." />
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,32rem)_minmax(0,1fr)] items-start">
-      <div className="space-y-4">
+      {/* Two columns only once both of them fit: the converter needs its width,
+          and a conversion line squeezed beside it wraps its own amounts. */}
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,28rem)_minmax(0,1fr)] items-start">
+      <div className="min-w-0 space-y-4">
       <div className="card p-5 space-y-3">
         {/* From */}
         <div className="card-2 p-4">
@@ -99,7 +98,7 @@ export function Exchange() {
 
         {/* Flip */}
         <div className="flex justify-center -my-1.5">
-          <button onClick={flip} className="w-9 h-9 rounded-full grid place-items-center bg-[var(--color-surface-3)] border hover:border-[color:var(--color-border-strong)] transition-colors z-10" aria-label="Flip currencies">
+          <button onClick={flip} className="tile w-9 h-9 rounded-full grid place-items-center bg-[var(--color-surface-3)] border z-10" aria-label="Flip currencies">
             <Icon name="swap" className="w-4 h-4 rotate-90" />
           </button>
         </div>
@@ -139,7 +138,7 @@ export function Exchange() {
       <p className="text-center text-[0.7rem] text-[var(--color-fg-subtle)]">Sandbox rates include a 0.2% demo spread. Settles instantly.</p>
       </div>
 
-      <Conversions key={done ?? 'idle'} />
+      <div className="min-w-0"><Conversions key={done ?? 'idle'} /></div>
       </div>
     </div>
   )
@@ -163,7 +162,7 @@ function Conversions() {
       ) : entries.length === 0 ? (
         <EmptyState icon="swap" title="No conversions yet" body="Trades you make here are listed with the rate you got." />
       ) : (
-        <div className="card divide-y divide-[color:var(--color-border)]">
+        <div className="card divide-y divide-[color:var(--color-border)] overflow-hidden">
           {entries.slice(0, 8).map((e) => <TxnRow key={e.key} txn={e.txn} into={e.into} />)}
         </div>
       )}

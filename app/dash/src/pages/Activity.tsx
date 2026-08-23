@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { listTransactions, type Txn } from '@/api/client'
 import { TxnRow } from '@/components/TxnRow'
-import { EmptyState, Skeleton } from '@/components/ui'
+import { EmptyState, PageHeader, Skeleton } from '@/components/ui'
 import { formatDateShort } from '@/lib/format'
 import { pair, type Entry } from '@/lib/pair'
 
@@ -35,18 +35,20 @@ export function Activity() {
   }, [txns, filter])
 
   return (
-    <div className="space-y-5">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Activity</h1>
-        <p className="text-sm text-[var(--color-fg-muted)] mt-0.5">Every movement across your account.</p>
-      </div>
+    <div className="space-y-6 md:space-y-8">
+      <PageHeader title="Activity" subtitle="Every movement across your account." />
 
       <div className="inline-flex gap-1 p-1 rounded-full bg-[var(--color-surface-2)] border">
         {FILTERS.map(([v, label]) => (
           <button
             key={v}
             onClick={() => setFilter(v)}
-            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${filter === v ? 'bg-[var(--color-fg)] text-black' : 'text-[var(--color-fg-muted)]'}`}
+            aria-pressed={filter === v}
+            className={`nav-link px-4 py-1.5 rounded-full text-sm font-medium ${
+              filter === v
+                ? 'bg-[var(--color-fg)] text-[var(--color-bg)]'
+                : 'text-[var(--color-fg-muted)] hover:text-[var(--color-fg)]'
+            }`}
           >
             {label}
           </button>
@@ -71,7 +73,7 @@ export function Activity() {
           {groups.map(([day, items]) => (
             <div key={day}>
               <p className="text-xs font-medium text-[var(--color-fg-subtle)] mb-2 px-1">{day}</p>
-              <div className="card divide-y divide-[color:var(--color-border)]">
+              <div className="card divide-y divide-[color:var(--color-border)] overflow-hidden">
                 {items.map((e) => <TxnRow key={e.key} txn={e.txn} into={e.into} />)}
               </div>
             </div>

@@ -1,9 +1,11 @@
 import { Link } from 'react-router'
 import { useOverview } from '@/hooks/overview'
 import { useBrand } from '@/hooks/brand'
-import { Money, Icon, SectionHeader, AssetAvatar, Skeleton, EmptyState, formatUSD } from '@/components/ui'
+import { SectionHeader, ActionTile, AssetRow, Skeleton, EmptyState, formatUSD } from '@/components/ui'
+import { Allocation } from '@/components/Allocation'
 import { TxnRow } from '@/components/TxnRow'
 import { CardFace } from '@/components/CardFace'
+import { capitalize } from '@/lib/format'
 import { pair } from '@/lib/pair'
 
 const actions = [
@@ -31,30 +33,30 @@ export function Dashboard() {
 
   return (
     <div className="space-y-6 md:space-y-8">
-      {/* Total balance hero */}
-      <section className="rise">
-        <div className="relative overflow-hidden rounded-[var(--radius-card)] border border-[color:var(--color-border)] bg-gradient-to-br from-[var(--color-surface-2)] to-[var(--color-surface)] p-6 md:p-8">
-          <div className="absolute -top-24 -right-16 w-72 h-72 rounded-full accent-glow" />
-          <p className="text-sm text-[var(--color-fg-muted)]">
-            {firstName ? `Welcome back, ${firstName}` : 'Total balance'}
-          </p>
-          <p className="text-4xl md:text-5xl font-semibold tracking-tight tnum mt-1.5">{formatUSD(totalUsd)}</p>
-          <p className="text-xs text-[var(--color-fg-subtle)] mt-2">
-            Across {balances.length} balance{balances.length === 1 ? '' : 's'} · estimated in USD
-          </p>
+      {/* Total balance hero. The right of it carries the mix behind the
+          figure — what the total is made of, at a glance. */}
+      <section className="relative overflow-hidden rounded-[var(--radius-card)] border border-[color:var(--color-border)] bg-gradient-to-br from-[var(--color-surface-2)] to-[var(--color-surface)] p-6 md:p-8">
+        <div className="absolute -top-24 -right-16 w-72 h-72 rounded-full accent-glow" />
+        <div className="relative flex flex-col gap-7 md:flex-row md:items-end md:justify-between md:gap-12">
+          <div className="min-w-0">
+            <p className="text-sm text-[var(--color-fg-muted)]">
+              {firstName ? `Welcome back, ${firstName}` : 'Total balance'}
+            </p>
+            <p className="text-4xl md:text-5xl font-semibold tracking-tight tnum mt-1.5">{formatUSD(totalUsd)}</p>
+            <p className="text-xs text-[var(--color-fg-subtle)] mt-2">
+              Across {balances.length} balance{balances.length === 1 ? '' : 's'} · estimated in USD
+            </p>
+          </div>
+          <Allocation
+            items={balances.map((b) => ({ code: b.currency, valueUsd: b.valueUsd }))}
+            className="w-full md:w-52 lg:w-60 md:shrink-0"
+          />
         </div>
       </section>
 
       {/* Quick actions */}
       <section className="grid grid-cols-4 gap-2 md:gap-3">
-        {actions.map((a) => (
-          <Link key={a.to} to={a.to} className="card-2 flex flex-col items-center gap-2 py-4 hover:bg-[var(--color-surface-3)] transition-colors">
-            <span className="w-10 h-10 rounded-full grid place-items-center bg-[var(--color-surface-3)] border">
-              <Icon name={a.icon} className="w-[18px] h-[18px]" />
-            </span>
-            <span className="text-xs font-medium">{a.label}</span>
-          </Link>
-        ))}
+        {actions.map((a) => <ActionTile key={a.to} to={a.to} label={a.label} icon={a.icon} />)}
       </section>
 
       {/* Balances */}
@@ -66,19 +68,16 @@ export function Dashboard() {
         {balances.length === 0 ? (
           <EmptyState icon="bank" title="No balances yet" body="Fund the account or convert into a currency to see it here." />
         ) : (
-        <div className="card divide-y divide-[color:var(--color-border)]">
+        <div className="card divide-y divide-[color:var(--color-border)] overflow-hidden">
           {balances.map((b) => (
-            <div key={b.currency} className="flex items-center gap-3 px-4 py-3.5">
-              <AssetAvatar code={b.currency} />
-              <div className="min-w-0 flex-1">
-                <p className="font-medium">{b.currency}</p>
-                <p className="text-xs text-[var(--color-fg-subtle)] capitalize">{b.kind}</p>
-              </div>
-              <div className="text-right">
-                <Money minor={b.available} currency={b.currency} decimals={b.decimals} className="font-medium" />
-                <p className="text-xs text-[var(--color-fg-subtle)] tnum">{formatUSD(b.valueUsd)}</p>
-              </div>
-            </div>
+            <AssetRow
+              key={b.currency}
+              code={b.currency}
+              note={capitalize(b.kind)}
+              minor={b.available}
+              decimals={b.decimals}
+              valueUsd={b.valueUsd}
+            />
           ))}
         </div>
         )}
@@ -91,7 +90,7 @@ export function Dashboard() {
             title="Cards"
             action={<Link to="/app/cards" className="text-xs text-[var(--color-fg-muted)] hover:text-[var(--color-fg)]">Manage</Link>}
           />
-          <Link to="/app/cards" className="block max-w-sm">
+          <Link to="/app/cards" className="lift block max-w-sm rounded-[var(--radius-card)]">
             <CardFace card={cards[0]} />
           </Link>
         </section>
@@ -106,7 +105,7 @@ export function Dashboard() {
         {txns.length === 0 ? (
           <EmptyState icon="activity" title="No activity yet" body="Your transactions will appear here as you move money." />
         ) : (
-          <div className="card divide-y divide-[color:var(--color-border)]">
+          <div className="card divide-y divide-[color:var(--color-border)] overflow-hidden">
             {pair(txns).map((e) => <TxnRow key={e.key} txn={e.txn} into={e.into} />)}
           </div>
         )}

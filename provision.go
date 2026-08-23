@@ -213,11 +213,15 @@ func fundSandbox(app core.App, acct *core.Record, holder string) error {
 
 	seedBeneficiaries(app, acct.Id)
 
-	// Final, deterministic display balances.
+	// Final, deterministic display balances — one per fiat and per crypto asset,
+	// so every wallet the account provisions shows a holding (and its receive
+	// address, incl. the BTC bech32 one) rather than reading half-empty.
 	_ = setBalance(app, acct.Id, "USD", 1_250_000)  // $12,500.00
 	_ = setBalance(app, acct.Id, "EUR", 320_000)    // €3,200.00
 	_ = setBalance(app, acct.Id, "GBP", 175_000)    // £1,750.00
 	_ = setBalance(app, acct.Id, "LUX", 250_000000) // 250 LUX
+	_ = setBalance(app, acct.Id, "BTC", 185_000)    // 0.185 BTC ≈ $11,840
+	_ = setBalance(app, acct.Id, "ETH", 3_600000)   // 3.6 ETH ≈ $12,240
 	_ = setBalance(app, acct.Id, "DAI", 500_000000) // 500 DAI
 
 	// One virtual card, active.

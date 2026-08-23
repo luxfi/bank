@@ -3,7 +3,7 @@ import { listCards, issueCard, freezeCard, unfreezeCard, listTransactions, type 
 import { useOverview } from '@/hooks/overview'
 import { CardFace } from '@/components/CardFace'
 import { TxnRow } from '@/components/TxnRow'
-import { Button, Icon, EmptyState, Skeleton, StatusBadge, Modal, SectionHeader, Money } from '@/components/ui'
+import { Button, Icon, EmptyState, Skeleton, StatusBadge, Modal, PageHeader, SectionHeader, Money } from '@/components/ui'
 import { formatMoney } from '@/lib/format'
 import { limitOf, spent } from '@/lib/limits'
 
@@ -57,19 +57,17 @@ export function Cards() {
   const payments = txns.filter((t) => t.type === 'card').slice(0, 8)
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Cards</h1>
-          <p className="text-sm text-[var(--color-fg-muted)] mt-0.5">Virtual cards for online spending.</p>
-        </div>
-        <Button onClick={newCard} loading={issuing}><Icon name="plus" className="w-4 h-4" /> New card</Button>
-      </div>
+    <div className="space-y-6 md:space-y-8">
+      <PageHeader
+        title="Cards"
+        subtitle="Virtual cards for online spending."
+        action={<Button onClick={newCard} loading={issuing}><Icon name="plus" className="w-4 h-4" /> New card</Button>}
+      />
 
       {error && <p className="text-sm text-[var(--color-negative)]">{error}</p>}
 
       {cards === null ? (
-        <Skeleton className="h-56 max-w-sm rounded-2xl" />
+        <Skeleton className="h-56 max-w-sm rounded-[var(--radius-card)]" />
       ) : cards.length === 0 ? (
         <EmptyState
           icon="card"
@@ -86,7 +84,7 @@ export function Cards() {
             {cards.map((c) => (
               <div key={c.id} className="space-y-3">
                 <CardFace card={c} />
-                <div className="card-2 p-4 flex items-center justify-between gap-3">
+                <div className="card-2 p-4 flex items-center justify-between gap-3 flex-wrap">
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-medium">Virtual · {c.currency}</span>
@@ -114,7 +112,7 @@ export function Cards() {
               {payments.length === 0 ? (
                 <EmptyState icon="card" title="No card spending yet" body="Payments made on this card land here." />
               ) : (
-                <div className="card divide-y divide-[color:var(--color-border)]">
+                <div className="card divide-y divide-[color:var(--color-border)] overflow-hidden">
                   {payments.map((t) => <TxnRow key={t.id} txn={t} />)}
                 </div>
               )}

@@ -18,13 +18,15 @@ export function TxnRow({ txn, into }: { txn: Txn; into?: Txn }) {
   const icon = into ? 'swap' : typeIcon[txn.type] || (credit ? 'arrowDown' : 'arrowUp')
   const title = txn.reference || capitalize(txn.type)
   return (
-    <div className="flex items-center gap-3 px-4 py-3.5">
+    <div className="row flex items-center gap-3 px-4 py-3.5">
       <span className={`w-9 h-9 shrink-0 rounded-full grid place-items-center border ${credit && !into ? 'text-[var(--color-positive)] bg-[color:rgba(52,211,153,0.08)]' : 'bg-[var(--color-surface-2)] text-[var(--color-fg-muted)]'}`}>
         <Icon name={icon} className="w-4 h-4" />
       </span>
       <div className="min-w-0 flex-1">
         <p className="text-sm font-medium truncate">{title}</p>
-        <p className="text-xs text-[var(--color-fg-subtle)]">
+        {/* One line, always: the kind and the age of a movement should not
+            reflow the row it describes. */}
+        <p className="text-xs text-[var(--color-fg-subtle)] truncate">
           {capitalize(into ? 'conversion' : txn.type)} · {relativeTime(txn.created)}
         </p>
       </div>
