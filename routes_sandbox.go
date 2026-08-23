@@ -17,14 +17,30 @@ import (
 // -----------------------------------------------------------------------------
 
 type accountView struct {
-	ID         string `json:"id"`
-	EntityName string `json:"entityName"`
-	EntityType string `json:"entityType"`
-	Country    string `json:"country"`
-	Currency   string `json:"currency"`
-	Status     string `json:"status"`
-	KYCStatus  string `json:"kycStatus"`
-	IBAN       string `json:"iban"`
+	ID         string         `json:"id"`
+	EntityName string         `json:"entityName"`
+	EntityType string         `json:"entityType"`
+	Country    string         `json:"country"`
+	Currency   string         `json:"currency"`
+	Status     string         `json:"status"`
+	KYCStatus  string         `json:"kycStatus"`
+	IBAN       string         `json:"iban"` // set only for IBAN markets; "" for US
+	Receiving  *receivingView `json:"receiving"`
+}
+
+// receivingView is the coordinates someone needs to pay the account by bank
+// rail, shaped for the account's currency: US accounts settle by ABA routing +
+// account number (the US issues no IBAN), IBAN markets by IBAN + BIC. Both
+// carry a SWIFT/BIC for inbound international wires.
+type receivingView struct {
+	BankName      string `json:"bankName"`
+	AccountHolder string `json:"accountHolder"`
+	RoutingNumber string `json:"routingNumber,omitempty"`
+	AccountNumber string `json:"accountNumber,omitempty"`
+	AccountType   string `json:"accountType,omitempty"`
+	IBAN          string `json:"iban,omitempty"`
+	Swift         string `json:"swift,omitempty"`
+	BankAddress   string `json:"bankAddress,omitempty"`
 }
 
 type balanceView struct {
@@ -77,18 +93,12 @@ type txView struct {
 // -----------------------------------------------------------------------------
 
 func viewAccount(acct *core.Record) accountView {
-	// metadata is stored as JSON, so Record.Get returns types.JSONRaw, not a
-	// map — unmarshal it the same way viewTxns reads its metadata.
-	var md struct {
-		IBAN string `json:"iban"`
-	}
-	_ = acct.UnmarshalJSONField("metadata", &md)
-	iban := md.IBAN
+	rec := receivingFor(acct)
 	return accountView{
 		ID: acct.Id, EntityName: acct.GetString("entityName"),
 		EntityType: acct.GetString("entityType"), Country: acct.GetString("country"),
 		Currency: acct.GetString("currency"), Status: acct.GetString("status"),
-		KYCStatus: acct.GetString("kycStatus"), IBAN: iban,
+		KYCStatus: acct.GetString("kycStatus"), IBAN: rec.IBAN, Receiving: rec,
 	}
 }
 

@@ -86,7 +86,7 @@ function AppShell() {
           <div className="h-16 flex items-center px-5">
             <Link to="/app"><Wordmark /></Link>
           </div>
-          <nav className="flex-1 px-3 space-y-1">
+          <nav aria-label="Sections" className="flex-1 px-3 space-y-1">
             {nav.map((n) => (
               <NavLink key={n.to} to={n.to} end={n.to === '/app'} className={sideLink}>
                 <Icon name={n.icon} className="w-[18px] h-[18px]" />
@@ -130,7 +130,8 @@ function AppShell() {
       {moreOpen && (
         <div className="lg:hidden fixed inset-0 z-40" onClick={() => setMoreOpen(false)}>
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
-          <div
+          <nav
+            aria-label="More"
             className="absolute bottom-[calc(4.25rem+env(safe-area-inset-bottom))] inset-x-3 rounded-2xl border border-[color:var(--color-border)] bg-[var(--color-surface)] shadow-xl overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
@@ -150,12 +151,12 @@ function AppShell() {
             >
               <Icon name="logout" className="w-[18px] h-[18px]" /> Sign out
             </button>
-          </div>
+          </nav>
         </div>
       )}
 
       {/* Mobile bottom tab bar */}
-      <nav className="lg:hidden fixed bottom-0 inset-x-0 z-30 border-t border-[color:var(--color-border)] bg-[var(--color-bg)]/90 backdrop-blur-xl pb-[env(safe-area-inset-bottom)]">
+      <nav aria-label="Primary" className="lg:hidden fixed bottom-0 inset-x-0 z-30 border-t border-[color:var(--color-border)] bg-[var(--color-bg)]/90 backdrop-blur-xl pb-[env(safe-area-inset-bottom)]">
         <div className="grid grid-cols-6">
           {nav.filter((n) => n.primary).map((n) => (
             <NavLink key={n.to} to={n.to} end={n.to === '/app'} className={tabLink}>

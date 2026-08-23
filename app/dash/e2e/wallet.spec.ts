@@ -33,6 +33,22 @@ test('the receive panel shows the deposit address and the faucet', async ({ page
   await shot(page, 'receive-panel')
 })
 
+test('the full deposit address copies from the receive panel', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+  await page.getByRole('button', { name: 'Receive', exact: true }).click()
+
+  const field = page.getByRole('button', { name: /^0x[0-9a-fA-F]{40}$/ })
+  // The affordance is on the field itself, not only on the truncated chip above.
+  await expect(field.locator('svg')).toBeVisible()
+  await field.click()
+
+  const clipboard = await page.evaluate(() => navigator.clipboard.readText())
+  expect(clipboard).toMatch(/^0x[0-9a-fA-F]{40}$/)
+  expect(clipboard).toBe((await field.innerText()).trim())
+
+  await shot(page, 'receive-copy')
+})
+
 test('the testnet faucet credits ETH to the wallet', async ({ page }) => {
   const before = (await holdingAmount(page, 'ETH')) ?? 0
 

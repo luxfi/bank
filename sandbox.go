@@ -2,6 +2,7 @@ package bank
 
 import (
 	"crypto/rand"
+	"crypto/sha256"
 	"fmt"
 	"math"
 	"math/big"
@@ -197,4 +198,49 @@ func sandboxIBAN(currency string) string {
 		cc = "AE"
 	}
 	return fmt.Sprintf("%s29LUXF%s", cc, randDigits(16))
+}
+
+// detDigits returns n decimal digits derived deterministically from a seed, so
+// an account's receiving coordinates are stable across reads (unlike randDigits).
+func detDigits(seed string, n int) string {
+	var b strings.Builder
+	h := sha256.Sum256([]byte(seed))
+	for i := 0; b.Len() < n; i++ {
+		if i >= len(h) { // extend the stream if more digits are needed
+			h = sha256.Sum256(h[:])
+			i = 0
+		}
+		fmt.Fprintf(&b, "%d", int(h[i])%10)
+	}
+	return b.String()[:n]
+}
+
+// ibanCountry maps a currency to the country code its IBAN carries.
+var ibanCountry = map[string]string{"EUR": "DE", "GBP": "GB", "CHF": "CH", "SGD": "SG", "AED": "AE"}
+
+// receivingFor derives the bank-rail coordinates to pay an account, shaped for
+// its currency. US accounts get ABA routing + account number (no IBAN); IBAN
+// markets get an IBAN + BIC. Both carry a SWIFT for inbound international wires.
+// Deterministic in the account id, so the details never shuffle between reads.
+func receivingFor(acct *core.Record) *receivingView {
+	holder := acct.GetString("entityName")
+	cur := strings.ToUpper(acct.GetString("currency"))
+	seed := acct.Id
+	r := &receivingView{
+		BankName:      "SF Private Bank",
+		AccountHolder: holder,
+		Swift:         "SFPBUS6S",
+		BankAddress:   "1 Sansome Street, San Francisco, CA 94104, US",
+	}
+	if cc, ok := ibanCountry[cur]; ok {
+		r.IBAN = fmt.Sprintf("%s29SFPB%s", cc, detDigits(seed+cur, 16))
+		r.Swift = "SFPBGB2L"
+		r.BankAddress = "25 Old Broad Street, London EC2N 1HQ, GB"
+		return r
+	}
+	// USD and anything else settle US-style.
+	r.RoutingNumber = "0" + detDigits(seed+"aba", 8)
+	r.AccountNumber = detDigits(seed+"acct", 10)
+	r.AccountType = "Checking"
+	return r
 }

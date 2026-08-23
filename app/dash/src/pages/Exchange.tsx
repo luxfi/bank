@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router'
-import { getConfig, exchangeQuote, exchangeExecute, type Quote } from '@/api/client'
+import { getConfig, exchangeQuote, exchangeExecute, listTransactions, type Quote } from '@/api/client'
 import { useOverview } from '@/hooks/overview'
-import { Button, Icon, AssetAvatar } from '@/components/ui'
+import { Button, Icon, AssetAvatar, SectionHeader, EmptyState, Skeleton } from '@/components/ui'
+import { TxnRow } from '@/components/TxnRow'
 import { formatMoney, toMinor } from '@/lib/format'
+import { pair, type Entry } from '@/lib/pair'
 
 export function Exchange() {
   const { overview, refresh } = useOverview()
@@ -22,6 +24,10 @@ export function Exchange() {
   const fromBal = balances.find((b) => b.currency === from)
   const fromMinor = toMinor(amount, from)
   const insufficient = fromBal ? fromMinor > fromBal.available : fromMinor > 0
+  // A rate is a property of the pair, not of the amount. With the field still
+  // empty we price one whole unit, so the page opens on today's rate instead of
+  // on a blank waiting for input.
+  const priced = fromMinor || toMinor(1, from)
 
   useEffect(() => {
     getConfig().then((c) => setAssets([...c.fiat, ...c.crypto])).catch(() => setAssets(['USD', 'EUR', 'GBP', 'LUX', 'BTC', 'ETH', 'DAI']))
@@ -35,12 +41,12 @@ export function Exchange() {
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
   useEffect(() => {
     setError(null)
-    if (!fromMinor || from === to) { setQuote(null); return }
+    if (from === to) { setQuote(null); return }
     clearTimeout(timer.current)
     setQuoting(true)
     timer.current = setTimeout(async () => {
       try {
-        setQuote(await exchangeQuote(from, to, fromMinor))
+        setQuote(await exchangeQuote(from, to, priced))
       } catch (e) {
         setError(e instanceof Error ? e.message : 'Quote failed'); setQuote(null)
       } finally {
@@ -48,14 +54,14 @@ export function Exchange() {
       }
     }, 350)
     return () => clearTimeout(timer.current)
-  }, [from, to, fromMinor])
+  }, [from, to, priced])
 
   function flip() {
     setFrom(to); setTo(from); setAmount(''); setQuote(null); setDone(null)
   }
 
   async function execute() {
-    if (!quote || insufficient) return
+    if (!quote || !fromMinor || insufficient) return
     setExecuting(true); setError(null)
     try {
       const res = await exchangeExecute(from, to, fromMinor)
@@ -70,12 +76,14 @@ export function Exchange() {
   }
 
   return (
-    <div className="space-y-6 max-w-xl">
+    <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Exchange</h1>
         <p className="text-sm text-[var(--color-fg-muted)] mt-0.5">Convert between currencies and crypto at sandbox rates.</p>
       </div>
 
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,32rem)_minmax(0,1fr)] items-start">
+      <div className="space-y-4">
       <div className="card p-5 space-y-3">
         {/* From */}
         <div className="card-2 p-4">
@@ -104,7 +112,7 @@ export function Exchange() {
           </div>
           <div className="flex items-center gap-3">
             <div className="flex-1 min-w-0 truncate text-2xl font-semibold tnum text-[var(--color-fg)]">
-              {quote ? formatMoney(quote.toAmount, to, quote.toDecimals).replace(` ${to}`, '') : '0.00'}
+              {quote && fromMinor ? formatMoney(quote.toAmount, to, quote.toDecimals).replace(` ${to}`, '') : '0.00'}
             </div>
             <AssetPicker value={to} onChange={edit(setTo)} assets={assets} exclude={from} />
           </div>
@@ -123,13 +131,43 @@ export function Exchange() {
           <div className="flex items-center gap-2 text-sm text-[var(--color-positive)]"><Icon name="check" className="w-4 h-4" />{done}</div>
         )}
 
-        <Button className="w-full" onClick={execute} loading={executing} disabled={!quote || insufficient}>
+        <Button className="w-full" onClick={execute} loading={executing} disabled={!quote || !fromMinor || insufficient}>
           {from === to ? 'Choose different currencies' : `Convert ${from} → ${to}`}
         </Button>
       </div>
 
       <p className="text-center text-[0.7rem] text-[var(--color-fg-subtle)]">Sandbox rates include a 0.2% demo spread. Settles instantly.</p>
+      </div>
+
+      <Conversions key={done ?? 'idle'} />
+      </div>
     </div>
+  )
+}
+
+// Every conversion this account has made, read back as one line each — what
+// left and what landed. Remounts on a completed trade so the newest one is
+// there without a second fetch path.
+function Conversions() {
+  const [entries, setEntries] = useState<Entry[] | null>(null)
+  useEffect(() => {
+    listTransactions()
+      .then((t) => setEntries(pair(t).filter((e) => e.txn.type === 'conversion')))
+      .catch(() => setEntries([]))
+  }, [])
+  return (
+    <section>
+      <SectionHeader title="Recent conversions" />
+      {entries === null ? (
+        <div className="space-y-2">{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-16 rounded-xl" />)}</div>
+      ) : entries.length === 0 ? (
+        <EmptyState icon="swap" title="No conversions yet" body="Trades you make here are listed with the rate you got." />
+      ) : (
+        <div className="card divide-y divide-[color:var(--color-border)]">
+          {entries.slice(0, 8).map((e) => <TxnRow key={e.key} txn={e.txn} into={e.into} />)}
+        </div>
+      )}
+    </section>
   )
 }
 

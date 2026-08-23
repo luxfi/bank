@@ -36,8 +36,15 @@ export function CardFace({ card, cvv, pan }: { card: CardView; cvv?: string; pan
       </div>
 
       <div className="relative">
-        {/* chip */}
-        <div className="w-9 h-6 rounded-md bg-gradient-to-br from-yellow-200/80 to-yellow-500/60 mb-3" />
+        {/* EMV chip — the gold pad with its contact plate, so it reads as a
+            chip and not as a rectangle of gold. */}
+        <div className="relative w-9 h-6 rounded-md bg-gradient-to-br from-yellow-200/80 to-yellow-500/60 mb-3">
+          <svg viewBox="0 0 36 24" className="absolute inset-0 w-full h-full" fill="none"
+            stroke="rgba(0,0,0,0.35)" strokeWidth="1" aria-hidden="true">
+            <rect x="10.5" y="4.5" width="15" height="15" rx="2.5" />
+            <path d="M0 8.5h10.5M25.5 8.5H36M0 15.5h10.5M25.5 15.5H36M18 4.5v15" />
+          </svg>
+        </div>
         <p className="font-mono text-lg md:text-xl tracking-[0.15em] text-white tnum">
           {pan ?? card.display}
         </p>

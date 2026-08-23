@@ -3,6 +3,7 @@ import { listTransactions, type Txn } from '@/api/client'
 import { TxnRow } from '@/components/TxnRow'
 import { EmptyState, Skeleton } from '@/components/ui'
 import { formatDateShort } from '@/lib/format'
+import { pair, type Entry } from '@/lib/pair'
 
 const FILTERS = [
   ['all', 'All'],
@@ -18,14 +19,16 @@ export function Activity() {
     listTransactions().then(setTxns).catch(() => setTxns([]))
   }, [])
 
+  // Filter first, then pair: asking for money out should show the leg that
+  // left, on its own, rather than smuggling the arriving half back in.
   const groups = useMemo(() => {
     if (!txns) return []
     const filtered = filter === 'all' ? txns : txns.filter((t) => t.direction === filter)
-    const byDay = new Map<string, Txn[]>()
-    for (const t of filtered) {
-      const day = formatDateShort(t.created)
+    const byDay = new Map<string, Entry[]>()
+    for (const e of pair(filtered)) {
+      const day = formatDateShort(e.txn.created)
       const arr = byDay.get(day) ?? []
-      arr.push(t)
+      arr.push(e)
       byDay.set(day, arr)
     }
     return Array.from(byDay.entries())
@@ -69,7 +72,7 @@ export function Activity() {
             <div key={day}>
               <p className="text-xs font-medium text-[var(--color-fg-subtle)] mb-2 px-1">{day}</p>
               <div className="card divide-y divide-[color:var(--color-border)]">
-                {items.map((t) => <TxnRow key={t.id} txn={t} />)}
+                {items.map((e) => <TxnRow key={e.key} txn={e.txn} into={e.into} />)}
               </div>
             </div>
           ))}

@@ -199,11 +199,16 @@ function ReceivePanel({
         </div>
       )}
       <p className="text-xs text-[var(--color-fg-muted)]">Your {network} deposit address</p>
+      {/* The whole field copies, and now says so. The icon is decoration for
+          the eye — the button's accessible name stays the address itself. */}
       <button
         onClick={() => { navigator.clipboard?.writeText(address); setCopied(true); setTimeout(() => setCopied(false), 1500) }}
-        className="w-full text-left font-mono text-sm break-all rounded-lg bg-[var(--color-surface-2)] border border-[color:var(--color-border)] px-3 py-2 hover:brightness-95 transition"
+        className="w-full flex items-start gap-3 text-left rounded-lg bg-[var(--color-surface-2)] border border-[color:var(--color-border)] px-3 py-2.5 hover:brightness-95 transition group"
       >
-        {address} {copied ? '✓' : ''}
+        <span className="font-mono text-sm break-all flex-1 min-w-0">{address}</span>
+        <span className={`shrink-0 mt-0.5 ${copied ? 'text-[var(--color-positive)]' : 'text-[var(--color-fg-muted)] group-hover:text-[var(--color-fg)]'}`}>
+          <Icon name={copied ? 'check' : 'copy'} className="w-4 h-4" />
+        </span>
       </button>
       <p className="text-[0.7rem] text-[var(--color-fg-subtle)]">
         {wallets.length > 1

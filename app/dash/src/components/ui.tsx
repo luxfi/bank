@@ -129,8 +129,8 @@ export function EmptyState({ icon, title, body, action }: { icon: string; title:
 // and stays inert rather than offering a copy button for an empty string.
 
 export function CopyRow({
-  label, value, display, empty = 'Not available', className = '',
-}: { label: string; value?: string; display?: string; empty?: string; className?: string }) {
+  label, value, display, empty = 'Not available', className = '', mono = true,
+}: { label: string; value?: string; display?: string; empty?: string; className?: string; mono?: boolean }) {
   const [copied, setCopied] = useState(false)
   if (!value) {
     return (
@@ -149,7 +149,7 @@ export function CopyRow({
     >
       <div className="min-w-0 flex-1">
         <p className="text-xs text-[var(--color-fg-subtle)]">{label}</p>
-        <p className="font-mono text-sm truncate">{display ?? value}</p>
+        <p className={mono ? 'font-mono text-sm truncate' : 'text-sm'}>{display ?? value}</p>
       </div>
       <span className="text-[var(--color-fg-muted)] group-hover:text-[var(--color-fg)]">
         <Icon name={copied ? 'check' : 'copy'} className="w-4 h-4" />

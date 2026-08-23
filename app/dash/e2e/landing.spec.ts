@@ -24,6 +24,23 @@ test('landing renders the membership ladder from live plans', async ({ page }) =
   await shot(page, 'landing-plans')
 })
 
+// The hero preview is the account you get. Its headline is the sum of the
+// balances under it — a total that contradicts its own parts (or the app it
+// leads into) reads as two different companies.
+test('the hero total is the sum of the balances it shows', async ({ page }) => {
+  await page.goto('/')
+
+  const dollars = (s: string) => parseFloat(s.replace(/[^0-9.]/g, ''))
+  const total = dollars(await page.getByText(/^\$[\d,]+\.\d{2}$/).first().innerText())
+  const tiles = await page.locator('.card-2 p:last-child').allInnerTexts()
+  const parts = tiles.filter((t) => /^\$[\d,]+\.\d{2}$/.test(t)).map(dollars)
+
+  expect(parts.length).toBe(5)
+  expect(parts.reduce((a, b) => a + b, 0)).toBeCloseTo(total, 2)
+
+  await shot(page, 'landing-hero')
+})
+
 test('plans come from the bank API, not hardcoded markup', async ({ page }) => {
   const plans = page.waitForResponse(
     (r) => r.url().includes('/v1/bank/plans') && r.status() === 200,

@@ -43,10 +43,10 @@ function Nav() {
     <header className="sticky top-0 z-20 border-b border-[color:var(--color-border)] bg-[var(--color-bg)]/70 backdrop-blur-xl">
       <div className="mx-auto max-w-6xl flex items-center justify-between px-5 md:px-8 h-16">
         <Wordmark className="text-lg" />
-        <div className="flex items-center gap-2 md:gap-3">
+        <nav aria-label="Main" className="flex items-center gap-2 md:gap-3">
           <Link to="/login" className="btn btn-ghost hidden sm:inline-flex">Sign in</Link>
           <Link to="/signup" className="btn btn-primary">Open account</Link>
-        </div>
+        </nav>
       </div>
     </header>
   )
@@ -74,17 +74,34 @@ function Hero() {
   )
 }
 
+// The preview is the demo account, balance for balance — open one and this is
+// the screen you land on. A hero that quotes a different figure than the app
+// behind it reads as two different companies.
+const DEMO_BALANCES: [string, string, number][] = [
+  ['USD', '$12,500.00', 12500],
+  ['EUR', '€3,200.00', 3478.26],
+  ['GBP', '£1,750.00', 2215.19],
+  ['LUX', '250 LUX', 3125],
+  ['DAI', '500 DAI', 500],
+]
+const DEMO_TOTAL = DEMO_BALANCES.reduce((s, [, , usd]) => s + usd, 0)
+const usd = (n: number) => n.toLocaleString('en-US', { style: 'currency', currency: 'USD' })
+
 function HeroPreview() {
   return (
     <div className="relative rounded-2xl border border-[color:var(--color-border)] bg-gradient-to-br from-[var(--color-surface-2)] to-[var(--color-surface)] p-6 md:p-8 text-left overflow-hidden">
       <div className="absolute -top-24 -right-16 w-80 h-80 rounded-full accent-glow" />
       <p className="text-sm text-[var(--color-fg-muted)] relative">Total balance</p>
-      <p className="text-4xl md:text-5xl font-semibold tracking-tight tnum mt-1 relative">$17,700.00</p>
-      <div className="grid grid-cols-3 gap-3 mt-6 relative">
-        {[['USD', '$12,500.00'], ['EUR', '€3,200.00'], ['250 LUX', '$3,125.00']].map(([c, v]) => (
-          <div key={c} className="card-2 p-3">
-            <p className="text-xs text-[var(--color-fg-subtle)]">{c}</p>
-            <p className="font-medium tnum text-sm mt-0.5">{v}</p>
+      <p className="text-4xl md:text-5xl font-semibold tracking-tight tnum mt-1 relative">{usd(DEMO_TOTAL)}</p>
+      <p className="text-xs text-[var(--color-fg-subtle)] mt-2 relative">
+        Across {DEMO_BALANCES.length} balances · estimated in USD
+      </p>
+      <div className="grid grid-cols-3 sm:grid-cols-5 gap-3 mt-6 relative">
+        {DEMO_BALANCES.map(([code, held, value]) => (
+          <div key={code} className="card-2 p-3">
+            <p className="text-xs text-[var(--color-fg-subtle)]">{code}</p>
+            <p className="font-medium tnum text-sm mt-0.5">{held}</p>
+            <p className="text-[0.7rem] text-[var(--color-fg-subtle)] tnum mt-0.5">{usd(value)}</p>
           </div>
         ))}
       </div>

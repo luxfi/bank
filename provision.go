@@ -94,7 +94,6 @@ func ProvisionCustomer(app core.App, user *core.Record, kyc KYC) (*core.Record, 
 			"submittedAt": time.Now().UTC().Format(time.RFC3339),
 			"method":      method,
 		},
-		"iban": sandboxIBAN("USD"),
 	})
 	if err := app.Save(acct); err != nil {
 		return nil, err
@@ -191,10 +190,10 @@ func fundSandbox(app core.App, acct *core.Record, holder string) error {
 		{"type": "deposit", "direction": "credit", "amount": 850_000, "currency": "USD", "status": "completed", "reference": "Payroll — Meridian Labs"},
 		{"type": "deposit", "direction": "credit", "amount": 420_000, "currency": "USD", "status": "completed", "reference": "Incoming wire — Northwind Ltd"},
 		{"type": "deposit", "direction": "credit", "amount": 128_500, "currency": "USD", "status": "completed", "reference": "Refund — Stripe"},
-		{"type": "payment", "direction": "debit", "amount": 4_299, "currency": "USD", "status": "completed", "reference": "Card — Apple Store"},
-		{"type": "payment", "direction": "debit", "amount": 1_842, "currency": "USD", "status": "completed", "reference": "Card — Whole Foods Market"},
-		{"type": "payment", "direction": "debit", "amount": 1_299, "currency": "USD", "status": "completed", "reference": "Card — Uber"},
-		{"type": "payment", "direction": "debit", "amount": 2_000, "currency": "USD", "status": "completed", "reference": "Card — Amazon"},
+		{"type": "card", "direction": "debit", "amount": 4_299, "currency": "USD", "status": "completed", "reference": "Card — Apple Store"},
+		{"type": "card", "direction": "debit", "amount": 1_842, "currency": "USD", "status": "completed", "reference": "Card — Whole Foods Market"},
+		{"type": "card", "direction": "debit", "amount": 1_299, "currency": "USD", "status": "completed", "reference": "Card — Uber"},
+		{"type": "card", "direction": "debit", "amount": 2_000, "currency": "USD", "status": "completed", "reference": "Card — Amazon"},
 		{"type": "payment", "direction": "debit", "amount": 154_000, "currency": "USD", "status": "completed", "reference": "Rent — Kearny Street Holdings"},
 		{"type": "payment", "direction": "debit", "amount": 68_400, "currency": "USD", "status": "completed", "reference": "Wire — Blackwood Consulting"},
 		{"type": "conversion", "direction": "debit", "amount": 300_000, "currency": "USD", "status": "completed", "reference": "Converted USD → EUR"},

@@ -4,6 +4,7 @@ import { useBrand } from '@/hooks/brand'
 import { Money, Icon, SectionHeader, AssetAvatar, Skeleton, EmptyState, formatUSD } from '@/components/ui'
 import { TxnRow } from '@/components/TxnRow'
 import { CardFace } from '@/components/CardFace'
+import { pair } from '@/lib/pair'
 
 const actions = [
   { to: '/app/send', label: 'Send', icon: 'send' },
@@ -106,7 +107,7 @@ export function Dashboard() {
           <EmptyState icon="activity" title="No activity yet" body="Your transactions will appear here as you move money." />
         ) : (
           <div className="card divide-y divide-[color:var(--color-border)]">
-            {txns.map((t) => <TxnRow key={t.id} txn={t} />)}
+            {pair(txns).map((e) => <TxnRow key={e.key} txn={e.txn} into={e.into} />)}
           </div>
         )}
       </section>

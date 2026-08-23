@@ -44,10 +44,12 @@ func EnsureTransactionCollection(app core.App) error {
 			Name: "ccTransactionId",
 		},
 
-		// Transaction type.
+		// Transaction type. `card` is a card purchase — a debit like a payment
+		// but on the card rail, so it carries no wire fee and is not routed to
+		// forex; the Cards screen lists these specifically.
 		&core.SelectField{
 			Name:      "type",
-			Values:    []string{"payment", "conversion", "deposit", "withdrawal", "fee"},
+			Values:    []string{"payment", "card", "conversion", "deposit", "withdrawal", "fee"},
 			Required:  true,
 			MaxSelect: 1,
 		},

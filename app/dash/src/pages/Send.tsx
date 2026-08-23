@@ -5,6 +5,7 @@ import {
 } from '@/api/client'
 import { useOverview } from '@/hooks/overview'
 import { Button, Icon, Field, Modal, EmptyState, StatusBadge, SectionHeader, AssetAvatar, CopyRow, Skeleton } from '@/components/ui'
+import { Coordinates } from '@/components/Coordinates'
 import { formatMoney, shortAddress } from '@/lib/format'
 
 export function Send() {
@@ -52,22 +53,24 @@ export function Send() {
       {account && (
         <section>
           <SectionHeader title="Receive" />
-          <div className="card divide-y divide-[color:var(--color-border)]">
-            <CopyRow
-              label="Account (IBAN)"
-              value={account.iban}
-              empty="No IBAN on this account yet"
-              className="px-4 py-3.5"
-            />
-            {cryptoWallets.map((w) => (
-              <CopyRow
-                key={w.currency}
-                label={`${w.currency} · ${w.network}`}
-                value={w.address}
-                display={shortAddress(w.address)}
-                className="px-4 py-3.5"
-              />
-            ))}
+          <div className="space-y-3">
+            <div className="card p-4 space-y-3">
+              <p className="label">Bank transfer · {account.currency}</p>
+              <Coordinates account={account} />
+            </div>
+            {cryptoWallets.length > 0 && (
+              <div className="card divide-y divide-[color:var(--color-border)]">
+                {cryptoWallets.map((w) => (
+                  <CopyRow
+                    key={w.currency}
+                    label={`${w.currency} · ${w.network}`}
+                    value={w.address}
+                    display={shortAddress(w.address)}
+                    className="px-4 py-3.5"
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </section>
       )}

@@ -1,6 +1,32 @@
 import { test, expect } from '@playwright/test'
 import { signIn, holding, holdingAmount, shot } from './demo'
 
+test('the pair is priced before anything is typed', async ({ page }) => {
+  await signIn(page)
+  await page.goto('/app/exchange')
+
+  // A rate belongs to the pair, not to the amount: the page opens on it.
+  await expect(page.getByText(/1 USD ≈ [\d.]+ EUR/)).toBeVisible()
+  // Priced, but nothing to convert yet.
+  await expect(page.getByRole('button', { name: 'Convert USD → EUR' })).toBeDisabled()
+
+  // Changing a leg reprices without an amount either.
+  await page.getByRole('combobox').last().selectOption('GBP')
+  await expect(page.getByText(/1 USD ≈ [\d.]+ GBP/)).toBeVisible()
+
+  await shot(page, 'exchange-rate-on-arrival')
+})
+
+test('past conversions are listed beside the converter', async ({ page }) => {
+  await signIn(page)
+  await page.goto('/app/exchange')
+
+  await expect(page.getByRole('heading', { name: 'Recent conversions' })).toBeVisible()
+  const row = page.locator('.card > div').filter({ hasText: 'Converted USD → EUR' }).first()
+  await expect(row).toBeVisible()
+  expect(await row.innerText()).toMatch(/−\$[\d,]+\.\d{2}\s*→\s*\+€[\d,]+\.\d{2}/)
+})
+
 test('the wallet Buy tile converts USD into LUX', async ({ page }) => {
   await signIn(page)
   await page.getByRole('link', { name: 'Wallet' }).first().click()

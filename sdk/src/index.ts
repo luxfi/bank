@@ -65,6 +65,20 @@ export interface Balance {
   valueUsd: number
 }
 
+// Receiving is the bank-rail coordinates to pay an account, shaped for its
+// currency: US accounts by routing + account number (no IBAN), IBAN markets by
+// IBAN + BIC. Both carry a SWIFT for inbound international wires.
+export interface Receiving {
+  bankName: string
+  accountHolder: string
+  routingNumber?: string
+  accountNumber?: string
+  accountType?: string
+  iban?: string
+  swift?: string
+  bankAddress?: string
+}
+
 export interface Account {
   id: string
   entityName: string
@@ -73,7 +87,8 @@ export interface Account {
   currency: string
   status: string
   kycStatus: string
-  iban: string
+  iban: string // set only for IBAN markets; "" for US accounts
+  receiving?: Receiving
 }
 
 export interface Wallet {

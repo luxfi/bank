@@ -24,6 +24,25 @@ test('on mobile, More reaches Accounts and Activity', async ({ page }) => {
   await expect(page).toHaveURL(/\/app\/accounts$/)
 })
 
+// Navigation is a landmark, and a screen with more than one names them apart.
+test('every set of links is a named navigation landmark', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await signIn(page)
+
+  const tabs = page.getByRole('navigation', { name: 'Primary' })
+  await expect(tabs).toBeVisible()
+  await expect(tabs.getByRole('link', { name: 'Wallet' })).toBeVisible()
+
+  await page.getByRole('button', { name: 'More' }).click()
+  await expect(page.getByRole('navigation', { name: 'More' })).toBeVisible()
+
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await expect(page.getByRole('navigation', { name: 'Sections' })).toBeVisible()
+
+  await page.goto('/')
+  await expect(page.getByRole('navigation', { name: 'Main' })).toBeVisible()
+})
+
 test('a freshly issued card reveals its full number and CVV once', async ({ page }) => {
   await signIn(page)
   await page.goto('/app/cards')

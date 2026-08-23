@@ -1,6 +1,7 @@
 import { useOverview } from '@/hooks/overview'
 import { useBrand } from '@/hooks/brand'
-import { Money, AssetAvatar, SectionHeader, StatusBadge, Skeleton, formatUSD, CopyRow, EmptyState } from '@/components/ui'
+import { Money, AssetAvatar, SectionHeader, StatusBadge, Skeleton, formatUSD, EmptyState } from '@/components/ui'
+import { Coordinates } from '@/components/Coordinates'
 import { capitalize } from '@/lib/format'
 
 export function Accounts() {
@@ -32,7 +33,8 @@ export function Accounts() {
           </div>
         </div>
         <div className="mt-4 pt-4 border-t border-[color:var(--color-border)]">
-          <CopyRow label="Account number (IBAN)" value={a.iban} empty="No IBAN on this account yet" />
+          <p className="label mb-3">Receive money · {a.currency}</p>
+          <Coordinates account={a} />
         </div>
       </div>
 
