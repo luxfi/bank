@@ -149,7 +149,7 @@ export const deleteBeneficiary = (id: string) =>
 
 export const listCards = () => request<CardView[]>('/v1/bank/cards')
 export const issueCard = (currency?: string) =>
-  request<{ card: CardView; cvv: string }>('/v1/bank/cards', {
+  request<{ card: CardView; cvv: string; pan: string }>('/v1/bank/cards', {
     method: 'POST',
     body: JSON.stringify({ currency }),
   })

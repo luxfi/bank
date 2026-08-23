@@ -377,10 +377,12 @@ func handleIssueCard(app core.App) func(*core.RequestEvent) error {
 		if card == nil {
 			return apis.NewInternalServerError("card issue failed", nil)
 		}
-		// CVV is generated for display once and never stored.
+		// CVV and full PAN are surfaced once here and never stored — only the
+		// masked display and last4 persist on the card record.
 		return e.JSON(http.StatusCreated, map[string]any{
 			"card": viewCard(card),
 			"cvv":  randDigits(3),
+			"pan":  sandboxPAN(card.GetString("last4")),
 		})
 	}
 }

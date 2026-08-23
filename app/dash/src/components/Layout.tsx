@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { NavLink, Outlet, Link, useNavigate } from 'react-router'
 import { useAuth } from '@/hooks/useAuth'
 import { useBrand } from '@/hooks/brand'
@@ -64,6 +65,7 @@ function AppShell() {
   const { overview } = useOverview()
   const brand = useBrand()
   const navigate = useNavigate()
+  const [moreOpen, setMoreOpen] = useState(false)
   // The seeded demo identity displays under the active brand (e.g. ACM Demo /
   // z@acmglobaltech.com for brand=acm); real IAM customers show their own.
   const rawEmail = (user?.email as string) || ''
@@ -123,15 +125,48 @@ function AppShell() {
         </div>
       </div>
 
+      {/* Mobile: "More" sheet — reveals the pages that don't fit the tab bar
+          (Accounts, Activity) plus Sign out, so every screen is reachable. */}
+      {moreOpen && (
+        <div className="lg:hidden fixed inset-0 z-40" onClick={() => setMoreOpen(false)}>
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+          <div
+            className="absolute bottom-[calc(4.25rem+env(safe-area-inset-bottom))] inset-x-3 rounded-2xl border border-[color:var(--color-border)] bg-[var(--color-surface)] shadow-xl overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {nav.filter((n) => !n.primary).map((n) => (
+              <NavLink
+                key={n.to}
+                to={n.to}
+                onClick={() => setMoreOpen(false)}
+                className="flex items-center gap-3 px-4 py-3.5 text-sm font-medium border-b border-[color:var(--color-border)] text-[var(--color-fg)]"
+              >
+                <Icon name={n.icon} className="w-[18px] h-[18px]" /> {n.label}
+              </NavLink>
+            ))}
+            <button
+              onClick={() => { setMoreOpen(false); signOut() }}
+              className="flex w-full items-center gap-3 px-4 py-3.5 text-sm font-medium text-[var(--color-fg-muted)]"
+            >
+              <Icon name="logout" className="w-[18px] h-[18px]" /> Sign out
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Mobile bottom tab bar */}
       <nav className="lg:hidden fixed bottom-0 inset-x-0 z-30 border-t border-[color:var(--color-border)] bg-[var(--color-bg)]/90 backdrop-blur-xl pb-[env(safe-area-inset-bottom)]">
-        <div className="grid grid-cols-5">
+        <div className="grid grid-cols-6">
           {nav.filter((n) => n.primary).map((n) => (
             <NavLink key={n.to} to={n.to} end={n.to === '/app'} className={tabLink}>
               <Icon name={n.icon} className="w-[22px] h-[22px]" />
               <span className="text-[0.62rem] font-medium">{n.label}</span>
             </NavLink>
           ))}
+          <button type="button" onClick={() => setMoreOpen((v) => !v)} className={tabLink({ isActive: moreOpen })}>
+            <Icon name="menu" className="w-[22px] h-[22px]" />
+            <span className="text-[0.62rem] font-medium">More</span>
+          </button>
         </div>
       </nav>
     </div>

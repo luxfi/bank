@@ -13,6 +13,7 @@ import { Send } from '@/pages/Send'
 import { Exchange } from '@/pages/Exchange'
 import { Wallet } from '@/pages/Wallet'
 import { Activity } from '@/pages/Activity'
+import { NotFound } from '@/pages/NotFound'
 import { Spinner } from '@/components/ui'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -52,6 +53,7 @@ export function App() {
             <Route path="exchange" element={<Exchange />} />
             <Route path="wallet" element={<Wallet />} />
             <Route path="activity" element={<Activity />} />
+            <Route path="*" element={<NotFound />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

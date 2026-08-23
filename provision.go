@@ -38,6 +38,9 @@ func primaryAccount(app core.App, userID string) *core.Record {
 // Idempotent: returns the existing account if one is already open.
 func ProvisionCustomer(app core.App, user *core.Record, kyc KYC) (*core.Record, error) {
 	if acct := primaryAccount(app, user.Id); acct != nil {
+		// Backfill any wallet the account is missing — an account opened by an
+		// earlier build predates per-asset wallets, so this self-heals it.
+		ensureWallets(app, acct.Id, user.Id)
 		return acct, nil
 	}
 
@@ -101,19 +104,7 @@ func ProvisionCustomer(app core.App, user *core.Record, kyc KYC) (*core.Record, 
 	// deposit address (a BTC address is bech32, an EVM asset is 0x). Production
 	// provisions keys by threshold MPC; the sandbox derives stable display
 	// addresses from the principal via the chain backend.
-	if walletColl, err := app.FindCollectionByNameOrId(collections.WalletCollectionName); err == nil {
-		cb := chain()
-		for _, asset := range SupportedCrypto {
-			w := core.NewRecord(walletColl)
-			w.Set("account", acct.Id)
-			w.Set("currency", asset)
-			w.Set("walletId", "mpc:"+asset+":"+user.Id)
-			w.Set("address", cb.Address(user.Id, asset))
-			w.Set("network", cb.Network())
-			w.Set("status", "active")
-			_ = app.Save(w)
-		}
-	}
+	ensureWallets(app, acct.Id, user.Id)
 
 	if Sandbox() {
 		if err := fundSandbox(app, acct, name); err != nil {
@@ -124,27 +115,104 @@ func ProvisionCustomer(app core.App, user *core.Record, kyc KYC) (*core.Record, 
 	return acct, nil
 }
 
+// ensureWallets creates one wallet per SupportedCrypto asset for an account,
+// each with its own chain-derived deposit address. Idempotent: an asset that
+// already has a wallet is left untouched, so it both provisions new accounts
+// and backfills accounts opened before per-asset wallets existed.
+func ensureWallets(app core.App, accountID, seed string) {
+	walletColl, err := app.FindCollectionByNameOrId(collections.WalletCollectionName)
+	if err != nil {
+		return
+	}
+	cb := chain()
+	for _, asset := range SupportedCrypto {
+		existing, _ := app.FindFirstRecordByFilter(collections.WalletCollectionName,
+			"account = {:a} && currency = {:c}", map[string]any{"a": accountID, "c": asset})
+		if existing != nil {
+			continue
+		}
+		w := core.NewRecord(walletColl)
+		w.Set("account", accountID)
+		w.Set("currency", asset)
+		w.Set("walletId", "mpc:"+asset+":"+seed)
+		w.Set("address", cb.Address(seed, asset))
+		w.Set("network", cb.Network())
+		w.Set("status", "active")
+		_ = app.Save(w)
+	}
+}
+
+// seedBeneficiaries seeds a few verified payment recipients so the Send screen
+// opens with a populated recipient list instead of an empty form. Idempotent.
+func seedBeneficiaries(app core.App, accountID string) {
+	if existing, _ := app.FindFirstRecordByFilter(collections.BeneficiaryCollectionName,
+		"account = {:a}", map[string]any{"a": accountID}); existing != nil {
+		return
+	}
+	col, err := app.FindCollectionByNameOrId(collections.BeneficiaryCollectionName)
+	if err != nil {
+		return
+	}
+	seeds := []struct {
+		name, holder, currency, country, paymentType string
+		details                                       map[string]any
+	}{
+		{"Northwind Ltd", "Northwind Trading Ltd", "GBP", "GB", "regular", map[string]any{"iban": "GB29NWBK60161331926819", "bic": "NWBKGB2L", "sortCode": "601613", "accountNumber": "31926819"}},
+		{"Lindqvist AB", "Lindqvist Handels AB", "EUR", "SE", "regular", map[string]any{"iban": "SE4550000000058398257466", "bic": "ESSESESS"}},
+		{"Blackwood Consulting", "Blackwood Consulting LLC", "USD", "US", "priority", map[string]any{"accountNumber": "4830261905", "routing": "021000021"}},
+		{"Meridian Labs", "Meridian Labs Inc", "USD", "US", "regular", map[string]any{"accountNumber": "9921740385", "routing": "026009593"}},
+	}
+	for _, s := range seeds {
+		b := core.NewRecord(col)
+		b.Set("account", accountID)
+		b.Set("name", s.name)
+		b.Set("bankAccountHolder", s.holder)
+		b.Set("currency", s.currency)
+		b.Set("country", s.country)
+		b.Set("paymentType", s.paymentType)
+		b.Set("bankDetails", s.details)
+		b.Set("verified", true)
+		if err := app.Save(b); err != nil {
+			app.Logger().Warn("seed beneficiary failed", "name", s.name, "err", err)
+		}
+	}
+}
+
 // fundSandbox seeds demo balances, a virtual card, and activity history.
 func fundSandbox(app core.App, acct *core.Record, holder string) error {
 	// Headroom first so seed debits pass the pre-create balance check; final
 	// display balances are force-set at the end.
 	_ = setBalance(app, acct.Id, "USD", 5_000_000)
 
-	// A believable opening story: salary in, a card load, an FX, a payment out.
+	// A believable book: wires in, payroll, card spend at named merchants, an
+	// FX, a crypto receive — varied enough that the activity feed reads like a
+	// real account, not a test loop.
 	seedTxns := []map[string]any{
-		{"type": "deposit", "direction": "credit", "amount": 850_000, "currency": "USD", "status": "completed", "reference": "Payroll — Acme Corp"},
-		{"type": "deposit", "direction": "credit", "amount": 420_000, "currency": "USD", "status": "completed", "reference": "Incoming SWIFT — Northwind Ltd"},
-		{"type": "payment", "direction": "debit", "amount": 89_900, "currency": "USD", "status": "completed", "reference": "Card — Apple Store"},
-		{"type": "payment", "direction": "debit", "amount": 154_000, "currency": "USD", "status": "completed", "reference": "Rent — Sandbox Realty"},
-		{"type": "conversion", "direction": "debit", "amount": 300_000, "currency": "USD", "status": "completed", "reference": "FX USD → EUR"},
-		{"type": "deposit", "direction": "credit", "amount": 276_000, "currency": "EUR", "status": "completed", "reference": "FX USD → EUR"},
+		{"type": "deposit", "direction": "credit", "amount": 850_000, "currency": "USD", "status": "completed", "reference": "Payroll — Meridian Labs"},
+		{"type": "deposit", "direction": "credit", "amount": 420_000, "currency": "USD", "status": "completed", "reference": "Incoming wire — Northwind Ltd"},
+		{"type": "deposit", "direction": "credit", "amount": 128_500, "currency": "USD", "status": "completed", "reference": "Refund — Stripe"},
+		{"type": "payment", "direction": "debit", "amount": 4_299, "currency": "USD", "status": "completed", "reference": "Card — Apple Store"},
+		{"type": "payment", "direction": "debit", "amount": 1_842, "currency": "USD", "status": "completed", "reference": "Card — Whole Foods Market"},
+		{"type": "payment", "direction": "debit", "amount": 1_299, "currency": "USD", "status": "completed", "reference": "Card — Uber"},
+		{"type": "payment", "direction": "debit", "amount": 2_000, "currency": "USD", "status": "completed", "reference": "Card — Amazon"},
+		{"type": "payment", "direction": "debit", "amount": 154_000, "currency": "USD", "status": "completed", "reference": "Rent — Kearny Street Holdings"},
+		{"type": "payment", "direction": "debit", "amount": 68_400, "currency": "USD", "status": "completed", "reference": "Wire — Blackwood Consulting"},
+		{"type": "conversion", "direction": "debit", "amount": 300_000, "currency": "USD", "status": "completed", "reference": "Converted USD → EUR"},
+		{"type": "deposit", "direction": "credit", "amount": 276_000, "currency": "EUR", "status": "completed", "reference": "Converted USD → EUR"},
+		{"type": "payment", "direction": "debit", "amount": 92_000, "currency": "EUR", "status": "completed", "reference": "Supplier — Lindqvist AB"},
+		{"type": "deposit", "direction": "credit", "amount": 50_000000, "currency": "LUX", "status": "completed", "reference": "Received LUX"},
+		{"type": "deposit", "direction": "credit", "amount": 10_000, "currency": "GBP", "status": "completed", "reference": "Incoming Faster Payment — Halden & Co"},
 	}
+	// Crypto seeds need their own headroom so the pre-create hold passes.
+	_ = setBalance(app, acct.Id, "LUX", 210_000000)
 	for _, f := range seedTxns {
 		f["account"] = acct.Id
 		if _, err := newTx(app, f); err != nil {
 			app.Logger().Warn("seed txn failed", "ref", f["reference"], "err", err)
 		}
 	}
+
+	seedBeneficiaries(app, acct.Id)
 
 	// Final, deterministic display balances.
 	_ = setBalance(app, acct.Id, "USD", 1_250_000)  // $12,500.00
@@ -158,8 +226,22 @@ func fundSandbox(app core.App, acct *core.Record, holder string) error {
 	return nil
 }
 
-// issueCardRecord creates a virtual sandbox card and returns it (CVV is not
-// stored — the caller surfaces it once if needed).
+// cardBIN is the Visa sandbox test BIN. It lives in exactly one place; both the
+// masked display and the one-time full PAN derive from it, so the number can
+// never drift between the stored mask and what a reveal shows.
+const cardBIN = "424242424242"
+
+// sandboxPAN is the full 16-digit card number, shown once at issue and never
+// stored. maskedPAN is the persisted display form (only last4 is recoverable).
+func sandboxPAN(last4 string) string {
+	return cardBIN[0:4] + " " + cardBIN[4:8] + " " + cardBIN[8:12] + " " + last4
+}
+func maskedPAN(last4 string) string {
+	return cardBIN[0:4] + " " + cardBIN[4:6] + "•• •••• " + last4
+}
+
+// issueCardRecord creates a virtual sandbox card and returns it (CVV and the
+// full PAN are not stored — the caller surfaces them once if needed).
 func issueCardRecord(app core.App, accountID, holder, currency string) *core.Record {
 	col, err := app.FindCollectionByNameOrId(collections.CardCollectionName)
 	if err != nil {
@@ -173,7 +255,7 @@ func issueCardRecord(app core.App, accountID, holder, currency string) *core.Rec
 	card.Set("brand", "visa")
 	card.Set("type", "virtual")
 	card.Set("last4", last4)
-	card.Set("display", "4242 42•• •••• "+last4)
+	card.Set("display", maskedPAN(last4))
 	card.Set("expMonth", int(now.Month()))
 	card.Set("expYear", now.Year()+3)
 	card.Set("currency", currency)

@@ -157,10 +157,22 @@ function SendForm({
         </select>
       </Field>
 
-      <Field label="Amount" hint={bal ? `Available ${formatMoney(bal.available, currency, decimals)}` : currency ? `No ${currency} balance — convert first` : undefined}>
+      {/* The amount is denominated in the recipient's currency, so the field
+          always names one — the recipient's once chosen, and until then it says
+          where the currency comes from. */}
+      <Field
+        label="Amount"
+        hint={
+          bal ? `Available ${formatMoney(bal.available, currency, decimals)}`
+          : currency ? `No ${currency} balance — convert first`
+          : 'Choose a recipient to set the currency'
+        }
+      >
         <div className="relative">
-          <input className="input pr-16 tnum" inputMode="decimal" placeholder="0.00" value={amount} onChange={(e) => setAmount(e.target.value)} disabled={!ben} />
-          {currency && <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-[var(--color-fg-muted)]">{currency}</span>}
+          <input className="input pl-14 tnum" inputMode="decimal" placeholder="0.00" value={amount} onChange={(e) => setAmount(e.target.value)} disabled={!ben} />
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-medium text-[var(--color-fg-muted)] tabular-nums">
+            {currency || '···'}
+          </span>
         </div>
       </Field>
 

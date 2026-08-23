@@ -91,6 +91,18 @@ Selection: sandbox mode -> sim; live -> `BANK_ISSUER` (default `sfprivate`;
 `SFPRIVATE_API_KEY` (KMS: providers/lux/sfprivate-api-key). Issuer KYC never
 substitutes for platform KYC and vice versa.
 
+### Sandbox seed + card PAN (provision.go)
+
+`ProvisionCustomer` is idempotent and self-healing: `ensureWallets` creates one
+wallet per `SupportedCrypto` asset and backfills any an existing account lacks,
+so upgrading the code fills in per-asset addresses for accounts opened by an
+earlier build. `fundSandbox` seeds a believable book (named-merchant card spend,
+wires, payroll, FX, a crypto receive) and `seedBeneficiaries` seeds a few
+verified recipients so Send opens populated. The Visa test BIN lives in exactly
+one place (`cardBIN`); `maskedPAN`/`sandboxPAN` derive the stored mask and the
+one-time full number from it, and `POST /cards` returns `pan` once (never
+stored — only the mask + last4 persist).
+
 ### Chain backend (chain.go)
 
 `ChainBackend` is the on-chain half of the wallet — the same seam shape as

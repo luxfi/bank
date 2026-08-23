@@ -51,11 +51,22 @@ func (simChain) Address(seed, asset string) string {
 	return evmAddress(seed, asset)
 }
 
-func (simChain) Send(_, _ string, _ int64) (string, error) {
-	return simTxHash(), nil
+func (simChain) Send(asset, _ string, _ int64) (string, error) {
+	return txHashFor(asset), nil
 }
 
-// simTxHash returns a random 0x + 64-hex display hash for a sandbox transaction.
+// txHashFor returns a random display tx hash in the shape of the asset's chain:
+// Bitcoin hashes are 64 bare hex chars; EVM-family hashes are 0x + 64 hex.
+func txHashFor(asset string) string {
+	if strings.ToUpper(asset) == "BTC" {
+		var b [32]byte
+		rand.Read(b[:])
+		return hex.EncodeToString(b[:])
+	}
+	return simTxHash()
+}
+
+// simTxHash returns a random 0x + 64-hex display hash for an EVM transaction.
 func simTxHash() string {
 	var b [32]byte
 	rand.Read(b[:])

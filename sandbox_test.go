@@ -113,3 +113,20 @@ func TestTxHashShape(t *testing.T) {
 		t.Error("simTxHash not random")
 	}
 }
+
+func TestTxHashForAssetShape(t *testing.T) {
+	// EVM-family hashes are 0x + 64 hex; a Bitcoin hash is 64 bare hex chars.
+	for _, asset := range []string{"LUX", "ETH", "DAI"} {
+		h := txHashFor(asset)
+		if len(h) != 66 || h[:2] != "0x" {
+			t.Errorf("txHashFor(%s) = %q, want 0x + 64 hex", asset, h)
+		}
+	}
+	btc := txHashFor("BTC")
+	if len(btc) != 64 {
+		t.Errorf("txHashFor(BTC) = %q, want 64 bare hex chars", btc)
+	}
+	if btc[:2] == "0x" {
+		t.Errorf("txHashFor(BTC) = %q, must not be 0x-prefixed", btc)
+	}
+}

@@ -12,7 +12,10 @@ test.beforeEach(async ({ page }) => {
 test('the wallet names its network and address', async ({ page }) => {
   await expect(page.getByText('lux-testnet', { exact: true })).toBeVisible()
   await expect(page.getByRole('button', { name: /0x[0-9a-fA-F]{4}….{4}/ })).toBeVisible()
-  await expect(page.getByRole('main').getByText('Sandbox', { exact: true })).toBeVisible()
+  // The sandbox flag lives in the shell header, and only there — one badge per
+  // screen, so it reads as a state and not as decoration.
+  await expect(page.getByRole('banner').getByText('Sandbox', { exact: true })).toBeVisible()
+  await expect(page.getByText('Sandbox', { exact: true })).toHaveCount(1)
 
   await shot(page, 'wallet-overview')
 })
@@ -49,6 +52,9 @@ test('sending ETH returns a testnet transaction hash', async ({ page }) => {
   await page.getByRole('button', { name: 'Send', exact: true }).click()
 
   await page.getByRole('combobox').selectOption('ETH')
+  // Nothing to send yet, so there is nothing to click.
+  await expect(page.getByRole('button', { name: 'Send ETH' })).toBeDisabled()
+
   await page.getByPlaceholder('Amount').fill('0.1')
   await page.getByPlaceholder('Destination address').fill(RECIPIENT)
   await page.getByRole('button', { name: 'Send ETH' }).click()

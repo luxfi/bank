@@ -9,7 +9,7 @@ export function Cards() {
   const [cards, setCards] = useState<CardView[] | null>(null)
   const [busy, setBusy] = useState<string | null>(null)
   const [issuing, setIssuing] = useState(false)
-  const [reveal, setReveal] = useState<{ card: CardView; cvv: string } | null>(null)
+  const [reveal, setReveal] = useState<{ card: CardView; cvv: string; pan: string } | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   async function load() {
@@ -96,9 +96,9 @@ export function Cards() {
           <div className="space-y-4">
             <div>
               <h3 className="text-lg font-semibold">Your new card is ready</h3>
-              <p className="text-sm text-[var(--color-fg-muted)] mt-0.5">Save the CVV now — it’s shown only once.</p>
+              <p className="text-sm text-[var(--color-fg-muted)] mt-0.5">Save the number and CVV now — they’re shown once.</p>
             </div>
-            <CardFace card={reveal.card} cvv={reveal.cvv} />
+            <CardFace card={reveal.card} cvv={reveal.cvv} pan={reveal.pan} />
             <Button className="w-full" onClick={() => setReveal(null)}>Done</Button>
           </div>
         </Modal>

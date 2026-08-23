@@ -2,8 +2,14 @@ import type { CardView } from '@/api/client'
 import { useBrand } from '@/hooks/brand'
 
 // A polished virtual-card face — a rich, dark card in both themes, tinted by the
-// brand accent (via .card-face). Sandbox only: the number is masked, no real PAN.
-export function CardFace({ card, cvv }: { card: CardView; cvv?: string }) {
+// brand accent (via .card-face). At rest the number is masked; the one-time
+// reveal that hands over the CVV shows it whole, because a card you cannot read
+// is a card you cannot spend.
+//
+// The full PAN is returned by bankd once at issue time (it owns the number and
+// keeps only the mask + last four); the reveal renders that value in the `pan`
+// slot. Without it, the masked display stands.
+export function CardFace({ card, cvv, pan }: { card: CardView; cvv?: string; pan?: string }) {
   const brand = useBrand()
   const frozen = card.status === 'frozen'
   return (
@@ -32,7 +38,9 @@ export function CardFace({ card, cvv }: { card: CardView; cvv?: string }) {
       <div className="relative">
         {/* chip */}
         <div className="w-9 h-6 rounded-md bg-gradient-to-br from-yellow-200/80 to-yellow-500/60 mb-3" />
-        <p className="font-mono text-lg md:text-xl tracking-[0.15em] text-white tnum">{card.display}</p>
+        <p className="font-mono text-lg md:text-xl tracking-[0.15em] text-white tnum">
+          {pan ?? card.display}
+        </p>
       </div>
 
       <div className="flex items-end justify-between relative">

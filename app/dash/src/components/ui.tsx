@@ -24,6 +24,7 @@ const paths: Record<string, string> = {
   globe: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Zm-9 9h18M12 3c2.5 2.5 3.5 6 3.5 9s-1 6.5-3.5 9c-2.5-2.5-3.5-6-3.5-9s1-6.5 3.5-9Z',
   shield: 'M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3Z',
   bank: 'M3 10h18M5 10v8m4-8v8m6-8v8m4-8v8M12 3 3 8h18l-9-5ZM3 21h18',
+  menu: 'M4 6h16M4 12h16M4 18h16',
 }
 
 export function Icon({ name, className = 'w-5 h-5' }: { name: keyof typeof paths | string; className?: string }) {
@@ -163,13 +164,30 @@ export function Skeleton({ className = '' }: { className?: string }) {
   return <div className={`skeleton ${className}`} />
 }
 
-// -- Asset avatar (fiat flag-ish disc or crypto disc) --
+// -- Asset avatar --
+//
+// Every asset gets a mark of the same weight: LUX its triangle, each coin its
+// own gradient, and fiat the currency's own symbol on one shared blue disc.
+// The symbol comes from the currency itself, so a ledger that adds JPY or CHF
+// draws them without a table to update here.
 
 const assetColors: Record<string, string> = {
   BTC: 'from-amber-400 to-orange-500 text-black',
   ETH: 'from-indigo-400 to-violet-500 text-white',
   DAI: 'from-yellow-300 to-amber-400 text-black',
 }
+
+function currencyMark(code: string): string {
+  try {
+    const parts = new Intl.NumberFormat('en-US', {
+      style: 'currency', currency: code, currencyDisplay: 'narrowSymbol',
+    }).formatToParts(0)
+    return parts.find((p) => p.type === 'currency')?.value ?? code
+  } catch {
+    return code
+  }
+}
+
 export function AssetAvatar({ code, className = 'w-9 h-9' }: { code: string; className?: string }) {
   const c = code.toUpperCase()
   // LUX ▼ mark — theme-aware disc so it reads on both dark and light surfaces.
@@ -188,9 +206,15 @@ export function AssetAvatar({ code, className = 'w-9 h-9' }: { code: string; cla
       </div>
     )
   }
+  const mark = currencyMark(c)
   return (
-    <div className={`${className} rounded-full grid place-items-center bg-[var(--color-surface-3)] border text-xs font-semibold text-[var(--color-fg-muted)]`}>
-      {code.toUpperCase().slice(0, 2)}
+    <div
+      className={`${className} rounded-full grid place-items-center bg-gradient-to-br from-sky-400 to-blue-600 text-white font-semibold ${
+        mark.length > 1 ? 'text-[0.6rem] tracking-tight' : 'text-[0.95rem]'
+      }`}
+      title={c}
+    >
+      {mark}
     </div>
   )
 }

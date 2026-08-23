@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { getWallet, sendCrypto, depositCrypto, type WalletBundle, type Wallet as WalletT, type Balance } from '@/api/client'
 import { useConfig } from '@/lib/config'
-import { Money, Icon, AssetAvatar, SectionHeader, Skeleton, EmptyState, SandboxBadge, formatUSD } from '@/components/ui'
+import { Money, Icon, AssetAvatar, SectionHeader, Skeleton, EmptyState, formatUSD } from '@/components/ui'
 import { shortAddress } from '@/lib/format'
 
 const CRYPTO_DECIMALS = 6
@@ -27,12 +27,11 @@ export function Wallet() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Crypto wallet</h1>
-          <p className="text-sm text-[var(--color-fg-muted)] mt-0.5">{data.network}</p>
-        </div>
-        <SandboxBadge />
+      {/* The shell header already flies the sandbox flag; a second one here
+          just says it twice. */}
+      <div>
+        <h1 className="text-2xl font-semibold tracking-tight">Crypto wallet</h1>
+        <p className="text-sm text-[var(--color-fg-muted)] mt-0.5">{data.network}</p>
       </div>
 
       {/* Wallet hero */}
@@ -122,10 +121,13 @@ function SendPanel({ holdings, onDone }: { holdings: Balance[]; onDone: (b: Bala
   const [result, setResult] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
+  // An amount you cannot send is not a click waiting to be refused: the button
+  // holds until the field carries a positive number.
+  const minor = Math.round(parseFloat(amount) * 10 ** CRYPTO_DECIMALS)
+  const sendable = Number.isFinite(minor) && minor > 0
+
   const submit = async () => {
     setError(null); setResult(null)
-    const minor = Math.round(parseFloat(amount) * 10 ** CRYPTO_DECIMALS)
-    if (!Number.isFinite(minor) || minor <= 0) { setError('Enter an amount'); return }
     setBusy(true)
     try {
       const r = await sendCrypto(asset, minor, toAddress.trim())
@@ -150,7 +152,7 @@ function SendPanel({ holdings, onDone }: { holdings: Balance[]; onDone: (b: Bala
         <input value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="Amount" inputMode="decimal" className="input flex-1" />
       </div>
       <input value={toAddress} onChange={(e) => setToAddress(e.target.value)} placeholder={asset === 'BTC' ? 'Destination address' : 'Destination address (0x…)'} className="input w-full font-mono text-sm" />
-      <button onClick={submit} disabled={busy} className="btn btn-primary w-full justify-center">
+      <button onClick={submit} disabled={busy || !sendable} className="btn btn-primary w-full justify-center">
         {busy ? 'Sending…' : `Send ${asset}`}
       </button>
       {result && <p className="text-xs text-[var(--color-fg-subtle)] font-mono break-all">Sent · {result}</p>}

@@ -10,8 +10,12 @@ import type { IAMConfig } from '@hanzo/iam/browser'
 
 const origin = typeof window !== 'undefined' ? window.location.origin : 'https://lux.financial'
 
+// serverUrl is an ORIGIN, not an endpoint base: the SDK's OIDC_PATHS already
+// carry the `/v1/iam` prefix (authorize → `/v1/iam/oauth/authorize`), so
+// spelling it here too emits `/v1/iam/v1/iam/oauth/authorize`, which IAM
+// answers with its HTML catch-all instead of a login screen.
 export const IAM_CONFIG: IAMConfig = {
-  serverUrl: `${origin}/v1/iam`,
+  serverUrl: origin,
   clientId: 'lux-bank',
   redirectUri: `${origin}/callback`,
   scope: 'openid profile email',

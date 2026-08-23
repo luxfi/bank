@@ -22,7 +22,10 @@ async function serveWallets(page: Page, wallets: typeof WALLETS | null, iban: st
       const body = await res.json()
       await route.fulfill({ response: res, json: { ...body, ...fields } })
     })
-  const set = wallets ? { wallets } : {}
+  // `null` asks for the older bankd shape — one account address and no
+  // per-asset set. Spreading `{}` left the seeded set in place instead, so the
+  // key is spelled out and dropped on the way through JSON.
+  const set = { wallets: wallets ?? undefined }
   await patch('**/v1/bank/wallet', set)
   await page.route('**/v1/bank/overview', async (route) => {
     const res = await route.fetch()

@@ -213,7 +213,7 @@ func handleCryptoDeposit(app core.App) func(*core.RequestEvent) error {
 		if minorToUSD(req.Amount, asset) > 25_000 {
 			return apis.NewBadRequestError("faucet limit is $25,000 equivalent per request", nil)
 		}
-		hash := simTxHash()
+		hash := txHashFor(asset)
 		tx, err := newTx(app, map[string]any{
 			"account": acct.Id, "type": "deposit", "direction": "credit",
 			"amount": req.Amount, "currency": asset, "status": "pending",

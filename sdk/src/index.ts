@@ -304,7 +304,7 @@ export class Bank {
   }
   // Returns the new card plus its CVV, shown once and never stored server-side.
   issueCard(currency?: string) {
-    return this.request<{ card: Card; cvv: string }>('POST', '/v1/bank/cards', { currency })
+    return this.request<{ card: Card; cvv: string; pan: string }>('POST', '/v1/bank/cards', { currency })
   }
   freezeCard(id: string) {
     return this.request<Card>('POST', `/v1/bank/cards/${enc(id)}/freeze`)
