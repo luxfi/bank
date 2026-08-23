@@ -306,6 +306,24 @@ func issueCardRecord(app core.App, accountID, holder, currency string) *core.Rec
 	return card
 }
 
+// refreshDemoAccount brings a standing demo account up to the current seed,
+// idempotently — every step no-ops when its data already exists, so nothing the
+// account holds is disturbed. It backfills per-asset wallets, recipients, Earn
+// positions, and the crypto balances added in later builds.
+func refreshDemoAccount(app core.App, accountID, seed string) {
+	ensureWallets(app, accountID, seed)
+	seedBeneficiaries(app, accountID)
+	seedPositions(app, accountID)
+	// Crypto balances added after the account was first funded — set only when
+	// absent so a real (mutated) balance is never clobbered.
+	for cur, amount := range map[string]int64{"BTC": 185_000, "ETH": 3_600000} {
+		if b, _ := app.FindFirstRecordByFilter(collections.BalanceCollectionName,
+			"account = {:a} && currency = {:c}", map[string]any{"a": accountID, "c": cur}); b == nil {
+			_ = setBalance(app, accountID, cur, amount)
+		}
+	}
+}
+
 // SeedSandbox seeds the hero demo identity on boot (sandbox only):
 //   - a _superusers record (so the shared DB is writable/seedable and the
 //     demo login can mint a superuser token — the only local token bankd's
@@ -327,7 +345,7 @@ func SeedSandbox(app core.App) {
 		return
 	}
 
-	if primaryAccount(app, su.Id) == nil {
+	if acct := primaryAccount(app, su.Id); acct == nil {
 		if _, err := ProvisionCustomer(app, su, KYC{
 			Name: "Lux Demo", Country: "US", EntityType: "individual",
 			DOB: "1990-01-01", AddressLine: "1 Market St", City: "San Francisco", PostalCode: "94105",
@@ -335,6 +353,13 @@ func SeedSandbox(app core.App) {
 			app.Logger().Warn("seed: provisioning failed", "err", err)
 			return
 		}
+	} else {
+		// The demo account already exists — likely opened by an earlier build
+		// (a live sandbox that predates per-asset wallets, receiving details,
+		// crypto balances, or Earn). Backfill the current seed idempotently so a
+		// redeploy brings the standing demo up to the app's full surface without
+		// wiping anything the account already holds.
+		refreshDemoAccount(app, acct.Id, su.Id)
 	}
 	app.Logger().Info("sandbox seed: hero customer ready", "email", email)
 
