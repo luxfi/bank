@@ -6,6 +6,7 @@ import { Button, Icon, AssetAvatar, PageHeader, SectionHeader, EmptyState, Skele
 import { TxnRow } from '@/components/TxnRow'
 import { formatMoney, toMinor } from '@/lib/format'
 import { pair, type Entry } from '@/lib/pair'
+import { View } from '@/gui'
 
 export function Exchange() {
   const { overview, refresh } = useOverview()
@@ -76,71 +77,78 @@ export function Exchange() {
   }
 
   return (
-    <div className="space-y-6 md:space-y-8">
+    <View className="gap-6 md:gap-8" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)' }}>
       <PageHeader title="Exchange" subtitle="Convert between currencies and crypto at sandbox rates." />
 
       {/* Two columns only once both of them fit: the converter needs its width,
           and a conversion line squeezed beside it wraps its own amounts. */}
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,28rem)_minmax(0,1fr)] items-start">
-      <div className="min-w-0 space-y-4">
-      <div className="card p-5 space-y-3">
+      <View
+        className="gap-6 grid-cols-[minmax(0,1fr)] xl:grid-cols-[minmax(0,28rem)_minmax(0,1fr)]"
+        style={{ display: 'grid', alignItems: 'start' }}
+      >
+      <View className="min-w-0" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 16 }}>
+      <View className="card p-5" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 12 }}>
         {/* From */}
-        <div className="card-2 p-4">
-          <div className="flex items-center justify-between mb-2">
+        <View className="card-2 p-4" style={{ display: 'grid', gap: 8 }}>
+          <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', alignItems: 'center' }}>
             <span className="label">You pay</span>
             {fromBal && <button onClick={() => edit(setAmount)(String(fromBal.available / 10 ** fromBal.decimals))} className="text-xs text-[var(--color-fg-muted)] hover:text-[var(--color-fg)]">Max {formatMoney(fromBal.available, from, fromBal.decimals)}</button>}
-          </div>
-          <div className="flex items-center gap-3">
-            <input className="flex-1 min-w-0 bg-transparent text-2xl font-semibold tnum outline-none placeholder:text-[var(--color-fg-subtle)]" inputMode="decimal" placeholder="0.00" value={amount} onChange={(e) => edit(setAmount)(e.target.value)} />
+          </View>
+          <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', alignItems: 'center', gap: 12 }}>
+            <input className="w-full min-w-0 bg-transparent text-2xl font-semibold tnum outline-none placeholder:text-[var(--color-fg-subtle)]" inputMode="decimal" placeholder="0.00" value={amount} onChange={(e) => edit(setAmount)(e.target.value)} />
             <AssetPicker value={from} onChange={edit(setFrom)} assets={assets} exclude={to} />
-          </div>
-        </div>
+          </View>
+        </View>
 
         {/* Flip */}
-        <div className="flex justify-center -my-1.5">
+        <View className="-my-1.5" style={{ display: 'grid', justifyItems: 'center' }}>
           <button onClick={flip} className="tile w-9 h-9 rounded-full grid place-items-center bg-[var(--color-surface-3)] border z-10" aria-label="Flip currencies">
             <Icon name="swap" className="w-4 h-4 rotate-90" />
           </button>
-        </div>
+        </View>
 
         {/* To */}
-        <div className="card-2 p-4">
-          <div className="flex items-center justify-between mb-2">
+        <View className="card-2 p-4" style={{ display: 'grid', gap: 8 }}>
+          <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', alignItems: 'center' }}>
             <span className="label">You receive</span>
             {quoting && <span className="text-xs text-[var(--color-fg-subtle)]">Fetching rate…</span>}
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="flex-1 min-w-0 truncate text-2xl font-semibold tnum text-[var(--color-fg)]">
+          </View>
+          <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', alignItems: 'center', gap: 12 }}>
+            {/* Blockified by the grid, so it truncates like the block it replaced. */}
+            <span className="truncate text-2xl font-semibold tnum text-[var(--color-fg)]">
               {quote && fromMinor ? formatMoney(quote.toAmount, to, quote.toDecimals).replace(` ${to}`, '') : '0.00'}
-            </div>
+            </span>
             <AssetPicker value={to} onChange={edit(setTo)} assets={assets} exclude={from} />
-          </div>
-        </div>
+          </View>
+        </View>
 
         {quote && (
-          <div className="flex items-center justify-between px-1 text-xs text-[var(--color-fg-muted)]">
+          <View className="px-1 text-xs text-[var(--color-fg-muted)]" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', alignItems: 'center' }}>
             <span>Rate</span>
             <span className="tnum">1 {from} ≈ {quote.rate.toFixed(quote.rate < 1 ? 4 : 2)} {to}</span>
-          </div>
+          </View>
         )}
 
         {insufficient && fromMinor > 0 && <p className="text-sm text-[var(--color-negative)]">Insufficient {from} balance.</p>}
         {error && <p className="text-sm text-[var(--color-negative)]">{error}</p>}
         {done && (
-          <div className="flex items-center gap-2 text-sm text-[var(--color-positive)]"><Icon name="check" className="w-4 h-4" />{done}</div>
+          <View className="text-sm text-[var(--color-positive)]" style={{ display: 'grid', gridTemplateColumns: 'auto minmax(0,1fr)', alignItems: 'center', gap: 8 }}>
+            <Icon name="check" className="w-4 h-4" />
+            <span>{done}</span>
+          </View>
         )}
 
         <Button className="w-full" onClick={execute} loading={executing} disabled={!quote || !fromMinor || insufficient}>
           {from === to ? 'Choose different currencies' : `Convert ${from} → ${to}`}
         </Button>
-      </div>
+      </View>
 
       <p className="text-center text-[0.7rem] text-[var(--color-fg-subtle)]">Sandbox rates include a 0.2% demo spread. Settles instantly.</p>
-      </div>
+      </View>
 
-      <div className="min-w-0"><Conversions key={done ?? 'idle'} /></div>
-      </div>
-    </div>
+      <View className="min-w-0" style={{ display: 'grid' }}><Conversions key={done ?? 'idle'} /></View>
+      </View>
+    </View>
   )
 }
 
@@ -158,13 +166,13 @@ function Conversions() {
     <section>
       <SectionHeader title="Recent conversions" />
       {entries === null ? (
-        <div className="space-y-2">{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-16 rounded-xl" />)}</div>
+        <View style={{ display: 'grid', gap: 8 }}>{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-16 rounded-xl" />)}</View>
       ) : entries.length === 0 ? (
         <EmptyState icon="swap" title="No conversions yet" body="Trades you make here are listed with the rate you got." />
       ) : (
-        <div className="card divide-y divide-[color:var(--color-border)] overflow-hidden">
+        <View className="card divide-y divide-[color:var(--color-border)] overflow-hidden" style={{ display: 'grid' }}>
           {entries.slice(0, 8).map((e) => <TxnRow key={e.key} txn={e.txn} into={e.into} />)}
-        </div>
+        </View>
       )}
     </section>
   )
@@ -172,7 +180,10 @@ function Conversions() {
 
 function AssetPicker({ value, onChange, assets, exclude }: { value: string; onChange: (v: string) => void; assets: string[]; exclude?: string }) {
   return (
-    <div className="relative shrink-0 flex items-center gap-2 rounded-full bg-[var(--color-surface-3)] border pl-1.5 pr-2 py-1.5">
+    <View
+      className="relative rounded-full bg-[var(--color-surface-3)] border pl-1.5 pr-2 py-1.5"
+      style={{ display: 'grid', gridAutoFlow: 'column', alignItems: 'center', gap: 8 }}
+    >
       <AssetAvatar code={value} className="w-6 h-6" />
       <select
         value={value}
@@ -181,6 +192,6 @@ function AssetPicker({ value, onChange, assets, exclude }: { value: string; onCh
       >
         {assets.filter((a) => a !== exclude).map((a) => <option key={a} value={a}>{a}</option>)}
       </select>
-    </div>
+    </View>
   )
 }

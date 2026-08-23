@@ -3,6 +3,7 @@ import { useBrand } from '@/hooks/brand'
 import { AssetRow, PageHeader, SectionHeader, StatusBadge, Skeleton, formatUSD, EmptyState } from '@/components/ui'
 import { Coordinates } from '@/components/Coordinates'
 import { capitalize } from '@/lib/format'
+import { View } from '@/gui'
 
 export function Accounts() {
   const { overview, loading } = useOverview()
@@ -15,32 +16,32 @@ export function Accounts() {
   const totalUsd = balances.reduce((s, b) => s + b.valueUsd, 0)
 
   return (
-    <div className="space-y-6 md:space-y-8">
+    <View className="gap-6 md:gap-8" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)' }}>
       <PageHeader title="Accounts" subtitle={`One multi-currency account, ${balances.length} balances.`} />
 
-      <div className="card p-5">
-        <div className="flex items-start justify-between gap-3 flex-wrap">
-          <div className="min-w-0">
+      <View className="card p-5" style={{ display: 'grid', gap: 16 }}>
+        <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', alignItems: 'start', gap: 12 }}>
+          <View style={{ display: 'grid' }}>
             <p className="font-medium text-lg truncate">{a.entityName === 'Lux Demo' ? brand.demoName : a.entityName}</p>
             <p className="text-sm text-[var(--color-fg-subtle)] capitalize">{a.entityType} · {a.country}</p>
-          </div>
-          <div className="flex gap-2 shrink-0">
+          </View>
+          <View style={{ display: 'grid', gridAutoFlow: 'column', alignItems: 'start', gap: 8 }}>
             <StatusBadge status={a.status} />
             <StatusBadge status={a.kycStatus} />
-          </div>
-        </div>
-        <div className="mt-4 pt-4 border-t border-[color:var(--color-border)]">
-          <p className="label mb-3">Receive money · {a.currency}</p>
+          </View>
+        </View>
+        <View className="pt-4 border-t border-[color:var(--color-border)]" style={{ display: 'grid', gap: 12 }}>
+          <p className="label">Receive money · {a.currency}</p>
           <Coordinates account={a} />
-        </div>
-      </div>
+        </View>
+      </View>
 
       <section>
         <SectionHeader title="Balances" action={<span className="text-sm tnum text-[var(--color-fg-muted)]">{formatUSD(totalUsd)}</span>} />
         {balances.length === 0 ? (
           <EmptyState icon="bank" title="No balances yet" body="Fund the account or convert into a currency to see it here." />
         ) : (
-        <div className="card divide-y divide-[color:var(--color-border)] overflow-hidden">
+        <View className="card divide-y divide-[color:var(--color-border)] overflow-hidden" style={{ display: 'grid' }}>
           {balances.map((b) => (
             <AssetRow
               key={b.currency}
@@ -51,9 +52,9 @@ export function Accounts() {
               valueUsd={b.valueUsd}
             />
           ))}
-        </div>
+        </View>
         )}
       </section>
-    </div>
+    </View>
   )
 }

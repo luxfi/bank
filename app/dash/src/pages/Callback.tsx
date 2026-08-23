@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router'
 import { useAuth } from '@/hooks/useAuth'
 import { Wordmark } from '@/components/Brand'
 import { Button, Spinner } from '@/components/ui'
+import { View } from '@/gui'
 
 // OIDC redirect target. The IAM SDK exchanges the authorization code for tokens
 // (PKCE), then we land the customer in the app. Onboarding (sandbox KYC +
@@ -22,9 +23,9 @@ export function Callback() {
   }, [handleCallback, navigate])
 
   return (
-    <div className="app-ambience min-h-screen grid place-items-center px-5">
-      <div className="relative z-10 w-full max-w-sm card p-8 text-center space-y-4">
-        <Wordmark className="justify-center text-lg" />
+    <View className="app-ambience px-5" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', placeItems: 'center', minHeight: '100vh' }}>
+      <View className="relative z-10 w-full max-w-sm card p-8 text-center" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', gap: 16 }}>
+        <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', justifyItems: 'center' }}><Wordmark className="text-lg" /></View>
         {error ? (
           <>
             <h1 className="text-lg font-semibold">Sign-in failed</h1>
@@ -32,11 +33,15 @@ export function Callback() {
             <Link to="/login"><Button className="w-full">Try again</Button></Link>
           </>
         ) : (
-          <div className="flex items-center justify-center gap-3 text-sm text-[var(--color-fg-muted)] py-4">
-            <Spinner /> Signing you in…
-          </div>
+          <View
+            className="text-sm text-[var(--color-fg-muted)] py-4"
+            style={{ display: 'grid', gridAutoFlow: 'column', justifyContent: 'center', alignItems: 'center', gap: 12 }}
+          >
+            <Spinner />
+            <span>Signing you in…</span>
+          </View>
         )}
-      </div>
-    </div>
+      </View>
+    </View>
   )
 }

@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { stack } from '@/components/ui'
+import { View } from '@/gui'
 
 // The mix behind the headline figure: the total says how much, this says what
 // of. One bar, one line per asset, heaviest first — weight is carried by the
@@ -34,18 +36,24 @@ export function Allocation({ items, className = '' }: { items: Slice[]; classNam
   const restUsd = rest.reduce((s, i) => s + i.valueUsd, 0)
 
   return (
-    <div className={className}>
+    <View className={className} style={stack(12)}>
+      {/* Each holding is a track sized by what it is worth — the bar is the
+          allocation, not a picture of it. */}
       <div
-        className="flex h-1.5 gap-[3px]"
+        className="h-1.5"
         role="img"
         aria-label={`Allocation: ${sorted.map((s) => `${s.code} ${label(s.valueUsd)}`).join(', ')}`}
+        style={{
+          display: 'grid',
+          gridTemplateColumns: sorted.map((s) => `minmax(0, ${s.valueUsd}fr)`).join(' '),
+          gap: 3,
+        }}
       >
         {sorted.map((s, i) => (
           <span
             key={s.code}
             title={`${s.code} · ${label(s.valueUsd)}`}
             style={{
-              flex: `${s.valueUsd} 1 0%`,
               background: 'var(--color-fg)',
               opacity: hot && hot !== s.code ? shade(i) * 0.3 : shade(i),
             }}
@@ -54,38 +62,42 @@ export function Allocation({ items, className = '' }: { items: Slice[]; classNam
         ))}
       </div>
 
-      <ul className="mt-3 grid grid-cols-2 gap-x-5 sm:grid-cols-4 md:grid-cols-1">
+      <ul className="grid grid-cols-2 gap-x-5 sm:grid-cols-4 md:grid-cols-1">
         {lead.map((s, i) => (
           <li key={s.code}>
             <div
               onMouseEnter={() => setHot(s.code)}
               onMouseLeave={() => setHot(null)}
-              className="row -mx-1.5 flex items-center gap-2 rounded-md px-1.5 py-[3px]"
+              className="row -mx-1.5 rounded-md px-1.5 py-[3px]"
+              style={legendRow}
             >
               <span
-                className="w-1.5 h-1.5 shrink-0 rounded-full"
+                className="w-1.5 h-1.5 rounded-full"
                 style={{ background: 'var(--color-fg)', opacity: shade(i) }}
               />
               <span className="text-xs font-medium">{s.code}</span>
-              <span className="ml-auto text-xs tnum text-[var(--color-fg-subtle)]">{label(s.valueUsd)}</span>
+              <span className="text-xs tnum text-[var(--color-fg-subtle)]">{label(s.valueUsd)}</span>
             </div>
           </li>
         ))}
         {rest.length > 0 && (
           <li>
-            <div className="-mx-1.5 flex items-center gap-2 rounded-md px-1.5 py-[3px]">
+            <View className="-mx-1.5 rounded-md px-1.5 py-[3px]" style={legendRow}>
               <span
-                className="w-1.5 h-1.5 shrink-0 rounded-full"
+                className="w-1.5 h-1.5 rounded-full"
                 style={{ background: 'var(--color-fg)', opacity: shade(lead.length) }}
               />
               <span className="text-xs font-medium text-[var(--color-fg-muted)]">
                 {rest.length} more
               </span>
-              <span className="ml-auto text-xs tnum text-[var(--color-fg-subtle)]">{label(restUsd)}</span>
-            </div>
+              <span className="text-xs tnum text-[var(--color-fg-subtle)]">{label(restUsd)}</span>
+            </View>
           </li>
         )}
       </ul>
-    </div>
+    </View>
   )
 }
+
+// mark · code · share — the share sits at the far edge of its own row.
+const legendRow = { display: 'grid', gridTemplateColumns: 'auto 1fr auto', alignItems: 'center', gap: 8 } as const

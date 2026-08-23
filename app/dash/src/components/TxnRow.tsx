@@ -1,6 +1,7 @@
 import type { Txn } from '@/api/client'
-import { Icon, Money } from '@/components/ui'
+import { Icon, Money, center, stack } from '@/components/ui'
 import { relativeTime, capitalize } from '@/lib/format'
+import { View } from '@/gui'
 
 const typeIcon: Record<string, string> = {
   deposit: 'arrowDown',
@@ -18,19 +19,19 @@ export function TxnRow({ txn, into }: { txn: Txn; into?: Txn }) {
   const icon = into ? 'swap' : typeIcon[txn.type] || (credit ? 'arrowDown' : 'arrowUp')
   const title = txn.reference || capitalize(txn.type)
   return (
-    <div className="row flex items-center gap-3 px-4 py-3.5">
-      <span className={`w-9 h-9 shrink-0 rounded-full grid place-items-center border ${credit && !into ? 'text-[var(--color-positive)] bg-[color:rgba(52,211,153,0.08)]' : 'bg-[var(--color-surface-2)] text-[var(--color-fg-muted)]'}`}>
+    <View className="row px-4 py-3.5" style={{ display: 'grid', gridTemplateColumns: 'auto 1fr auto', alignItems: 'center', gap: 12 }}>
+      <span className={`w-9 h-9 rounded-full border ${credit && !into ? 'text-[var(--color-positive)] bg-[color:rgba(52,211,153,0.08)]' : 'bg-[var(--color-surface-2)] text-[var(--color-fg-muted)]'}`} style={center}>
         <Icon name={icon} className="w-4 h-4" />
       </span>
-      <div className="min-w-0 flex-1">
+      <View className="min-w-0" style={stack()}>
         <p className="text-sm font-medium truncate">{title}</p>
         {/* One line, always: the kind and the age of a movement should not
             reflow the row it describes. */}
         <p className="text-xs text-[var(--color-fg-subtle)] truncate">
           {capitalize(into ? 'conversion' : txn.type)} · {relativeTime(txn.created)}
         </p>
-      </div>
-      <div className="text-right shrink-0">
+      </View>
+      <View className="text-right" style={stack()}>
         {/* Two amounts on one line need the room; on a narrow screen they give
             some back so the reference beside them stays readable. */}
         <p className={`font-medium whitespace-nowrap ${into ? 'text-[0.8rem] sm:text-sm' : 'text-sm'}`}>
@@ -45,7 +46,7 @@ export function TxnRow({ txn, into }: { txn: Txn; into?: Txn }) {
         {txn.status !== 'completed' && (
           <p className="text-[0.68rem] text-[var(--color-fg-subtle)] capitalize">{txn.status}</p>
         )}
-      </div>
-    </div>
+      </View>
+    </View>
   )
 }

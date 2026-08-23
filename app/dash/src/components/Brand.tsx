@@ -1,4 +1,5 @@
 import { useBrand } from '@/hooks/brand'
+import { pill } from '@/components/ui'
 
 // Lux ▼ mark — the downward triangle. Inherits currentColor.
 export function Triangle({ className = 'h-6 w-6' }: { className?: string }) {
@@ -19,14 +20,17 @@ export function Wordmark({ className = '', showLabel = true }: { className?: str
     // Intrinsic large size + heavy weight so the acm wordmark reads as the brand
     // (callers pass no text-size → it must not inherit a tiny ~14px).
     return (
-      <span className={`inline-flex items-center text-xl font-extrabold leading-none tracking-tight lowercase ${className}`}>
+      <span
+        className={`text-xl font-extrabold leading-none tracking-tight lowercase ${className}`}
+        style={pill(0, 'start')}
+      >
         {brand.wordmarkLabel}
       </span>
     )
   }
 
   return (
-    <span className={`inline-flex items-center gap-2 font-semibold tracking-tight ${className}`}>
+    <span className={`font-semibold tracking-tight ${className}`} style={pill(8, 'start')}>
       <Triangle className="h-[1.1em] w-[1.1em]" />
       {showLabel && <span>{brand.wordmarkLabel}</span>}
     </span>

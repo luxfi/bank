@@ -1,12 +1,13 @@
-import { useState } from 'react'
+import { useState, type CSSProperties } from 'react'
 import { NavLink, Outlet, Link, useNavigate, useLocation } from 'react-router'
 import { useAuth } from '@/hooks/useAuth'
 import { useBrand } from '@/hooks/brand'
 import { REAL_DEMO_EMAIL } from '@/lib/brand'
 import { OverviewProvider, useOverview } from '@/hooks/overview'
 import { Wordmark } from '@/components/Brand'
-import { Button, EmptyState, Icon, SandboxBadge, Spinner } from '@/components/ui'
+import { Button, EmptyState, Icon, SandboxBadge, Spinner, line, split, stack } from '@/components/ui'
 import { Onboarding } from '@/pages/Onboarding'
+import { View } from '@/gui'
 
 const nav = [
   { to: '/app', label: 'Home', icon: 'home', primary: true },
@@ -32,27 +33,27 @@ function Shell() {
 
   if (loading) {
     return (
-      <div className="min-h-screen grid place-items-center text-[var(--color-fg-subtle)]">
-        <div className="flex items-center gap-3 text-sm">
-          <Spinner /> Loading your account…
-        </div>
-      </div>
+      <View className="min-h-screen text-[var(--color-fg-subtle)]" style={{ display: 'grid', placeItems: 'center' }}>
+        <View className="text-sm" style={line(12)}>
+          <Spinner /><span>Loading your account…</span>
+        </View>
+      </View>
     )
   }
   // Nothing came back: show why, and a way out. Without this every page below
   // renders its own blank frame.
   if (!overview) {
     return (
-      <div className="min-h-screen grid place-items-center px-6">
-        <div className="w-full max-w-sm">
+      <View className="min-h-screen px-6" style={{ display: 'grid', placeItems: 'center' }}>
+        <View className="w-full max-w-sm" style={stack()}>
           <EmptyState
             icon="shield"
             title="Could not load your account"
             body={error ?? 'The bank did not answer.'}
             action={<Button onClick={() => void refresh()}>Try again</Button>}
           />
-        </div>
-      </div>
+        </View>
+      </View>
     )
   }
   if (!overview.onboarded) {
@@ -81,52 +82,67 @@ function AppShell() {
   }
 
   return (
-    <div className="app-ambience min-h-screen">
-      <div className="relative z-10 flex">
-        {/* Desktop sidebar */}
-        <aside className="hidden lg:flex fixed inset-y-0 left-0 w-60 flex-col border-r border-[color:var(--color-border)] bg-[var(--color-surface)]/60 backdrop-blur-xl">
-          <div className="h-16 flex items-center px-5">
+    <View className="app-ambience min-h-screen" style={stack()}>
+      {/* The sidebar is fixed to the viewport, so the shell is one column and
+          the main column simply clears it at lg. */}
+      <View className="relative z-10" style={stack()}>
+        {/* Desktop sidebar. Its display is responsive, so it stays in the class
+            names (`hidden lg:grid`) — an inline display would beat `hidden`. */}
+        <aside
+          className="hidden lg:grid fixed inset-y-0 left-0 w-60 border-r border-[color:var(--color-border)] bg-[var(--color-surface)]/60 backdrop-blur-xl"
+          style={{ gridTemplateRows: 'auto 1fr auto' }}
+        >
+          <View className="px-5" style={{ display: 'grid', alignItems: 'center', justifyItems: 'start', height: 64 }}>
             <Link to="/app"><Wordmark /></Link>
-          </div>
-          <nav aria-label="Sections" className="flex-1 px-3 space-y-1">
+          </View>
+          <nav aria-label="Sections" className="px-3" style={{ ...stack(4), alignContent: 'start' }}>
             {nav.map((n) => (
-              <NavLink key={n.to} to={n.to} end={n.to === '/app'} className={sideLink}>
+              <NavLink key={n.to} to={n.to} end={n.to === '/app'} className={sideLink} style={navRow}>
                 <Icon name={n.icon} className="w-[18px] h-[18px]" />
                 {n.label}
               </NavLink>
             ))}
           </nav>
-          <div className="p-3 border-t border-[color:var(--color-border)]">
-            <div className="px-2 py-1.5">
+          <View className="p-3 border-t border-[color:var(--color-border)]" style={stack(4)}>
+            <View className="px-2 py-1.5" style={stack()}>
               <p className="text-sm font-medium truncate">{name}</p>
               <p className="text-xs text-[var(--color-fg-subtle)] truncate">{email}</p>
-            </div>
-            <button onClick={signOut} className="mt-1 w-full btn btn-ghost justify-start">
+            </View>
+            <button onClick={signOut} className="w-full btn btn-ghost text-left" style={navRow}>
               <Icon name="logout" className="w-[18px] h-[18px]" /> Sign out
             </button>
-          </div>
+          </View>
         </aside>
 
         {/* Main */}
-        <div className="flex-1 lg:ml-60 min-w-0">
+        <View className="lg:ml-60 min-w-0" style={stack()}>
           {/* Top bar */}
-          <header className="sticky top-0 z-20 h-14 lg:h-16 flex items-center justify-between gap-3 px-4 md:px-8 border-b border-[color:var(--color-border)] bg-[var(--color-bg)]/80 backdrop-blur-xl">
+          <header
+            className="sticky top-0 z-20 h-14 lg:h-16 px-4 md:px-8 border-b border-[color:var(--color-border)] bg-[var(--color-bg)]/80 backdrop-blur-xl"
+            style={split(12)}
+          >
             <div className="lg:hidden"><Link to="/app"><Wordmark /></Link></div>
             <div className="hidden lg:block text-sm text-[var(--color-fg-muted)] truncate">{name}</div>
-            <div className="flex items-center gap-2">
+            <View style={line(8)}>
               <SandboxBadge />
               <button onClick={signOut} className="lg:hidden btn btn-ghost px-2" aria-label="Sign out">
                 <Icon name="logout" className="w-[18px] h-[18px]" />
               </button>
-            </div>
+            </View>
           </header>
 
-          {/* Keyed on the route so each screen arrives instead of cutting in. */}
-          <main key={pathname} className="enter px-4 md:px-8 py-5 md:py-8 pb-28 lg:pb-10 max-w-5xl mx-auto">
+          {/* Keyed on the route so each screen arrives instead of cutting in.
+              A grid item is centred by the track, not by auto margins — those
+              would drop it to its content width. */}
+          <main
+            key={pathname}
+            className="enter px-4 md:px-8 py-5 md:py-8 pb-28 lg:pb-10 w-full max-w-5xl"
+            style={{ justifySelf: 'center' }}
+          >
             <Outlet />
           </main>
-        </div>
-      </div>
+        </View>
+      </View>
 
       {/* Mobile: "More" sheet — reveals the pages that don't fit the tab bar
           (Accounts, Activity) plus Sign out, so every screen is reachable. */}
@@ -137,20 +153,23 @@ function AppShell() {
             aria-label="More"
             className="absolute bottom-[calc(4.25rem+env(safe-area-inset-bottom))] inset-x-3 rounded-2xl border border-[color:var(--color-border)] bg-[var(--color-surface)] shadow-xl overflow-hidden"
             onClick={(e) => e.stopPropagation()}
+            style={stack()}
           >
             {nav.filter((n) => !n.primary).map((n) => (
               <NavLink
                 key={n.to}
                 to={n.to}
                 onClick={() => setMoreOpen(false)}
-                className="row flex items-center gap-3 px-4 py-3.5 text-sm font-medium border-b border-[color:var(--color-border)] text-[var(--color-fg)]"
+                className="row px-4 py-3.5 text-sm font-medium border-b border-[color:var(--color-border)] text-[var(--color-fg)]"
+                style={navRow}
               >
                 <Icon name={n.icon} className="w-[18px] h-[18px]" /> {n.label}
               </NavLink>
             ))}
             <button
               onClick={() => { setMoreOpen(false); signOut() }}
-              className="row flex w-full items-center gap-3 px-4 py-3.5 text-sm font-medium text-[var(--color-fg-muted)]"
+              className="row w-full px-4 py-3.5 text-sm font-medium text-[var(--color-fg-muted)]"
+              style={navRow}
             >
               <Icon name="logout" className="w-[18px] h-[18px]" /> Sign out
             </button>
@@ -162,35 +181,41 @@ function AppShell() {
       <nav aria-label="Primary" className="lg:hidden fixed bottom-0 inset-x-0 z-30 border-t border-[color:var(--color-border)] bg-[var(--color-bg)]/90 backdrop-blur-xl pb-[env(safe-area-inset-bottom)]">
         {/* The track is sized from the nav itself (+1 for More), so adding a
             destination never leaves a column count behind to fix by hand. */}
-        <div
-          className="grid"
-          style={{ gridTemplateColumns: `repeat(${nav.filter((n) => n.primary).length + 1}, minmax(0, 1fr))` }}
+        <View
+          style={{
+            display: 'grid',
+            gridTemplateColumns: `repeat(${nav.filter((n) => n.primary).length + 1}, minmax(0, 1fr))`,
+          }}
         >
           {nav.filter((n) => n.primary).map((n) => (
-            <NavLink key={n.to} to={n.to} end={n.to === '/app'} className={tabLink}>
+            <NavLink key={n.to} to={n.to} end={n.to === '/app'} className={tabLink} style={tabCell}>
               <Icon name={n.icon} className="w-[22px] h-[22px]" />
               <span className="text-[0.62rem] font-medium max-w-full truncate px-0.5">{n.label}</span>
             </NavLink>
           ))}
-          <button type="button" onClick={() => setMoreOpen((v) => !v)} className={tabLink({ isActive: moreOpen })}>
+          <button type="button" onClick={() => setMoreOpen((v) => !v)} className={tabLink({ isActive: moreOpen })} style={tabCell}>
             <Icon name="menu" className="w-[22px] h-[22px]" />
             <span className="text-[0.62rem] font-medium max-w-full truncate px-0.5">More</span>
           </button>
-        </div>
+        </View>
       </nav>
-    </div>
+    </View>
   )
 }
 
+// A navigation line: mark then label, packed to the start of the row.
+const navRow: CSSProperties = { ...line(12), width: '100%' }
+
+// A tab cell: mark over label, centred in its column.
+const tabCell: CSSProperties = { display: 'grid', justifyItems: 'center', alignContent: 'center', gap: 4 }
+
 function sideLink({ isActive }: { isActive: boolean }) {
-  return `nav-link flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium ${
+  return `nav-link rounded-xl px-3 py-2.5 text-sm font-medium ${
     isActive
       ? 'bg-[var(--color-surface-2)] text-[var(--color-fg)]'
       : 'text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] hover:bg-[var(--color-surface-2)]/60'
   }`
 }
 function tabLink({ isActive }: { isActive: boolean }) {
-  return `tab min-w-0 flex flex-col items-center justify-center gap-1 py-2.5 ${
-    isActive ? 'text-[var(--color-fg)]' : 'text-[var(--color-fg-subtle)]'
-  }`
+  return `tab min-w-0 py-2.5 ${isActive ? 'text-[var(--color-fg)]' : 'text-[var(--color-fg-subtle)]'}`
 }

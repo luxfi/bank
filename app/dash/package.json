@@ -12,13 +12,17 @@
   "dependencies": {
     "@fontsource-variable/geist": "^5.2.9",
     "@fontsource-variable/geist-mono": "^5.2.8",
+    "@hanzo/gui": "8.1.1",
     "@hanzo/iam": "^0.11.0",
+    "@hanzogui/config": "8.1.1",
+    "@luxfi/bank": "file:../../sdk",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router": "^7.0.0",
-    "@luxfi/bank": "file:../../sdk"
+    "react-native-web": "^0.21.2",
+    "react-router": "^7.0.0"
   },
   "devDependencies": {
+    "@hanzogui/vite-plugin": "8.1.1",
     "@playwright/test": "^1.62.1",
     "@tailwindcss/vite": "^4.0.0",
     "@types/react": "^19.0.0",

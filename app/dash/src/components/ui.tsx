@@ -1,8 +1,33 @@
-import { useState, type ReactNode, type ButtonHTMLAttributes } from 'react'
+import { useState, type ReactNode, type ButtonHTMLAttributes, type CSSProperties } from 'react'
 import { createPortal } from 'react-dom'
 import { Link } from 'react-router'
 import { formatMoney, formatUSD, capitalize } from '@/lib/format'
 import { useConfig } from '@/lib/config'
+import { View } from '@/gui'
+
+// -- Layout vocabulary --
+//
+// Every arrangement in the product is one of a handful of grids, so they are
+// named once here rather than spelled out at each call site. `line` is a row of
+// items along a track; `split` pushes the last item to the far edge; `stack` is
+// vertical rhythm. Colour and type stay in the class names.
+
+export const line = (gap: number, align: CSSProperties['alignItems'] = 'center'): CSSProperties =>
+  ({ display: 'grid', gridAutoFlow: 'column', justifyContent: 'start', alignItems: align, gap })
+
+export const split = (gap: number, align: CSSProperties['alignItems'] = 'center'): CSSProperties =>
+  ({ display: 'grid', gridTemplateColumns: '1fr auto', alignItems: align, gap })
+
+export const stack = (gap = 0): CSSProperties => ({ display: 'grid', gap })
+
+export const center: CSSProperties = { display: 'grid', placeItems: 'center' }
+
+// A pill (.btn, .chip) is a single row of content centred in its own box.
+export const pill = (gap: number | string, justify: CSSProperties['justifyContent'] = 'center'): CSSProperties =>
+  ({ display: 'inline-grid', gridAutoFlow: 'column', alignItems: 'center', justifyContent: justify, gap })
+
+// .chip's own gap, so a badge measures the same as the class it wears.
+const chip = pill('0.35rem')
 
 // -- Icons (inline; no icon dependency) --
 
@@ -49,7 +74,7 @@ interface BtnProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 export function Button({ variant = 'primary', loading, children, className = '', disabled, ...rest }: BtnProps) {
   return (
-    <button className={`btn btn-${variant} ${className}`} disabled={disabled || loading} {...rest}>
+    <button className={`btn btn-${variant} ${className}`} disabled={disabled || loading} style={pill(8)} {...rest}>
       {loading ? <Spinner /> : children}
     </button>
   )
@@ -93,23 +118,23 @@ const statusStyle: Record<string, string> = {
 }
 export function StatusBadge({ status }: { status: string }) {
   const s = statusStyle[status] || 'text-[var(--color-fg-muted)] border-[color:var(--color-border)]'
-  return <span className={`chip ${s}`}>{capitalize(status)}</span>
+  return <span className={`chip ${s}`} style={chip}>{capitalize(status)}</span>
 }
 
 // -- Card container --
 
 export function Card({ children, className = '' }: { children: ReactNode; className?: string }) {
-  return <div className={`card p-5 ${className}`}>{children}</div>
+  return <View className={`card p-5 ${className}`} style={{ ...stack(), alignContent: 'start' }}>{children}</View>
 }
 
 // -- Section header --
 
 export function SectionHeader({ title, action }: { title: string; action?: ReactNode }) {
   return (
-    <div className="flex items-center justify-between gap-3 mb-3">
+    <View className="mb-3" style={split(12)}>
       <h2 className="text-sm font-semibold text-[var(--color-fg-muted)] uppercase tracking-wide">{title}</h2>
       {action}
-    </div>
+    </View>
   )
 }
 
@@ -120,13 +145,13 @@ export function SectionHeader({ title, action }: { title: string; action?: React
 
 export function PageHeader({ title, subtitle, action }: { title: string; subtitle: string; action?: ReactNode }) {
   return (
-    <div className="flex items-start justify-between gap-4">
-      <div className="min-w-0">
+    <View style={split(16, 'start')}>
+      <View className="min-w-0" style={stack(2)}>
         <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
-        <p className="text-sm text-[var(--color-fg-muted)] mt-0.5">{subtitle}</p>
-      </div>
+        <p className="text-sm text-[var(--color-fg-muted)]">{subtitle}</p>
+      </View>
       {action}
-    </div>
+    </View>
   )
 }
 
@@ -141,17 +166,18 @@ export function ActionTile({
 }: { label: string; icon: string; to?: string; onClick?: () => void; active?: boolean }) {
   const face = (
     <>
-      <span className="w-10 h-10 rounded-full grid place-items-center bg-[var(--color-surface-3)] border">
+      <span className="w-10 h-10 rounded-full bg-[var(--color-surface-3)] border" style={center}>
         <Icon name={icon} className="w-[18px] h-[18px]" />
       </span>
       <span className="text-xs font-medium">{label}</span>
     </>
   )
-  const cls = 'card-2 tile flex flex-col items-center gap-2 py-4'
+  const cls = 'card-2 tile py-4'
+  const box: CSSProperties = { ...stack(8), justifyItems: 'center' }
   return to ? (
-    <Link to={to} className={cls}>{face}</Link>
+    <Link to={to} className={cls} style={box}>{face}</Link>
   ) : (
-    <button type="button" onClick={onClick} aria-pressed={active} className={cls}>{face}</button>
+    <button type="button" onClick={onClick} aria-pressed={active} className={cls} style={box}>{face}</button>
   )
 }
 
@@ -165,16 +191,20 @@ export function AssetRow({
   code, note, minor, decimals, valueUsd,
 }: { code: string; note: string; minor: number; decimals?: number; valueUsd: number }) {
   return (
-    <Link to={`/app/exchange?from=${code}&to=${code === 'USD' ? 'EUR' : 'USD'}`} className="row flex items-center gap-3 px-4 py-3.5">
+    <Link
+      to={`/app/exchange?from=${code}&to=${code === 'USD' ? 'EUR' : 'USD'}`}
+      className="row px-4 py-3.5"
+      style={{ display: 'grid', gridTemplateColumns: 'auto 1fr auto', alignItems: 'center', gap: 12 }}
+    >
       <AssetAvatar code={code} />
-      <div className="min-w-0 flex-1">
+      <View className="min-w-0" style={stack()}>
         <p className="font-medium">{code}</p>
         <p className="text-xs text-[var(--color-fg-subtle)]">{note}</p>
-      </div>
-      <div className="text-right shrink-0">
+      </View>
+      <View className="text-right" style={stack()}>
         <Money minor={minor} currency={code} decimals={decimals} className="font-medium" />
         <p className="text-xs text-[var(--color-fg-subtle)] tnum">{formatUSD(valueUsd)}</p>
-      </div>
+      </View>
     </Link>
   )
 }
@@ -183,14 +213,14 @@ export function AssetRow({
 
 export function EmptyState({ icon, title, body, action }: { icon: string; title: string; body: string; action?: ReactNode }) {
   return (
-    <div className="card flex flex-col items-center justify-center text-center py-14 px-6">
-      <div className="w-12 h-12 rounded-2xl grid place-items-center bg-[var(--color-surface-2)] border text-[var(--color-fg-muted)] mb-4">
+    <View className="card text-center py-14 px-6" style={{ display: 'grid', justifyItems: 'center', alignContent: 'center' }}>
+      <View className="w-12 h-12 rounded-2xl bg-[var(--color-surface-2)] border text-[var(--color-fg-muted)] mb-4" style={center}>
         <Icon name={icon} className="w-6 h-6" />
-      </div>
+      </View>
       <p className="font-medium">{title}</p>
       <p className="text-sm text-[var(--color-fg-subtle)] mt-1 max-w-xs">{body}</p>
-      {action && <div className="mt-5">{action}</div>}
-    </div>
+      {action && <View className="mt-5" style={stack()}>{action}</View>}
+    </View>
   )
 }
 
@@ -205,23 +235,24 @@ export function CopyRow({
   const [copied, setCopied] = useState(false)
   if (!value) {
     return (
-      <div className={`flex items-center gap-3 ${className}`}>
-        <div className="min-w-0 flex-1">
+      <View className={className} style={split(12)}>
+        <View className="min-w-0" style={stack()}>
           <p className="text-xs text-[var(--color-fg-subtle)]">{label}</p>
           <p className="text-sm text-[var(--color-fg-muted)]">{empty}</p>
-        </div>
-      </div>
+        </View>
+      </View>
     )
   }
   return (
     <button
       onClick={() => { navigator.clipboard?.writeText(value); setCopied(true); setTimeout(() => setCopied(false), 1500) }}
-      className={`row w-full flex items-center gap-3 text-left group rounded-lg ${className}`}
+      className={`row w-full text-left group rounded-lg ${className}`}
+      style={split(12)}
     >
-      <div className="min-w-0 flex-1">
+      <View className="min-w-0" style={stack()}>
         <p className="text-xs text-[var(--color-fg-subtle)]">{label}</p>
         <p className={mono ? 'font-mono text-sm truncate' : 'text-sm'}>{display ?? value}</p>
-      </div>
+      </View>
       <span className="text-[var(--color-fg-muted)] group-hover:text-[var(--color-fg)]">
         <Icon name={copied ? 'check' : 'copy'} className="w-4 h-4" />
       </span>
@@ -264,25 +295,26 @@ export function AssetAvatar({ code, className = 'w-9 h-9' }: { code: string; cla
   // LUX ▼ mark — theme-aware disc so it reads on both dark and light surfaces.
   if (c === 'LUX') {
     return (
-      <div className={`${className} rounded-full grid place-items-center bg-[var(--color-fg)] text-[var(--color-bg)]`}>
+      <View className={`${className} rounded-full bg-[var(--color-fg)] text-[var(--color-bg)]`} style={center}>
         <Triangle />
-      </div>
+      </View>
     )
   }
   const crypto = assetColors[c]
   if (crypto) {
     return (
-      <div className={`${className} rounded-full grid place-items-center bg-gradient-to-br ${crypto} text-[0.65rem] font-bold`}>
-        {c.slice(0, 3)}
-      </div>
+      <View className={`${className} rounded-full bg-gradient-to-br ${crypto} text-[0.65rem] font-bold`} style={center}>
+        <span>{c.slice(0, 3)}</span>
+      </View>
     )
   }
   const mark = currencyMark(c)
   return (
     <div
-      className={`${className} rounded-full grid place-items-center bg-gradient-to-br from-sky-400 to-blue-600 text-white font-semibold ${
+      className={`${className} rounded-full bg-gradient-to-br from-sky-400 to-blue-600 text-white font-semibold ${
         mark.length > 1 ? 'text-[0.6rem] tracking-tight' : 'text-[0.95rem]'
       }`}
+      style={center}
       title={c}
     >
       {mark}
@@ -308,9 +340,12 @@ export function Modal({ children, onClose }: { children: ReactNode; onClose: () 
   return createPortal(
     <div className="fixed inset-0 z-50 grid place-items-end sm:place-items-center p-0 sm:p-4" role="dialog" aria-modal="true">
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative z-10 w-full sm:max-w-md card p-5 rounded-t-2xl sm:rounded-2xl rise max-h-[92vh] overflow-y-auto pb-[calc(1.25rem+env(safe-area-inset-bottom))] sm:pb-5">
+      <View
+        className="relative z-10 w-full sm:max-w-md card p-5 rounded-t-2xl sm:rounded-2xl rise max-h-[92vh] overflow-y-auto pb-[calc(1.25rem+env(safe-area-inset-bottom))] sm:pb-5"
+        style={{ ...stack(), alignContent: 'start' }}
+      >
         {children}
-      </div>
+      </View>
     </div>,
     document.body,
   )
@@ -320,10 +355,10 @@ export function Modal({ children, onClose }: { children: ReactNode; onClose: () 
 
 export function Field({ label, children, hint }: { label: string; children: ReactNode; hint?: string }) {
   return (
-    <label className="block space-y-1.5">
+    <label style={stack(6)}>
       <span className="label">{label}</span>
       {children}
-      {hint && <span className="block text-[0.72rem] text-[var(--color-fg-subtle)]">{hint}</span>}
+      {hint && <span className="text-[0.72rem] text-[var(--color-fg-subtle)]">{hint}</span>}
     </label>
   )
 }
@@ -334,9 +369,12 @@ export function SandboxBadge({ className = '' }: { className?: string }) {
   const config = useConfig()
   if (config && !config.sandbox) return null
   return (
-    <span className={`chip text-amber-300 border-[color:rgba(251,191,36,0.35)] bg-[color:rgba(251,191,36,0.06)] ${className}`}>
+    <span
+      className={`chip text-amber-300 border-[color:rgba(251,191,36,0.35)] bg-[color:rgba(251,191,36,0.06)] ${className}`}
+      style={chip}
+    >
       <span className="w-1.5 h-1.5 rounded-full bg-amber-300" />
-      Sandbox
+      <span>Sandbox</span>
     </span>
   )
 }
