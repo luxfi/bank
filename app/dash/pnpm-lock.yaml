@@ -24,8 +24,8 @@ importers:
         specifier: 8.1.1
         version: 8.1.1(react-dom@19.2.4(react@19.2.4))(react-native-reanimated@4.6.0(react-native-worklets@0.12.1(@babel/core@7.29.0)(@react-native/metro-config@0.87.0(@babel/core@7.29.0))(react-native@0.87.0(@babel/core@7.29.0)(@react-native/metro-config@0.87.0(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.4))(react@19.2.4))(react-native@0.87.0(@babel/core@7.29.0)(@react-native/metro-config@0.87.0(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.4))(react@19.2.4))(react@19.2.4)
       '@luxfi/bank':
-        specifier: file:../../sdk
-        version: file:../../sdk
+        specifier: ^1.4.0
+        version: 1.4.0
       react:
         specifier: ^19.0.0
         version: 19.2.4
@@ -1454,8 +1454,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@luxfi/bank@file:../../sdk':
-    resolution: {directory: ../../sdk, type: directory}
+  '@luxfi/bank@1.4.0':
+    resolution: {integrity: sha512-YpCb3Qx6LEdt4h4wzUQqLnvOcT1fQX/xBj9DnMPawP0SpP4IEE3jJ2nGAxnlNfZ35k8PUb/h1Ikv/uvjS3QaeA==}
 
   '@napi-rs/nice-android-arm-eabi@1.1.1':
     resolution: {integrity: sha512-kjirL3N6TnRPv5iuHw36wnucNqXAO46dzK9oPb0wj076R5Xm8PfUVA9nAFB5ZNMmfJQJVKACAPd/Z2KYMppthw==}
@@ -5396,7 +5396,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@luxfi/bank@file:../../sdk': {}
+  '@luxfi/bank@1.4.0': {}
 
   '@napi-rs/nice-android-arm-eabi@1.1.1':
     optional: true

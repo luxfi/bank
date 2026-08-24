@@ -15,7 +15,7 @@
     "@hanzo/gui": "8.1.1",
     "@hanzo/iam": "^0.11.0",
     "@hanzogui/config": "8.1.1",
-    "@luxfi/bank": "file:../../sdk",
+    "@luxfi/bank": "^1.4.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-native-web": "^0.21.2",
