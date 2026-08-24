@@ -9,7 +9,9 @@
 FROM node:22-alpine AS web
 WORKDIR /app
 RUN corepack enable
-COPY package.json pnpm-lock.yaml ./
+# .npmrc carries node-linker=hoisted + the @hanzogui hoist patterns the
+# @hanzo/gui umbrella needs to resolve at build time — copy it BEFORE install.
+COPY package.json pnpm-lock.yaml .npmrc ./
 RUN pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm build
