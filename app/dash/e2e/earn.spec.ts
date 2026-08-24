@@ -104,7 +104,9 @@ test('a borrow past the collateral limit is refused — by the screen and by the
 
   // And the ledger refuses too, so the limit is not merely a disabled button.
   const token = await page.evaluate(() => sessionStorage.getItem('bank_demo_token'))
-  const res = await page.request.post('http://127.0.0.1:8070/v1/bank/earn/borrow', {
+  // Through the app's own origin (the dash proxies /v1 to bankd), so this holds
+  // against a deployment as well as a local run.
+  const res = await page.request.post(new URL('/v1/bank/earn/borrow', page.url()).toString(), {
     headers: { Authorization: `Bearer ${token}` },
     data: { vault: 'stlux', amount: Math.round(headroom * 100) + 100_000 },
   })

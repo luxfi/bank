@@ -1,12 +1,32 @@
+# Self-hosted deployment: the two published images, wired together.
+#
+#   docker compose pull && docker compose up -d
+#
+# bankd keeps its SQLite in the named volume and is never published to the host —
+# the dash serves the SPA and proxies /v1 to it over the compose network, so the
+# stack exposes exactly one port and needs no nginx or caddy in front of it.
+# Images are built by CI and pulled here; local development runs from source
+# instead (see LLM.md, Running).
 services:
   bankd:
-    build: .
-    ports:
-      - "8070:8070"
+    image: ghcr.io/luxfi/bank:${TAG:-main}
+    # The data dir is explicit: a compiled bankd otherwise keeps its database
+    # beside the executable, which a volume mount would not cover.
+    command: ["--dir", "/data"]
+    environment:
+      BANK_SANDBOX: "${BANK_SANDBOX:-true}"
     volumes:
       - bank-data:/data
+    restart: unless-stopped
+
+  dash:
+    image: ghcr.io/luxfi/bank-dash:${TAG:-main}
     environment:
-      - BANKD_DIR=/data
+      BANK_UPSTREAM: http://bankd:8070
+    ports:
+      - "${PORT:-3000}:3000"
+    depends_on:
+      - bankd
     restart: unless-stopped
 
 volumes:

@@ -1,7 +1,11 @@
 import { defineConfig, devices } from '@playwright/test'
 
-const DASH = 'http://localhost:3000'
-const BANKD = 'http://127.0.0.1:8070'
+// Point DASH_URL at a running deployment to smoke-test it with this same suite
+// (`DASH_URL=http://host:3000 pnpm test:e2e`); the local servers are then left
+// alone, since the target is already serving. Unset, the suite boots its own.
+const DASH = process.env.DASH_URL || 'http://localhost:3000'
+const BANKD = process.env.BANKD_URL || 'http://127.0.0.1:8070'
+const remote = Boolean(process.env.DASH_URL)
 
 export default defineConfig({
   testDir: './e2e',
@@ -19,7 +23,7 @@ export default defineConfig({
     screenshot: 'only-on-failure',
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
-  webServer: [
+  webServer: remote ? undefined : [
     {
       command: 'go run ./cmd/bankd',
       cwd: '../..',
