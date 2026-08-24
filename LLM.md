@@ -280,6 +280,27 @@ Build invariants (each was a real breaker, now fixed — keep them):
 - `app/dash` depends on the published `@luxfi/bank`, not `file:` — the Docker
   context is `app/dash`, so a sibling `file:` path can't resolve.
 
+### Self-hosting
+
+Any host with Docker runs the whole stack from the published images:
+
+```bash
+docker login ghcr.io          # the images are private
+docker compose pull && docker compose up -d
+```
+
+`compose.yml` keeps bankd off the host network — the dash is the only published
+port (`PORT`, default 3000) and proxies `/v1` to bankd over the compose network.
+bankd's SQLite lives in the `bank-data` volume; deleting that volume reseeds a
+pristine demo on the next start. `TAG` selects the image tag (default `main`),
+`BANK_SANDBOX` the mode.
+
+The e2e suite doubles as the deployment smoke test:
+
+```bash
+cd app/dash && DASH_URL=http://<host>:3000 pnpm test:e2e
+```
+
 To roll a new build the control plane must have `DEPLOY_ENGINE_ENABLED=true` and
 the amd64 CI wired; then `hanzo deploy applications sync lux-bank-{bankd,dash}`
 (or cd auto-reconciles). Sandbox seed self-heals a standing demo account on boot
