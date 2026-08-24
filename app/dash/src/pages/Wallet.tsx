@@ -3,7 +3,7 @@ import { Link } from 'react-router'
 import { getWallet, sendCrypto, depositCrypto, type WalletBundle, type Wallet as WalletT, type Balance } from '@/api/client'
 import { useConfig } from '@/lib/config'
 import {
-  Icon, AssetAvatar, ActionTile, AssetRow, PageHeader, SectionHeader, Skeleton, EmptyState, formatUSD,
+  Icon, AssetAvatar, ActionTile, AssetRow, PageHeader, SectionHeader, Skeleton, EmptyState, formatUSD, font,
 } from '@/components/ui'
 import { Allocation } from '@/components/Allocation'
 import { shortAddress } from '@/lib/format'
@@ -11,18 +11,32 @@ import { View } from '@/gui'
 
 const CRYPTO_DECIMALS = 6
 
+// The panel a hero is cut from.
+const panel = {
+  borderRadius: 'var(--radius-card)',
+  border: '1px solid var(--color-border)',
+  background: 'linear-gradient(to bottom right, var(--color-surface-2), var(--color-surface))',
+  overflow: 'hidden',
+} as const
+
+const display = { fontWeight: 600, letterSpacing: '-0.025em' } as const
+const muted = { color: 'var(--color-fg-muted)' } as const
+const subtle = { color: 'var(--color-fg-subtle)' } as const
+const mono = { fontFamily: 'var(--font-mono)' } as const
+const body = { display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', padding: 20 } as const
+
 export function Wallet() {
   const [data, setData] = useState<WalletBundle | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
-  const [panel, setPanel] = useState<'send' | 'receive' | null>(null)
+  const [open, setOpen] = useState<'send' | 'receive' | null>(null)
 
   useEffect(() => {
     getWallet().then(setData).catch((e) => setError(e instanceof Error ? e.message : 'No wallet'))
   }, [])
 
   if (error) return <EmptyState icon="wallet" title="Wallet unavailable" body={error} />
-  if (!data) return <Skeleton className="h-64 rounded-[var(--radius-card)]" />
+  if (!data) return <Skeleton style={{ height: 256, borderRadius: 'var(--radius-card)' }} />
 
   const totalUsd = data.holdings.reduce((s, h) => s + h.valueUsd, 0)
   const addr = data.wallet.address
@@ -30,7 +44,7 @@ export function Wallet() {
     setData((d) => (d ? { ...d, holdings: balances.filter((b) => b.kind === 'crypto') } : d))
 
   return (
-    <View className="gap-6 md:gap-8" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
+    <View className="page" style={{ display: 'grid' }}>
       {/* The shell header already flies the sandbox flag; a second one here
           just says it twice. */}
       <PageHeader title="Crypto wallet" subtitle={data.network} />
@@ -38,45 +52,47 @@ export function Wallet() {
       {/* Wallet hero. The mix on the right is what the figure on the left is
           made of — the same block the dashboard total carries. */}
       <View
-        className="relative overflow-hidden rounded-[var(--radius-card)] border border-[color:var(--color-border)] bg-gradient-to-br from-[var(--color-surface-2)] to-[var(--color-surface)] p-6 md:p-8"
-        style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}
+        className="hero"
+        style={{ ...panel, display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', position: 'relative' }}
       >
-        <div className="absolute -top-16 -right-10 w-56 h-56 rounded-full accent-glow" />
-        <View
-          className="relative gap-7 grid-cols-[minmax(0,1fr)] md:gap-12 md:grid-cols-[minmax(0,1fr)_auto]"
-          style={{ display: 'grid', alignItems: 'end' }}
-        >
-          <View className="min-w-0" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', justifyItems: 'start' }}>
-            <p className="text-sm text-[var(--color-fg-muted)]">Crypto value</p>
-            <p className="text-3xl md:text-4xl font-semibold tracking-tight tnum mt-1">{formatUSD(totalUsd)}</p>
+        <div className="accent-glow" style={{ position: 'absolute', top: -64, right: -40, width: 224, height: 224, borderRadius: 9999 }} />
+        <View className="hero-split" style={{ display: 'grid', position: 'relative' }}>
+          <View className="self-end" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', justifyItems: 'start', minWidth: 0 }}>
+            <p style={{ ...font(14), ...muted }}>Crypto value</p>
+            <p className="h1 tnum" style={{ ...display, marginTop: 4 }}>{formatUSD(totalUsd)}</p>
             <button
               onClick={() => { navigator.clipboard?.writeText(addr); setCopied(true); setTimeout(() => setCopied(false), 1500) }}
-              className="tile mt-4 gap-2 rounded-full bg-[var(--color-surface-3)] border border-[color:var(--color-border)] px-3 py-1.5 text-xs font-mono"
-              style={{ display: 'inline-grid', gridAutoFlow: 'column', alignItems: 'center' }}
+              className="tile"
+              style={{
+                display: 'inline-grid', gridAutoFlow: 'column', alignItems: 'center',
+                marginTop: 16, gap: 8, borderRadius: 9999,
+                background: 'var(--color-surface-3)', border: '1px solid var(--color-border)',
+                paddingInline: 12, paddingBlock: 6, ...font(12), ...mono,
+              }}
             >
-              <Icon name="wallet" className="w-3.5 h-3.5" />
+              <Icon name="wallet" size={14} />
               {shortAddress(addr)}
-              <Icon name={copied ? 'check' : 'copy'} className="w-3.5 h-3.5" />
+              <Icon name={copied ? 'check' : 'copy'} size={14} />
             </button>
           </View>
           <Allocation
             items={data.holdings.map((h) => ({ code: h.currency, valueUsd: h.valueUsd }))}
-            className="w-full md:w-52 lg:w-60"
+            className="mix self-end"
           />
         </View>
       </View>
 
       {/* Actions */}
-      <View className="grid-cols-5 gap-2 md:gap-3" style={{ display: 'grid', alignContent: 'start' }}>
+      <View className="tiles" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'repeat(5, minmax(0,1fr))' }}>
         <ActionTile to="/app/exchange?from=USD&to=LUX" label="Buy" icon="arrowDown" />
         <ActionTile to="/app/exchange?from=LUX&to=USD" label="Sell" icon="arrowUp" />
         <ActionTile to="/app/exchange?from=LUX&to=DAI" label="Convert" icon="swap" />
-        <ActionTile label="Send" icon="send" active={panel === 'send'} onClick={() => setPanel(panel === 'send' ? null : 'send')} />
-        <ActionTile label="Receive" icon="arrowDown" active={panel === 'receive'} onClick={() => setPanel(panel === 'receive' ? null : 'receive')} />
+        <ActionTile label="Send" icon="send" active={open === 'send'} onClick={() => setOpen(open === 'send' ? null : 'send')} />
+        <ActionTile label="Receive" icon="arrowDown" active={open === 'receive'} onClick={() => setOpen(open === 'receive' ? null : 'receive')} />
       </View>
 
-      {panel === 'send' && <SendPanel holdings={data.holdings} onDone={setHoldings} />}
-      {panel === 'receive' && (
+      {open === 'send' && <SendPanel holdings={data.holdings} onDone={setHoldings} />}
+      {open === 'receive' && (
         <ReceivePanel wallets={data.wallets ?? [data.wallet]} network={data.network} onDeposit={setHoldings} />
       )}
 
@@ -87,7 +103,7 @@ export function Wallet() {
           <EmptyState icon="coins" title="No crypto yet" body="Buy LUX, BTC, ETH or DAI to fund your wallet."
             action={<Link to="/app/exchange?from=USD&to=LUX" className="btn btn-primary">Buy crypto</Link>} />
         ) : (
-          <View className="card divide-y divide-[color:var(--color-border)] overflow-hidden" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
+          <View className="card list" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', overflow: 'hidden' }}>
             {data.holdings.map((h) => (
               <AssetRow
                 key={h.currency}
@@ -102,7 +118,7 @@ export function Wallet() {
         )}
       </section>
 
-      <p className="text-center text-[0.7rem] text-[var(--color-fg-subtle)]">
+      <p style={{ textAlign: 'center', fontSize: 11.2, ...subtle }}>
         Testnet assets only. In production this wallet is secured by threshold MPC — no single key.
       </p>
     </View>
@@ -138,7 +154,7 @@ function SendPanel({ holdings, onDone }: { holdings: Balance[]; onDone: (b: Bala
   }
 
   return (
-    <View className="card p-5" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', gap: 12 }}>
+    <View className="card" style={{ ...body, gap: 12 }}>
       <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: '7rem minmax(0,1fr)', gap: 8 }}>
         <select value={asset} onChange={(e) => setAsset(e.target.value)} className="input">
           {(holdings.length ? holdings.map((h) => h.currency) : ['LUX', 'BTC', 'ETH', 'DAI']).map((c) => (
@@ -147,12 +163,12 @@ function SendPanel({ holdings, onDone }: { holdings: Balance[]; onDone: (b: Bala
         </select>
         <input value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="Amount" inputMode="decimal" className="input" />
       </View>
-      <input value={toAddress} onChange={(e) => setToAddress(e.target.value)} placeholder={asset === 'BTC' ? 'Destination address' : 'Destination address (0x…)'} className="input w-full font-mono text-sm" />
-      <button onClick={submit} disabled={busy || !sendable} className="btn btn-primary w-full">
+      <input value={toAddress} onChange={(e) => setToAddress(e.target.value)} placeholder={asset === 'BTC' ? 'Destination address' : 'Destination address (0x…)'} className="input" style={{ ...mono, ...font(14) }} />
+      <button onClick={submit} disabled={busy || !sendable} className="btn btn-primary" style={{ width: '100%' }}>
         {busy ? 'Sending…' : `Send ${asset}`}
       </button>
-      {result && <p className="text-xs text-[var(--color-fg-subtle)] font-mono break-all">Sent · {result}</p>}
-      {error && <p className="text-xs text-red-400">{error}</p>}
+      {result && <p style={{ ...font(12), ...subtle, ...mono, wordBreak: 'break-all' }}>Sent · {result}</p>}
+      {error && <p style={{ ...font(12), color: 'var(--color-negative)' }}>{error}</p>}
     </View>
   )
 }
@@ -180,23 +196,22 @@ function ReceivePanel({
   }
 
   return (
-    <View className="card p-5" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', gap: 16 }}>
+    <View className="card" style={{ ...body, gap: 16 }}>
       {/* An address belongs to an asset, so the asset is picked first and the
           whole block below — mark, address, warning — answers to it. */}
       {wallets.length > 1 && (
-        <View
-          className="gap-1.5"
-          style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: `repeat(${wallets.length}, max-content)` }}
-        >
+        <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: `repeat(${wallets.length}, max-content)`, gap: 6 }}>
           {wallets.map((w) => (
             <button
               key={w.currency}
               onClick={() => setAsset(w.currency)}
-              className={`chip tile px-3 py-1 ${
-                w.currency === asset
-                  ? 'bg-[var(--color-fg)] text-[var(--color-bg)] border-transparent'
-                  : 'text-[var(--color-fg-muted)]'
-              }`}
+              className="chip tile"
+              style={{
+                paddingInline: 12, paddingBlock: 4,
+                ...(w.currency === asset
+                  ? { background: 'var(--color-fg)', color: 'var(--color-bg)', borderColor: 'transparent' }
+                  : muted),
+              }}
             >
               {w.currency}
             </button>
@@ -206,22 +221,27 @@ function ReceivePanel({
 
       <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
         <p className="label">Your {network} deposit address</p>
-        <View className="mt-2 gap-3" style={{ display: 'grid', gridTemplateColumns: 'auto minmax(0,1fr)', alignItems: 'start' }}>
-          <AssetAvatar code={asset} className="w-9 h-9 mt-0.5" />
+        <View style={{ display: 'grid', gridTemplateColumns: 'auto minmax(0,1fr)', alignItems: 'start', marginTop: 8, gap: 12 }}>
+          <span style={{ display: 'grid', marginTop: 2 }}><AssetAvatar code={asset} /></span>
           {/* The whole field copies, and now says so. The icon is decoration
               for the eye — the button's accessible name stays the address. */}
           <button
             onClick={() => { navigator.clipboard?.writeText(address); setCopied(true); setTimeout(() => setCopied(false), 1500) }}
-            className="row min-w-0 gap-3 text-left rounded-xl bg-[var(--color-surface-2)] border border-[color:var(--color-border)] px-3.5 py-2.5 group"
-            style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', alignItems: 'start' }}
+            className="row"
+            style={{
+              display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', alignItems: 'start',
+              minWidth: 0, gap: 12, textAlign: 'left', borderRadius: 12,
+              background: 'var(--color-surface-2)', border: '1px solid var(--color-border)',
+              paddingInline: 14, paddingBlock: 10,
+            }}
           >
-            <span className="font-mono text-sm break-all min-w-0 leading-relaxed">{address}</span>
-            <span className={`mt-0.5 ${copied ? 'text-[var(--color-positive)]' : 'text-[var(--color-fg-muted)] group-hover:text-[var(--color-fg)]'}`}>
-              <Icon name={copied ? 'check' : 'copy'} className="w-4 h-4" />
+            <span style={{ ...mono, ...font(14), wordBreak: 'break-all', minWidth: 0, lineHeight: 1.625 }}>{address}</span>
+            <span className={copied ? undefined : 'link'} style={{ display: 'grid', marginTop: 2, ...(copied ? { color: 'var(--color-positive)' } : null) }}>
+              <Icon name={copied ? 'check' : 'copy'} size={16} />
             </span>
           </button>
         </View>
-        <p className="mt-2 text-[0.7rem] text-[var(--color-fg-subtle)]">
+        <p style={{ marginTop: 8, fontSize: 11.2, ...subtle }}>
           {wallets.length > 1
             ? `Send only ${asset} to this address.`
             : 'One account wallet address — every asset on this network arrives here.'}
@@ -229,23 +249,23 @@ function ReceivePanel({
       </View>
 
       {config?.sandbox && (
-        <View className="pt-1 border-t border-[color:var(--color-border)]" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
-          <p className="label mt-4">Testnet faucet</p>
+        <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', paddingTop: 4, borderTop: '1px solid var(--color-border)' }}>
+          <p className="label" style={{ marginTop: 16 }}>Testnet faucet</p>
           {/* Four small buttons, each its own width: three abreast on a phone,
               one row from sm up. */}
           <View
-            className="mt-2 gap-2 grid-cols-[repeat(3,max-content)] sm:grid-cols-[repeat(4,max-content)]"
-            style={{ display: 'grid', alignContent: 'start', justifyContent: 'start' }}
+            className="pills"
+            style={{ display: 'grid', alignContent: 'start', justifyContent: 'start', marginTop: 8, gap: 8 }}
           >
             {[['LUX', 100], ['BTC', 0.1], ['ETH', 1], ['DAI', 1000]].map(([a, n]) => (
-              <button key={a as string} onClick={() => faucet(a as string, n as number)} disabled={busy} className="btn btn-secondary text-xs">
+              <button key={a as string} onClick={() => faucet(a as string, n as number)} disabled={busy} className="btn btn-secondary" style={font(12)}>
                 +{n} {a}
               </button>
             ))}
           </View>
         </View>
       )}
-      {error && <p className="text-xs text-[var(--color-negative)]">{error}</p>}
+      {error && <p style={{ ...font(12), color: 'var(--color-negative)' }}>{error}</p>}
     </View>
   )
 }

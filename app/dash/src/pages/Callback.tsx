@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate, Link } from 'react-router'
 import { useAuth } from '@/hooks/useAuth'
 import { Wordmark } from '@/components/Brand'
-import { Button, Spinner } from '@/components/ui'
+import { Button, Spinner, font } from '@/components/ui'
 import { View } from '@/gui'
 
 // OIDC redirect target. The IAM SDK exchanges the authorization code for tokens
@@ -23,19 +23,27 @@ export function Callback() {
   }, [handleCallback, navigate])
 
   return (
-    <View className="app-ambience px-5" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', placeItems: 'center', minHeight: '100vh' }}>
-      <View className="relative z-10 w-full max-w-sm card p-8 text-center" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', gap: 16 }}>
-        <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', justifyItems: 'center' }}><Wordmark className="text-lg" /></View>
+    <View className="app-ambience" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', placeItems: 'center', minHeight: '100vh', paddingInline: 20 }}>
+      <View
+        className="card"
+        style={{
+          display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', gap: 16,
+          position: 'relative', zIndex: 10, width: '100%', maxWidth: 384, padding: 32, textAlign: 'center',
+        }}
+      >
+        <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', justifyItems: 'center', ...font(18) }}><Wordmark /></View>
         {error ? (
           <>
-            <h1 className="text-lg font-semibold">Sign-in failed</h1>
-            <p className="text-sm text-[var(--color-fg-muted)]">{error}</p>
-            <Link to="/login"><Button className="w-full">Try again</Button></Link>
+            <h1 style={font(18, 600)}>Sign-in failed</h1>
+            <p style={{ ...font(14), color: 'var(--color-fg-muted)' }}>{error}</p>
+            <Link to="/login" style={{ display: 'grid' }}><Button>Try again</Button></Link>
           </>
         ) : (
           <View
-            className="text-sm text-[var(--color-fg-muted)] py-4"
-            style={{ display: 'grid', gridAutoFlow: 'column', justifyContent: 'center', alignItems: 'center', gap: 12 }}
+            style={{
+              display: 'grid', gridAutoFlow: 'column', justifyContent: 'center', alignItems: 'center', gap: 12,
+              fontSize: 14, color: 'var(--color-fg-muted)', paddingBlock: 16,
+            }}
           >
             <Spinner />
             <span>Signing you in…</span>

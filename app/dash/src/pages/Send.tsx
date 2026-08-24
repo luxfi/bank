@@ -4,7 +4,7 @@ import {
   type Beneficiary,
 } from '@/api/client'
 import { useOverview } from '@/hooks/overview'
-import { Button, Icon, Field, Modal, EmptyState, StatusBadge, PageHeader, SectionHeader, AssetAvatar, CopyRow, Skeleton } from '@/components/ui'
+import { Button, Icon, Field, Modal, EmptyState, StatusBadge, PageHeader, SectionHeader, AssetAvatar, CopyRow, Skeleton, font, truncate } from '@/components/ui'
 import { Coordinates } from '@/components/Coordinates'
 import { formatMoney, shortAddress } from '@/lib/format'
 import { View } from '@/gui'
@@ -26,11 +26,11 @@ export function Send() {
   useEffect(() => { void load() }, [])
 
   return (
-    <View className="gap-6 md:gap-8" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)' }}>
+    <View className="page" style={{ display: 'grid' }}>
       <PageHeader title="Send &amp; receive" subtitle="Pay recipients worldwide over simulated SWIFT/SEPA rails." />
 
       {bens === null ? (
-        <Skeleton className="h-72 rounded-[var(--radius-card)]" />
+        <Skeleton style={{ height: 288, borderRadius: 'var(--radius-card)' }} />
       ) : bens.length > 0 && (
         <SendForm
           balances={balances}
@@ -42,10 +42,17 @@ export function Send() {
 
       {notice && (
         <View
-          className="card-2 p-4 text-sm rise"
-          style={{ display: 'grid', gridTemplateColumns: 'auto minmax(0,1fr)', alignItems: 'center', gap: 12 }}
+          className="card-2 rise"
+          style={{ display: 'grid', gridTemplateColumns: 'auto minmax(0,1fr)', alignItems: 'center', gap: 12, padding: 16, fontSize: 14 }}
         >
-          <span className="w-8 h-8 rounded-full grid place-items-center bg-[color:rgba(52,211,153,0.12)] text-[var(--color-positive)]"><Icon name="check" className="w-4 h-4" /></span>
+          <span
+            style={{
+              display: 'grid', placeItems: 'center', width: 32, height: 32, borderRadius: 9999,
+              background: 'rgba(52,211,153,0.12)', color: 'var(--color-positive)',
+            }}
+          >
+            <Icon name="check" size={16} />
+          </span>
           <span>{notice}</span>
         </View>
       )}
@@ -60,20 +67,21 @@ export function Send() {
           <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 20 }}>
             <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 8 }}>
               <p className="label">Bank transfer · {account.currency}</p>
-              <View className="card p-5" style={{ display: 'grid' }}><Coordinates account={account} /></View>
+              <View className="card" style={{ display: 'grid', padding: 20 }}><Coordinates account={account} /></View>
             </View>
             {cryptoWallets.length > 0 && (
               <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 8 }}>
                 <p className="label">Crypto · {cryptoWallets[0].network}</p>
-                <View className="card divide-y divide-[color:var(--color-border)] overflow-hidden" style={{ display: 'grid' }}>
-                  {cryptoWallets.map((w) => (
-                    <CopyRow
-                      key={w.currency}
-                      label={`${w.currency} · ${w.network}`}
-                      value={w.address}
-                      display={shortAddress(w.address)}
-                      className="px-4 py-3.5"
-                    />
+                <View className="card" style={{ display: 'grid', overflow: 'hidden' }}>
+                  {cryptoWallets.map((w, i) => (
+                    <View key={w.currency} style={{ display: 'grid', borderTop: i ? '1px solid var(--color-border)' : undefined }}>
+                      <CopyRow
+                        label={`${w.currency} · ${w.network}`}
+                        value={w.address}
+                        display={shortAddress(w.address)}
+                        style={{ paddingInline: 16, paddingBlock: 14 }}
+                      />
+                    </View>
                   ))}
                 </View>
               </View>
@@ -89,34 +97,41 @@ export function Send() {
           action={
             <button
               onClick={() => setAddOpen(true)}
-              className="text-xs text-[var(--color-fg-muted)] hover:text-[var(--color-fg)]"
-              style={{ display: 'grid', gridAutoFlow: 'column', alignItems: 'center', gap: 4 }}
+              style={{ display: 'grid', gridAutoFlow: 'column', alignItems: 'center', gap: 4, ...font(12), color: 'var(--color-fg-muted)' }}
             >
-              <Icon name="plus" className="w-3.5 h-3.5" /> Add
+              <Icon name="plus" size={14} /> Add
             </button>
           }
         />
         {bens === null ? (
-          <View style={{ display: 'grid', gap: 8 }}>{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-16 rounded-xl" />)}</View>
+          <View style={{ display: 'grid', gap: 8 }}>
+            {Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} style={{ height: 64, borderRadius: 12 }} />)}
+          </View>
         ) : bens.length === 0 ? (
           <EmptyState icon="send" title="No recipients yet" body="Add a recipient to send them money." action={<Button onClick={() => setAddOpen(true)}>Add recipient</Button>} />
         ) : (
-          <View className="card divide-y divide-[color:var(--color-border)] overflow-hidden" style={{ display: 'grid' }}>
-            {bens.map((b) => (
+          <View className="card" style={{ display: 'grid', overflow: 'hidden' }}>
+            {bens.map((b, i) => (
               <View
                 key={b.id}
-                className="row px-4 py-3.5"
-                style={{ display: 'grid', gridTemplateColumns: 'auto minmax(0,1fr) auto auto', alignItems: 'center', gap: 12 }}
+                className="row"
+                style={{
+                  display: 'grid', gridTemplateColumns: 'auto minmax(0,1fr) auto auto', alignItems: 'center', gap: 12,
+                  paddingInline: 16, paddingBlock: 14,
+                  borderTop: i ? '1px solid var(--color-border)' : undefined,
+                }}
               >
                 <AssetAvatar code={b.currency} />
                 <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)' }}>
-                  <p className="font-medium truncate">{b.name}</p>
-                  <p className="text-xs text-[var(--color-fg-subtle)] truncate">{b.bankDetails?.iban || b.bankDetails?.accountNumber || b.currency} · {b.country}</p>
+                  <p style={{ fontWeight: 500, ...truncate }}>{b.name}</p>
+                  <p style={{ ...font(12), color: 'var(--color-fg-subtle)', ...truncate }}>
+                    {b.bankDetails?.iban || b.bankDetails?.accountNumber || b.currency} · {b.country}
+                  </p>
                 </View>
                 <StatusBadge status={b.verified ? 'active' : 'pending'} />
                 <button
                   onClick={async () => { await deleteBeneficiary(b.id); await load() }}
-                  className="btn btn-ghost px-2 text-[var(--color-fg-subtle)]" aria-label="Remove recipient"
+                  className="btn btn-ghost" style={{ paddingInline: 8, color: 'var(--color-fg-subtle)' }} aria-label="Remove recipient"
                 >✕</button>
               </View>
             ))}
@@ -171,7 +186,7 @@ function SendForm({
   }
 
   return (
-    <View className="card p-5" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 16 }}>
+    <View className="card" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 16, padding: 20 }}>
       <Field label="Recipient">
         <select className="input" value={benId} onChange={(e) => setBenId(e.target.value)}>
           <option value="">Select a recipient…</option>
@@ -190,9 +205,12 @@ function SendForm({
           : 'Choose a recipient to set the currency'
         }
       >
-        <View className="relative" style={{ display: 'grid' }}>
-          <input className="input pl-14 tnum" inputMode="decimal" placeholder="0.00" value={amount} onChange={(e) => setAmount(e.target.value)} disabled={!ben} />
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-medium text-[var(--color-fg-muted)] tabular-nums">
+        <View style={{ display: 'grid', position: 'relative' }}>
+          <input className="input tnum" style={{ paddingLeft: 56 }} inputMode="decimal" placeholder="0.00" value={amount} onChange={(e) => setAmount(e.target.value)} disabled={!ben} />
+          <span
+            className="tnum"
+            style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', ...font(14, 500), color: 'var(--color-fg-muted)' }}
+          >
             {currency || '···'}
           </span>
         </View>
@@ -202,14 +220,14 @@ function SendForm({
         <input className="input" placeholder="Invoice #1024" value={reference} onChange={(e) => setReference(e.target.value)} />
       </Field>
 
-      {insufficient && <p className="text-sm text-[var(--color-negative)]">Insufficient {currency} balance.</p>}
-      {error && <p className="text-sm text-[var(--color-negative)]">{error}</p>}
+      {insufficient && <p style={{ ...font(14), color: 'var(--color-negative)' }}>Insufficient {currency} balance.</p>}
+      {error && <p style={{ ...font(14), color: 'var(--color-negative)' }}>{error}</p>}
 
-      <Button className="w-full" onClick={submit} loading={sending} disabled={!canSend}>
-        <Icon name="send" className="w-4 h-4" />
+      <Button onClick={submit} loading={sending} disabled={!canSend}>
+        <Icon name="send" size={16} />
         {ben && minor > 0 ? `Send ${formatMoney(minor, currency, decimals)}` : 'Send'}
       </Button>
-      <p className="text-center text-[0.7rem] text-[var(--color-fg-subtle)]">Simulated rail · settles instantly in sandbox</p>
+      <p style={{ textAlign: 'center', fontSize: 11.2, color: 'var(--color-fg-subtle)' }}>Simulated rail · settles instantly in sandbox</p>
     </View>
   )
 }
@@ -236,9 +254,9 @@ function AddBeneficiary({ onClose, onCreated }: { onClose: () => void; onCreated
   return (
     <Modal onClose={onClose}>
       <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 16 }}>
-        <h3 className="text-lg font-semibold">Add recipient</h3>
+        <h3 style={font(18, 600)}>Add recipient</h3>
         <Field label="Name"><input className="input" value={f.name} onChange={(e) => set('name', e.target.value)} placeholder="Acme Corporation" /></Field>
-        <View style={{ display: 'grid', gridTemplateColumns: 'repeat(2,minmax(0,1fr))', gap: 12 }}>
+        <View className="form-grid" style={{ display: 'grid' }}>
           <Field label="Currency">
             <select className="input" value={f.currency} onChange={(e) => set('currency', e.target.value)}>
               {['USD', 'EUR', 'GBP', 'JPY', 'CHF', 'CAD', 'AUD', 'SGD', 'AED', 'HKD'].map((c) => <option key={c}>{c}</option>)}
@@ -248,7 +266,7 @@ function AddBeneficiary({ onClose, onCreated }: { onClose: () => void; onCreated
         </View>
         <Field label="IBAN / account number"><input className="input tnum" value={f.iban} onChange={(e) => set('iban', e.target.value)} placeholder="DE89 3704 0044 0532 0130 00" /></Field>
         <Field label="BIC / SWIFT (optional)"><input className="input" value={f.bic} onChange={(e) => set('bic', e.target.value)} placeholder="COBADEFF" /></Field>
-        {error && <p className="text-sm text-[var(--color-negative)]">{error}</p>}
+        {error && <p style={{ ...font(14), color: 'var(--color-negative)' }}>{error}</p>}
         <View style={{ display: 'grid', gridTemplateColumns: 'repeat(2,minmax(0,1fr))', gap: 12 }}>
           <Button variant="secondary" onClick={onClose}>Cancel</Button>
           <Button onClick={submit} loading={saving} disabled={!f.name || !f.iban}>Add</Button>

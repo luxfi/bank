@@ -21,8 +21,8 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth()
   if (isLoading)
     return (
-      <div className="min-h-screen grid place-items-center text-[var(--color-fg-subtle)]">
-        <Spinner className="w-6 h-6" />
+      <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', color: 'var(--color-fg-subtle)' }}>
+        <Spinner size={24} />
       </div>
     )
   if (!isAuthenticated) return <Navigate to="/login" replace />

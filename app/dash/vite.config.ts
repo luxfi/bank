@@ -1,13 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
 import { hanzoguiPlugin } from '@hanzogui/vite-plugin'
 import { resolve } from 'path'
 
 export default defineConfig({
   plugins: [
     react(),
-    tailwindcss(),
     // The @hanzo/gui grid runtime: compiles styled components to grid-css and
     // wires the design config. optimize:false keeps the dev loop fast.
     hanzoguiPlugin({ components: ['@hanzo/gui'], config: './hanzogui.config.ts', optimize: false }),

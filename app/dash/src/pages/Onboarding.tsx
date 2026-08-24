@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { onboard, type KYC } from '@/api/client'
 import { Wordmark } from '@/components/Brand'
-import { Button, Icon, SandboxBadge } from '@/components/ui'
+import { Button, Icon, SandboxBadge, font } from '@/components/ui'
 import { View } from '@/gui'
 
 const COUNTRIES = [
@@ -45,33 +45,46 @@ export function Onboarding({ onDone }: { onDone: () => Promise<void> }) {
 
   return (
     <View className="app-ambience" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', minHeight: '100vh' }}>
-      <View className="relative z-10 max-w-lg mx-auto px-5 py-8" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', alignContent: 'start', width: '100%' }}>
-        <View className="mb-8" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', alignItems: 'center' }}>
-          <Wordmark className="text-lg" />
+      <View
+        style={{
+          display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', alignContent: 'start', width: '100%',
+          position: 'relative', zIndex: 10, maxWidth: 512, justifySelf: 'center', paddingInline: 20, paddingBlock: 32,
+        }}
+      >
+        <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', alignItems: 'center', marginBottom: 32 }}>
+          <span style={{ ...font(18), display: 'grid', justifyItems: 'start' }}><Wordmark /></span>
           <SandboxBadge />
         </View>
 
-        <View className="mb-6" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
-          <h1 className="text-2xl font-semibold tracking-tight">Open your account</h1>
-          <p className="text-sm text-[var(--color-fg-muted)] mt-1">
+        <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', marginBottom: 24 }}>
+          <h1 style={{ ...font(24, 600), letterSpacing: '-0.025em' }}>Open your account</h1>
+          <p style={{ ...font(14), color: 'var(--color-fg-muted)', marginTop: 4 }}>
             A few details and you’re in. Sandbox verification is instant — no documents needed.
           </p>
         </View>
 
         {/* Step indicator — one equal track per step. */}
         <View
-          className="mb-6"
-          style={{ display: 'grid', gridTemplateColumns: `repeat(${STEPS.length}, minmax(0,1fr))`, alignItems: 'center', gap: 8 }}
+          style={{
+            display: 'grid', gridTemplateColumns: `repeat(${STEPS.length}, minmax(0,1fr))`,
+            alignItems: 'center', gap: 8, marginBottom: 24,
+          }}
         >
           {STEPS.map((s, i) => (
             <View key={s} style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
-              <View className={`h-1 rounded-full ${i <= step ? 'bg-[var(--color-fg)]' : 'bg-[var(--color-surface-3)]'}`} style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }} />
-              <p className={`text-[0.7rem] mt-1.5 ${i === step ? 'text-[var(--color-fg)]' : 'text-[var(--color-fg-subtle)]'}`}>{s}</p>
+              <View
+                style={{
+                  display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)',
+                  height: 4, borderRadius: 9999,
+                  background: i <= step ? 'var(--color-fg)' : 'var(--color-surface-3)',
+                }}
+              />
+              <p style={{ fontSize: 11.2, marginTop: 6, color: i === step ? 'var(--color-fg)' : 'var(--color-fg-subtle)' }}>{s}</p>
             </View>
           ))}
         </View>
 
-        <View className="card p-6 rise" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
+        <View className="card rise" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', padding: 24 }}>
           {step === 0 && (
             <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', gap: 16 }}>
               <Segmented
@@ -93,7 +106,7 @@ export function Onboarding({ onDone }: { onDone: () => Promise<void> }) {
               <Field label="Address">
                 <input className="input" value={form.addressLine} onChange={(e) => set('addressLine', e.target.value)} placeholder="1 Market Street" />
               </Field>
-              <View className="grid-cols-2 gap-3" style={{ display: 'grid', alignContent: 'start' }}>
+              <View className="form-grid" style={{ display: 'grid', alignContent: 'start' }}>
                 <Field label="City">
                   <input className="input" value={form.city} onChange={(e) => set('city', e.target.value)} placeholder="San Francisco" />
                 </Field>
@@ -116,21 +129,25 @@ export function Onboarding({ onDone }: { onDone: () => Promise<void> }) {
               <Review label="Date of birth" value={form.dob} />
               <Review label="Address" value={[form.addressLine, form.city, form.postalCode, form.country].filter(Boolean).join(', ')} />
               <View
-                className="text-xs text-[var(--color-fg-subtle)] pt-2"
-                style={{ display: 'grid', gridTemplateColumns: 'auto minmax(0,1fr)', alignItems: 'start', gap: 8 }}
+                style={{
+                  display: 'grid', gridTemplateColumns: 'auto minmax(0,1fr)', alignItems: 'start', gap: 8,
+                  fontSize: 12, color: 'var(--color-fg-subtle)', paddingTop: 8,
+                }}
               >
-                <Icon name="shield" className="w-4 h-4 mt-0.5" />
+                <span style={{ display: 'grid', marginTop: 2 }}><Icon name="shield" size={16} /></span>
                 <span>Sandbox environment — instant approval. In production this is a full KYC/AML review.</span>
               </View>
             </View>
           )}
 
-          {error && <p className="text-sm text-[var(--color-negative)] mt-4">{error}</p>}
+          {error && <p style={{ ...font(14), color: 'var(--color-negative)', marginTop: 16 }}>{error}</p>}
 
           {/* One or two buttons, always sharing the width equally. */}
           <View
-            className="mt-6"
-            style={{ display: 'grid', gridAutoFlow: 'column', gridAutoColumns: 'minmax(0,1fr)', alignItems: 'center', gap: 12 }}
+            style={{
+              display: 'grid', gridAutoFlow: 'column', gridAutoColumns: 'minmax(0,1fr)',
+              alignItems: 'center', gap: 12, marginTop: 24,
+            }}
           >
             {step > 0 && (
               <Button variant="secondary" onClick={() => setStep((s) => s - 1)}>Back</Button>
@@ -145,7 +162,7 @@ export function Onboarding({ onDone }: { onDone: () => Promise<void> }) {
           </View>
         </View>
 
-        <p className="text-center text-[0.7rem] text-[var(--color-fg-subtle)] mt-6 max-w-sm mx-auto">
+        <p style={{ textAlign: 'center', fontSize: 11.2, color: 'var(--color-fg-subtle)', marginTop: 24, maxWidth: 384, justifySelf: 'center' }}>
           Demo — banking services provided by our licensed BaaS partner. Sandbox environment, not for
           real deposits. Placeholder terms, pending counsel review.
         </p>
@@ -165,23 +182,32 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 function Review({ label, value }: { label: string; value: string }) {
   return (
-    <View className="text-sm" style={{ display: 'grid', gridTemplateColumns: 'auto minmax(0,1fr)', alignItems: 'center', gap: 12 }}>
-      <span className="text-[var(--color-fg-subtle)]">{label}</span>
-      <span className="font-medium text-right">{value || '—'}</span>
+    <View style={{ display: 'grid', gridTemplateColumns: 'auto minmax(0,1fr)', alignItems: 'center', gap: 12, fontSize: 14 }}>
+      <span style={{ color: 'var(--color-fg-subtle)' }}>{label}</span>
+      <span style={{ fontWeight: 500, textAlign: 'right' }}>{value || '—'}</span>
     </View>
   )
 }
 
 function Segmented({ value, onChange, options }: { value: string; onChange: (v: string) => void; options: readonly (readonly [string, string])[] }) {
   return (
-    <View className="grid-cols-2 gap-1 p-1 rounded-full bg-[var(--color-surface-2)] border" style={{ display: 'grid', alignContent: 'start' }}>
+    <View
+      style={{
+        display: 'grid', alignContent: 'start', gridTemplateColumns: 'repeat(2,minmax(0,1fr))', gap: 4,
+        padding: 4, borderRadius: 9999, background: 'var(--color-surface-2)', border: '1px solid var(--color-border)',
+      }}
+    >
       {options.map(([v, label]) => (
         <button
           key={v}
           onClick={() => onChange(v)}
-          className={`py-2 rounded-full text-sm font-medium transition-colors ${
-            value === v ? 'bg-[var(--color-fg)] text-black' : 'text-[var(--color-fg-muted)]'
-          }`}
+          className="nav-link"
+          style={{
+            paddingBlock: 8, borderRadius: 9999, ...font(14, 500),
+            ...(value === v
+              ? { background: 'var(--color-fg)', color: 'var(--color-bg)' }
+              : { color: 'var(--color-fg-muted)' }),
+          }}
         >
           {label}
         </button>

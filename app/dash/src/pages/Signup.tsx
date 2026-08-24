@@ -2,7 +2,7 @@ import { useEffect, type ReactNode } from 'react'
 import { useNavigate, Link } from 'react-router'
 import { useAuth } from '@/hooks/useAuth'
 import { Wordmark } from '@/components/Brand'
-import { Button, SandboxBadge } from '@/components/ui'
+import { Button, SandboxBadge, font } from '@/components/ui'
 import { View } from '@/gui'
 
 // Shared shell for the auth screens — true-black, centered, brand + sandbox.
@@ -12,21 +12,21 @@ export function AuthShell({ title, subtitle, children }: { title: string; subtit
   return (
     <View className="app-ambience" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: '100vh' }}>
       <header
-        className="relative z-10 px-5 md:px-8"
-        style={{ display: 'grid', gridTemplateColumns: 'auto 1fr auto', alignItems: 'center', height: 64 }}
+        className="topbar"
+        style={{ display: 'grid', gridTemplateColumns: 'auto 1fr auto', alignItems: 'center' }}
       >
-        <Link to="/"><Wordmark className="text-lg" /></Link>
+        <Link to="/"><Wordmark size={18} /></Link>
         <span />
         <SandboxBadge />
       </header>
-      <View className="relative z-10 px-5 pb-16" style={{ display: 'grid', placeItems: 'center' }}>
+      <View style={{ display: 'grid', placeItems: 'center', position: 'relative', zIndex: 10, paddingInline: 20, paddingBottom: 64 }}>
         <View style={{ display: 'grid', gap: 24, width: '100%', maxWidth: 384 }}>
           <View style={{ display: 'grid', gap: 6, textAlign: 'center' }}>
-            <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
-            <p className="text-sm text-[var(--color-fg-muted)]">{subtitle}</p>
+            <h1 style={{ ...font(24, 600), letterSpacing: '-0.025em' }}>{title}</h1>
+            <p style={{ ...font(14), color: 'var(--color-fg-muted)' }}>{subtitle}</p>
           </View>
-          <View className="card p-6 rise" style={{ display: 'grid', gap: 16 }}>{children}</View>
-          <p className="text-center text-[0.7rem] text-[var(--color-fg-subtle)] max-w-xs mx-auto">
+          <View className="card rise" style={{ display: 'grid', gap: 16, padding: 24 }}>{children}</View>
+          <p style={{ textAlign: 'center', fontSize: 11.2, color: 'var(--color-fg-subtle)', maxWidth: 320, justifySelf: 'center' }}>
             Demo — sandbox environment, not for real deposits. Banking services via our licensed BaaS partner.
           </p>
         </View>
@@ -47,10 +47,10 @@ export function Signup() {
 
   return (
     <AuthShell title="Open your account" subtitle="Multi-currency banking and a built-in crypto wallet.">
-      <Button className="w-full" onClick={() => signup()} loading={isLoading}>Continue with Lux ID</Button>
-      <p className="text-sm text-[var(--color-fg-muted)] text-center">
+      <Button onClick={() => signup()} loading={isLoading}>Continue with Lux ID</Button>
+      <p style={{ ...font(14), color: 'var(--color-fg-muted)', textAlign: 'center' }}>
         Already have an account?{' '}
-        <Link to="/login" className="text-[var(--color-fg)] font-medium hover:underline">Sign in</Link>
+        <Link to="/login" style={{ color: 'var(--color-fg)', fontWeight: 500 }}>Sign in</Link>
       </p>
     </AuthShell>
   )

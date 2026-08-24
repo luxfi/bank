@@ -4,7 +4,7 @@ import { Wordmark } from '@/components/Brand'
 import { useBrand } from '@/hooks/brand'
 import { useConfig } from '@/lib/config'
 import { getPlans, type Plan } from '@/api/client'
-import { Icon, SandboxBadge } from '@/components/ui'
+import { Icon, SandboxBadge, font } from '@/components/ui'
 import { View } from '@/gui'
 
 const STATS: [string, string][] = [
@@ -23,10 +23,26 @@ const FEATURES = [
   { icon: 'shield', title: 'Bank-grade security', body: 'Lux ID sign-in, KMS-managed secrets, and continuous KYC / AML / sanctions screening.' },
 ]
 
+// The panel every hero and closing band is cut from.
+const panel = {
+  borderRadius: 'var(--radius-card)',
+  border: '1px solid var(--color-border)',
+  background: 'linear-gradient(to bottom right, var(--color-surface-2), var(--color-surface))',
+  overflow: 'hidden',
+} as const
+
+// Display type sets its own size through the responsive classes; what stays
+// here is the weight and the tightening that goes with it.
+const display = { fontWeight: 600, letterSpacing: '-0.025em' } as const
+const muted = { color: 'var(--color-fg-muted)' } as const
+const subtle = { color: 'var(--color-fg-subtle)' } as const
+// The glow behind a hero — a circle of brand light, off-canvas.
+const glow = (size: number) => ({ position: 'absolute', width: size, height: size, borderRadius: 9999 } as const)
+
 export function Landing() {
   return (
     <View className="app-ambience" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', minHeight: '100vh' }}>
-      <View className="relative z-10" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', alignContent: 'start' }}>
+      <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', alignContent: 'start', position: 'relative', zIndex: 10 }}>
         <Nav />
         <Hero />
         <Stats />
@@ -41,18 +57,24 @@ export function Landing() {
 
 function Nav() {
   return (
-    <header className="sticky top-0 z-20 border-b border-[color:var(--color-border)] bg-[var(--color-bg)]/70 backdrop-blur-xl">
-      <View
-        className="w-full mx-auto max-w-6xl px-5 md:px-8 h-16"
-        style={{ display: 'grid', gridTemplateColumns: '1fr auto', alignItems: 'center' }}
-      >
-        <Wordmark className="text-lg" />
+    <header
+      style={{
+        position: 'sticky',
+        top: 0,
+        zIndex: 20,
+        borderBottom: '1px solid var(--color-border)',
+        background: 'color-mix(in srgb, var(--color-bg) 70%, transparent)',
+        WebkitBackdropFilter: 'blur(24px)',
+        backdropFilter: 'blur(24px)',
+      }}
+    >
+      <View className="section section-bar" style={{ display: 'grid', gridTemplateColumns: '1fr auto', alignItems: 'center' }}>
+        <span style={{ display: 'grid', justifyItems: 'start', ...font(18) }}><Wordmark /></span>
         <nav
           aria-label="Main"
-          className="gap-2 md:gap-3"
-          style={{ display: 'grid', gridAutoFlow: 'column', alignItems: 'center' }}
+          style={{ display: 'grid', gridAutoFlow: 'column', alignItems: 'center', gap: 12 }}
         >
-          <Link to="/login" className="btn btn-ghost hidden sm:inline-grid">Sign in</Link>
+          <Link to="/login" className="btn btn-ghost desk-only">Sign in</Link>
           <Link to="/signup" className="btn btn-primary">Open account</Link>
         </nav>
       </View>
@@ -62,25 +84,24 @@ function Nav() {
 
 function Hero() {
   return (
-    <section className="w-full mx-auto max-w-6xl px-5 md:px-8 pt-16 md:pt-28 pb-16 text-center">
-      <View className="mb-6" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', justifyItems: 'center' }}><SandboxBadge /></View>
-      <h1 className="text-4xl md:text-6xl font-semibold tracking-tight leading-[1.05] max-w-3xl mx-auto">
+    <section className="section section-hero">
+      <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', justifyItems: 'center', marginBottom: 24 }}><SandboxBadge /></View>
+      <h1 className="display" style={{ ...display, maxWidth: 768, marginInline: 'auto' }}>
         Banking without borders.
         <br />
-        <span className="text-[var(--color-fg-muted)]">Money and crypto, together.</span>
+        <span style={muted}>Money and crypto, together.</span>
       </h1>
-      <p className="mt-5 text-lg text-[var(--color-fg-muted)] max-w-xl mx-auto">
+      <p style={{ ...font(18), ...muted, marginTop: 20, maxWidth: 576, marginInline: 'auto' }}>
         Open a multi-currency account with a built-in crypto wallet in under two minutes.
         Send globally, convert instantly, spend anywhere.
       </p>
-      <View
-        className="mt-8 gap-3"
-        style={{ display: 'grid', gridAutoFlow: 'column', justifyContent: 'center', alignItems: 'center' }}
-      >
-        <Link to="/signup" className="btn btn-primary text-base px-6 py-3">Open your account <Icon name="chevron" className="w-4 h-4" /></Link>
-        <Link to="/login" className="btn btn-secondary text-base px-6 py-3">Sign in</Link>
+      <View style={{ display: 'grid', gridAutoFlow: 'column', justifyContent: 'center', alignItems: 'center', marginTop: 32, gap: 12 }}>
+        <Link to="/signup" className="btn btn-primary" style={{ ...font(16), paddingInline: 24, paddingBlock: 12 }}>
+          Open your account <Icon name="chevron" size={16} />
+        </Link>
+        <Link to="/login" className="btn btn-secondary" style={{ ...font(16), paddingInline: 24, paddingBlock: 12 }}>Sign in</Link>
       </View>
-      <View className="mt-16 max-w-3xl mx-auto" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}><HeroPreview /></View>
+      <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', marginTop: 64, maxWidth: 768, marginInline: 'auto' }}><HeroPreview /></View>
     </section>
   )
 }
@@ -101,21 +122,22 @@ const usd = (n: number) => n.toLocaleString('en-US', { style: 'currency', curren
 function HeroPreview() {
   return (
     <View
-      className="relative rounded-[var(--radius-card)] border border-[color:var(--color-border)] bg-gradient-to-br from-[var(--color-surface-2)] to-[var(--color-surface)] p-6 md:p-8 text-left overflow-hidden"
-      style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}
+      className="hero"
+      style={{ ...panel, display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', position: 'relative', textAlign: 'left' }}
     >
-      <div className="absolute -top-24 -right-16 w-80 h-80 rounded-full accent-glow" />
-      <p className="text-sm text-[var(--color-fg-muted)] relative">Total balance</p>
-      <p className="text-4xl md:text-5xl font-semibold tracking-tight tnum mt-1 relative">{usd(DEMO_TOTAL)}</p>
-      <p className="text-xs text-[var(--color-fg-subtle)] mt-2 relative">
+      <div className="accent-glow" style={{ ...glow(320), top: -96, right: -64 }} />
+      <p style={{ ...font(14), ...muted, position: 'relative' }}>Total balance</p>
+      <p className="figure tnum" style={{ ...display, marginTop: 4, position: 'relative' }}>{usd(DEMO_TOTAL)}</p>
+      <p style={{ ...font(12), ...subtle, marginTop: 8, position: 'relative' }}>
         Across {DEMO_BALANCES.length} balances · estimated in USD
       </p>
-      <View className="grid-cols-3 sm:grid-cols-5 gap-3 mt-6 relative" style={{ display: 'grid', alignContent: 'start' }}>
+      {/* Five marks that fit the phone three-up and the desktop in one line. */}
+      <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'repeat(auto-fit, minmax(88px, 1fr))', gap: 12, marginTop: 24, position: 'relative' }}>
         {DEMO_BALANCES.map(([code, held, value]) => (
-          <View key={code} className="card-2 p-3" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
-            <p className="text-xs text-[var(--color-fg-subtle)]">{code}</p>
-            <p className="font-medium tnum text-sm mt-0.5">{held}</p>
-            <p className="text-[0.7rem] text-[var(--color-fg-subtle)] tnum mt-0.5">{usd(value)}</p>
+          <View key={code} className="card-2" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', padding: 12 }}>
+            <p style={{ ...font(12), ...subtle }}>{code}</p>
+            <p className="tnum" style={{ ...font(14, 500), marginTop: 2 }}>{held}</p>
+            <p className="tnum" style={{ fontSize: 11.2, ...subtle, marginTop: 2 }}>{usd(value)}</p>
           </View>
         ))}
       </View>
@@ -125,12 +147,12 @@ function HeroPreview() {
 
 function Stats() {
   return (
-    <section className="w-full mx-auto max-w-6xl px-5 md:px-8 py-10">
-      <View className="grid-cols-2 md:grid-cols-4 gap-3" style={{ display: 'grid', alignContent: 'start' }}>
+    <section className="section section-sm">
+      <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12 }}>
         {STATS.map(([n, l]) => (
-          <View key={l} className="card-2 p-5 text-center" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
-            <p className="text-2xl md:text-3xl font-semibold tracking-tight">{n}</p>
-            <p className="text-xs text-[var(--color-fg-subtle)] mt-1">{l}</p>
+          <View key={l} className="card-2" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', padding: 20, textAlign: 'center' }}>
+            <p className="h2" style={display}>{n}</p>
+            <p style={{ ...font(12), ...subtle, marginTop: 4 }}>{l}</p>
           </View>
         ))}
       </View>
@@ -140,17 +162,17 @@ function Stats() {
 
 function Features() {
   return (
-    <section className="w-full mx-auto max-w-6xl px-5 md:px-8 py-16">
-      <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-center">Everything, in one account</h2>
-      <p className="text-center text-[var(--color-fg-muted)] mt-3 max-w-lg mx-auto">A complete banking-as-a-service stack — accounts, payments, FX, cards and crypto.</p>
-      <View className="grid-cols-[minmax(0,1fr)] md:grid-cols-3 gap-4 mt-10" style={{ display: 'grid', alignContent: 'start' }}>
+    <section className="section">
+      <h2 className="h1" style={{ ...display, textAlign: 'center' }}>Everything, in one account</h2>
+      <p style={{ ...muted, textAlign: 'center', marginTop: 12, maxWidth: 512, marginInline: 'auto' }}>A complete banking-as-a-service stack — accounts, payments, FX, cards and crypto.</p>
+      <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 16, marginTop: 40 }}>
         {FEATURES.map((f) => (
-          <View key={f.title} className="card p-6" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
-            <span className="w-11 h-11 rounded-xl grid place-items-center bg-[var(--color-surface-2)] border text-[var(--color-fg)] mb-4">
-              <Icon name={f.icon} className="w-5 h-5" />
+          <View key={f.title} className="card" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', padding: 24 }}>
+            <span style={{ display: 'grid', placeItems: 'center', width: 44, height: 44, borderRadius: 12, background: 'var(--color-surface-2)', border: '1px solid var(--color-border)', color: 'var(--color-fg)', marginBottom: 16 }}>
+              <Icon name={f.icon} size={20} />
             </span>
-            <h3 className="font-medium">{f.title}</h3>
-            <p className="text-sm text-[var(--color-fg-muted)] mt-1.5 leading-relaxed">{f.body}</p>
+            <h3 style={{ fontWeight: 500 }}>{f.title}</h3>
+            <p style={{ ...font(14), ...muted, marginTop: 6, lineHeight: 1.625 }}>{f.body}</p>
           </View>
         ))}
       </View>
@@ -167,46 +189,50 @@ function Plans() {
   }, [])
   if (!plans?.length) return null
   return (
-    <section className="w-full mx-auto max-w-6xl px-5 md:px-8 py-16" id="plans">
-      <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-center">Membership</h2>
-      <p className="text-center text-[var(--color-fg-muted)] mt-3 max-w-lg mx-auto">
+    <section className="section" id="plans">
+      <h2 className="h1" style={{ ...display, textAlign: 'center' }}>Membership</h2>
+      <p style={{ ...muted, textAlign: 'center', marginTop: 12, maxWidth: 512, marginInline: 'auto' }}>
         One ladder, Silver to Sovereign. Every tier pairs with a lux.credit card.
       </p>
-      <View className="grid-cols-[minmax(0,1fr)] md:grid-cols-2 lg:grid-cols-4 gap-4 mt-10" style={{ display: 'grid', alignContent: 'start' }}>
+      <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16, marginTop: 40 }}>
         {plans.map((p) => (
           // Name, price, perks, call to action — the perk list takes the slack
           // so every card's button sits on the same line.
           <View
             key={p.id}
-            className={`card lift p-6 ${p.id === 'black' ? 'border-[color:var(--color-fg)]' : ''}`}
-            style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gridTemplateRows: 'auto auto 1fr auto' }}
+            className="card lift"
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'minmax(0,1fr)',
+              gridTemplateRows: 'auto auto 1fr auto',
+              padding: 24,
+              ...(p.id === 'black' ? { borderColor: 'var(--color-fg)' } : null),
+            }}
           >
-            <h3 className="font-medium text-lg">{p.name}</h3>
-            <p className="mt-2">
-              <span className="text-3xl font-semibold tracking-tight tnum">{money(p.monthly)}</span>
-              <span className="text-sm text-[var(--color-fg-subtle)]"> / month</span>
+            <h3 style={{ ...font(18, 500) }}>{p.name}</h3>
+            <p style={{ marginTop: 8 }}>
+              <span className="tnum" style={{ ...display, fontSize: 30, lineHeight: '36px' }}>{money(p.monthly)}</span>
+              <span style={{ ...font(14), ...subtle }}> / month</span>
             </p>
-            <ul
-              className="mt-4 text-sm text-[var(--color-fg-muted)]"
-              style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 8, alignContent: 'start' }}
-            >
+            <ul style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 8, alignContent: 'start', marginTop: 16, ...font(14), ...muted }}>
               <li>{p.card === 'virtual' ? 'Virtual card' : p.card === 'plastic' ? 'Plastic card' : 'Metal card'}{p.iban ? ' + IBAN account' : ''}</li>
               <li>{money(p.dailyLimit)} / day · {money(p.monthlyLimit)} / month</li>
               <li>FX from {p.fxPct}% · {p.freeWires > 0 ? `${p.freeWires} free wire${p.freeWires > 1 ? 's' : ''}/mo` : `wires ${money(p.wireFee)}`}</li>
               {p.perks.map((perk) => (
-                <li key={perk} className="text-[var(--color-fg-subtle)]">{perk}</li>
+                <li key={perk} style={subtle}>{perk}</li>
               ))}
             </ul>
             <Link
               to="/signup"
-              className={`btn mt-6 w-full ${p.id === 'black' ? 'btn-primary' : 'btn-secondary'}`}
+              className={`btn ${p.id === 'black' ? 'btn-primary' : 'btn-secondary'}`}
+              style={{ marginTop: 24, width: '100%' }}
             >
               {p.invite ? 'Request invitation' : `Choose ${p.name}`}
             </Link>
           </View>
         ))}
       </View>
-      <p className="text-center text-xs text-[var(--color-fg-subtle)] mt-6">
+      <p style={{ ...font(12), ...subtle, textAlign: 'center', marginTop: 24 }}>
         Full fee schedule in your agreement. Cards issued by our banking partner.
       </p>
     </section>
@@ -215,16 +241,16 @@ function Plans() {
 
 function Closing() {
   return (
-    <section className="w-full mx-auto max-w-6xl px-5 md:px-8 py-16">
+    <section className="section">
       <View
-        className="relative overflow-hidden rounded-[var(--radius-card)] border border-[color:var(--color-border)] bg-gradient-to-br from-[var(--color-surface-2)] to-[var(--color-surface)] p-10 md:p-16 text-center"
-        style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}
+        className="band"
+        style={{ ...panel, display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', position: 'relative', textAlign: 'center' }}
       >
-        <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[32rem] h-[32rem] rounded-full accent-glow" />
-        <h2 className="relative text-3xl md:text-4xl font-semibold tracking-tight">Ready in two minutes</h2>
-        <p className="relative text-[var(--color-fg-muted)] mt-3 max-w-md mx-auto">No branches, no paperwork. Sign up with your Lux ID and start moving money today.</p>
-        <View className="relative mt-8" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', justifyItems: 'center' }}>
-          <Link to="/signup" className="btn btn-primary text-base px-7 py-3">Open your account</Link>
+        <div className="accent-glow" style={{ ...glow(512), top: -96, left: '50%', transform: 'translateX(-50%)' }} />
+        <h2 className="h1" style={{ ...display, position: 'relative' }}>Ready in two minutes</h2>
+        <p style={{ ...muted, position: 'relative', marginTop: 12, maxWidth: 448, marginInline: 'auto' }}>No branches, no paperwork. Sign up with your Lux ID and start moving money today.</p>
+        <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', justifyItems: 'center', position: 'relative', marginTop: 32 }}>
+          <Link to="/signup" className="btn btn-primary" style={{ ...font(16), paddingInline: 28, paddingBlock: 12 }}>Open your account</Link>
         </View>
       </View>
     </section>
@@ -238,22 +264,22 @@ function Footer() {
     config?.disclaimer ??
     'Banking services are provided by our licensed banking partner.'
   return (
-    <footer className="border-t border-[color:var(--color-border)] mt-8">
-      <View className="w-full mx-auto max-w-6xl px-5 md:px-8 py-10" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', gap: 16 }}>
+    <footer style={{ borderTop: '1px solid var(--color-border)', marginTop: 32 }}>
+      <View className="section section-sm" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', gap: 16 }}>
         <View style={{ display: 'grid', gridTemplateColumns: '1fr auto', alignItems: 'center', gap: 16 }}>
           <Wordmark />
           <SandboxBadge />
         </View>
-        <p className="text-xs text-[var(--color-fg-subtle)] max-w-2xl leading-relaxed">
+        <p style={{ ...font(12), ...subtle, maxWidth: 672, lineHeight: 1.625 }}>
           {disclaimer} © {new Date().getFullYear()} {brand.legalName}.
         </p>
         {config?.partner && (
-          <p className="text-xs text-[var(--color-fg-subtle)]">
-            <a href={config.partner.terms} target="_blank" rel="noopener noreferrer" className="underline hover:text-[var(--color-fg-muted)]">
+          <p style={{ ...font(12), ...subtle }}>
+            <a href={config.partner.terms} target="_blank" rel="noopener noreferrer" className="link-quiet">
               {config.partner.name} Terms
             </a>
-            <span className="mx-2">·</span>
-            <a href={config.partner.privacy} target="_blank" rel="noopener noreferrer" className="underline hover:text-[var(--color-fg-muted)]">
+            <span style={{ marginInline: 8 }}>·</span>
+            <a href={config.partner.privacy} target="_blank" rel="noopener noreferrer" className="link-quiet">
               {config.partner.name} Privacy Policy
             </a>
           </p>

@@ -3,10 +3,15 @@ import { listCards, issueCard, freezeCard, unfreezeCard, listTransactions, type 
 import { useOverview } from '@/hooks/overview'
 import { CardFace } from '@/components/CardFace'
 import { TxnRow } from '@/components/TxnRow'
-import { Button, Icon, EmptyState, Skeleton, StatusBadge, Modal, PageHeader, SectionHeader, Money } from '@/components/ui'
+import { Button, Icon, EmptyState, Skeleton, StatusBadge, Modal, PageHeader, SectionHeader, Money, font } from '@/components/ui'
 import { formatMoney } from '@/lib/format'
 import { limitOf, spent } from '@/lib/limits'
 import { View } from '@/gui'
+
+const display = { fontWeight: 600, letterSpacing: '-0.025em' } as const
+const muted = { color: 'var(--color-fg-muted)' } as const
+const subtle = { color: 'var(--color-fg-subtle)' } as const
+const stack = { display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' } as const
 
 export function Cards() {
   const { overview, refresh } = useOverview()
@@ -58,17 +63,17 @@ export function Cards() {
   const payments = txns.filter((t) => t.type === 'card').slice(0, 8)
 
   return (
-    <View className="gap-6 md:gap-8" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
+    <View className="page" style={{ display: 'grid' }}>
       <PageHeader
         title="Cards"
         subtitle="Virtual cards for online spending."
-        action={<Button onClick={newCard} loading={issuing}><Icon name="plus" className="w-4 h-4" /> New card</Button>}
+        action={<Button onClick={newCard} loading={issuing}><Icon name="plus" size={16} /> New card</Button>}
       />
 
-      {error && <p className="text-sm text-[var(--color-negative)]">{error}</p>}
+      {error && <p style={{ ...font(14), color: 'var(--color-negative)' }}>{error}</p>}
 
       {cards === null ? (
-        <Skeleton className="h-56 max-w-sm rounded-[var(--radius-card)]" />
+        <Skeleton style={{ height: 224, maxWidth: 384, borderRadius: 'var(--radius-card)' }} />
       ) : cards.length === 0 ? (
         <EmptyState
           icon="card"
@@ -80,27 +85,24 @@ export function Cards() {
         // The cards keep their own column at desktop width; what a card is for —
         // what it may spend and what it has spent — sits beside them instead of
         // leaving two thirds of the screen blank.
-        <View
-          className="gap-6 grid-cols-[minmax(0,1fr)] lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)]"
-          style={{ display: 'grid', alignItems: 'start' }}
-        >
-          <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', gap: 24 }}>
+        <View className="aside" style={{ display: 'grid', alignItems: 'start' }}>
+          <View style={{ ...stack, gap: 24 }}>
             {cards.map((c) => (
-              <View key={c.id} style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', gap: 12 }}>
+              <View key={c.id} style={{ ...stack, gap: 12 }}>
                 <CardFace card={c} />
                 <View
-                  className="card-2 p-4 gap-3"
-                  style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', alignItems: 'center' }}
+                  className="card-2"
+                  style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', alignItems: 'center', padding: 16, gap: 12 }}
                 >
-                  <View className="min-w-0" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
+                  <View style={{ ...stack, minWidth: 0 }}>
                     <View style={{ display: 'grid', gridAutoFlow: 'column', justifyContent: 'start', alignItems: 'center', gap: 8 }}>
-                      <span className="text-sm font-medium">Virtual · {c.currency}</span>
+                      <span style={font(14, 500)}>Virtual · {c.currency}</span>
                       <StatusBadge status={c.status} />
                     </View>
-                    <p className="text-xs text-[var(--color-fg-subtle)] mt-0.5">•••• {c.last4}</p>
+                    <p style={{ ...font(12), ...subtle, marginTop: 2 }}>•••• {c.last4}</p>
                   </View>
                   <Button variant="secondary" loading={busy === c.id} onClick={() => toggleFreeze(c)}>
-                    <Icon name={c.status === 'frozen' ? 'unlock' : 'lock'} className="w-4 h-4" />
+                    <Icon name={c.status === 'frozen' ? 'unlock' : 'lock'} size={16} />
                     {c.status === 'frozen' ? 'Unfreeze' : 'Freeze'}
                   </Button>
                 </View>
@@ -108,7 +110,7 @@ export function Cards() {
             ))}
           </View>
 
-          <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', gap: 24 }}>
+          <View style={{ ...stack, gap: 24 }}>
             <Limits
               currency={cards[0].currency}
               entityType={overview?.account?.entityType ?? 'individual'}
@@ -119,7 +121,7 @@ export function Cards() {
               {payments.length === 0 ? (
                 <EmptyState icon="card" title="No card spending yet" body="Payments made on this card land here." />
               ) : (
-                <View className="card divide-y divide-[color:var(--color-border)] overflow-hidden" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
+                <View className="card list" style={{ ...stack, overflow: 'hidden' }}>
                   {payments.map((t) => <TxnRow key={t.id} txn={t} />)}
                 </View>
               )}
@@ -130,13 +132,13 @@ export function Cards() {
 
       {reveal && (
         <Modal onClose={() => setReveal(null)}>
-          <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', gap: 16 }}>
-            <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
-              <h3 className="text-lg font-semibold">Your new card is ready</h3>
-              <p className="text-sm text-[var(--color-fg-muted)] mt-0.5">Save the number and CVV now — they’re shown once.</p>
+          <View style={{ ...stack, gap: 16 }}>
+            <View style={stack}>
+              <h3 style={{ ...font(18), fontWeight: 600 }}>Your new card is ready</h3>
+              <p style={{ ...font(14), ...muted, marginTop: 2 }}>Save the number and CVV now — they’re shown once.</p>
             </View>
             <CardFace card={reveal.card} cvv={reveal.cvv} pan={reveal.pan} />
-            <Button className="w-full" onClick={() => setReveal(null)}>Done</Button>
+            <Button style={{ width: '100%' }} onClick={() => setReveal(null)}>Done</Button>
           </View>
         </Modal>
       )}
@@ -154,35 +156,35 @@ function Limits({ currency, entityType, txns }: { currency: string; entityType: 
   return (
     <section>
       <SectionHeader title="Spend limits" />
-      <View className="card p-5" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', gap: 16 }}>
+      <View className="card" style={{ ...stack, padding: 20, gap: 16 }}>
         <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', alignItems: 'end', gap: 12 }}>
-          <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
-            <p className="text-xs text-[var(--color-fg-subtle)]">Spent this month</p>
-            <p className="text-2xl font-semibold tracking-tight tnum mt-0.5">
+          <View style={stack}>
+            <p style={{ ...font(12), ...subtle }}>Spent this month</p>
+            <p className="tnum" style={{ ...font(24), ...display, marginTop: 2 }}>
               <Money minor={used} currency={currency} />
             </p>
           </View>
-          <p className="text-sm text-[var(--color-fg-muted)] tnum">
+          <p className="tnum" style={{ ...font(14), ...muted }}>
             of {formatMoney(monthly, currency)}
           </p>
         </View>
         {/* Any spend at all shows as something: a tenth of a percent still drew
             money down, and a bar that renders as empty says it did not. */}
-        <View className="h-1.5 rounded-full bg-[var(--color-surface-3)] overflow-hidden" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
-          <div className="h-full rounded-full bg-[var(--color-fg)]" style={{ width: `${pct}%`, minWidth: used > 0 ? '0.375rem' : 0 }} />
+        <View style={{ ...stack, height: 6, borderRadius: 9999, background: 'var(--color-surface-3)', overflow: 'hidden' }}>
+          <div style={{ height: '100%', borderRadius: 9999, background: 'var(--color-fg)', width: `${pct}%`, minWidth: used > 0 ? '0.375rem' : 0 }} />
         </View>
-        <View className="grid-cols-2 gap-3 pt-1" style={{ display: 'grid', alignContent: 'start' }}>
-          <View className="card-2 p-3" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
-            <p className="text-xs text-[var(--color-fg-subtle)]">Daily limit</p>
-            <p className="text-sm font-medium tnum mt-0.5">{formatMoney(daily, currency)}</p>
+        <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'repeat(2, minmax(0,1fr))', gap: 12, paddingTop: 4 }}>
+          <View className="card-2" style={{ ...stack, padding: 12 }}>
+            <p style={{ ...font(12), ...subtle }}>Daily limit</p>
+            <p className="tnum" style={{ ...font(14, 500), marginTop: 2 }}>{formatMoney(daily, currency)}</p>
           </View>
-          <View className="card-2 p-3" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)' }}>
-            <p className="text-xs text-[var(--color-fg-subtle)]">Remaining</p>
-            <p className="text-sm font-medium tnum mt-0.5">{formatMoney(Math.max(0, monthly - used), currency)}</p>
+          <View className="card-2" style={{ ...stack, padding: 12 }}>
+            <p style={{ ...font(12), ...subtle }}>Remaining</p>
+            <p className="tnum" style={{ ...font(14, 500), marginTop: 2 }}>{formatMoney(Math.max(0, monthly - used), currency)}</p>
           </View>
         </View>
-        <p className="text-[0.7rem] text-[var(--color-fg-subtle)]">
-          <span className="capitalize">{entityType}</span> tier
+        <p style={{ fontSize: 11.2, ...subtle }}>
+          <span style={{ textTransform: 'capitalize' }}>{entityType}</span> tier
         </p>
       </View>
     </section>

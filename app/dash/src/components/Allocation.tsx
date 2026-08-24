@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { stack } from '@/components/ui'
+import { font, stack } from '@/components/ui'
 import { View } from '@/gui'
 
 // The mix behind the headline figure: the total says how much, this says what
@@ -40,13 +40,13 @@ export function Allocation({ items, className = '' }: { items: Slice[]; classNam
       {/* Each holding is a track sized by what it is worth — the bar is the
           allocation, not a picture of it. */}
       <div
-        className="h-1.5"
         role="img"
         aria-label={`Allocation: ${sorted.map((s) => `${s.code} ${label(s.valueUsd)}`).join(', ')}`}
         style={{
           display: 'grid',
           gridTemplateColumns: sorted.map((s) => `minmax(0, ${s.valueUsd}fr)`).join(' '),
           gap: 3,
+          height: 6,
         }}
       >
         {sorted.map((s, i) => (
@@ -56,41 +56,37 @@ export function Allocation({ items, className = '' }: { items: Slice[]; classNam
             style={{
               background: 'var(--color-fg)',
               opacity: hot && hot !== s.code ? shade(i) * 0.3 : shade(i),
+              minWidth: 3,
+              borderRadius: 9999,
+              transition: 'opacity 150ms cubic-bezier(0.4, 0, 0.2, 1)',
             }}
-            className="min-w-[3px] rounded-full transition-opacity duration-150"
           />
         ))}
       </div>
 
-      <ul className="grid grid-cols-2 gap-x-5 sm:grid-cols-4 md:grid-cols-1">
+      <ul className="legend" style={{ display: 'grid', columnGap: 20 }}>
         {lead.map((s, i) => (
           <li key={s.code}>
             <div
               onMouseEnter={() => setHot(s.code)}
               onMouseLeave={() => setHot(null)}
-              className="row -mx-1.5 rounded-md px-1.5 py-[3px]"
+              className="row"
               style={legendRow}
             >
-              <span
-                className="w-1.5 h-1.5 rounded-full"
-                style={{ background: 'var(--color-fg)', opacity: shade(i) }}
-              />
-              <span className="text-xs font-medium">{s.code}</span>
-              <span className="text-xs tnum text-[var(--color-fg-subtle)]">{label(s.valueUsd)}</span>
+              <span style={{ ...mark, opacity: shade(i) }} />
+              <span style={font(12, 500)}>{s.code}</span>
+              <span className="tnum" style={{ ...font(12), color: 'var(--color-fg-subtle)' }}>{label(s.valueUsd)}</span>
             </div>
           </li>
         ))}
         {rest.length > 0 && (
           <li>
-            <View className="-mx-1.5 rounded-md px-1.5 py-[3px]" style={legendRow}>
-              <span
-                className="w-1.5 h-1.5 rounded-full"
-                style={{ background: 'var(--color-fg)', opacity: shade(lead.length) }}
-              />
-              <span className="text-xs font-medium text-[var(--color-fg-muted)]">
+            <View className="row" style={legendRow}>
+              <span style={{ ...mark, opacity: shade(lead.length) }} />
+              <span style={{ ...font(12, 500), color: 'var(--color-fg-muted)' }}>
                 {rest.length} more
               </span>
-              <span className="text-xs tnum text-[var(--color-fg-subtle)]">{label(restUsd)}</span>
+              <span className="tnum" style={{ ...font(12), color: 'var(--color-fg-subtle)' }}>{label(restUsd)}</span>
             </View>
           </li>
         )}
@@ -99,5 +95,19 @@ export function Allocation({ items, className = '' }: { items: Slice[]; classNam
   )
 }
 
-// mark · code · share — the share sits at the far edge of its own row.
-const legendRow = { display: 'grid', gridTemplateColumns: 'auto 1fr auto', alignItems: 'center', gap: 8 } as const
+// mark · code · share — the share sits at the far edge of its own row. The row
+// hangs its padding off the text on both sides so the hover tint reads as a
+// band rather than a box.
+const legendRow = {
+  display: 'grid',
+  gridTemplateColumns: 'auto 1fr auto',
+  alignItems: 'center',
+  gap: 8,
+  marginInline: -6,
+  borderRadius: 6,
+  paddingInline: 6,
+  paddingBlock: 3,
+} as const
+
+// The dot that carries the holding's weight.
+const mark = { width: 6, height: 6, borderRadius: 9999, background: 'var(--color-fg)' } as const

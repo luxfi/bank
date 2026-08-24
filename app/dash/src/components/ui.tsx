@@ -10,7 +10,7 @@ import { View } from '@/gui'
 // Every arrangement in the product is one of a handful of grids, so they are
 // named once here rather than spelled out at each call site. `line` is a row of
 // items along a track; `split` pushes the last item to the far edge; `stack` is
-// vertical rhythm. Colour and type stay in the class names.
+// vertical rhythm.
 
 export const line = (gap: number, align: CSSProperties['alignItems'] = 'center'): CSSProperties =>
   ({ display: 'grid', gridAutoFlow: 'column', justifyContent: 'start', alignItems: align, gap })
@@ -28,6 +28,25 @@ export const pill = (gap: number | string, justify: CSSProperties['justifyConten
 
 // .chip's own gap, so a badge measures the same as the class it wears.
 const chip = pill('0.35rem')
+
+// -- Type --
+//
+// A size carries its own leading, so a 12px line always occupies 16px of
+// rhythm and a two-line row measures the same wherever it lands. Sizes off the
+// scale keep the inherited leading — that is what they were drawn against.
+
+const LEADING: Record<number, number> = { 12: 16, 14: 20, 16: 24, 18: 28, 20: 28, 24: 32 }
+
+export const font = (size: number, weight?: number): CSSProperties =>
+  ({ fontSize: size, lineHeight: `${LEADING[size] ?? 24}px`, ...(weight === undefined ? null : { fontWeight: weight }) })
+
+// A line that gives up its tail rather than its row.
+export const truncate: CSSProperties = { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }
+
+// Two hues the product borrows from outside the token set. They are states, not
+// brand: a warning reads amber and a freeze reads cold under every brand.
+const AMBER = 'oklch(0.879 0.169 91.605)'
+const SKY = 'oklch(0.828 0.111 230.318)'
 
 // -- Icons (inline; no icon dependency) --
 
@@ -57,9 +76,12 @@ const paths: Record<string, string> = {
   earn: 'M12 21V11M12 11c0-5 4-8 9-8 0 5-4 8-9 8ZM12 16c0-4.5-3.5-8-9-8 0 4.5 3.5 8 9 8Z',
 }
 
-export function Icon({ name, className = 'w-5 h-5' }: { name: keyof typeof paths | string; className?: string }) {
+// A mark is square, so one number sizes it. `size` is the SVG's own width and
+// height, which a caller's width class still overrides — CSS outranks an
+// attribute — so a screen can size a mark either way while it is being moved.
+export function Icon({ name, size = 20, className }: { name: keyof typeof paths | string; size?: number; className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75}
+    <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75}
       strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d={paths[name] ?? ''} />
     </svg>
@@ -80,11 +102,15 @@ export function Button({ variant = 'primary', loading, children, className = '',
   )
 }
 
-export function Spinner({ className = 'w-4 h-4' }: { className?: string }) {
+// The arc turns, the ring stays. The turn lives in the drawing rather than in a
+// stylesheet, so a spinner spins wherever it is dropped.
+export function Spinner({ size = 16, className }: { size?: number; className?: string }) {
   return (
-    <svg className={`${className} animate-spin`} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <circle cx="12" cy="12" r="9" stroke="currentColor" strokeOpacity="0.25" strokeWidth="3" />
-      <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+      <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+        <animateTransform attributeName="transform" type="rotate" values="0 12 12;360 12 12" dur="1s" repeatCount="indefinite" />
+      </path>
     </svg>
   )
 }
@@ -92,12 +118,11 @@ export function Spinner({ className = 'w-4 h-4' }: { className?: string }) {
 // -- Money --
 
 export function Money({
-  minor, currency, decimals, className = '', sign,
-}: { minor: number; currency: string; decimals?: number; className?: string; sign?: 'credit' | 'debit' }) {
+  minor, currency, decimals, className = '', style, sign,
+}: { minor: number; currency: string; decimals?: number; className?: string; style?: CSSProperties; sign?: 'credit' | 'debit' }) {
   const prefix = sign === 'credit' ? '+' : sign === 'debit' ? '−' : ''
-  const color = sign === 'credit' ? 'text-[var(--color-positive)]' : ''
   return (
-    <span className={`tnum ${color} ${className}`}>
+    <span className={`tnum ${className}`} style={{ ...(sign === 'credit' ? { color: 'var(--color-positive)' } : null), ...style }}>
       {prefix}
       {formatMoney(minor, currency, decimals)}
     </span>
@@ -106,33 +131,33 @@ export function Money({
 
 // -- Status badge --
 
-const statusStyle: Record<string, string> = {
-  completed: 'text-[var(--color-positive)] border-[color:rgba(52,211,153,0.3)]',
-  active: 'text-[var(--color-positive)] border-[color:rgba(52,211,153,0.3)]',
-  approved: 'text-[var(--color-positive)] border-[color:rgba(52,211,153,0.3)]',
-  pending: 'text-amber-300 border-[color:rgba(251,191,36,0.3)]',
-  processing: 'text-amber-300 border-[color:rgba(251,191,36,0.3)]',
-  frozen: 'text-sky-300 border-[color:rgba(125,211,252,0.3)]',
-  failed: 'text-[var(--color-negative)] border-[color:rgba(248,113,113,0.3)]',
-  cancelled: 'text-[var(--color-fg-subtle)] border-[color:var(--color-border)]',
+const statusStyle: Record<string, CSSProperties> = {
+  completed: { color: 'var(--color-positive)', borderColor: 'rgba(52,211,153,0.3)' },
+  active: { color: 'var(--color-positive)', borderColor: 'rgba(52,211,153,0.3)' },
+  approved: { color: 'var(--color-positive)', borderColor: 'rgba(52,211,153,0.3)' },
+  pending: { color: AMBER, borderColor: 'rgba(251,191,36,0.3)' },
+  processing: { color: AMBER, borderColor: 'rgba(251,191,36,0.3)' },
+  frozen: { color: SKY, borderColor: 'rgba(125,211,252,0.3)' },
+  failed: { color: 'var(--color-negative)', borderColor: 'rgba(248,113,113,0.3)' },
+  cancelled: { color: 'var(--color-fg-subtle)', borderColor: 'var(--color-border)' },
 }
 export function StatusBadge({ status }: { status: string }) {
-  const s = statusStyle[status] || 'text-[var(--color-fg-muted)] border-[color:var(--color-border)]'
-  return <span className={`chip ${s}`} style={chip}>{capitalize(status)}</span>
+  const s = statusStyle[status] || { color: 'var(--color-fg-muted)', borderColor: 'var(--color-border)' }
+  return <span className="chip" style={{ ...chip, ...s }}>{capitalize(status)}</span>
 }
 
 // -- Card container --
 
 export function Card({ children, className = '' }: { children: ReactNode; className?: string }) {
-  return <View className={`card p-5 ${className}`} style={{ ...stack(), alignContent: 'start' }}>{children}</View>
+  return <View className={`card ${className}`} style={{ ...stack(), alignContent: 'start', padding: 20 }}>{children}</View>
 }
 
 // -- Section header --
 
 export function SectionHeader({ title, action }: { title: string; action?: ReactNode }) {
   return (
-    <View className="mb-3" style={split(12)}>
-      <h2 className="text-sm font-semibold text-[var(--color-fg-muted)] uppercase tracking-wide">{title}</h2>
+    <View style={{ ...split(12), marginBottom: 12 }}>
+      <h2 style={{ ...font(14, 600), color: 'var(--color-fg-muted)', textTransform: 'uppercase', letterSpacing: '0.025em' }}>{title}</h2>
       {action}
     </View>
   )
@@ -146,9 +171,9 @@ export function SectionHeader({ title, action }: { title: string; action?: React
 export function PageHeader({ title, subtitle, action }: { title: string; subtitle: string; action?: ReactNode }) {
   return (
     <View style={split(16, 'start')}>
-      <View className="min-w-0" style={stack(2)}>
-        <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
-        <p className="text-sm text-[var(--color-fg-muted)]">{subtitle}</p>
+      <View style={{ ...stack(2), minWidth: 0 }}>
+        <h1 style={{ ...font(24, 600), letterSpacing: '-0.025em' }}>{title}</h1>
+        <p style={{ ...font(14), color: 'var(--color-fg-muted)' }}>{subtitle}</p>
       </View>
       {action}
     </View>
@@ -166,14 +191,14 @@ export function ActionTile({
 }: { label: string; icon: string; to?: string; onClick?: () => void; active?: boolean }) {
   const face = (
     <>
-      <span className="w-10 h-10 rounded-full bg-[var(--color-surface-3)] border" style={center}>
-        <Icon name={icon} className="w-[18px] h-[18px]" />
+      <span style={{ ...center, width: 40, height: 40, borderRadius: 9999, background: 'var(--color-surface-3)', border: '1px solid var(--color-border)' }}>
+        <Icon name={icon} size={18} />
       </span>
-      <span className="text-xs font-medium">{label}</span>
+      <span style={font(12, 500)}>{label}</span>
     </>
   )
-  const cls = 'card-2 tile py-4'
-  const box: CSSProperties = { ...stack(8), justifyItems: 'center' }
+  const cls = 'card-2 tile'
+  const box: CSSProperties = { ...stack(8), justifyItems: 'center', paddingBlock: 16 }
   return to ? (
     <Link to={to} className={cls} style={box}>{face}</Link>
   ) : (
@@ -193,17 +218,17 @@ export function AssetRow({
   return (
     <Link
       to={`/app/exchange?from=${code}&to=${code === 'USD' ? 'EUR' : 'USD'}`}
-      className="row px-4 py-3.5"
-      style={{ display: 'grid', gridTemplateColumns: 'auto 1fr auto', alignItems: 'center', gap: 12 }}
+      className="row"
+      style={{ display: 'grid', gridTemplateColumns: 'auto 1fr auto', alignItems: 'center', gap: 12, paddingInline: 16, paddingBlock: 14 }}
     >
       <AssetAvatar code={code} />
-      <View className="min-w-0" style={stack()}>
-        <p className="font-medium">{code}</p>
-        <p className="text-xs text-[var(--color-fg-subtle)]">{note}</p>
+      <View style={{ ...stack(), minWidth: 0 }}>
+        <p style={{ fontWeight: 500 }}>{code}</p>
+        <p style={{ ...font(12), color: 'var(--color-fg-subtle)' }}>{note}</p>
       </View>
-      <View className="text-right" style={stack()}>
-        <Money minor={minor} currency={code} decimals={decimals} className="font-medium" />
-        <p className="text-xs text-[var(--color-fg-subtle)] tnum">{formatUSD(valueUsd)}</p>
+      <View style={{ ...stack(), textAlign: 'right' }}>
+        <Money minor={minor} currency={code} decimals={decimals} style={{ fontWeight: 500 }} />
+        <p className="tnum" style={{ ...font(12), color: 'var(--color-fg-subtle)' }}>{formatUSD(valueUsd)}</p>
       </View>
     </Link>
   )
@@ -213,13 +238,13 @@ export function AssetRow({
 
 export function EmptyState({ icon, title, body, action }: { icon: string; title: string; body: string; action?: ReactNode }) {
   return (
-    <View className="card text-center py-14 px-6" style={{ display: 'grid', justifyItems: 'center', alignContent: 'center' }}>
-      <View className="w-12 h-12 rounded-2xl bg-[var(--color-surface-2)] border text-[var(--color-fg-muted)] mb-4" style={center}>
-        <Icon name={icon} className="w-6 h-6" />
+    <View className="card" style={{ display: 'grid', justifyItems: 'center', alignContent: 'center', textAlign: 'center', paddingBlock: 56, paddingInline: 24 }}>
+      <View style={{ ...center, width: 48, height: 48, borderRadius: 16, background: 'var(--color-surface-2)', border: '1px solid var(--color-border)', color: 'var(--color-fg-muted)', marginBottom: 16 }}>
+        <Icon name={icon} size={24} />
       </View>
-      <p className="font-medium">{title}</p>
-      <p className="text-sm text-[var(--color-fg-subtle)] mt-1 max-w-xs">{body}</p>
-      {action && <View className="mt-5" style={stack()}>{action}</View>}
+      <p style={{ fontWeight: 500 }}>{title}</p>
+      <p style={{ ...font(14), color: 'var(--color-fg-subtle)', marginTop: 4, maxWidth: 320 }}>{body}</p>
+      {action && <View style={{ ...stack(), marginTop: 20 }}>{action}</View>}
     </View>
   )
 }
@@ -230,15 +255,16 @@ export function EmptyState({ icon, title, body, action }: { icon: string; title:
 // and stays inert rather than offering a copy button for an empty string.
 
 export function CopyRow({
-  label, value, display, empty = 'Not available', className = '', mono = true,
-}: { label: string; value?: string; display?: string; empty?: string; className?: string; mono?: boolean }) {
+  label, value, display, empty = 'Not available', className = '', style, mono = true,
+}: { label: string; value?: string; display?: string; empty?: string; className?: string; style?: CSSProperties; mono?: boolean }) {
   const [copied, setCopied] = useState(false)
+  const [hot, setHot] = useState(false)
   if (!value) {
     return (
-      <View className={className} style={split(12)}>
-        <View className="min-w-0" style={stack()}>
-          <p className="text-xs text-[var(--color-fg-subtle)]">{label}</p>
-          <p className="text-sm text-[var(--color-fg-muted)]">{empty}</p>
+      <View className={className} style={{ ...split(12), ...style }}>
+        <View style={{ ...stack(), minWidth: 0 }}>
+          <p style={{ ...font(12), color: 'var(--color-fg-subtle)' }}>{label}</p>
+          <p style={{ ...font(14), color: 'var(--color-fg-muted)' }}>{empty}</p>
         </View>
       </View>
     )
@@ -246,15 +272,17 @@ export function CopyRow({
   return (
     <button
       onClick={() => { navigator.clipboard?.writeText(value); setCopied(true); setTimeout(() => setCopied(false), 1500) }}
-      className={`row w-full text-left group rounded-lg ${className}`}
-      style={split(12)}
+      onMouseEnter={() => setHot(true)}
+      onMouseLeave={() => setHot(false)}
+      className={`row ${className}`}
+      style={{ ...split(12), width: '100%', textAlign: 'left', borderRadius: 8, ...style }}
     >
-      <View className="min-w-0" style={stack()}>
-        <p className="text-xs text-[var(--color-fg-subtle)]">{label}</p>
-        <p className={mono ? 'font-mono text-sm truncate' : 'text-sm'}>{display ?? value}</p>
+      <View style={{ ...stack(), minWidth: 0 }}>
+        <p style={{ ...font(12), color: 'var(--color-fg-subtle)' }}>{label}</p>
+        <p style={mono ? { fontFamily: 'var(--font-mono)', ...font(14), ...truncate } : font(14)}>{display ?? value}</p>
       </View>
-      <span className="text-[var(--color-fg-muted)] group-hover:text-[var(--color-fg)]">
-        <Icon name={copied ? 'check' : 'copy'} className="w-4 h-4" />
+      <span style={{ color: hot ? 'var(--color-fg)' : 'var(--color-fg-muted)' }}>
+        <Icon name={copied ? 'check' : 'copy'} size={16} />
       </span>
     </button>
   )
@@ -262,8 +290,8 @@ export function CopyRow({
 
 // -- Skeleton --
 
-export function Skeleton({ className = '' }: { className?: string }) {
-  return <div className={`skeleton ${className}`} />
+export function Skeleton({ className = '', style }: { className?: string; style?: CSSProperties }) {
+  return <div className={`skeleton ${className}`} style={style} />
 }
 
 // -- Asset avatar --
@@ -273,10 +301,10 @@ export function Skeleton({ className = '' }: { className?: string }) {
 // The symbol comes from the currency itself, so a ledger that adds JPY or CHF
 // draws them without a table to update here.
 
-const assetColors: Record<string, string> = {
-  BTC: 'from-amber-400 to-orange-500 text-black',
-  ETH: 'from-indigo-400 to-violet-500 text-white',
-  DAI: 'from-yellow-300 to-amber-400 text-black',
+const assetColors: Record<string, CSSProperties> = {
+  BTC: { background: 'linear-gradient(to bottom right, oklch(0.828 0.189 84.429), oklch(0.705 0.213 47.604))', color: '#000' },
+  ETH: { background: 'linear-gradient(to bottom right, oklch(0.673 0.182 276.935), oklch(0.606 0.25 292.717))', color: '#fff' },
+  DAI: { background: 'linear-gradient(to bottom right, oklch(0.905 0.182 98.111), oklch(0.828 0.189 84.429))', color: '#000' },
 }
 
 function currencyMark(code: string): string {
@@ -290,20 +318,21 @@ function currencyMark(code: string): string {
   }
 }
 
-export function AssetAvatar({ code, className = 'w-9 h-9' }: { code: string; className?: string }) {
+export function AssetAvatar({ code, size = 36, className = '' }: { code: string; size?: number; className?: string }) {
   const c = code.toUpperCase()
+  const disc: CSSProperties = { ...center, width: size, height: size, borderRadius: 9999 }
   // LUX ▼ mark — theme-aware disc so it reads on both dark and light surfaces.
   if (c === 'LUX') {
     return (
-      <View className={`${className} rounded-full bg-[var(--color-fg)] text-[var(--color-bg)]`} style={center}>
-        <Triangle />
+      <View className={className} style={{ ...disc, background: 'var(--color-fg)', color: 'var(--color-bg)' }}>
+        <Triangle size={16} />
       </View>
     )
   }
   const crypto = assetColors[c]
   if (crypto) {
     return (
-      <View className={`${className} rounded-full bg-gradient-to-br ${crypto} text-[0.65rem] font-bold`} style={center}>
+      <View className={className} style={{ ...disc, ...crypto, fontSize: 10.4 }}>
         <span>{c.slice(0, 3)}</span>
       </View>
     )
@@ -311,19 +340,23 @@ export function AssetAvatar({ code, className = 'w-9 h-9' }: { code: string; cla
   const mark = currencyMark(c)
   return (
     <div
-      className={`${className} rounded-full bg-gradient-to-br from-sky-400 to-blue-600 text-white font-semibold ${
-        mark.length > 1 ? 'text-[0.6rem] tracking-tight' : 'text-[0.95rem]'
-      }`}
-      style={center}
+      className={className}
+      style={{
+        ...disc,
+        background: 'linear-gradient(to bottom right, oklch(0.746 0.16 232.661), oklch(0.546 0.245 262.881))',
+        color: '#fff',
+        fontWeight: 600,
+        ...(mark.length > 1 ? { fontSize: 9.6, letterSpacing: '-0.025em' } : { fontSize: 15.2 }),
+      }}
       title={c}
     >
       {mark}
     </div>
   )
 }
-function Triangle() {
+function Triangle({ size = 16 }: { size?: number }) {
   return (
-    <svg viewBox="0 0 100 100" className="w-4 h-4" fill="currentColor" aria-hidden="true">
+    <svg viewBox="0 0 100 100" width={size} height={size} fill="currentColor" aria-hidden="true">
       <path d="M50 78 L18 28 L82 28 Z" />
     </svg>
   )
@@ -338,11 +371,18 @@ function Triangle() {
 
 export function Modal({ children, onClose }: { children: ReactNode; onClose: () => void }) {
   return createPortal(
-    <div className="fixed inset-0 z-50 grid place-items-end sm:place-items-center p-0 sm:p-4" role="dialog" aria-modal="true">
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
+    <div
+      className="overlay"
+      style={{ display: 'grid', position: 'fixed', inset: 0, zIndex: 50 }}
+      role="dialog"
+      aria-modal="true"
+    >
+      <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)' }} onClick={onClose} />
+      {/* .sheet is the bottom-sheet-then-card shape: width, corners and the
+          safe-area inset all belong to it, so nothing here sets them. */}
       <View
-        className="relative z-10 w-full sm:max-w-md card p-5 rounded-t-2xl sm:rounded-2xl rise max-h-[92vh] overflow-y-auto pb-[calc(1.25rem+env(safe-area-inset-bottom))] sm:pb-5"
-        style={{ ...stack(), alignContent: 'start' }}
+        className="card rise sheet"
+        style={{ ...stack(), alignContent: 'start', position: 'relative', zIndex: 10, paddingTop: 20, paddingInline: 20, maxHeight: '92vh', overflowY: 'auto' }}
       >
         {children}
       </View>
@@ -358,7 +398,7 @@ export function Field({ label, children, hint }: { label: string; children: Reac
     <label style={stack(6)}>
       <span className="label">{label}</span>
       {children}
-      {hint && <span className="text-[0.72rem] text-[var(--color-fg-subtle)]">{hint}</span>}
+      {hint && <span style={{ fontSize: 11.52, color: 'var(--color-fg-subtle)' }}>{hint}</span>}
     </label>
   )
 }
@@ -370,10 +410,10 @@ export function SandboxBadge({ className = '' }: { className?: string }) {
   if (config && !config.sandbox) return null
   return (
     <span
-      className={`chip text-amber-300 border-[color:rgba(251,191,36,0.35)] bg-[color:rgba(251,191,36,0.06)] ${className}`}
-      style={chip}
+      className={`chip ${className}`}
+      style={{ ...chip, color: AMBER, borderColor: 'rgba(251,191,36,0.35)', background: 'rgba(251,191,36,0.06)' }}
     >
-      <span className="w-1.5 h-1.5 rounded-full bg-amber-300" />
+      <span style={{ width: 6, height: 6, borderRadius: 9999, background: AMBER }} />
       <span>Sandbox</span>
     </span>
   )

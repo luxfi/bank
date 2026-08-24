@@ -4,7 +4,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { useBrand } from '@/hooks/brand'
 import { REAL_DEMO_EMAIL } from '@/lib/brand'
 import { AuthShell } from '@/pages/Signup'
-import { Button, Field, Icon } from '@/components/ui'
+import { Button, Field, Icon, font } from '@/components/ui'
 import { View } from '@/gui'
 
 // Public sandbox demo password (all brands authenticate against the one seeded
@@ -48,21 +48,21 @@ export function Login() {
         <Field label="Password">
           <input className="input" type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" />
         </Field>
-        {error && <p className="text-sm text-[var(--color-negative)]">{error}</p>}
-        <Button type="submit" className="w-full" loading={busy}>Sign in</Button>
+        {error && <p style={{ ...font(14), color: 'var(--color-negative)' }}>{error}</p>}
+        <Button type="submit" loading={busy}>Sign in</Button>
       </form>
 
-      <View style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', gap: 12 }} className="text-xs text-[var(--color-fg-subtle)]">
-        <span className="h-px bg-[var(--color-border)]" /><span>or</span><span className="h-px bg-[var(--color-border)]" />
+      <View style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', gap: 12, fontSize: 12, color: 'var(--color-fg-subtle)' }}>
+        <span style={{ height: 1, background: 'var(--color-border)' }} /><span>or</span><span style={{ height: 1, background: 'var(--color-border)' }} />
       </View>
 
-      <Button variant="secondary" className="w-full" onClick={() => login()}>
-        <Icon name="shield" className="w-4 h-4" /> Sign in with SSO
+      <Button variant="secondary" onClick={() => login()}>
+        <Icon name="shield" size={16} /> Sign in with SSO
       </Button>
 
-      <p className="text-[0.72rem] text-[var(--color-fg-subtle)] text-center">
+      <p style={{ fontSize: 11.52, color: 'var(--color-fg-subtle)', textAlign: 'center' }}>
         Demo credential prefilled. New here?{' '}
-        <a href="/signup" className="text-[var(--color-fg)] font-medium hover:underline">Open an account</a>
+        <a href="/signup" style={{ color: 'var(--color-fg)', fontWeight: 500 }}>Open an account</a>
       </p>
     </AuthShell>
   )

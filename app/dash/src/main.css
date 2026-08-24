@@ -1,14 +1,13 @@
-@import 'tailwindcss';
 @import '@fontsource-variable/geist';
 @import '@fontsource-variable/geist-mono';
 
 /* -----------------------------------------------------------------------------
-   Design tokens — @hanzo/gui structure. The @theme block is the LUX (dark)
+   Design tokens. The :root block is the LUX (dark)
    default; `:root[data-brand="acm"]` overrides every color for a real light
    theme. Components reference the CSS variables only, so switching data-brand
    flips backgrounds, text, borders, cards, accents everywhere at runtime.
 -------------------------------------------------------------------------------*/
-@theme {
+:root {
   --font-sans: 'Geist Variable', ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-mono: 'Geist Mono Variable', ui-monospace, 'SF Mono', Menlo, monospace;
 
@@ -83,10 +82,40 @@
 }
 
 @layer base {
-  * {
-    border-color: var(--color-border);
+  /* Base reset. The app used to inherit this from a CSS framework; it is ours
+     now, and it is only what the components actually rely on: a border-box
+     everywhere, no inherited margins, headings that take their size from the
+     element that sets it, and controls that speak the page's font. */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    border: 0 solid var(--color-border);
   }
+  * {
+    margin: 0;
+    padding: 0;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-size: inherit;
+    font-weight: inherit;
+  }
+  a {
+    color: inherit;
+    text-decoration: inherit;
+  }
+  button, input, select, textarea {
+    font: inherit;
+    color: inherit;
+    background: transparent;
+    border-radius: 0;
+  }
+  button { cursor: pointer; }
+  button:disabled { cursor: default; }
+  img, svg, video, canvas { display: block; max-width: 100%; }
+  ul, ol { list-style: none; }
   html {
+    line-height: 1.5;
     -webkit-text-size-adjust: 100%;
   }
   body {
@@ -180,7 +209,8 @@
   .tab:active { transform: scale(0.94); }
 
   .btn {
-    display: inline-flex;
+    display: inline-grid;
+    grid-auto-flow: column;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
@@ -226,7 +256,8 @@
   .label { font-size: 0.8rem; font-weight: 500; color: var(--color-fg-muted); }
 
   .chip {
-    display: inline-flex;
+    display: inline-grid;
+    grid-auto-flow: column;
     align-items: center;
     gap: 0.35rem;
     font-size: 0.72rem;
@@ -281,6 +312,130 @@
     .rise, .enter > * > *:not([role='dialog']) { animation: none; }
     .skeleton { animation: none; }
   }
+
+  /* ---------------------------------------------------------------------
+     Responsive shapes. Everything that changes with viewport width is named
+     for what it is — a page, a section, a hero — and lives here, because a
+     media query cannot be written as an inline style. Sizes are the ones the
+     design was drawn at.
+  ----------------------------------------------------------------------*/
+  .page { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; align-content: start; }
+  @media (min-width: 768px) { .page { gap: 32px; } }
+
+  .section { width: 100%; margin-inline: auto; max-width: 72rem; padding-inline: 20px; padding-block: 64px; }
+  .section-sm { padding-block: 40px; }
+  .section-hero { padding-top: 64px; padding-bottom: 64px; text-align: center; }
+  .section-bar { padding-block: 0; height: 64px; }
+  @media (min-width: 768px) {
+    .section { padding-inline: 32px; }
+    .section-hero { padding-top: 112px; }
+  }
+
+  .hero { padding: 24px; }
+  @media (min-width: 768px) { .hero { padding: 32px; } }
+
+  .hero-split { display: grid; gap: 28px; grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 768px) {
+    .hero-split { gap: 48px; grid-template-columns: minmax(0, 1fr) auto; }
+    .hero-split > .self-end { align-self: end; }
+  }
+
+  /* Display type scale — the only sizes that grow with the viewport. Each
+     carries its own leading: the root line-height is absolute, so a rule that
+     sets size alone would put a 48px figure in a 24px box. */
+  .h1 { font-size: 1.875rem; line-height: 2.25rem; }
+  .h2 { font-size: 1.5rem; line-height: 2rem; }
+  .figure { font-size: 2.25rem; line-height: 2.5rem; }
+  .display { font-size: 2.25rem; line-height: 1.05; }
+  @media (min-width: 768px) {
+    .h1 { font-size: 2.25rem; line-height: 2.5rem; }
+    .h2 { font-size: 1.875rem; line-height: 2.25rem; }
+    .figure { font-size: 3rem; line-height: 1; }
+    .display { font-size: 3.75rem; }
+  }
+
+  .topbar { position: sticky; top: 0; z-index: 20; height: 56px; padding-inline: 16px; }
+  @media (min-width: 768px) { .topbar { padding-inline: 32px; } }
+  @media (min-width: 1024px) { .topbar { height: 64px; } }
+
+  /* One pair for the shell: what only the phone shows, and what only the
+     desktop shows. Nothing else keys on width. */
+  @media (min-width: 1024px) { .phone-only { display: none !important; } }
+  .desk-only { display: none !important; }
+  @media (min-width: 1024px) { .desk-only { display: grid !important; } }
+  .shell-main { min-width: 0; }
+  @media (min-width: 1024px) { .shell-main { margin-left: 15rem; } }
+
+  /* The modal is a bottom sheet on a phone and a centred card above it. */
+  .sheet { width: 100%; border-radius: 16px 16px 0 0; padding-bottom: calc(20px + env(safe-area-inset-bottom)); }
+  @media (min-width: 640px) { .sheet { max-width: 28rem; border-radius: 16px; padding-bottom: 20px; } }
+
+  .form-grid { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 640px) { .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .form-grid > .wide { grid-column: span 2; } }
+
+  /* A list of rows inside a card: the list owns the hairlines, the row owns
+     the hover. */
+  .list > * + * { border-top: 1px solid var(--color-border); }
+
+  /* Gutters that open up when there is room for them. */
+  .tiles { gap: 8px; }
+  @media (min-width: 768px) { .tiles { gap: 12px; } }
+  .line { gap: 12px; }
+  @media (min-width: 640px) { .line { gap: 16px; } }
+
+  /* Pills that wrap: a phone takes three, from 640 up they sit in one row,
+     each its own width. */
+  .pills { grid-template-columns: repeat(3, max-content); }
+  @media (min-width: 640px) { .pills { grid-template-columns: none; grid-auto-flow: column; } }
+
+  /* The allocation mix beside a hero figure. */
+  .mix { width: 100%; }
+  @media (min-width: 768px) { .mix { width: 13rem; } }
+  @media (min-width: 1024px) { .mix { width: 15rem; } }
+
+  /* The closing band — a hero with more air than a panel. */
+  .band { padding: 40px; }
+  @media (min-width: 768px) { .band { padding: 64px; } }
+
+  /* Cards: the faces keep their own column, what they are for sits beside. */
+  .aside { gap: 24px; grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 1024px) { .aside { grid-template-columns: minmax(0, 22rem) minmax(0, 1fr); } }
+
+  /* Text affordances. The resting colour lives here too — an inline colour
+     would outrank the hover. */
+  .link { color: var(--color-fg-muted); }
+  .link:hover, .row:hover .link { color: var(--color-fg); }
+  .link-quiet { color: var(--color-fg-subtle); text-decoration: underline; }
+  .link-quiet:hover { color: var(--color-fg-muted); }
+
+  /* The shell's content well, and the room it leaves for the mobile tab bar. */
+  .shell-pad { padding: 20px 16px 112px; }
+  @media (min-width: 768px) { .shell-pad { padding: 32px 32px 112px; } }
+  @media (min-width: 1024px) { .shell-pad { padding-bottom: 40px; } }
+
+  /* A dialog sits on the bottom edge of a phone and in the middle of a screen. */
+  .overlay { display: grid; place-items: end; padding: 0; }
+  @media (min-width: 640px) { .overlay { place-items: center; padding: 16px; } }
+
+  /* The allocation legend: two columns on a phone, four across a tablet, one
+     when it stands beside the figure. */
+  .legend { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 20px; }
+  @media (min-width: 640px) { .legend { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  @media (min-width: 768px) { .legend { grid-template-columns: minmax(0, 1fr); } }
+
+  /* The converter keeps its own column once there is room for the history
+     beside it; below that the two stack. */
+  .trade-split { gap: 24px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+  @media (min-width: 1280px) { .trade-split { grid-template-columns: minmax(0, 28rem) minmax(0, 1fr); } }
+
+  /* An input that carries no chrome still speaks the placeholder colour. */
+  .bare::placeholder { color: var(--color-fg-subtle); }
+
+  /* The card number, and a converted pair on a transaction row. */
+  .pan { font-size: 1.125rem; line-height: 1.75rem; }
+  @media (min-width: 768px) { .pan { font-size: 1.25rem; } }
+  .pair { font-size: 0.8rem; }
+  @media (min-width: 640px) { .pair { font-size: 0.875rem; line-height: 1.25rem; } }
 
   /* Rich payment-card face — dark in both themes, tinted by the brand accent. */
   .card-face {

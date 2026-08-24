@@ -1,5 +1,5 @@
 import type { Txn } from '@/api/client'
-import { Icon, Money, center, stack } from '@/components/ui'
+import { Icon, Money, center, font, stack, truncate } from '@/components/ui'
 import { relativeTime, capitalize } from '@/lib/format'
 import { View } from '@/gui'
 
@@ -19,32 +19,43 @@ export function TxnRow({ txn, into }: { txn: Txn; into?: Txn }) {
   const icon = into ? 'swap' : typeIcon[txn.type] || (credit ? 'arrowDown' : 'arrowUp')
   const title = txn.reference || capitalize(txn.type)
   return (
-    <View className="row px-4 py-3.5" style={{ display: 'grid', gridTemplateColumns: 'auto 1fr auto', alignItems: 'center', gap: 12 }}>
-      <span className={`w-9 h-9 rounded-full border ${credit && !into ? 'text-[var(--color-positive)] bg-[color:rgba(52,211,153,0.08)]' : 'bg-[var(--color-surface-2)] text-[var(--color-fg-muted)]'}`} style={center}>
-        <Icon name={icon} className="w-4 h-4" />
+    <View className="row" style={{ display: 'grid', gridTemplateColumns: 'auto 1fr auto', alignItems: 'center', gap: 12, paddingInline: 16, paddingBlock: 14 }}>
+      <span
+        style={{
+          ...center,
+          width: 36,
+          height: 36,
+          borderRadius: 9999,
+          border: '1px solid var(--color-border)',
+          ...(credit && !into
+            ? { color: 'var(--color-positive)', background: 'rgba(52,211,153,0.08)' }
+            : { background: 'var(--color-surface-2)', color: 'var(--color-fg-muted)' }),
+        }}
+      >
+        <Icon name={icon} size={16} />
       </span>
-      <View className="min-w-0" style={stack()}>
-        <p className="text-sm font-medium truncate">{title}</p>
+      <View style={{ ...stack(), minWidth: 0 }}>
+        <p style={{ ...font(14, 500), ...truncate }}>{title}</p>
         {/* One line, always: the kind and the age of a movement should not
             reflow the row it describes. */}
-        <p className="text-xs text-[var(--color-fg-subtle)] truncate">
+        <p style={{ ...font(12), color: 'var(--color-fg-subtle)', ...truncate }}>
           {capitalize(into ? 'conversion' : txn.type)} · {relativeTime(txn.created)}
         </p>
       </View>
-      <View className="text-right" style={stack()}>
+      <View style={{ ...stack(), textAlign: 'right' }}>
         {/* Two amounts on one line need the room; on a narrow screen they give
             some back so the reference beside them stays readable. */}
-        <p className={`font-medium whitespace-nowrap ${into ? 'text-[0.8rem] sm:text-sm' : 'text-sm'}`}>
+        <p className={into ? 'pair' : undefined} style={{ fontWeight: 500, whiteSpace: 'nowrap', ...(into ? null : font(14)) }}>
           <Money minor={txn.amount} currency={txn.currency} decimals={txn.decimals} sign={credit ? 'credit' : 'debit'} />
           {into && (
             <>
-              <span className="mx-1 text-[var(--color-fg-subtle)]">→</span>
+              <span style={{ marginInline: 4, color: 'var(--color-fg-subtle)' }}>→</span>
               <Money minor={into.amount} currency={into.currency} decimals={into.decimals} sign="credit" />
             </>
           )}
         </p>
         {txn.status !== 'completed' && (
-          <p className="text-[0.68rem] text-[var(--color-fg-subtle)] capitalize">{txn.status}</p>
+          <p style={{ fontSize: 10.88, color: 'var(--color-fg-subtle)', textTransform: 'capitalize' }}>{txn.status}</p>
         )}
       </View>
     </View>

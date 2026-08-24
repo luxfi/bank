@@ -5,7 +5,7 @@ import {
 } from '@/api/client'
 import { useOverview } from '@/hooks/overview'
 import {
-  AssetAvatar, Button, EmptyState, Icon, Modal, PageHeader, SectionHeader, Skeleton, formatUSD,
+  AssetAvatar, Button, EmptyState, Icon, Modal, PageHeader, SectionHeader, Skeleton, formatUSD, font, truncate,
 } from '@/components/ui'
 import { formatHorizon, formatMoney, formatPercent, toMajor, toMinor } from '@/lib/format'
 import { View } from '@/gui'
@@ -53,7 +53,7 @@ export function Earn() {
   const rest = vaults.filter((v) => !staked(v.position))
 
   return (
-    <View className="gap-6 md:gap-8" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)' }}>
+    <View className="page" style={{ display: 'grid' }}>
       <PageHeader
         title="Earn"
         subtitle="Liquid Protocol — borrow against yield-bearing collateral and let the yield repay it."
@@ -81,7 +81,7 @@ export function Earn() {
         )}
       </section>
 
-      <p className="text-center text-[0.7rem] text-[var(--color-fg-subtle)] max-w-md mx-auto leading-relaxed">
+      <p style={{ textAlign: 'center', fontSize: 11.2, color: 'var(--color-fg-subtle)', maxWidth: 448, justifySelf: 'center', lineHeight: 1.625 }}>
         A self-repaying loan clears at the speed of the collateral's yield — years, not months. Rates shown
         are today's; they move, and so does the horizon.
       </p>
@@ -100,25 +100,32 @@ function staked(p?: Position | null): p is Position {
 
 function Summary({ summary }: { summary: EarnSummary }) {
   return (
-    <section className="relative overflow-hidden rounded-[var(--radius-card)] border border-[color:var(--color-border)] bg-gradient-to-br from-[var(--color-surface-2)] to-[var(--color-surface)] p-6 md:p-8">
+    <section
+      className="hero"
+      style={{
+        position: 'relative', overflow: 'hidden', borderRadius: 'var(--radius-card)',
+        border: '1px solid var(--color-border)',
+        background: 'linear-gradient(to bottom right, var(--color-surface-2), var(--color-surface))',
+      }}
+    >
       {/* Out of flow, so it stays a div: View carries its own position. */}
-      <div className="absolute -top-20 -right-12 w-64 h-64 rounded-full accent-glow" />
+      <div className="accent-glow" style={{ position: 'absolute', top: -80, right: -48, width: 256, height: 256, borderRadius: 9999 }} />
       {/* One column on a phone, the figures beside the headline once there is
           room; both sit on the same baseline at the bottom of the hero. */}
-      <View
-        className="relative gap-7 md:gap-12 grid-cols-[minmax(0,1fr)] md:grid-cols-[minmax(0,1fr)_auto]"
-        style={{ display: 'grid' }}
-      >
-        <View className="min-w-0 md:self-end" style={{ display: 'grid' }}>
-          <p className="text-sm text-[var(--color-fg-muted)]">Net position</p>
-          <p className="text-3xl md:text-4xl font-semibold tracking-tight tnum mt-1">
+      <View className="hero-split" style={{ display: 'grid', position: 'relative' }}>
+        <View className="self-end" style={{ display: 'grid', minWidth: 0 }}>
+          <p style={{ ...font(14), color: 'var(--color-fg-muted)' }}>Net position</p>
+          <p className="h1 tnum" style={{ fontWeight: 600, letterSpacing: '-0.025em', marginTop: 4 }}>
             {formatUSD(summary.netUsd / 100)}
           </p>
-          <p className="text-xs text-[var(--color-fg-subtle)] mt-2">
+          <p style={{ ...font(12), color: 'var(--color-fg-subtle)', marginTop: 8 }}>
             Across {summary.positions} vault{summary.positions === 1 ? '' : 's'} · collateral less debt
           </p>
         </View>
-        <dl className="grid grid-cols-2 gap-x-8 gap-y-4 md:self-end">
+        <dl
+          className="self-end"
+          style={{ display: 'grid', gridTemplateColumns: 'repeat(2,minmax(0,1fr))', columnGap: 32, rowGap: 16 }}
+        >
           <Figure label="Collateral" value={formatUSD(summary.collateralUsd / 100)} />
           <Figure label="Borrowed" value={formatUSD(summary.debt / 100)} />
           <Figure label="Net APY" value={formatPercent(summary.netApy)} tone="positive" />
@@ -132,8 +139,8 @@ function Summary({ summary }: { summary: EarnSummary }) {
 function Figure({ label, value, tone }: { label: string; value: string; tone?: 'positive' }) {
   return (
     <View style={{ display: 'grid', gap: 2 }}>
-      <dt className="text-xs text-[var(--color-fg-subtle)]">{label}</dt>
-      <dd className={`tnum font-medium ${tone === 'positive' ? 'text-[var(--color-positive)]' : ''}`}>
+      <dt style={{ ...font(12), color: 'var(--color-fg-subtle)' }}>{label}</dt>
+      <dd className="tnum" style={{ fontWeight: 500, color: tone === 'positive' ? 'var(--color-positive)' : undefined }}>
         {value}
       </dd>
     </View>
@@ -148,42 +155,46 @@ function VaultCard({ vault, onOpen }: { vault: VaultView; onOpen: () => void }) 
     <button
       type="button"
       onClick={onOpen}
-      className="card tile w-full text-left p-5"
-      style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 16 }}
+      className="card tile"
+      style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 16, width: '100%', textAlign: 'left', padding: 20 }}
     >
       <View style={{ display: 'grid', gridTemplateColumns: 'auto minmax(0,1fr) auto auto', alignItems: 'start', gap: 12 }}>
-        <AssetAvatar code={vault.underlying} className="w-9 h-9" />
+        <AssetAvatar code={vault.underlying} />
         <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)' }}>
-          <p className="font-medium truncate">{vault.name}</p>
-          <p className="text-xs text-[var(--color-fg-subtle)] truncate">
+          <p style={{ fontWeight: 500, ...truncate }}>{vault.name}</p>
+          <p style={{ ...font(12), color: 'var(--color-fg-subtle)', ...truncate }}>
             {vault.collateral} → {vault.synthetic}
           </p>
         </View>
-        <View className="text-right" style={{ display: 'grid' }}>
-          <p className="tnum font-medium text-[var(--color-positive)]">{formatPercent(vault.apy)}</p>
-          <p className="text-xs text-[var(--color-fg-subtle)]">APY</p>
+        <View style={{ display: 'grid', textAlign: 'right' }}>
+          <p className="tnum" style={{ fontWeight: 500, color: 'var(--color-positive)' }}>{formatPercent(vault.apy)}</p>
+          <p style={{ ...font(12), color: 'var(--color-fg-subtle)' }}>APY</p>
         </View>
-        <Icon name="chevron" className="w-4 h-4 mt-1 text-[var(--color-fg-subtle)]" />
+        <span style={{ display: 'grid', marginTop: 4, color: 'var(--color-fg-subtle)' }}>
+          <Icon name="chevron" size={16} />
+        </span>
       </View>
 
-      <p className="text-sm text-[var(--color-fg-muted)]">{vault.description}</p>
+      <p style={{ ...font(14), color: 'var(--color-fg-muted)' }}>{vault.description}</p>
 
       {p ? (
-        <View className="pt-1" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 12 }}>
-          <dl className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-3">
+        <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 12, paddingTop: 4 }}>
+          {/* Three figures across when the row can hold them, two when it cannot —
+              measured from the track, so no breakpoint has to know about it. */}
+          <dl style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', columnGap: 24, rowGap: 12 }}>
             <Figure label="Collateral" value={formatUSD(p.collateralUsd / 100)} />
             <Figure label="Borrowed" value={formatUSD(p.debt / 100)} />
             <Figure label="Yield / year" value={formatUSD(p.yieldUsdYear / 100)} tone="positive" />
           </dl>
           <Health ltv={p.ltv} maxLtv={vault.maxLtv} />
-          <p className="text-xs text-[var(--color-fg-subtle)]">
+          <p style={{ ...font(12), color: 'var(--color-fg-subtle)' }}>
             {p.debt > 0
               ? `Self-repays in ${formatHorizon(p.selfRepayDays)} at today's yield`
               : 'No debt — the yield accrues to you'}
           </p>
         </View>
       ) : (
-        <dl className="grid grid-cols-2 gap-x-6 pt-1">
+        <dl style={{ display: 'grid', gridTemplateColumns: 'repeat(2,minmax(0,1fr))', columnGap: 24, paddingTop: 4 }}>
           <Figure label="Max LTV" value={formatPercent(vault.maxLtv * 100, 0)} />
           <Figure label="TVL" value={compactUSD(vault.tvlUsd)} />
         </dl>
@@ -204,22 +215,22 @@ function Health({ ltv, maxLtv }: { ltv: number; maxLtv: number }) {
   const color = warn ? '#fbbf24' : 'var(--color-positive)'
   return (
     <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 6 }}>
-      <View className="text-xs" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', alignItems: 'baseline', gap: 12 }}>
-        <span className="text-[var(--color-fg-subtle)]">
-          LTV <span className="tnum text-[var(--color-fg-muted)]">{formatPercent(ltv * 100, 1)}</span> of{' '}
+      <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', alignItems: 'baseline', gap: 12, fontSize: 12 }}>
+        <span style={{ color: 'var(--color-fg-subtle)' }}>
+          LTV <span className="tnum" style={{ color: 'var(--color-fg-muted)' }}>{formatPercent(ltv * 100, 1)}</span> of{' '}
           <span className="tnum">{formatPercent(maxLtv * 100, 0)}</span>
         </span>
-        <span className="tnum font-medium" style={{ color }}>{warn ? 'Near the limit' : 'Safe'}</span>
+        <span className="tnum" style={{ fontWeight: 500, color }}>{warn ? 'Near the limit' : 'Safe'}</span>
       </View>
       <div
-        className="h-1.5 rounded-full bg-[var(--color-surface-3)] overflow-hidden"
+        style={{ height: 6, borderRadius: 9999, background: 'var(--color-surface-3)', overflow: 'hidden' }}
         role="meter"
         aria-label="Loan to value"
         aria-valuenow={Math.round(ltv * 100)}
         aria-valuemin={0}
         aria-valuemax={Math.round(maxLtv * 100)}
       >
-        <div className="h-full rounded-full" style={{ width: `${used * 100}%`, background: color }} />
+        <div style={{ height: '100%', borderRadius: 9999, width: `${used * 100}%`, background: color }} />
       </div>
     </View>
   )
@@ -271,25 +282,25 @@ function VaultDetail({
   return (
     <Modal onClose={onClose}>
       <View style={{ display: 'grid', gridTemplateColumns: 'auto minmax(0,1fr) auto', alignItems: 'start', gap: 12 }}>
-        <AssetAvatar code={vault.underlying} className="w-10 h-10" />
+        <AssetAvatar code={vault.underlying} size={40} />
         <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)' }}>
-          <h2 className="font-semibold truncate">{vault.name}</h2>
-          <p className="text-xs text-[var(--color-fg-subtle)]">
+          <h2 style={{ fontWeight: 600, ...truncate }}>{vault.name}</h2>
+          <p style={{ ...font(12), color: 'var(--color-fg-subtle)' }}>
             {vault.collateral} → {vault.synthetic} · {formatPercent(vault.apy)} APY · max LTV{' '}
             {formatPercent(vault.maxLtv * 100, 0)}
           </p>
         </View>
-        <button onClick={onClose} className="btn btn-ghost px-2" aria-label="Close">
-          <Icon name="close" className="w-4 h-4" />
+        <button onClick={onClose} className="btn btn-ghost" style={{ paddingInline: 8 }} aria-label="Close">
+          <Icon name="close" size={16} />
         </button>
       </View>
 
       {p ? (
         <View
-          className="mt-4 rounded-xl bg-[var(--color-surface-2)] border border-[color:var(--color-border)] p-4"
-          style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 12 }}
+          className="card-2"
+          style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 12, marginTop: 16, padding: 16 }}
         >
-          <dl className="grid grid-cols-2 gap-x-6 gap-y-3">
+          <dl style={{ display: 'grid', gridTemplateColumns: 'repeat(2,minmax(0,1fr))', columnGap: 24, rowGap: 12 }}>
             <Figure label="Collateral" value={formatMoney(p.collateral, vault.underlying)} />
             <Figure label="Value" value={formatUSD(p.collateralUsd / 100)} />
             <Figure label="Borrowed" value={formatUSD(p.debt / 100)} />
@@ -297,38 +308,40 @@ function VaultDetail({
           </dl>
           <Health ltv={p.ltv} maxLtv={vault.maxLtv} />
           {p.debt > 0 && (
-            <p className="text-xs text-[var(--color-fg-subtle)]">
+            <p style={{ ...font(12), color: 'var(--color-fg-subtle)' }}>
               At {formatUSD(p.yieldUsdYear / 100)} of yield a year this debt clears in{' '}
               {formatHorizon(p.selfRepayDays)}.
             </p>
           )}
         </View>
       ) : (
-        <p className="mt-4 text-sm text-[var(--color-fg-muted)]">{vault.description}</p>
+        <p style={{ marginTop: 16, ...font(14), color: 'var(--color-fg-muted)' }}>{vault.description}</p>
       )}
 
       {/* Four verbs, one field. */}
-      <View className="mt-5" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,minmax(0,1fr))', gap: 6 }}>
+      <View style={{ display: 'grid', gridTemplateColumns: 'repeat(4,minmax(0,1fr))', gap: 6, marginTop: 20 }}>
         {ACTIONS.map((a) => (
           <button
             key={a.id}
             type="button"
             onClick={() => { setAction(a.id); setAmount(''); setError(null); setDone(null) }}
             aria-pressed={action === a.id}
-            className={`card-2 tile py-2 text-xs font-medium ${
-              action === a.id
-                ? 'bg-[var(--color-fg)] text-[var(--color-bg)] border-transparent'
-                : 'text-[var(--color-fg-muted)]'
-            }`}
+            className="card-2 tile"
+            style={{
+              paddingBlock: 8, ...font(12, 500),
+              ...(action === a.id
+                ? { background: 'var(--color-fg)', color: 'var(--color-bg)', borderColor: 'transparent' }
+                : { color: 'var(--color-fg-muted)' }),
+            }}
           >
             {a.label}
           </button>
         ))}
       </View>
 
-      <p className="mt-3 text-xs text-[var(--color-fg-muted)] leading-relaxed">{note}</p>
+      <p style={{ marginTop: 12, ...font(12), color: 'var(--color-fg-muted)', lineHeight: 1.625 }}>{note}</p>
 
-      <View className="mt-3" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 8 }}>
+      <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 8, marginTop: 12 }}>
         <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', gap: 8 }}>
           <input
             value={amount}
@@ -338,19 +351,25 @@ function VaultDetail({
             aria-label={`Amount in ${unit}`}
             className="input"
           />
-          <span className="grid place-items-center px-3 rounded-xl bg-[var(--color-surface-2)] border border-[color:var(--color-border)] text-sm text-[var(--color-fg-muted)]">
+          <span
+            style={{
+              display: 'grid', placeItems: 'center', paddingInline: 12, borderRadius: 12,
+              background: 'var(--color-surface-2)', border: '1px solid var(--color-border)',
+              ...font(14), color: 'var(--color-fg-muted)',
+            }}
+          >
             {unit}
           </span>
         </View>
-        <View className="text-xs" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', alignItems: 'center', gap: 12 }}>
-          <span className="text-[var(--color-fg-subtle)]">
+        <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', alignItems: 'center', gap: 12, fontSize: 12 }}>
+          <span style={{ color: 'var(--color-fg-subtle)' }}>
             {ceilingLabel(action)} <span className="tnum">{formatMoney(max, unit)}</span>
           </span>
           <button
             type="button"
             disabled={max <= 0}
             onClick={() => setAmount(String(toMajor(max, unit)))}
-            className="text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] disabled:opacity-40"
+            style={{ color: 'var(--color-fg-muted)', opacity: max <= 0 ? 0.4 : undefined }}
           >
             Max
           </button>
@@ -358,14 +377,14 @@ function VaultDetail({
       </View>
 
       {over && (
-        <p className="mt-2 text-xs text-[color:#fbbf24]">
+        <p style={{ marginTop: 8, ...font(12), color: '#fbbf24' }}>
           That is more than the {formatMoney(max, unit)} available for this move.
         </p>
       )}
-      {error && <p className="mt-2 text-xs text-[var(--color-negative)]">{error}</p>}
-      {done && <p className="mt-2 text-xs text-[var(--color-positive)]">{done}</p>}
+      {error && <p style={{ marginTop: 8, ...font(12), color: 'var(--color-negative)' }}>{error}</p>}
+      {done && <p style={{ marginTop: 8, ...font(12), color: 'var(--color-positive)' }}>{done}</p>}
 
-      <Button onClick={submit} loading={busy} disabled={!ready} className="w-full mt-4">
+      <Button onClick={submit} loading={busy} disabled={!ready} style={{ marginTop: 16 }}>
         {ACTIONS.find((a) => a.id === action)!.label}
       </Button>
     </Modal>
@@ -414,9 +433,9 @@ function compactUSD(cents: number): string {
 function EarnSkeleton() {
   return (
     <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 32 }}>
-      <Skeleton className="h-40 rounded-[var(--radius-card)]" />
+      <Skeleton style={{ height: 160, borderRadius: 'var(--radius-card)' }} />
       <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 12 }}>
-        {Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-44 rounded-[var(--radius-card)]" />)}
+        {Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} style={{ height: 176, borderRadius: 'var(--radius-card)' }} />)}
       </View>
     </View>
   )

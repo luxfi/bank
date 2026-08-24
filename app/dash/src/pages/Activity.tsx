@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { listTransactions, type Txn } from '@/api/client'
 import { TxnRow } from '@/components/TxnRow'
-import { EmptyState, PageHeader, Skeleton } from '@/components/ui'
+import { EmptyState, PageHeader, Skeleton, font } from '@/components/ui'
 import { formatDateShort } from '@/lib/format'
 import { pair, type Entry } from '@/lib/pair'
 import { View } from '@/gui'
@@ -36,23 +36,27 @@ export function Activity() {
   }, [txns, filter])
 
   return (
-    <View className="gap-6 md:gap-8" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)' }}>
+    <View className="page" style={{ display: 'grid' }}>
       <PageHeader title="Activity" subtitle="Every movement across your account." />
 
       <View
-        className="p-1 rounded-full bg-[var(--color-surface-2)] border"
-        style={{ display: 'grid', gridAutoFlow: 'column', gap: 4, justifySelf: 'start' }}
+        style={{
+          display: 'grid', gridAutoFlow: 'column', gap: 4, justifySelf: 'start',
+          padding: 4, borderRadius: 9999, background: 'var(--color-surface-2)', border: '1px solid var(--color-border)',
+        }}
       >
         {FILTERS.map(([v, label]) => (
           <button
             key={v}
             onClick={() => setFilter(v)}
             aria-pressed={filter === v}
-            className={`nav-link px-4 py-1.5 rounded-full text-sm font-medium ${
-              filter === v
-                ? 'bg-[var(--color-fg)] text-[var(--color-bg)]'
-                : 'text-[var(--color-fg-muted)] hover:text-[var(--color-fg)]'
-            }`}
+            className="nav-link"
+            style={{
+              paddingInline: 16, paddingBlock: 6, borderRadius: 9999, ...font(14, 500),
+              ...(filter === v
+                ? { background: 'var(--color-fg)', color: 'var(--color-bg)' }
+                : { color: 'var(--color-fg-muted)' }),
+            }}
           >
             {label}
           </button>
@@ -60,7 +64,9 @@ export function Activity() {
       </View>
 
       {txns === null ? (
-        <View style={{ display: 'grid', gap: 8 }}>{Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-16 rounded-xl" />)}</View>
+        <View style={{ display: 'grid', gap: 8 }}>
+          {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} style={{ height: 64, borderRadius: 12 }} />)}
+        </View>
       ) : groups.length === 0 ? (
         filter === 'all' ? (
           <EmptyState icon="activity" title="Nothing here yet" body="Your transactions will appear here as you move money." />
@@ -76,9 +82,13 @@ export function Activity() {
         <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 20 }}>
           {groups.map(([day, items]) => (
             <View key={day} style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 8 }}>
-              <p className="text-xs font-medium text-[var(--color-fg-subtle)] px-1">{day}</p>
-              <View className="card divide-y divide-[color:var(--color-border)] overflow-hidden" style={{ display: 'grid' }}>
-                {items.map((e) => <TxnRow key={e.key} txn={e.txn} into={e.into} />)}
+              <p style={{ ...font(12, 500), color: 'var(--color-fg-subtle)', paddingInline: 4 }}>{day}</p>
+              <View className="card" style={{ display: 'grid', overflow: 'hidden' }}>
+                {items.map((e, i) => (
+                  <View key={e.key} style={{ display: 'grid', borderTop: i ? '1px solid var(--color-border)' : undefined }}>
+                    <TxnRow txn={e.txn} into={e.into} />
+                  </View>
+                ))}
               </View>
             </View>
           ))}

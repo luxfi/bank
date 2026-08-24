@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { getConfig, exchangeQuote, exchangeExecute, listTransactions, type Quote } from '@/api/client'
 import { useOverview } from '@/hooks/overview'
-import { Button, Icon, AssetAvatar, PageHeader, SectionHeader, EmptyState, Skeleton } from '@/components/ui'
+import { Button, Icon, AssetAvatar, PageHeader, SectionHeader, EmptyState, Skeleton, font, truncate } from '@/components/ui'
 import { TxnRow } from '@/components/TxnRow'
 import { formatMoney, toMinor } from '@/lib/format'
 import { pair, type Entry } from '@/lib/pair'
@@ -77,45 +77,65 @@ export function Exchange() {
   }
 
   return (
-    <View className="gap-6 md:gap-8" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)' }}>
+    <View className="page" style={{ display: 'grid' }}>
       <PageHeader title="Exchange" subtitle="Convert between currencies and crypto at sandbox rates." />
 
-      {/* Two columns only once both of them fit: the converter needs its width,
-          and a conversion line squeezed beside it wraps its own amounts. */}
-      <View
-        className="gap-6 grid-cols-[minmax(0,1fr)] xl:grid-cols-[minmax(0,28rem)_minmax(0,1fr)]"
-        style={{ display: 'grid', alignItems: 'start' }}
-      >
-      <View className="min-w-0" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 16 }}>
-      <View className="card p-5" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 12 }}>
+      <View className="trade-split" style={{ display: 'grid' }}>
+      <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 16, minWidth: 0 }}>
+      <View className="card" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 12, padding: 20 }}>
         {/* From */}
-        <View className="card-2 p-4" style={{ display: 'grid', gap: 8 }}>
+        <View className="card-2" style={{ display: 'grid', gap: 8, padding: 16 }}>
           <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', alignItems: 'center' }}>
             <span className="label">You pay</span>
-            {fromBal && <button onClick={() => edit(setAmount)(String(fromBal.available / 10 ** fromBal.decimals))} className="text-xs text-[var(--color-fg-muted)] hover:text-[var(--color-fg)]">Max {formatMoney(fromBal.available, from, fromBal.decimals)}</button>}
+            {fromBal && (
+              <button
+                onClick={() => edit(setAmount)(String(fromBal.available / 10 ** fromBal.decimals))}
+                style={{ ...font(12), color: 'var(--color-fg-muted)' }}
+              >
+                Max {formatMoney(fromBal.available, from, fromBal.decimals)}
+              </button>
+            )}
           </View>
           <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', alignItems: 'center', gap: 12 }}>
-            <input className="w-full min-w-0 bg-transparent text-2xl font-semibold tnum outline-none placeholder:text-[var(--color-fg-subtle)]" inputMode="decimal" placeholder="0.00" value={amount} onChange={(e) => edit(setAmount)(e.target.value)} />
+            <input
+              className="tnum bare"
+              style={{ width: '100%', minWidth: 0, background: 'transparent', ...font(24, 600), outline: 'none' }}
+              inputMode="decimal" placeholder="0.00" value={amount} onChange={(e) => edit(setAmount)(e.target.value)}
+            />
             <AssetPicker value={from} onChange={edit(setFrom)} assets={assets} exclude={to} />
           </View>
         </View>
 
         {/* Flip */}
-        <View className="-my-1.5" style={{ display: 'grid', justifyItems: 'center' }}>
-          <button onClick={flip} className="tile w-9 h-9 rounded-full grid place-items-center bg-[var(--color-surface-3)] border z-10" aria-label="Flip currencies">
-            <Icon name="swap" className="w-4 h-4 rotate-90" />
+        <View style={{ display: 'grid', justifyItems: 'center', marginBlock: -6 }}>
+          <button
+            onClick={flip}
+            className="tile"
+            style={{
+              display: 'grid', placeItems: 'center', width: 36, height: 36, borderRadius: 9999,
+              background: 'var(--color-surface-3)', border: '1px solid var(--color-border)', zIndex: 10,
+            }}
+            aria-label="Flip currencies"
+          >
+            <span style={{ display: 'grid', transform: 'rotate(90deg)' }}><Icon name="swap" size={16} /></span>
           </button>
         </View>
 
         {/* To */}
-        <View className="card-2 p-4" style={{ display: 'grid', gap: 8 }}>
+        <View className="card-2" style={{ display: 'grid', gap: 8, padding: 16 }}>
           <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', alignItems: 'center' }}>
             <span className="label">You receive</span>
-            {quoting && <span className="text-xs text-[var(--color-fg-subtle)]">Fetching rate…</span>}
+            {quoting && <span style={{ ...font(12), color: 'var(--color-fg-subtle)' }}>Fetching rate…</span>}
           </View>
           <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', alignItems: 'center', gap: 12 }}>
             {/* Blockified by the grid, so it truncates like the block it replaced. */}
-            <span className="truncate text-2xl font-semibold tnum text-[var(--color-fg)]">
+            <span
+              className="tnum"
+              style={{
+                ...truncate,
+                ...font(24, 600), color: 'var(--color-fg)',
+              }}
+            >
               {quote && fromMinor ? formatMoney(quote.toAmount, to, quote.toDecimals).replace(` ${to}`, '') : '0.00'}
             </span>
             <AssetPicker value={to} onChange={edit(setTo)} assets={assets} exclude={from} />
@@ -123,30 +143,40 @@ export function Exchange() {
         </View>
 
         {quote && (
-          <View className="px-1 text-xs text-[var(--color-fg-muted)]" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', alignItems: 'center' }}>
+          <View
+            style={{
+              display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', alignItems: 'center',
+              paddingInline: 4, fontSize: 12, color: 'var(--color-fg-muted)',
+            }}
+          >
             <span>Rate</span>
             <span className="tnum">1 {from} ≈ {quote.rate.toFixed(quote.rate < 1 ? 4 : 2)} {to}</span>
           </View>
         )}
 
-        {insufficient && fromMinor > 0 && <p className="text-sm text-[var(--color-negative)]">Insufficient {from} balance.</p>}
-        {error && <p className="text-sm text-[var(--color-negative)]">{error}</p>}
+        {insufficient && fromMinor > 0 && <p style={{ ...font(14), color: 'var(--color-negative)' }}>Insufficient {from} balance.</p>}
+        {error && <p style={{ ...font(14), color: 'var(--color-negative)' }}>{error}</p>}
         {done && (
-          <View className="text-sm text-[var(--color-positive)]" style={{ display: 'grid', gridTemplateColumns: 'auto minmax(0,1fr)', alignItems: 'center', gap: 8 }}>
-            <Icon name="check" className="w-4 h-4" />
+          <View
+            style={{
+              display: 'grid', gridTemplateColumns: 'auto minmax(0,1fr)', alignItems: 'center', gap: 8,
+              fontSize: 14, color: 'var(--color-positive)',
+            }}
+          >
+            <Icon name="check" size={16} />
             <span>{done}</span>
           </View>
         )}
 
-        <Button className="w-full" onClick={execute} loading={executing} disabled={!quote || !fromMinor || insufficient}>
+        <Button onClick={execute} loading={executing} disabled={!quote || !fromMinor || insufficient}>
           {from === to ? 'Choose different currencies' : `Convert ${from} → ${to}`}
         </Button>
       </View>
 
-      <p className="text-center text-[0.7rem] text-[var(--color-fg-subtle)]">Sandbox rates include a 0.2% demo spread. Settles instantly.</p>
+      <p style={{ textAlign: 'center', fontSize: 11.2, color: 'var(--color-fg-subtle)' }}>Sandbox rates include a 0.2% demo spread. Settles instantly.</p>
       </View>
 
-      <View className="min-w-0" style={{ display: 'grid' }}><Conversions key={done ?? 'idle'} /></View>
+      <View style={{ display: 'grid', minWidth: 0 }}><Conversions key={done ?? 'idle'} /></View>
       </View>
     </View>
   )
@@ -166,12 +196,18 @@ function Conversions() {
     <section>
       <SectionHeader title="Recent conversions" />
       {entries === null ? (
-        <View style={{ display: 'grid', gap: 8 }}>{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-16 rounded-xl" />)}</View>
+        <View style={{ display: 'grid', gap: 8 }}>
+          {Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} style={{ height: 64, borderRadius: 12 }} />)}
+        </View>
       ) : entries.length === 0 ? (
         <EmptyState icon="swap" title="No conversions yet" body="Trades you make here are listed with the rate you got." />
       ) : (
-        <View className="card divide-y divide-[color:var(--color-border)] overflow-hidden" style={{ display: 'grid' }}>
-          {entries.slice(0, 8).map((e) => <TxnRow key={e.key} txn={e.txn} into={e.into} />)}
+        <View className="card" style={{ display: 'grid', overflow: 'hidden' }}>
+          {entries.slice(0, 8).map((e, i) => (
+            <View key={e.key} style={{ display: 'grid', borderTop: i ? '1px solid var(--color-border)' : undefined }}>
+              <TxnRow txn={e.txn} into={e.into} />
+            </View>
+          ))}
         </View>
       )}
     </section>
@@ -181,14 +217,17 @@ function Conversions() {
 function AssetPicker({ value, onChange, assets, exclude }: { value: string; onChange: (v: string) => void; assets: string[]; exclude?: string }) {
   return (
     <View
-      className="relative rounded-full bg-[var(--color-surface-3)] border pl-1.5 pr-2 py-1.5"
-      style={{ display: 'grid', gridAutoFlow: 'column', alignItems: 'center', gap: 8 }}
+      style={{
+        display: 'grid', gridAutoFlow: 'column', alignItems: 'center', gap: 8,
+        position: 'relative', borderRadius: 9999, background: 'var(--color-surface-3)',
+        border: '1px solid var(--color-border)', paddingLeft: 6, paddingRight: 8, paddingBlock: 6,
+      }}
     >
-      <AssetAvatar code={value} className="w-6 h-6" />
+      <AssetAvatar code={value} size={24} />
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="appearance-none bg-transparent text-sm font-semibold outline-none pr-1 cursor-pointer"
+        style={{ appearance: 'none', background: 'transparent', ...font(14, 600), outline: 'none', paddingRight: 4, cursor: 'pointer' }}
       >
         {assets.filter((a) => a !== exclude).map((a) => <option key={a} value={a}>{a}</option>)}
       </select>
