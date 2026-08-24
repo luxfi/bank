@@ -257,6 +257,34 @@ docker compose up      # builds and runs on port 8070
 
 8070 (matches the existing bank service port mapping in k8s).
 
+## Deploy
+
+Built by platform.hanzo.ai from the root `hanzo.yml` on a push to git.hanzo.ai,
+delivered by cd.hanzo.ai onto `do-sfo3-lux-k8s/lux-bank`: `bankd` + `bank-dash`
+(app.lux.financial) and `bankd-sandbox` + `bank-dash-sandbox`
+(sandbox.lux.financial) advance off the two images `ghcr.io/luxfi/bank` and
+`ghcr.io/luxfi/bank-dash`. The cluster is linux/amd64 (DOKS has no arm64), so
+images build on the amd64 CI runners, never locally on an arm64 box.
+
+Both images are verified to build AND run: `docker build .` (bankd) and
+`docker build app/dash` (bank-dash) complete, and the two containers wired
+together serve the app end to end (dashd proxies `/v1` to bankd via
+`BANK_UPSTREAM`). Both `hanzo.yml` gates pass: bankd `CGO_ENABLED=0 go test`,
+dash `pnpm install --frozen-lockfile` + `tsc --noEmit` + `pnpm build`.
+
+Build invariants (each was a real breaker, now fixed — keep them):
+- bankd links Base with `CGO_ENABLED=0` (pure-Go SQLite with math functions);
+  `CGO_ENABLED=1` makes bankd exit at startup.
+- `app/dash/Dockerfile` copies `.npmrc` before `pnpm install` (the @hanzo/gui
+  umbrella needs `node-linker=hoisted` at install).
+- `app/dash` depends on the published `@luxfi/bank`, not `file:` — the Docker
+  context is `app/dash`, so a sibling `file:` path can't resolve.
+
+To roll a new build the control plane must have `DEPLOY_ENGINE_ENABLED=true` and
+the amd64 CI wired; then `hanzo deploy applications sync lux-bank-{bankd,dash}`
+(or cd auto-reconciles). Sandbox seed self-heals a standing demo account on boot
+(refreshDemoAccount), so a redeploy brings the live demo up to the full surface.
+
 ## Migrating from v1
 
 The old NestJS bank uses these modules that map to our collections:
