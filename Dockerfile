@@ -1,4 +1,7 @@
-FROM golang:1.26.5-alpine AS builder
+# Compile on the machine doing the building and emit for the target arch — the
+# binary is pure Go (CGO_ENABLED=0), so cross-compiling is exact and a
+# multi-arch build never pays to emulate the compiler.
+FROM --platform=$BUILDPLATFORM golang:1.26.5-alpine AS builder
 ENV GOTOOLCHAIN=auto
 
 RUN apk add --no-cache gcc musl-dev git
@@ -34,7 +37,8 @@ COPY . .
 # build to the exact zips already downloaded + summed above.
 # CGO_ENABLED=0 is how Base ships (pure-Go SQLite with math functions built in).
 # With CGO=1 the linked SQLite lacks math functions and bankd fails at startup.
-RUN CGO_ENABLED=0 GOPROXY=off go build -o /bankd ./cmd/bankd
+ARG TARGETARCH
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=$TARGETARCH GOPROXY=off go build -o /bankd ./cmd/bankd
 
 FROM alpine:3.22
 RUN apk add --no-cache ca-certificates

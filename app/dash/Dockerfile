@@ -6,7 +6,9 @@
 # ---- web build ----
 # Node 22: corepack pulls the latest pnpm, which requires the node:sqlite
 # built-in (absent on Node 20).
-FROM node:22-alpine AS web
+# The SPA bundle is arch-independent, so build it once on the build machine
+# rather than under emulation for each target.
+FROM --platform=$BUILDPLATFORM node:22-alpine AS web
 WORKDIR /app
 RUN corepack enable
 # .npmrc carries node-linker=hoisted + the @hanzogui hoist patterns the
@@ -17,13 +19,14 @@ COPY . .
 RUN pnpm build
 
 # ---- server build ----
-FROM golang:1.26.5-alpine AS srv
+FROM --platform=$BUILDPLATFORM golang:1.26.5-alpine AS srv
 ENV GOTOOLCHAIN=auto
 WORKDIR /src
 COPY server/go.mod ./
 RUN go mod download
 COPY server/ ./
-RUN CGO_ENABLED=0 go build -trimpath -ldflags "-s -w" -o /dashd .
+ARG TARGETARCH
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=$TARGETARCH go build -trimpath -ldflags "-s -w" -o /dashd .
 
 # ---- runtime ----
 FROM alpine:3.22
