@@ -32,7 +32,9 @@ COPY . .
 # serve inconsistent bytes for a re-published tag across requests, so re-fetching
 # at build time would reintroduce the checksum mismatch; GOPROXY=off pins the
 # build to the exact zips already downloaded + summed above.
-RUN CGO_ENABLED=1 GOPROXY=off go build -o /bankd ./cmd/bankd
+# CGO_ENABLED=0 is how Base ships (pure-Go SQLite with math functions built in).
+# With CGO=1 the linked SQLite lacks math functions and bankd fails at startup.
+RUN CGO_ENABLED=0 GOPROXY=off go build -o /bankd ./cmd/bankd
 
 FROM alpine:3.22
 RUN apk add --no-cache ca-certificates
