@@ -18,13 +18,13 @@ import (
 
 type cryptoSendReq struct {
 	Asset     string `json:"asset"`
-	Amount    int64  `json:"amount"` // minor units (6 dp for crypto)
+	Amount    Minor  `json:"amount"` // minor units (6 dp for crypto)
 	ToAddress string `json:"toAddress"`
 }
 
 type cryptoDepositReq struct {
 	Asset  string `json:"asset"`
-	Amount int64  `json:"amount"`
+	Amount Minor  `json:"amount"`
 }
 
 // networkName is the on-chain network for the current mode. The literal is

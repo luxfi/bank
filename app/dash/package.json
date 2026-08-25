@@ -1,13 +1,13 @@
 {
   "name": "@luxfi/bank-dash",
-  "private": true,
   "type": "module",
   "packageManager": "pnpm@9.15.0",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "build:lib": "vite build --config vite.lib.config.ts && tsc -p tsconfig.lib.json"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.2.9",
@@ -34,5 +34,25 @@
     "onlyBuiltDependencies": [
       "esbuild"
     ]
+  },
+  "version": "1.0.0",
+  "files": [
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "types": "./lib/src/index.d.ts",
+      "import": "./lib/index.js"
+    },
+    "./style.css": "./lib/index.css"
+  },
+  "peerDependencies": {
+    "react": ">=19",
+    "react-dom": ">=19",
+    "react-router": ">=7",
+    "@hanzo/iam": "*"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

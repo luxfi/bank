@@ -3,8 +3,9 @@ import { Link } from 'react-router'
 import { Wordmark } from '@/components/Brand'
 import { useBrand } from '@/hooks/brand'
 import { useConfig } from '@/lib/config'
-import { getPlans, type Plan } from '@/api/client'
-import { Icon, SandboxBadge, font } from '@/components/ui'
+import { getPlans, listVaults, type Plan, type Vault } from '@/api/client'
+import { AssetAvatar, Icon, SandboxBadge, font, pill, truncate } from '@/components/ui'
+import { formatPercent } from '@/lib/format'
 import { View } from '@/gui'
 
 const STATS: [string, string][] = [
@@ -41,12 +42,27 @@ const glow = (size: number) => ({ position: 'absolute', width: size, height: siz
 
 export function Landing() {
   return (
-    <View className="app-ambience" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', minHeight: '100vh' }}>
+    // The gui runtime paints the body with its own theme, unlayered, so an
+    // inherited foreground stays white whichever brand is resolved. Stating
+    // both ends of the page from the tokens once here is what makes the light
+    // brand real: everything below inherits the brand rather than the runtime.
+    <View
+      className="app-ambience"
+      style={{
+        display: 'grid',
+        alignContent: 'start',
+        gridTemplateColumns: 'minmax(0,1fr)',
+        minHeight: '100vh',
+        color: 'var(--color-fg)',
+        background: 'var(--color-bg)',
+      }}
+    >
       <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', alignContent: 'start', position: 'relative', zIndex: 10 }}>
         <Nav />
         <Hero />
         <Stats />
         <Features />
+        <Liquid />
         <Plans />
         <Closing />
         <Footer />
@@ -177,6 +193,326 @@ function Features() {
         ))}
       </View>
     </section>
+  )
+}
+
+// -- Liquid Protocol ---------------------------------------------------------
+//
+// The other half of "money and crypto, together". A wallet that only holds is
+// a feature; this is what the holding does. It answers the question the crypto
+// card above raises rather than opening a second pitch, so it reads as the
+// bank's lending layer and not as a protocol that happens to share a page.
+
+const BEATS: { icon: string; title: string; body: string }[] = [
+  {
+    // Down then up: what goes in, then what comes out against it.
+    icon: 'arrowDown',
+    title: 'Deposit collateral that already earns',
+    body: 'wstETH, rETH, USDC, stLUX and more go into a Liquid vault and keep earning exactly as they did outside it.',
+  },
+  {
+    icon: 'arrowUp',
+    title: 'Borrow against it, up to 90%',
+    body: 'Draw the vault’s x* token against what you put in. It moves and spends like any other token you hold.',
+  },
+  {
+    icon: 'earn',
+    title: 'The yield goes to the debt',
+    body: 'Mix-Yield Token strategies spread your collateral’s yield across protocols and put all of it against what you owe. Nothing to schedule.',
+  },
+  {
+    icon: 'swap',
+    title: 'Convert back on a fixed cycle',
+    body: 'x* tokens redeem for the underlying through the transmuter over ninety days. Fixed duration, predictable redemption.',
+  },
+]
+
+// Six debt tokens. Which network each one lives on is a fact the catalog owns,
+// so the copy names the four networks and the grid names the tokens.
+const XTOKENS = ['xLUX', 'xETH', 'xUSD', 'xZOO', 'xAI', 'xPARS']
+
+const MYT: [string, string][] = [
+  ['Rocket Pool', 'rETH'],
+  ['Frax', 'sfrxETH'],
+  ['EigenLayer', 'eETH'],
+  ['Tokemak', 'tokeETH'],
+  ['Yearn', 'yvUSDC'],
+  ['Morpho', 'mUSDC'],
+  ['Lux staking', 'stLUX'],
+  ['Zoo staking', 'stZOO'],
+  ['AI compute', 'stAI'],
+  ['Pars staking', 'stPARS'],
+]
+
+// One position, priced twice. The quantities are what hold across the pair —
+// only the dollar column moves — so the two cards print the same ratio.
+const COLLATERAL = 10
+const DEBT = 9
+const PRICES = [3000, 1800]
+// Read off the prices rather than written into the caption, so the sentence
+// cannot drift away from the figures it is describing.
+const DROP = Math.round((1 - Math.min(...PRICES) / Math.max(...PRICES)) * 100)
+
+// Whole dollars here: these figures are round by construction and cents would
+// only add noise to a comparison that is about the ratio.
+const dollars = (n: number) =>
+  n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
+
+// Pool-scale money, cents in ("$295.9M" out).
+const compact = (cents: number) =>
+  new Intl.NumberFormat('en-US', {
+    style: 'currency', currency: 'USD', notation: 'compact', maximumFractionDigits: 1,
+  }).format(cents / 100)
+
+function Liquid() {
+  const [vaults, setVaults] = useState<Vault[] | null>(null)
+  useEffect(() => {
+    listVaults().then(setVaults).catch(() => {})
+  }, [])
+  // A figure this page cannot read is a figure it does not print. The story
+  // below stands on its own; only the live bands wait on the catalog.
+  return (
+    <section className="section" id="liquid">
+      <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', justifyItems: 'center', textAlign: 'center' }}>
+        <span
+          className="chip"
+          style={{
+            ...pill('0.35rem'),
+            color: 'var(--color-accent)',
+            borderColor: 'color-mix(in srgb, var(--color-accent) 35%, transparent)',
+            background: 'color-mix(in srgb, var(--color-accent) 8%, transparent)',
+          }}
+        >
+          Liquid Protocol V3
+        </span>
+        <h2 className="h1" style={{ ...display, marginTop: 16 }}>Your collateral pays the loan back.</h2>
+        <p style={{ ...muted, marginTop: 12, maxWidth: 560 }}>
+          Liquid is Lux’s lending layer, and it sits in the same account as your balances. Deposit
+          collateral that already earns. Borrow x* tokens against it. The yield clears the debt.
+        </p>
+      </View>
+      {vaults?.length ? <Figures vaults={vaults} /> : null}
+      <Beats />
+      <LikeKind />
+      <Machinery />
+      {vaults?.length ? <Vaults vaults={vaults} /> : null}
+    </section>
+  )
+}
+
+// The band reports what the catalog actually publishes. Borrowed and open
+// positions are protocol-wide totals bankd does not serve yet, and a landing
+// page is the last place to guess at them.
+function Figures({ vaults }: { vaults: Vault[] }) {
+  const tvl = vaults.reduce((sum, v) => sum + v.tvlUsd, 0)
+  const apy = vaults.map((v) => v.apy)
+  const rows: [string, string][] = [
+    [compact(tvl), 'Total value locked'],
+    [String(vaults.length), vaults.length === 1 ? 'Vault' : 'Vaults'],
+    [formatPercent(Math.max(...vaults.map((v) => v.maxLtv)) * 100, 0), 'Max LTV'],
+    [`${Math.min(...apy).toFixed(1)}–${Math.max(...apy).toFixed(1)}%`, 'Collateral yield'],
+  ]
+  return (
+    <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12, marginTop: 40 }}>
+      {rows.map(([n, l]) => (
+        <View key={l} className="card-2" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', padding: 20, textAlign: 'center' }}>
+          <p className="h2 tnum" style={display}>{n}</p>
+          <p style={{ ...font(12), ...subtle, marginTop: 4 }}>{l}</p>
+        </View>
+      ))}
+    </View>
+  )
+}
+
+// Four moves that carry their own order: each title picks up the noun the one
+// before it left, so the sequence reads without being counted out.
+function Beats() {
+  return (
+    <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', gap: 16, marginTop: 56 }}>
+      <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16 }}>
+        {BEATS.map((b) => (
+          <View key={b.title} className="card" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', padding: 24 }}>
+            <span style={{ display: 'grid', placeItems: 'center', width: 40, height: 40, borderRadius: 12, background: 'var(--color-surface-2)', border: '1px solid var(--color-border)', color: 'var(--color-fg)', marginBottom: 16 }}>
+              <Icon name={b.icon} size={18} />
+            </span>
+            <h3 style={{ fontWeight: 500 }}>{b.title}</h3>
+            <p style={{ ...font(14), ...muted, marginTop: 6, lineHeight: 1.625 }}>{b.body}</p>
+          </View>
+        ))}
+      </View>
+      <View className="card-2" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', gap: 6, padding: 20 }}>
+        <p style={{ ...font(12, 600), ...subtle, textTransform: 'uppercase', letterSpacing: '0.04em' }}>One path through</p>
+        <p style={{ ...font(14), ...muted, lineHeight: 1.625 }}>
+          Deposit wstETH. Borrow xETH at 90%. Spend the xETH across DeFi while Lido and EigenLayer
+          staking yield clears the loan behind you. Convert xETH back to ETH through the transmuter
+          when you want out.
+        </p>
+      </View>
+    </View>
+  )
+}
+
+// -- Why 90% holds -----------------------------------------------------------
+//
+// The old page asserted "no liquidation fear" and left the reason out. The
+// reason is the most interesting true thing here, so it gets the panel with the
+// glow on it and the arithmetic to back it up.
+
+function LikeKind() {
+  // Debt over collateral, with no price term anywhere in it. That absence is
+  // the argument: the same two quantities give the same ratio at every price,
+  // which is why both cards below print the identical number.
+  const ltv = DEBT / COLLATERAL
+  return (
+    <View className="hero" style={{ ...panel, display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', position: 'relative', marginTop: 56 }}>
+      <div className="accent-glow" style={{ ...glow(420), top: -140, right: -80 }} />
+      <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', position: 'relative', maxWidth: 640 }}>
+        <h3 className="h2" style={display}>Both sides of the loan are the same asset.</h3>
+        <p style={{ ...muted, marginTop: 16, lineHeight: 1.625 }}>
+          You borrow xETH against ETH, never dollars against ETH. When the price of ETH moves, the
+          collateral and the debt move together by the same amount, and the ratio between them does
+          not change.
+        </p>
+        <p style={{ ...muted, marginTop: 12, lineHeight: 1.625 }}>
+          A dollar loan against volatile collateral has a liquidation price: the point where the
+          collateral stops covering what you owe. This loan has no such point. That is what makes
+          90% a safe ceiling rather than a reckless one.
+        </p>
+      </View>
+      <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 12, marginTop: 28, position: 'relative' }}>
+        {PRICES.map((p) => <Priced key={p} price={p} ltv={ltv} />)}
+      </View>
+      <p style={{ ...font(12), ...subtle, marginTop: 16, position: 'relative', lineHeight: 1.625, maxWidth: 640 }}>
+        The same position at two prices, {DROP}% apart. Both sides fall together, so the ratio
+        holds. Yield is the only thing that moves it, and it moves it your way.
+      </p>
+    </View>
+  )
+}
+
+function Priced({ price, ltv }: { price: number; ltv: number }) {
+  const rows: [string, string, number][] = [
+    ['Collateral', `${COLLATERAL} ETH`, COLLATERAL * price],
+    ['Debt', `${DEBT} xETH`, DEBT * price],
+  ]
+  return (
+    <View className="card-2" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', gap: 12, padding: 20 }}>
+      <p style={{ ...font(12), ...subtle }}>ETH at {dollars(price)}</p>
+      <dl style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 8 }}>
+        {rows.map(([label, held, worth]) => (
+          <View key={label} style={{ display: 'grid', gridTemplateColumns: 'auto minmax(0,1fr) auto', alignItems: 'baseline', gap: 12 }}>
+            <dt style={{ ...font(14), ...subtle }}>{label}</dt>
+            <dd className="tnum" style={{ ...font(14), textAlign: 'right' }}>{held}</dd>
+            <dd className="tnum" style={{ ...font(14), ...muted }}>{dollars(worth)}</dd>
+          </View>
+        ))}
+      </dl>
+      <View style={{ display: 'grid', gridTemplateColumns: '1fr auto', alignItems: 'baseline', gap: 12, paddingTop: 12, borderTop: '1px solid var(--color-border)' }}>
+        <span style={{ ...font(14), ...subtle }}>Loan to value</span>
+        <span className="tnum" style={{ ...font(18, 600), color: 'var(--color-positive)' }}>{formatPercent(ltv * 100, 0)}</span>
+      </View>
+    </View>
+  )
+}
+
+// -- What it is built out of -------------------------------------------------
+
+function Machinery() {
+  return (
+    <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', gap: 16, marginTop: 56 }}>
+      <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
+        <View className="card" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', padding: 24 }}>
+          <h3 style={{ fontWeight: 500 }}>x* tokens</h3>
+          <p style={{ ...font(14), ...muted, marginTop: 6, lineHeight: 1.625 }}>
+            The x is for multiplied. Six debt tokens across Lux, Zoo, Hanzo and Pars, each one
+            redeemable for its own underlying.
+          </p>
+          {/* Six tokens read as two rows of three; letting them auto-fit strands
+              the last one on a line of its own at most widths. */}
+          <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'repeat(3, minmax(0,1fr))', gap: 8, marginTop: 16 }}>
+            {XTOKENS.map((t) => (
+              <View key={t} className="card-2" style={{ display: 'grid', placeItems: 'center', paddingBlock: 10 }}>
+                <p style={font(14, 500)}>{t}</p>
+              </View>
+            ))}
+          </View>
+        </View>
+        <View className="card" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', padding: 24 }}>
+          <h3 style={{ fontWeight: 500 }}>Positions are NFTs</h3>
+          <p style={{ ...font(14), ...muted, marginTop: 6, lineHeight: 1.625 }}>
+            Every position is an NFT: transferable, composable, tradeable on any marketplace. The
+            collateral and the debt travel together with the token, so selling the position sells
+            both halves at once.
+          </p>
+        </View>
+      </View>
+      <View className="card" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', padding: 24 }}>
+        <h3 style={{ fontWeight: 500 }}>Mix-Yield Token strategies</h3>
+        <p style={{ ...font(14), ...muted, marginTop: 6, lineHeight: 1.625 }}>
+          Where the collateral actually works. Yield is allocated across these and routed to your
+          debt, so the loan pays down whether or not you are watching.
+        </p>
+        <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: 8, marginTop: 16 }}>
+          {MYT.map(([protocol, ticker]) => (
+            <View key={ticker} className="card-2" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', gap: 2, paddingInline: 12, paddingBlock: 10 }}>
+              <p style={{ ...font(12), ...subtle, ...truncate }}>{protocol}</p>
+              <p style={{ ...font(14, 500), ...truncate }}>{ticker}</p>
+            </View>
+          ))}
+        </View>
+      </View>
+    </View>
+  )
+}
+
+// -- The live catalog --------------------------------------------------------
+//
+// The same card the Earn screen draws, from the same endpoint. A landing page
+// that quotes different vaults than the app behind it reads as two companies.
+
+function Vaults({ vaults }: { vaults: Vault[] }) {
+  return (
+    <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', marginTop: 56 }}>
+      <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', justifyItems: 'center', textAlign: 'center' }}>
+        <h3 className="h2" style={display}>Open vaults</h3>
+        <p style={{ ...muted, marginTop: 12, maxWidth: 512 }}>
+          Each one takes a single collateral and issues its own synthetic against it. Rates are
+          today’s, and they move.
+        </p>
+      </View>
+      {/* Wide enough that four vaults land two by two rather than three and a
+          straggler, and that a vault name never has to truncate. The min() is
+          load-bearing: a bare 380px track cannot shrink under a 390px phone and
+          would push the whole page sideways. */}
+      <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 380px), 1fr))', gap: 16, marginTop: 32 }}>
+        {vaults.map((v) => (
+          <View key={v.id} className="card" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', gap: 16, padding: 20, textAlign: 'left' }}>
+            <View style={{ display: 'grid', gridTemplateColumns: 'auto minmax(0,1fr) auto', alignItems: 'start', gap: 12 }}>
+              <AssetAvatar code={v.underlying} />
+              <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)' }}>
+                <p style={{ fontWeight: 500, ...truncate }}>{v.name}</p>
+                <p style={{ ...font(12), ...subtle, ...truncate }}>{v.collateral} → {v.synthetic}</p>
+              </View>
+              <View style={{ display: 'grid', textAlign: 'right' }}>
+                <p className="tnum" style={{ fontWeight: 500, color: 'var(--color-positive)' }}>{formatPercent(v.apy)}</p>
+                <p style={{ ...font(12), ...subtle }}>APY</p>
+              </View>
+            </View>
+            <p style={{ ...font(14), ...muted, lineHeight: 1.625 }}>{v.description}</p>
+            <dl style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0,1fr))', columnGap: 20 }}>
+              <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', gap: 2 }}>
+                <dt style={{ ...font(12), ...subtle }}>Max LTV</dt>
+                <dd className="tnum" style={{ ...font(14, 500) }}>{formatPercent(v.maxLtv * 100, 0)}</dd>
+              </View>
+              <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', gap: 2 }}>
+                <dt style={{ ...font(12), ...subtle }}>Value locked</dt>
+                <dd className="tnum" style={{ ...font(14, 500) }}>{compact(v.tvlUsd)}</dd>
+              </View>
+            </dl>
+          </View>
+        ))}
+      </View>
+    </View>
   )
 }
 

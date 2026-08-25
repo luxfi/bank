@@ -12,7 +12,7 @@ import (
 
 // openAccount creates a second account owned by ownerID with a USD balance,
 // so a book transfer has a destination the caller also owns.
-func openAccount(t *testing.T, app core.App, ownerID string, usd int64) string {
+func openAccount(t *testing.T, app core.App, ownerID string, usd Minor) string {
 	t.Helper()
 	col, err := app.FindCollectionByNameOrId(collections.AccountCollectionName)
 	if err != nil {

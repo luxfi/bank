@@ -67,24 +67,24 @@ const cryptoDecimals = collections.CryptoDecimals
 var SupportedFiat = []string{"USD", "EUR", "GBP", "JPY", "CHF", "CAD", "AUD", "SGD", "AED", "HKD"}
 var SupportedCrypto = []string{"LUX", "BTC", "ETH", "DAI"}
 
-func isCrypto(cur string) bool                 { return collections.IsCrypto(cur) }
-func decimalsFor(cur string) int               { return collections.DecimalsFor(cur) }
-func unitPriceUSD(cur string) float64          { return collections.UnitPriceUSD(cur) }
-func minorToUSD(minor int64, c string) float64 { return collections.MinorToUSD(minor, c) }
+func isCrypto(cur string) bool             { return collections.IsCrypto(cur) }
+func decimalsFor(cur string) int           { return collections.DecimalsFor(cur) }
+func unitPriceUSD(cur string) float64      { return collections.UnitPriceUSD(cur) }
+func minorToUSD(m Minor, c string) float64 { return collections.MinorToUSD(int64(m), c) }
 
 // usdToMinor converts a USD float value into minor units of cur.
-func usdToMinor(usd float64, cur string) int64 {
+func usdToMinor(usd float64, cur string) Minor {
 	price := unitPriceUSD(cur)
 	if price == 0 {
 		return 0
 	}
-	return int64(math.Round(usd / price * math.Pow10(decimalsFor(cur))))
+	return round[Minor](usd / price * math.Pow10(decimalsFor(cur)))
 }
 
 // convertMinor converts a minor-unit amount from one currency to another,
 // applying a small sandbox spread. Returns the destination minor amount and
 // the effective rate (dst whole units per 1 src whole unit).
-func convertMinor(amount int64, from, to string) (int64, float64) {
+func convertMinor(amount Minor, from, to string) (Minor, float64) {
 	const spread = 0.002 // 0.2% sandbox spread
 	usd := minorToUSD(amount, from) * (1 - spread)
 	dstMinor := usdToMinor(usd, to)
@@ -100,7 +100,7 @@ func convertMinor(amount int64, from, to string) (int64, float64) {
 // -----------------------------------------------------------------------------
 
 // setBalance force-sets an account's balance for a currency (used by seeding).
-func setBalance(app core.App, accountID, currency string, available int64) error {
+func setBalance(app core.App, accountID, currency string, available Minor) error {
 	col, err := app.FindCollectionByNameOrId(collections.BalanceCollectionName)
 	if err != nil {
 		return err
@@ -185,7 +185,6 @@ func release(app core.App, rec *core.Record) error {
 // -----------------------------------------------------------------------------
 // Identity generation (sandbox / testnet)
 // -----------------------------------------------------------------------------
-
 
 // randDigits returns n cryptographically-random decimal digits.
 func randDigits(n int) string {

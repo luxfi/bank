@@ -86,7 +86,7 @@ func TestChainSendMovesRealValue(t *testing.T) {
 	defer cancel()
 
 	fundTreasury(t, c, ctx)
-	const amount = int64(5_000000) // 5 LUX in the ledger's 6dp minor units
+	const amount = Minor(5_000000) // 5 LUX in the ledger's 6dp minor units
 	seedNative(t, c, ctx, c.Address("7", "LUX"), amount*4)
 
 	to := c.Address("8", "LUX")
@@ -143,9 +143,9 @@ func TestChainEarnBorrowAndCeiling(t *testing.T) {
 	// customer holds collateral to deposit.
 	fundTreasury(t, c, ctx)
 	const (
-		collateral  = int64(100_000000) // 100 LUX
-		atCeiling   = int64(90_000000)  // exactly 90% of it
-		overCeiling = int64(1_000000)   // one more, which must not be allowed
+		collateral  = Minor(100_000000) // 100 LUX
+		atCeiling   = Minor(90_000000)  // exactly 90% of it
+		overCeiling = Minor(1_000000)   // one more, which must not be allowed
 	)
 	seedCollateral(t, c, ctx, customer, collateral*2)
 	if err := setBalance(app, acct.Id, "LUX", collateral*2); err != nil {
@@ -265,7 +265,7 @@ func fundTreasury(t *testing.T, c *evmChain, ctx context.Context) {
 }
 
 // seedNative gives an address native coin, in the ledger's minor units.
-func seedNative(t *testing.T, c *evmChain, ctx context.Context, to string, minor int64) {
+func seedNative(t *testing.T, c *evmChain, ctx context.Context, to string, minor Minor) {
 	t.Helper()
 	if _, err := c.submit(ctx, funderKey(t), common.HexToAddress(to), c.toWei(minor, 18), nil); err != nil {
 		t.Fatalf("seed native: %v", err)
@@ -273,7 +273,7 @@ func seedNative(t *testing.T, c *evmChain, ctx context.Context, to string, minor
 }
 
 // seedCollateral gives an address the LUX market's collateral token.
-func seedCollateral(t *testing.T, c *evmChain, ctx context.Context, to string, minor int64) {
+func seedCollateral(t *testing.T, c *evmChain, ctx context.Context, to string, minor Minor) {
 	t.Helper()
 	token := common.HexToAddress(c.deploy.Markets["LUX"].Collateral)
 	dp, err := c.decimals(ctx, token)

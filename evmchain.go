@@ -268,7 +268,7 @@ func (c *evmChain) Address(seed, _ string) string {
 func (c *evmChain) Valid(_, addr string) bool { return validEVMAddress(addr) }
 
 // Balance reads the asset's balance at the account's address, from the chain.
-func (c *evmChain) Balance(seed, asset string) (int64, error) {
+func (c *evmChain) Balance(seed, asset string) (Minor, error) {
 	token, ok := c.assets[strings.ToUpper(asset)]
 	if !ok {
 		return 0, fmt.Errorf("%s is not on %s", asset, c.network)
@@ -301,7 +301,7 @@ func (c *evmChain) Balance(seed, asset string) (int64, error) {
 
 // Send signs a transfer from the account's own key and broadcasts it, then
 // waits for the receipt so the hash it returns is a hash that settled.
-func (c *evmChain) Send(seed, asset, to string, amount int64) (string, error) {
+func (c *evmChain) Send(seed, asset, to string, amount Minor) (string, error) {
 	token, ok := c.assets[strings.ToUpper(asset)]
 	if !ok {
 		return "", fmt.Errorf("%s is not on %s", asset, c.network)
@@ -598,19 +598,19 @@ func (c *evmChain) scale(dp int32) (factor *big.Int, up bool) {
 	return new(big.Int).Exp(big.NewInt(10), big.NewInt(d), nil), true
 }
 
-func (c *evmChain) toWei(minor int64, dp int32) *big.Int {
+func (c *evmChain) toWei(minor Minor, dp int32) *big.Int {
 	factor, up := c.scale(dp)
 	if up {
-		return new(big.Int).Mul(big.NewInt(minor), factor)
+		return new(big.Int).Mul(big.NewInt(int64(minor)), factor)
 	}
-	return new(big.Int).Div(big.NewInt(minor), factor)
+	return new(big.Int).Div(big.NewInt(int64(minor)), factor)
 }
 
 // toMinor converts a chain amount into ledger minor units, and refuses rather
 // than answers when the holding will not fit. Int64 on an oversized big.Int
 // wraps, and a balance that came back negative would satisfy every "is there
 // enough" test in the bank.
-func (c *evmChain) toMinor(amount *big.Int, dp int32) (int64, error) {
+func (c *evmChain) toMinor(amount *big.Int, dp int32) (Minor, error) {
 	factor, up := c.scale(dp)
 	v := new(big.Int)
 	if up {
@@ -621,7 +621,7 @@ func (c *evmChain) toMinor(amount *big.Int, dp int32) (int64, error) {
 	if !v.IsInt64() {
 		return 0, fmt.Errorf("balance %s does not fit the ledger's precision", v)
 	}
-	return v.Int64(), nil
+	return Minor(v.Int64()), nil
 }
 
 // decimals reads and remembers a token's decimals.

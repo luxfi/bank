@@ -16,9 +16,9 @@ import (
 	"time"
 
 	"github.com/hanzoai/base/core"
-	"github.com/luxfi/bank/collections"
-	"github.com/hanzoai/dbx"
 	"github.com/hanzoai/base/tests"
+	"github.com/hanzoai/dbx"
+	"github.com/luxfi/bank/collections"
 	"github.com/luxfi/crypto"
 	"github.com/luxfi/geth/accounts"
 	"github.com/luxfi/geth/common"
@@ -37,14 +37,14 @@ func postRaw(t *testing.T, app *tests.TestApp, h map[string]string, url, body st
 	t.Helper()
 	var out map[string]any
 	run(t, app, tests.ApiScenario{
-		Name:           url,
-		Method:         http.MethodPost,
-		URL:            url,
-		Body:           strings.NewReader(body),
+		Name:            url,
+		Method:          http.MethodPost,
+		URL:             url,
+		Body:            strings.NewReader(body),
 		Headers:         h,
 		ExpectedStatus:  want,
 		ExpectedContent: contains,
-		TestAppFactory: func(testing.TB) *tests.TestApp { return app },
+		TestAppFactory:  func(testing.TB) *tests.TestApp { return app },
 		AfterTestFunc: func(t testing.TB, _ *tests.TestApp, res *http.Response) {
 			dec := res.Body
 			_ = dec
@@ -101,7 +101,7 @@ func TestRedTreasuryDrainOnUnfundedSend(t *testing.T) {
 	treasuryBefore, sinkBefore, customerBefore := bal(treasury), bal(sink), bal(customer)
 	t.Logf("before: treasury=%s customer=%s sink=%s", treasuryBefore, customerBefore, sinkBefore)
 
-	const steal = int64(20_000000) // 20 LUX in the ledger's 6dp minor units
+	const steal = Minor(20_000000) //
 
 	// The bank refuses with 422 — insufficient ledger balance — AFTER the chain
 	// has already moved. That refusal is the point: it proves no ledger record
@@ -265,8 +265,8 @@ func TestRedEarnSummaryMixesUnits(t *testing.T) {
 	s := viewEarnSummary(app, acct.Id)
 
 	ethUSD := unitPriceUSD("ETH")
-	wantCollateral := collections.USDCents(1_000000, "ETH")
-	wantDebt := collections.USDCents(900000, "ETH")
+	wantCollateral := Cents(collections.USDCents(1_000000, "ETH"))
+	wantDebt := Cents(collections.USDCents(900000, "ETH"))
 	wantNet := wantCollateral - wantDebt
 
 	t.Logf("ETH marked at $%.2f", ethUSD)
@@ -300,10 +300,17 @@ func TestRedEarnSummaryMixesUnits(t *testing.T) {
 			pv.LTV, pv.Borrowable)
 	}
 
-	// Control. The old sum — cents plus the raw debt — still goes badly negative
-	// on this same position, so the checks above are testing the arithmetic and
-	// not a case where every way of adding happens to agree.
-	if mixed := s.CollateralUsd - pv.Debt; mixed >= 0 {
+	// Control, and a note on why it needs a cast to exist at all.
+	//
+	// The bug was `CollateralUsd - Debt` — cents minus an amount of ETH. That
+	// line no longer compiles: Cents and Minor are different types now, and Go
+	// refuses the subtraction outright. Writing the control means forcing the
+	// mix by hand, which is the whole point — the only way back to this bug is
+	// to type the word Cents around something that is not.
+	//
+	// It still has to run, so the checks above are known to be testing the
+	// arithmetic rather than a position where both units happen to agree.
+	if mixed := s.CollateralUsd - Cents(pv.Debt); mixed >= 0 {
 		t.Fatalf("cents minus ETH came out at %d, so this position no longer "+
 			"distinguishes the two units and proves nothing", mixed)
 	}
@@ -318,7 +325,7 @@ func TestRedConcurrentSendsShareANonce(t *testing.T) {
 	defer cancel()
 
 	fundTreasury(t, c, ctx)
-	const amount = int64(1_000000)
+	const amount = Minor(1_000000)
 	seedNative(t, c, ctx, c.Address("21", "LUX"), amount*40)
 
 	// Two DIFFERENT payments — different payees, different amounts — which is
@@ -326,9 +333,9 @@ func TestRedConcurrentSendsShareANonce(t *testing.T) {
 	// would collapse to one hash and the node would dedupe them; distinct ones
 	// contend for the same nonce.
 	dests := []string{c.Address("22", "LUX"), c.Address("23", "LUX")}
-	amounts := []int64{amount, amount * 2}
+	amounts := []Minor{amount, amount * 2}
 
-	before := make([]int64, len(dests))
+	before := make([]Minor, len(dests))
 	for i, d := range dests {
 		var err error
 		if before[i], err = c.Balance(fmt.Sprint(22+i), "LUX"); err != nil {
@@ -358,7 +365,7 @@ func TestRedConcurrentSendsShareANonce(t *testing.T) {
 	wg.Wait()
 	close(out)
 
-	claimed := int64(0)
+	claimed := Minor(0)
 	for r := range out {
 		if r.err != nil {
 			t.Logf("payment %d (%d minor) FAILED: %v", r.i, amounts[r.i], r.err)
@@ -368,7 +375,7 @@ func TestRedConcurrentSendsShareANonce(t *testing.T) {
 		t.Logf("payment %d (%d minor) reported SUCCESS: %s", r.i, amounts[r.i], r.hash)
 	}
 
-	settled := int64(0)
+	settled := Minor(0)
 	for i := range dests {
 		after, err := c.Balance(fmt.Sprint(22+i), "LUX")
 		if err != nil {
@@ -500,7 +507,7 @@ func TestRedTreasuryGasFundingSerializes(t *testing.T) {
 	// Two customers, both broke on chain, both with somewhere to send.
 	payers := []string{"31", "32"}
 	dest := c.Address("33", "LUX")
-	const amount = int64(100000)
+	const amount = Minor(100000)
 
 	type res struct {
 		who string
@@ -976,7 +983,7 @@ func TestRedUnitScalingEdges(t *testing.T) {
 		// once read decimals from m.collateral and used that one scalar for every
 		// verb, so burn() and mint() — which take the synthetic — were off by
 		// 1e10. Each verb now names the token that denominates its amount.
-		const oneBTC = int64(1_000000) // 1 BTC in the ledger's 6dp minor units
+		const oneBTC = Minor(1_000000) // 1 BTC in the ledger's 6dp minor units
 		asCollateral, asDebt := c.toWei(oneBTC, 8), c.toWei(oneBTC, 18)
 		if asCollateral.Cmp(big.NewInt(1e8)) != 0 {
 			t.Errorf("1 BTC as 8dp collateral is %s, want 100000000", asCollateral)

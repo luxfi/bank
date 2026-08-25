@@ -27,3 +27,6 @@ mcp/dist/
 # Go test binaries, and the scratch file the review agents pass notes through.
 *.test
 /MEMORY.md
+
+# The library build output; produced by pnpm build:lib.
+app/dash/lib/

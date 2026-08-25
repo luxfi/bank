@@ -146,10 +146,10 @@ func chainSeed(app core.App, acct *core.Record) string {
 	return ""
 }
 
-// ensureWallets creates one wallet per SupportedCrypto asset for an account,
-// each with its own chain-derived deposit address. Idempotent: an asset that
-// already has a wallet is left untouched, so it both provisions new accounts
-// and backfills accounts opened before per-asset wallets existed.
+// ensureWallets holds an account's wallet rows to the chain the bank is running
+// against right now: one row per SupportedCrypto asset, each carrying the
+// deposit address that backend derives for the account. It provisions new
+// accounts and reconciles standing ones, so it is safe to call on every boot.
 //
 // On a real EVM every one of those rows carries the SAME address — an account
 // has one address there and receives the coin and every token at it. The rows
@@ -166,20 +166,52 @@ func ensureWallets(app core.App, acct *core.Record) {
 	}
 	cb := chain()
 	for _, asset := range SupportedCrypto {
-		existing, _ := app.FindFirstRecordByFilter(collections.WalletCollectionName,
+		addr := cb.Address(seed, asset)
+		w, _ := app.FindFirstRecordByFilter(collections.WalletCollectionName,
 			"account = {:a} && currency = {:c}", map[string]any{"a": accountID, "c": asset})
-		if existing != nil {
+		switch {
+		case w == nil:
+			// A chain that cannot answer names no address, and an address the
+			// customer cannot receive at is worse than none at all. The row
+			// appears on the first boot that can answer for it.
+			if addr == "" {
+				continue
+			}
+			w = core.NewRecord(walletColl)
+			w.Set("account", accountID)
+			w.Set("currency", asset)
+			w.Set("walletId", "mpc:"+asset+":"+seed)
+			w.Set("status", "active")
+		case !replaces(cb, w.GetString("address"), addr):
 			continue
 		}
-		w := core.NewRecord(walletColl)
-		w.Set("account", accountID)
-		w.Set("currency", asset)
-		w.Set("walletId", "mpc:"+asset+":"+seed)
-		w.Set("address", cb.Address(seed, asset))
+		// The address and the network it is on are one fact, so they move together.
+		w.Set("address", addr)
 		w.Set("network", cb.Network())
-		w.Set("status", "active")
 		_ = app.Save(w)
 	}
+}
+
+// replaces decides whether a backend's answer may take the place of a deposit
+// address already on record. Written once and trusted forever, a simulated
+// address survived a real chain being configured, and coins sent to it are
+// unrecoverable — nobody holds that key.
+//
+// Only the real chain may overwrite one, because it is the only backend that
+// derives an address from a key the bank holds. A real address over a simulated
+// one recovers an account that could never have been swept; the reverse points a
+// customer at an address nobody can spend from, so the simulation and an
+// unreachable chain leave what they find. An address nobody has answered for yet
+// is empty, and anything that can answer may fill it.
+func replaces(cb ChainBackend, recorded, answer string) bool {
+	if answer == "" || answer == recorded {
+		return false
+	}
+	if recorded == "" {
+		return true
+	}
+	_, live := cb.(*evmChain)
+	return live
 }
 
 // seedBeneficiaries seeds a few verified payment recipients so the Send screen
@@ -274,9 +306,11 @@ func fundSandbox(app core.App, acct *core.Record, holder string) error {
 	return nil
 }
 
-// seedPositions opens a demo vault position (collateral in the vault's
-// underlying minor units, debt in USD cents) directly — seed state, not a
-// user action, so it does not move the wallet balances.
+// seedPositions opens a demo vault position directly — seed state, not a user
+// action, so it does not move the wallet balances. Both sides are counted in
+// minor units of the vault's own asset, the way a like-kind loan is: the debt is
+// the collateral's synthetic, so a ratio of the two is the LTV with no price in
+// it.
 func seedPositions(app core.App, accountID string) {
 	col, err := app.FindCollectionByNameOrId(collections.PositionCollectionName)
 	if err != nil {
@@ -285,10 +319,10 @@ func seedPositions(app core.App, accountID string) {
 	seeds := []struct {
 		vault      string
 		collateral int64 // underlying minor units
-		debt       int64 // USD cents
+		debt       int64 // synthetic owed, minor units of the same asset
 	}{
-		{"stlux", 180_000000, 1_200_00}, // 180 LUX collateral, $1,200 borrowed
-		{"wsteth", 1_500000, 3_000_00},  // 1.5 ETH collateral, $3,000 borrowed
+		{"stlux", 180_000000, 96_000000}, // 180 LUX against 96 xLUX, 53% drawn
+		{"wsteth", 1_500000, 900000},     // 1.5 ETH against 0.9 xETH, 60% drawn
 	}
 	for _, s := range seeds {
 		if positionFor(app, accountID, s.vault) != nil {
@@ -359,7 +393,7 @@ func refreshDemoAccount(app core.App, accountID, seed string) {
 	seedPositions(app, accountID)
 	// Crypto balances added after the account was first funded — set only when
 	// absent so a real (mutated) balance is never clobbered.
-	for cur, amount := range map[string]int64{"BTC": 185_000, "ETH": 3_600000} {
+	for cur, amount := range map[string]Minor{"BTC": 185_000, "ETH": 3_600000} {
 		if b, _ := app.FindFirstRecordByFilter(collections.BalanceCollectionName,
 			"account = {:a} && currency = {:c}", map[string]any{"a": accountID, "c": cur}); b == nil {
 			_ = setBalance(app, accountID, cur, amount)

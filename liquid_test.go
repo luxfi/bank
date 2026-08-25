@@ -46,11 +46,14 @@ func TestEarnFlow(t *testing.T) {
 		ExpectedContent: []string{`"collateralUsd"`, `"borrowable"`},
 	})
 
+	// Amounts are the vault asset's minor units on every verb, so this asks to
+	// borrow 200 LUX against 200 LUX of collateral — the whole of it, past the
+	// 90% the vault lends against.
 	run(t, app, tests.ApiScenario{
 		Name:            "borrowing past the LTV ceiling is refused",
 		Method:          http.MethodPost,
 		URL:             "/v1/bank/earn/borrow",
-		Body:            strings.NewReader(`{"vault":"stlux","amount":99999900}`),
+		Body:            strings.NewReader(`{"vault":"stlux","amount":200000000}`),
 		Headers:         h,
 		ExpectedStatus:  422,
 		ExpectedContent: []string{"over the borrow limit"},

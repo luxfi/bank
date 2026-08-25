@@ -33,11 +33,11 @@ type ChainBackend interface {
 	// Valid reports whether a destination is well formed for an asset here.
 	Valid(asset, addr string) bool
 	// Balance is the asset's balance at the principal's address.
-	Balance(seed, asset string) (int64, error)
+	Balance(seed, asset string) (Minor, error)
 	// Send signs a transfer with the principal's own key, broadcasts it, and
 	// returns the hash once it has settled. The sandbox returns a random hash
 	// and moves nothing.
-	Send(seed, asset, toAddress string, amount int64) (string, error)
+	Send(seed, asset, toAddress string, amount Minor) (string, error)
 	// Market is the lending market for a collateral asset, or nil when this
 	// chain has none and Earn stays on the ledger.
 	Market(asset string) Market
@@ -70,8 +70,8 @@ func (offChain) Network() string                              { return networkNa
 func (offChain) Assets() map[string]string                    { return map[string]string{} }
 func (offChain) Address(string, string) string                { return "" }
 func (offChain) Valid(_, addr string) bool                    { return validEVMAddress(addr) }
-func (offChain) Balance(string, string) (int64, error)        { return 0, errChainDown }
-func (offChain) Send(_, _, _ string, _ int64) (string, error) { return "", errChainDown }
+func (offChain) Balance(string, string) (Minor, error)        { return 0, errChainDown }
+func (offChain) Send(_, _, _ string, _ Minor) (string, error) { return "", errChainDown }
 func (offChain) Market(string) Market                         { return nil }
 
 // simChain simulates the testnet: deterministic display addresses, random tx
@@ -100,11 +100,11 @@ func (simChain) Assets() map[string]string {
 func (simChain) Valid(asset, addr string) bool { return validAddress(asset, addr) }
 
 // Balance: the simulation has no chain to read, so the ledger is the truth.
-func (simChain) Balance(string, string) (int64, error) {
+func (simChain) Balance(string, string) (Minor, error) {
 	return 0, errors.New("no chain configured")
 }
 
-func (simChain) Send(_, asset, _ string, _ int64) (string, error) {
+func (simChain) Send(_, asset, _ string, _ Minor) (string, error) {
 	return txHashFor(asset), nil
 }
 

@@ -39,7 +39,23 @@ export type {
   Txn,
 }
 
-const BASE_URL = import.meta.env.VITE_BANK_API_URL || ''
+// Where bankd is, how a session is proved, and what to do when it refuses.
+// lux.finance takes all three defaults. The Lux Cloud console mounts the same
+// screens inside its own shell and overrides what differs — its API origin, and
+// its own sign-in rather than ours. One client, one set of screens, two hosts.
+let baseUrl = import.meta.env.VITE_BANK_API_URL || ''
+let readToken: () => string | null = sessionToken
+let refuse: () => void = bounceToLogin
+
+export function configure(opts: {
+  url?: string
+  token?: () => string | null
+  unauthorized?: () => void
+}): void {
+  if (opts.url !== undefined) baseUrl = opts.url
+  if (opts.token) readToken = opts.token
+  if (opts.unauthorized) refuse = opts.unauthorized
+}
 
 // The sandbox demo login stores a bankd superuser token under its own key so it
 // never collides with the IAM SDK's token. Either authorizes bankd; the demo
@@ -47,11 +63,21 @@ const BASE_URL = import.meta.env.VITE_BANK_API_URL || ''
 export const DEMO_TOKEN_KEY = 'bank_demo_token'
 
 export function getToken(): string | null {
+  return readToken()
+}
+
+function sessionToken(): string | null {
   try {
     return sessionStorage.getItem(DEMO_TOKEN_KEY) || sessionStorage.getItem(IAM_TOKEN_KEY)
   } catch {
     return null
   }
+}
+
+// Only bounce from inside the authed app: a host that mounts these screens
+// elsewhere has its own sign-in and its own idea of where to send someone.
+function bounceToLogin(): void {
+  if (window.location.pathname.startsWith('/app')) window.location.href = '/login'
 }
 
 // -- Sandbox password login (demo only) --
@@ -70,11 +96,10 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const token = getToken()
   if (token) headers['Authorization'] = `Bearer ${token}`
 
-  const res = await fetch(`${BASE_URL}${path}`, { ...init, headers })
+  const res = await fetch(`${baseUrl}${path}`, { ...init, headers })
 
   if (res.status === 401 || res.status === 403) {
-    // Only bounce to login from inside the authed app.
-    if (window.location.pathname.startsWith('/app')) window.location.href = '/login'
+    refuse()
     const body = await res.json().catch(() => ({}))
     throw new Error(body.message || body.error || 'Unauthorized')
   }

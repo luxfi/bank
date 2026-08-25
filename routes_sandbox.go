@@ -1,7 +1,6 @@
 package bank
 
 import (
-	"math"
 	"net/http"
 	"strings"
 	"time"
@@ -45,8 +44,8 @@ type receivingView struct {
 
 type balanceView struct {
 	Currency  string  `json:"currency"`
-	Available int64   `json:"available"`
-	Held      int64   `json:"held"`
+	Available Minor   `json:"available"`
+	Held      Minor   `json:"held"`
 	Decimals  int     `json:"decimals"`
 	Kind      string  `json:"kind"` // fiat | crypto
 	ValueUSD  float64 `json:"valueUsd"`
@@ -78,7 +77,7 @@ type txView struct {
 	ID        string `json:"id"`
 	Type      string `json:"type"`
 	Direction string `json:"direction"`
-	Amount    int64  `json:"amount"`
+	Amount    Minor  `json:"amount"`
 	Currency  string `json:"currency"`
 	Decimals  int    `json:"decimals"`
 	Status    string `json:"status"`
@@ -108,14 +107,14 @@ func viewBalances(app core.App, accountID string) []balanceView {
 	out := make([]balanceView, 0, len(recs))
 	for _, b := range recs {
 		cur := b.GetString("currency")
-		avail := int64(math.Round(b.GetFloat("available")))
+		avail := money[Minor](b, "available")
 		kind := "fiat"
 		if isCrypto(cur) {
 			kind = "crypto"
 		}
 		out = append(out, balanceView{
 			Currency: cur, Available: avail,
-			Held:     int64(math.Round(b.GetFloat("held"))),
+			Held:     money[Minor](b, "held"),
 			Decimals: decimalsFor(cur), Kind: kind,
 			ValueUSD: minorToUSD(avail, cur),
 		})
@@ -187,7 +186,7 @@ func viewTxns(app core.App, accountID string, limit int) []txView {
 		_ = t.UnmarshalJSONField("metadata", &meta)
 		out = append(out, txView{
 			ID: t.Id, Type: t.GetString("type"), Direction: t.GetString("direction"),
-			Amount:   int64(math.Round(t.GetFloat("amount"))),
+			Amount:   money[Minor](t, "amount"),
 			Currency: cur, Decimals: decimalsFor(cur), Status: t.GetString("status"),
 			Reference: t.GetString("reference"), TxHash: meta.TxHash, Network: meta.Network,
 			Created: t.GetString("created"),
@@ -440,7 +439,7 @@ func writeAudit(app core.App, accountID, actor, action string, detail map[string
 type exchangeReq struct {
 	FromCurrency string `json:"fromCurrency"`
 	ToCurrency   string `json:"toCurrency"`
-	Amount       int64  `json:"amount"` // minor units of FromCurrency
+	Amount       Minor  `json:"amount"` // minor units of FromCurrency
 }
 
 func supportedAsset(cur string) bool {

@@ -181,9 +181,12 @@ function VaultCard({ vault, onOpen }: { vault: VaultView; onOpen: () => void }) 
         <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 12, paddingTop: 4 }}>
           {/* Three figures across when the row can hold them, two when it cannot —
               measured from the track, so no breakpoint has to know about it. */}
+          {/* Both sides of the loan are the same asset, so they are stated in it
+              — the LTV bar below is the ratio of the two numbers above it. The
+              yield is what people compare across vaults, so that one is money. */}
           <dl style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', columnGap: 24, rowGap: 12 }}>
-            <Figure label="Collateral" value={formatUSD(p.collateralUsd / 100)} />
-            <Figure label="Borrowed" value={formatUSD(p.debt / 100)} />
+            <Figure label="Collateral" value={formatMoney(p.collateral, vault.underlying)} />
+            <Figure label="Borrowed" value={formatMoney(p.debt, vault.underlying)} />
             <Figure label="Yield / year" value={formatUSD(p.yieldUsdYear / 100)} tone="positive" />
           </dl>
           <Health ltv={p.ltv} maxLtv={vault.maxLtv} />
@@ -240,8 +243,8 @@ function Health({ ltv, maxLtv }: { ltv: number; maxLtv: number }) {
 
 const ACTIONS: { id: EarnAction; label: string; note: (v: VaultView) => string }[] = [
   { id: 'deposit', label: 'Deposit', note: (v) => `Add ${v.underlying} collateral. It earns ${formatPercent(v.apy)} and backs what you borrow.` },
-  { id: 'borrow', label: 'Borrow', note: (v) => `Draw ${v.synthetic} against your collateral, credited as USD. The yield pays it back.` },
-  { id: 'repay', label: 'Repay', note: (v) => `Clear ${v.synthetic} debt early from your USD balance.` },
+  { id: 'borrow', label: 'Borrow', note: (v) => `Draw ${v.synthetic} against your collateral — it lands in your ${v.underlying} balance, one for one. The yield pays it back.` },
+  { id: 'repay', label: 'Repay', note: (v) => `Clear ${v.synthetic} debt early from your ${v.underlying} balance.` },
   { id: 'withdraw', label: 'Withdraw', note: (v) => `Take ${v.underlying} back out. What stays must still cover the debt.` },
 ]
 
@@ -256,7 +259,9 @@ function VaultDetail({
   const [done, setDone] = useState<string | null>(null)
 
   const p = staked(vault.position) ? vault.position : null
-  const unit = action === 'deposit' || action === 'withdraw' ? vault.underlying : 'USD'
+  // One vault, one asset: collateral, debt and every amount typed into the field
+  // are the same thing counted the same way.
+  const unit = vault.underlying
   const balance = (c: string) => overview?.balances?.find((b) => b.currency === c)?.available ?? 0
   const max = ceilingFor(action, vault, p, balance)
   const minor = amount.trim() ? toMinor(amount, unit) : 0
@@ -303,8 +308,8 @@ function VaultDetail({
           <dl style={{ display: 'grid', gridTemplateColumns: 'repeat(2,minmax(0,1fr))', columnGap: 24, rowGap: 12 }}>
             <Figure label="Collateral" value={formatMoney(p.collateral, vault.underlying)} />
             <Figure label="Value" value={formatUSD(p.collateralUsd / 100)} />
-            <Figure label="Borrowed" value={formatUSD(p.debt / 100)} />
-            <Figure label="Left to borrow" value={formatUSD(p.borrowable / 100)} tone="positive" />
+            <Figure label="Borrowed" value={formatMoney(p.debt, vault.underlying)} />
+            <Figure label="Left to borrow" value={formatMoney(p.borrowable, vault.underlying)} tone="positive" />
           </dl>
           <Health ltv={p.ltv} maxLtv={vault.maxLtv} />
           {p.debt > 0 && (
@@ -403,20 +408,20 @@ function ceilingFor(
     case 'borrow':
       return p?.borrowable ?? 0
     case 'repay':
-      return Math.min(p?.debt ?? 0, balance('USD'))
+      return Math.min(p?.debt ?? 0, balance(vault.underlying))
     case 'withdraw':
       return withdrawable(vault, p)
   }
 }
 
 // Collateral is only free once what stays behind still covers the debt at the
-// vault's LTV.
+// vault's LTV. Debt and collateral are the same asset, so the amount that has to
+// stay is just the debt divided by the ceiling.
 function withdrawable(vault: VaultView, p: Position | null): number {
   if (!p || p.collateral <= 0) return 0
   if (p.debt <= 0) return p.collateral
-  if (p.collateralUsd <= 0 || vault.maxLtv <= 0) return 0
-  const needed = (p.debt * p.collateral) / (vault.maxLtv * p.collateralUsd)
-  return Math.max(0, Math.floor(p.collateral - needed))
+  if (vault.maxLtv <= 0) return 0
+  return Math.max(0, Math.floor(p.collateral - p.debt / vault.maxLtv))
 }
 
 function ceilingLabel(action: EarnAction): string {

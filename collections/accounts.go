@@ -23,7 +23,18 @@ func EnsureAccountCollection(app core.App) error {
 			added = true
 		}
 		if added {
-			return app.Save(existing)
+			// Not app.Save. Base refuses to update any collection whose name
+			// equals its own id — checkUniqueName looks for a collection with
+			// that id and does not exclude the one being saved, so it finds
+			// itself and calls the name a duplicate. Every collection here is
+			// built as NewBaseCollection(name, name), so every one of them is
+			// creatable once and never updatable, and a running bank cannot
+			// take a schema addition without failing to boot.
+			//
+			// Nothing here changes the name, so there is no uniqueness question
+			// to answer. The fields and indexes still go through their own
+			// validation on the way to the table.
+			return app.SaveNoValidate(existing)
 		}
 		return nil
 	}

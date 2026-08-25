@@ -6,8 +6,9 @@ import "github.com/hanzoai/base/core"
 // borrow the vault's synthetic x-token against it up to MaxLTV, and the
 // collateral's yield (APY) flows to repay the debt — a self-repaying loan.
 // This is a curated catalog (like Plans), not user data. Underlying is the
-// balance currency actually moved when depositing (the collateral is that
-// asset in yield-bearing form).
+// balance currency actually moved, in and out and on both sides of the loan:
+// the collateral is that asset in yield-bearing form and the synthetic tracks
+// it at parity, so one vault deals in one asset.
 type Vault struct {
 	ID          string  `json:"id"`
 	Name        string  `json:"name"`
@@ -15,7 +16,7 @@ type Vault struct {
 	Underlying  string  `json:"underlying"` // balance currency moved (LUX, ETH, USD, DAI)
 	Synthetic   string  `json:"synthetic"`  // x-token borrowed against it (xLUX, xETH, xUSD)
 	APY         float64 `json:"apy"`        // collateral yield, percent per year
-	MaxLTV      float64 `json:"maxLtv"`     // borrow ceiling as a fraction of collateral value
+	MaxLTV      float64 `json:"maxLtv"`     // borrow ceiling as a fraction of the collateral itself
 	TVLUsd      int64   `json:"tvlUsd"`     // total value locked, USD cents
 	Description string  `json:"description"`
 }
@@ -47,9 +48,9 @@ var Vaults = []Vault{
 const PositionCollectionName = "positions"
 
 // EnsurePositionCollection creates the positions collection: one record per
-// account per vault, holding deposited collateral (underlying minor units) and
-// outstanding debt (USD cents). Superuser-only; read/written through the
-// authenticated /v1/bank/earn routes.
+// account per vault, holding deposited collateral and outstanding debt, both in
+// minor units of the vault's underlying. Superuser-only; read/written through
+// the authenticated /v1/bank/earn routes.
 func EnsurePositionCollection(app core.App) error {
 	if existing, err := app.FindCollectionByNameOrId(PositionCollectionName); err == nil {
 		if existing.Fields.GetByName("tokenId") == nil {
@@ -73,7 +74,9 @@ func EnsurePositionCollection(app core.App) error {
 		// deposit before borrowing, or a fully repaid loan), and Base treats a
 		// required number's 0 as blank — which would 500 the save.
 		&core.NumberField{Name: "collateral"},
-		// Outstanding borrowed debt, in USD cents.
+		// Outstanding borrowed debt, in the same units as the collateral above:
+		// the market lends that asset's own synthetic at parity, so the two sides
+		// are like-kind and their ratio is the loan-to-value with no price in it.
 		&core.NumberField{Name: "debt"},
 		tokenIDField(),
 		&core.AutodateField{Name: "created", OnCreate: true},
@@ -83,9 +86,8 @@ func EnsurePositionCollection(app core.App) error {
 }
 
 // tokenIDField holds the position NFT that carries this loan on chain, and zero
-// when the position is only a ledger row. It settles which of the two the
-// numbers beside it mean: a chain position is like-kind, so its debt is counted
-// in the vault's own asset, while a ledger position counts debt in USD cents.
+// when the position is only a ledger row — which of the two it is says where the
+// loan lives, not what the numbers beside it mean.
 func tokenIDField() *core.NumberField {
 	return &core.NumberField{Name: "tokenId", OnlyInt: true}
 }

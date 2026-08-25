@@ -18,6 +18,13 @@ import (
 // through the same transaction ledger as everything else (type "earn"); the
 // position record is the vault-specific state. Sandbox settles instantly; a
 // real on-chain Liquid backend drops in behind these routes unchanged.
+//
+// One unit runs through all of it: minor units of the vault's asset. The market
+// lends the collateral's own synthetic at parity, so collateral and debt are
+// like-kind, and everything moved here — deposited, borrowed, repaid, withdrawn
+// — is counted in that single asset. Dollars are a projection taken at the edge
+// for display, kept in the *Usd fields, and never added back to the amounts they
+// were derived from.
 // -----------------------------------------------------------------------------
 
 // vaultByID returns the catalog vault or nil.
@@ -55,56 +62,54 @@ func upsertPosition(app core.App, accountID, vaultID string) (*core.Record, erro
 }
 
 // positionView is the caller's stake in one vault, with the derived numbers the
-// UI needs: values in USD cents, the current loan-to-value, headroom left to
-// borrow, and how long the collateral yield would take to clear the debt.
+// UI needs. The units are in the types now: Minor is the vault's own asset,
+// Cents is what those amounts are worth.
 type positionView struct {
 	Vault         string  `json:"vault"`
-	Collateral    int64   `json:"collateral"`    // underlying minor units
-	CollateralUsd int64   `json:"collateralUsd"` // USD cents
-	Debt          int64   `json:"debt"`          // ledger: USD cents. on chain: the vault's own asset
-	DebtUsd       int64   `json:"debtUsd"`       // USD cents either way
-	LTV           float64 `json:"ltv"`           // debt / collateral, 0..1
-	Borrowable    int64   `json:"borrowable"`    // more that can be borrowed, in Debt's unit
-	YieldUsdYear  int64   `json:"yieldUsdYear"`  // collateral yield per year, USD cents
+	Collateral    Minor   `json:"collateral"`
+	CollateralUsd Cents   `json:"collateralUsd"`
+	Debt          Minor   `json:"debt"`
+	DebtUsd       Cents   `json:"debtUsd"`
+	LTV           float64 `json:"ltv"` // debt / collateral, 0..1
+	Borrowable    Minor   `json:"borrowable"`
+	YieldUsdYear  Cents   `json:"yieldUsdYear"`
 	SelfRepayDays int     `json:"selfRepayDays"` // days for yield to clear the debt (0 if none)
 	TokenID       int64   `json:"tokenId"`       // the position NFT on chain; 0 when ledger-only
 }
 
-// collateralUsdCents values a collateral amount (underlying minor units) in USD cents.
-func collateralUsdCents(v *collections.Vault, collateral int64) int64 {
-	return int64(math.Round(minorToUSD(collateral, v.Underlying) * 100))
+// usd values an amount of the vault's asset — collateral, or the like-kind debt
+// drawn against it. This is the only crossing between the two units, and it
+// needs a price, which is exactly why it should be the only one.
+func usd(v *collections.Vault, m Minor) Cents {
+	return round[Cents](minorToUSD(m, v.Underlying) * 100)
+}
+
+// borrowCeiling is the most debt a collateral holding can carry. Both sides are
+// the same asset — the return type says so — and no price enters it. That is
+// what makes 90% safe: a price move takes both sides with it and cannot move
+// the ratio.
+func borrowCeiling(v *collections.Vault, collateral Minor) Minor {
+	return round[Minor](float64(collateral) * v.MaxLTV)
 }
 
 func viewPosition(v *collections.Vault, p *core.Record) positionView {
-	collateral := int64(math.Round(p.GetFloat("collateral")))
-	debt := int64(math.Round(p.GetFloat("debt")))
-	tokenID := int64(math.Round(p.GetFloat("tokenId")))
-	colUsd := collateralUsdCents(v, collateral)
+	collateral := money[Minor](p, "collateral")
+	debt := money[Minor](p, "debt")
+	colUsd := usd(v, collateral)
 	pv := positionView{
-		Vault: v.ID, Collateral: collateral, CollateralUsd: colUsd, Debt: debt,
-		TokenID: tokenID, YieldUsdYear: int64(math.Round(float64(colUsd) * v.APY / 100)),
+		Vault: v.ID, Collateral: collateral, CollateralUsd: colUsd,
+		Debt: debt, DebtUsd: usd(v, debt),
+		TokenID:      money[int64](p, "tokenId"),
+		YieldUsdYear: round[Cents](float64(colUsd) * v.APY / 100),
 	}
-
-	// A position on chain is like-kind — collateral and debt are the same asset
-	// — so the loan-to-value is the ratio of the two raw amounts and no price
-	// enters it. That is the property that makes the ceiling hold through a
-	// drawdown, and stating it as a division by the collateral rather than by
-	// its dollar value is what keeps it true here too.
-	basis, debtUsd := colUsd, debt
-	if tokenID > 0 {
-		basis = collateral
-		debtUsd = int64(math.Round(minorToUSD(debt, v.Underlying) * 100))
+	if collateral > 0 {
+		pv.LTV = float64(debt) / float64(collateral)
 	}
-	pv.DebtUsd = debtUsd
-
-	if basis > 0 {
-		pv.LTV = float64(debt) / float64(basis)
-	}
-	if ceiling := int64(math.Round(float64(basis) * v.MaxLTV)); ceiling > debt {
+	if ceiling := borrowCeiling(v, collateral); ceiling > debt {
 		pv.Borrowable = ceiling - debt
 	}
 	if debt > 0 && pv.YieldUsdYear > 0 {
-		pv.SelfRepayDays = int(math.Ceil(float64(debtUsd) / float64(pv.YieldUsdYear) * 365))
+		pv.SelfRepayDays = int(math.Ceil(float64(pv.DebtUsd) / float64(pv.YieldUsdYear) * 365))
 	}
 	return pv
 }
@@ -130,12 +135,14 @@ func viewVaults(app core.App, accountID string) []vaultView {
 	return out
 }
 
-// earnSummary is the account-wide Earn position for the dashboard.
+// earnSummary is the account-wide Earn position for the dashboard. Every figure
+// is USD cents: the vaults are denominated in four different assets, so dollars
+// are the only unit a total across them can be stated in.
 type earnSummary struct {
-	CollateralUsd int64   `json:"collateralUsd"`
-	Debt          int64   `json:"debt"`
-	NetUsd        int64   `json:"netUsd"`
-	YieldUsdYear  int64   `json:"yieldUsdYear"`
+	CollateralUsd Cents   `json:"collateralUsd"`
+	DebtUsd       Cents   `json:"debt"`
+	NetUsd        Cents   `json:"netUsd"`
+	YieldUsdYear  Cents   `json:"yieldUsdYear"`
 	Positions     int     `json:"positions"`
 	NetAPY        float64 `json:"netApy"`
 }
@@ -153,11 +160,11 @@ func viewEarnSummary(app core.App, accountID string) earnSummary {
 			continue
 		}
 		s.CollateralUsd += pv.CollateralUsd
-		s.Debt += pv.Debt
+		s.DebtUsd += pv.DebtUsd
 		s.YieldUsdYear += pv.YieldUsdYear
 		s.Positions++
 	}
-	s.NetUsd = s.CollateralUsd - s.Debt
+	s.NetUsd = s.CollateralUsd - s.DebtUsd
 	if s.CollateralUsd > 0 {
 		s.NetAPY = float64(s.YieldUsdYear) / float64(s.CollateralUsd) * 100
 	}
@@ -184,7 +191,7 @@ func registerEarnRoutes(app core.App, g *router.RouterGroup[*core.RequestEvent])
 
 type earnReq struct {
 	Vault  string `json:"vault"`
-	Amount int64  `json:"amount"` // deposit/withdraw: underlying minor units. borrow/repay: USD cents.
+	Amount Minor  `json:"amount"` // the vault's own asset, whichever verb
 }
 
 type earnAct int
@@ -222,23 +229,19 @@ func earnAction(app core.App, act earnAct) func(*core.RequestEvent) error {
 		if m := chain().Market(v.Underlying); m != nil {
 			return earnOnChain(app, e, acct, v, pos, m, act, req.Amount)
 		}
-		collateral := int64(math.Round(pos.GetFloat("collateral")))
-		debt := int64(math.Round(pos.GetFloat("debt")))
+		collateral := money[Minor](pos, "collateral")
+		debt := money[Minor](pos, "debt")
 
-		var moveCurrency, direction, ref string
-		var moveAmount int64
+		var direction, ref string
 		switch act {
 		case actDeposit:
-			moveCurrency, direction, moveAmount = v.Underlying, "debit", req.Amount
-			ref = "Deposit to " + v.Name + " vault"
+			direction, ref = "debit", "Deposit to "+v.Name+" vault"
 			collateral += req.Amount
 		case actBorrow:
-			ceiling := int64(math.Round(float64(collateralUsdCents(v, collateral)) * v.MaxLTV))
-			if debt+req.Amount > ceiling {
+			if debt+req.Amount > borrowCeiling(v, collateral) {
 				return errJSON(e, http.StatusUnprocessableEntity, "over the borrow limit for this collateral")
 			}
-			moveCurrency, direction, moveAmount = "USD", "credit", req.Amount
-			ref = "Borrow " + v.Synthetic
+			direction, ref = "credit", "Borrow "+v.Synthetic
 			debt += req.Amount
 		case actRepay:
 			if req.Amount > debt {
@@ -247,28 +250,27 @@ func earnAction(app core.App, act earnAct) func(*core.RequestEvent) error {
 			if req.Amount == 0 {
 				return errJSON(e, http.StatusUnprocessableEntity, "no debt to repay")
 			}
-			moveCurrency, direction, moveAmount = "USD", "debit", req.Amount
-			ref = "Repay " + v.Synthetic
+			direction, ref = "debit", "Repay "+v.Synthetic
 			debt -= req.Amount
 		case actWithdraw:
 			if req.Amount > collateral {
 				return errJSON(e, http.StatusUnprocessableEntity, "more than the collateral in this vault")
 			}
-			remaining := collateralUsdCents(v, collateral-req.Amount)
-			if int64(math.Round(float64(remaining)*v.MaxLTV)) < debt {
+			if borrowCeiling(v, collateral-req.Amount) < debt {
 				return errJSON(e, http.StatusUnprocessableEntity, "withdrawal would leave the loan undercollateralized")
 			}
-			moveCurrency, direction, moveAmount = v.Underlying, "credit", req.Amount
-			ref = "Withdraw from " + v.Name + " vault"
+			direction, ref = "credit", "Withdraw from "+v.Name+" vault"
 			collateral -= req.Amount
 		}
 
 		// Move the money through a settled earn transaction — this validates a
 		// debit against the live balance (via the payment hooks) and records the
-		// movement in the activity feed.
+		// movement in the activity feed. One vault moves one asset: the synthetic
+		// tracks the underlying at parity, so a borrow lands in that balance and a
+		// repayment comes back out of it.
 		tx, err := newTx(app, map[string]any{
 			"account": acct.Id, "type": "earn", "direction": direction,
-			"amount": moveAmount, "currency": moveCurrency, "status": "pending",
+			"amount": req.Amount, "currency": v.Underlying, "status": "pending",
 			"reference": ref, "metadata": map[string]any{"vault": v.ID},
 		})
 		if err != nil {
@@ -303,19 +305,20 @@ func earnAction(app core.App, act earnAct) func(*core.RequestEvent) error {
 // numbers, it records them — so the ceiling a customer is quoted and the ceiling
 // that is enforced cannot drift apart.
 //
-// The debt here is like-kind: the market issues the collateral asset's own
-// synthetic, so collateral and debt are counted in the same unit and a price
-// move cannot change the ratio between them. That is what makes a 90% ceiling
-// safe, and it is why the ledger's USD-denominated debt does not carry over.
+// The amount arrives in the vault asset's minor units and reaches the market
+// untouched. Debt is like-kind — the market issues the collateral asset's own
+// synthetic — so there is nothing to convert, and no price of ours sizes a loan
+// the protocol will hold someone to.
 func earnOnChain(app core.App, e *core.RequestEvent, acct *core.Record, v *collections.Vault,
-	pos *core.Record, m Market, act earnAct, amount int64) error {
+	pos *core.Record, m Market, act earnAct, amount Minor) error {
 
 	seed := chainSeed(app, acct)
 	if seed == "" {
 		return apis.NewInternalServerError("account has no chain identity", nil)
 	}
+	cb := chain()
 
-	var move func(string, int64) (string, error)
+	var move func(string, Minor) (string, error)
 	var direction, ref string
 	switch act {
 	case actDeposit:
@@ -328,8 +331,25 @@ func earnOnChain(app core.App, e *core.RequestEvent, acct *core.Record, v *colle
 		move, direction, ref = m.Withdraw, "credit", "Withdraw from "+v.Name+" vault"
 	}
 
+	// The ledger reserves first and the chain moves second. A pending debit holds
+	// the funds, so a movement the ledger refuses never reaches a place it cannot
+	// be taken back from — moving first meant the balance check arrived after the
+	// collateral was gone, and the customer read a 422 over money already spent.
+	tx, err := newTx(app, map[string]any{
+		"account": acct.Id, "type": "earn", "direction": direction,
+		"amount": amount, "currency": v.Underlying, "status": "pending",
+		"reference": ref,
+		"metadata":  map[string]any{"vault": v.ID, "network": cb.Network()},
+	})
+	if err != nil {
+		return errJSON(e, http.StatusUnprocessableEntity, err.Error())
+	}
+
 	hash, err := move(seed, amount)
 	if err != nil {
+		if rerr := release(app, tx); rerr != nil {
+			app.Logger().Error("hold survived a refused movement", "tx", tx.Id, "err", rerr)
+		}
 		// The chain refusing a borrow is the borrow limit, not a fault. Say so
 		// in the same words the ledger path uses, so a client sees one contract.
 		if strings.Contains(err.Error(), "Undercollateralized") {
@@ -344,18 +364,13 @@ func earnOnChain(app core.App, e *core.RequestEvent, acct *core.Record, v *colle
 		return apis.NewInternalServerError("position unreadable on chain", err)
 	}
 
-	// The ledger movement mirrors the chain movement so the money shows up in
-	// the activity feed and the balance it came from or went to.
-	tx, err := newTx(app, map[string]any{
-		"account": acct.Id, "type": "earn", "direction": direction,
-		"amount": amount, "currency": v.Underlying, "status": "pending",
-		"reference": ref,
-		"metadata": map[string]any{
-			"vault": v.ID, "txHash": hash, "network": chain().Network(), "tokenId": on.TokenID,
-		},
+	// The receipt and the position NFT are known only once the chain has moved,
+	// so the record the ledger already holds is completed with them.
+	tx.Set("metadata", map[string]any{
+		"vault": v.ID, "txHash": hash, "network": cb.Network(), "tokenId": on.TokenID,
 	})
-	if err != nil {
-		return errJSON(e, http.StatusUnprocessableEntity, err.Error())
+	if err := app.Save(tx); err != nil {
+		return apis.NewInternalServerError("could not record the transaction", err)
 	}
 	if err := settle(app, tx); err != nil {
 		return apis.NewInternalServerError("settlement failed", err)
@@ -371,7 +386,7 @@ func earnOnChain(app core.App, e *core.RequestEvent, acct *core.Record, v *colle
 	return e.JSON(http.StatusOK, map[string]any{
 		"vault":    v.ID,
 		"txHash":   hash,
-		"network":  chain().Network(),
+		"network":  cb.Network(),
 		"position": viewPosition(v, pos),
 		"balances": viewBalances(app, acct.Id),
 	})

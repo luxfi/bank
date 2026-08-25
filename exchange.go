@@ -35,7 +35,7 @@ func forexProvider() string {
 
 // exchangeRate prices `amount` minor units of `from` into minor units of `to`,
 // and returns the effective rate (whole `to` per 1 whole `from`).
-func exchangeRate(ctx context.Context, from, to string, amount int64) (int64, float64, error) {
+func exchangeRate(ctx context.Context, from, to string, amount Minor) (Minor, float64, error) {
 	if Sandbox() {
 		toMinor, rate := convertMinor(amount, from, to)
 		return toMinor, rate, nil
@@ -46,7 +46,7 @@ func exchangeRate(ctx context.Context, from, to string, amount int64) (int64, fl
 	}
 	// whole `from` = amount / 10^fromDp; whole `to` = whole `from` * rate.
 	fromWhole := float64(amount) / math.Pow10(decimalsFor(from))
-	toMinor := int64(math.Round(fromWhole * rate * math.Pow10(decimalsFor(to))))
+	toMinor := round[Minor](fromWhole * rate * math.Pow10(decimalsFor(to)))
 	return toMinor, rate, nil
 }
 

@@ -10,7 +10,14 @@ import config from '../hanzogui.config'
 export function GuiRoot({ children }: { children: ReactNode }) {
   return (
     <GuiProvider config={config} defaultTheme="dark" disableInjectCSS={false}>
-      {children}
+      {/* The runtime paints body from its own theme, unlayered, so it outranks
+          the token rule in @layer base and every colour that INHERITS lands on
+          the wrong brand — white text on the light brand's white page. Colour
+          here belongs to the brand tokens, not to the layout engine, so the
+          root states both and everything inside inherits the right one. */}
+      <View style={{ minHeight: '100vh', color: 'var(--color-fg)', background: 'var(--color-bg)' }}>
+        {children}
+      </View>
     </GuiProvider>
   )
 }

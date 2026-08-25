@@ -26,9 +26,9 @@ import (
 
 // Position is an account's stake in one market, in the bank's minor units.
 type Position struct {
-	Collateral int64 // collateral held, minor units of the market's asset
-	Debt       int64 // synthetic owed, minor units of the same asset
-	Borrowable int64 // headroom left before the chain refuses
+	Collateral Minor // collateral held, in the market's own asset
+	Debt       Minor // synthetic owed, in that same asset
+	Borrowable Minor // headroom left before the chain refuses
 	TokenID    int64 // the position NFT that holds it
 }
 
@@ -36,14 +36,14 @@ type Position struct {
 type Market interface {
 	// Deposit moves collateral from the account into the market, opening a
 	// position if it has none.
-	Deposit(seed string, amount int64) (string, error)
+	Deposit(seed string, amount Minor) (string, error)
 	// Borrow mints the market's synthetic against the position. It fails when
 	// the chain refuses the borrow.
-	Borrow(seed string, amount int64) (string, error)
+	Borrow(seed string, amount Minor) (string, error)
 	// Repay burns synthetic back into the position's debt.
-	Repay(seed string, amount int64) (string, error)
+	Repay(seed string, amount Minor) (string, error)
 	// Withdraw takes collateral back out, as far as the debt allows.
-	Withdraw(seed string, amount int64) (string, error)
+	Withdraw(seed string, amount Minor) (string, error)
 	// Position reads the account's position from the chain.
 	Position(seed string) (Position, error)
 }
@@ -157,7 +157,7 @@ func (m *evmMarket) takes(ctx context.Context) error {
 // and burn move the synthetic. Scaling everything by the collateral's decimals
 // was right only while the two matched; against 8-decimal bridged BTC and an
 // 18-decimal synthetic it burned a ten-billionth of the debt it was asked to.
-func (m *evmMarket) call(seed, method string, unit common.Address, allow *common.Address, amount int64, args func(id *big.Int, wei *big.Int) []any) (string, error) {
+func (m *evmMarket) call(seed, method string, unit common.Address, allow *common.Address, amount Minor, args func(id *big.Int, wei *big.Int) []any) (string, error) {
 	key, err := m.chain.key(seed)
 	if err != nil {
 		return "", err
@@ -192,7 +192,7 @@ func (m *evmMarket) call(seed, method string, unit common.Address, allow *common
 	return m.chain.submit(ctx, key, m.liquid, big.NewInt(0), data)
 }
 
-func (m *evmMarket) Deposit(seed string, amount int64) (string, error) {
+func (m *evmMarket) Deposit(seed string, amount Minor) (string, error) {
 	key, err := m.chain.key(seed)
 	if err != nil {
 		return "", err
@@ -207,7 +207,7 @@ func (m *evmMarket) Deposit(seed string, amount int64) (string, error) {
 	})
 }
 
-func (m *evmMarket) Borrow(seed string, amount int64) (string, error) {
+func (m *evmMarket) Borrow(seed string, amount Minor) (string, error) {
 	key, err := m.chain.key(seed)
 	if err != nil {
 		return "", err
@@ -218,13 +218,13 @@ func (m *evmMarket) Borrow(seed string, amount int64) (string, error) {
 	})
 }
 
-func (m *evmMarket) Repay(seed string, amount int64) (string, error) {
+func (m *evmMarket) Repay(seed string, amount Minor) (string, error) {
 	return m.call(seed, "burn", m.synthetic, &m.synthetic, amount, func(id, wei *big.Int) []any {
 		return []any{wei, id}
 	})
 }
 
-func (m *evmMarket) Withdraw(seed string, amount int64) (string, error) {
+func (m *evmMarket) Withdraw(seed string, amount Minor) (string, error) {
 	key, err := m.chain.key(seed)
 	if err != nil {
 		return "", err
@@ -250,7 +250,7 @@ func (m *evmMarket) Withdraw(seed string, amount int64) (string, error) {
 // to put in front of a customer, so it belongs where the allowance the bank
 // already raises on their behalf belongs. Only the shortfall is wrapped, so
 // collateral the account already holds is spent before its coin is.
-func (m *evmMarket) wrap(key *ecdsa.PrivateKey, owner common.Address, amount int64) error {
+func (m *evmMarket) wrap(key *ecdsa.PrivateKey, owner common.Address, amount Minor) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second)
 	defer cancel()
 	if err := m.prove(ctx); err != nil {
@@ -281,7 +281,7 @@ func (m *evmMarket) wrap(key *ecdsa.PrivateKey, owner common.Address, amount int
 	return nil
 }
 
-func (m *evmMarket) unwrap(key *ecdsa.PrivateKey, amount int64) error {
+func (m *evmMarket) unwrap(key *ecdsa.PrivateKey, amount Minor) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second)
 	defer cancel()
 	wei, err := m.wei(ctx, amount)
@@ -300,7 +300,7 @@ func (m *evmMarket) unwrap(key *ecdsa.PrivateKey, amount int64) error {
 
 // wei is an amount in the collateral's own denomination, which for a wrapping
 // market is also the coin value that mints or burns it, one for one.
-func (m *evmMarket) wei(ctx context.Context, amount int64) (*big.Int, error) {
+func (m *evmMarket) wei(ctx context.Context, amount Minor) (*big.Int, error) {
 	dp, err := m.chain.decimals(ctx, m.collateral)
 	if err != nil {
 		return nil, err
