@@ -7,7 +7,7 @@ import (
 	"github.com/hanzoai/base"
 	"github.com/hanzoai/base/core"
 	"github.com/hanzoai/base/plugins/migratecmd"
-	"github.com/hanzoai/base/plugins/platform"
+	"github.com/hanzoai/base/plugins/org"
 	bank "github.com/luxfi/bank"
 	"github.com/luxfi/bank/collections"
 	"github.com/luxfi/bank/hooks"
@@ -50,10 +50,14 @@ func main() {
 		Dir:          migrationsDir,
 	})
 
-	// Hanzo Platform plugin — wires Lux IAM (lux.id) for OIDC SSO and
-	// activates per-principal SQLite isolation (one encrypted DB per org/user).
-	// Defaults pin the Lux brand; every value overridable via env.
-	platform.MustRegister(app, platform.PlatformConfig{
+	// Hanzo org plugin — wires Lux IAM (lux.id) for OIDC SSO and gives every org
+	// a Base of its own under {DataDir}/orgs/{org}. Defaults pin the Lux brand;
+	// every value overridable via env.
+	//
+	// There is no isolation setting: registering the plugin IS what turns
+	// per-org storage on, because a deployment with orgs and one shared database
+	// is not a shape anyone wants.
+	org.MustRegister(app, org.Config{
 		IAMEndpoint: envOr("IAM_ENDPOINT", "https://lux.id"),
 		// KMS is reached over native ZAP, not HTTP — an http(s) endpoint is
 		// rejected outright. Empty selects the in-cluster ZAP default; set
@@ -63,7 +67,6 @@ func main() {
 		IAMClientSecret:        os.Getenv("IAM_CLIENT_SECRET"),
 		IAMOrg:                 envOr("IAM_ORG", "lux"),
 		IAMApp:                 envOr("IAM_APP", "lux-bank"),
-		PrincipalIsolation:     envOr("PRINCIPAL_ISOLATION", "sqlite"),
 		PrincipalEncryptionKey: os.Getenv("PRINCIPAL_ENCRYPTION_KEY"),
 		OrgStorageEndpoint:     os.Getenv("ORG_STORAGE_ENDPOINT"),
 		OrgStorageBucket:       envOr("ORG_STORAGE_BUCKET", "orgs"),
