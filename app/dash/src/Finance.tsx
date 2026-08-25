@@ -1,5 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router'
 import { BrandProvider } from '@/hooks/brand'
+import { OverviewProvider } from '@/hooks/overview'
+import { Ready } from '@/components/Layout'
+import { GuiRoot } from '@/gui'
 import { Dashboard } from '@/pages/Dashboard'
 import { Accounts } from '@/pages/Accounts'
 import { Cards } from '@/pages/Cards'
@@ -19,23 +22,33 @@ import { Activity } from '@/pages/Activity'
 // The router comes along because the screens link to each other. It is scoped
 // to `basename`, so a host routing by other means keeps everything outside
 // that prefix to itself.
+// Everything the screens stand on comes with them. The layout runtime's theme,
+// the brand tokens, the account the screens read, and the gate that waits for
+// it — all of it lived in the app's own entry file, where a host importing the
+// library could not reach it, and every screen threw on the first hook.
 export function Finance({ basename }: { basename: string }) {
   return (
-    <BrandProvider>
-      <BrowserRouter basename={basename}>
-        <Routes>
-          <Route index element={<Dashboard />} />
-          <Route path="accounts" element={<Accounts />} />
-          <Route path="cards" element={<Cards />} />
-          <Route path="send" element={<Send />} />
-          <Route path="exchange" element={<Exchange />} />
-          <Route path="wallet" element={<Wallet />} />
-          <Route path="earn" element={<Earn />} />
-          <Route path="activity" element={<Activity />} />
-          <Route path="*" element={<Navigate to="." replace />} />
-        </Routes>
-      </BrowserRouter>
-    </BrandProvider>
+    <GuiRoot>
+      <BrandProvider>
+        <BrowserRouter basename={basename}>
+          <OverviewProvider>
+            <Ready>
+              <Routes>
+                <Route index element={<Dashboard />} />
+                <Route path="accounts" element={<Accounts />} />
+                <Route path="cards" element={<Cards />} />
+                <Route path="send" element={<Send />} />
+                <Route path="exchange" element={<Exchange />} />
+                <Route path="wallet" element={<Wallet />} />
+                <Route path="earn" element={<Earn />} />
+                <Route path="activity" element={<Activity />} />
+                <Route path="*" element={<Navigate to="." replace />} />
+              </Routes>
+            </Ready>
+          </OverviewProvider>
+        </BrowserRouter>
+      </BrandProvider>
+    </GuiRoot>
   )
 }
 

@@ -17,10 +17,23 @@ export default defineConfig({
     alias: { '@': resolve(__dirname, 'src'), 'react-native': 'react-native-web' },
     dedupe: ['react', 'react-dom'],
   },
-  define: { 'process.env.TAMAGUI_TARGET': JSON.stringify('web') },
+  // The runtime reads process.env directly — thirty bare reads of GUI_*, none
+  // of them guarded by a typeof check. The app survives because the build
+  // plugin defines them; a host importing only the compiled artifact hits the
+  // first read and white-screens. Defining the whole object leaves no read
+  // undefined, which is the only way to be sure while they stay unguarded.
+  define: {
+    'process.env.TAMAGUI_TARGET': JSON.stringify('web'),
+    'process.env': '{}',
+    'process.platform': JSON.stringify('browser'),
+  },
   build: {
     outDir: 'lib',
     emptyOutDir: true,
+    // Fonts ship as files. Inlined as base64 they were 205 of the stylesheet's
+    // 219 kB, and a host that imports the nav gets the whole sheet on its
+    // marketing page.
+    assetsInlineLimit: 0,
     lib: { entry: resolve(__dirname, 'src/index.ts'), formats: ['es'], fileName: 'index' },
     rollupOptions: {
       external: ['react', 'react-dom', 'react/jsx-runtime', 'react-router', '@hanzo/iam', '@hanzo/iam/react', '@hanzo/iam/browser'],

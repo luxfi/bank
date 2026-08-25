@@ -10,15 +10,9 @@
     "build:lib": "vite build --config vite.lib.config.ts && tsc -p tsconfig.lib.json"
   },
   "dependencies": {
-    "@fontsource-variable/geist": "^5.2.9",
-    "@fontsource-variable/geist-mono": "^5.2.8",
-    "@hanzo/gui": "8.1.1",
     "@hanzo/iam": "^0.11.0",
-    "@hanzogui/config": "8.1.1",
-    "@luxfi/bank": "^1.4.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-native-web": "^0.21.2",
     "react-router": "^7.0.0"
   },
   "devDependencies": {
@@ -28,7 +22,13 @@
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.0.0",
     "typescript": "^5.8.0",
-    "vite": "^6.0.0"
+    "vite": "^6.0.0",
+    "@fontsource-variable/geist": "^5.2.9",
+    "@fontsource-variable/geist-mono": "^5.2.8",
+    "@hanzo/gui": "8.1.1",
+    "@hanzogui/config": "8.1.1",
+    "@luxfi/bank": "^1.4.0",
+    "react-native-web": "^0.21.2"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

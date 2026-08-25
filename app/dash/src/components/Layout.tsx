@@ -23,12 +23,20 @@ const nav = [
 export function Layout() {
   return (
     <OverviewProvider>
-      <Shell />
+      <Ready>
+        <AppShell />
+      </Ready>
     </OverviewProvider>
   )
 }
 
-function Shell() {
+// Ready draws its children once the account is loaded and open, and until then
+// draws the account's own state: still arriving, unreachable, or not yet
+// opened. Both hosts need this — lux.finance around its own chrome, the Lux
+// Cloud console around none — because what has to be true before a screen can
+// draw is the same either way. Without it a first-time customer meets eight
+// blank frames and no way in.
+export function Ready({ children }: { children: React.ReactNode }) {
   const { overview, loading, error, refresh } = useOverview()
 
   if (loading) {
@@ -59,7 +67,7 @@ function Shell() {
   if (!overview.onboarded) {
     return <Onboarding onDone={refresh} />
   }
-  return <AppShell />
+  return <>{children}</>
 }
 
 function AppShell() {
