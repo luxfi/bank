@@ -128,10 +128,21 @@ func TestRedTreasuryDrainOnUnfundedSend(t *testing.T) {
 	t.Logf("CONFIRMED: %s wei left the bank with no transaction record", movedToSink)
 }
 
-// RED-2: chainIndex is assigned read-max-then-write with no uniqueness
-// constraint and no transaction. Two accounts provisioned concurrently land on
-// the same index — the same derivation path, the same private key, the same
-// address. Either customer's session can spend the other's coins.
+// RED-2, now the guard on its own fix. Claiming a chainIndex is a read of the
+// maximum followed by a write, so accounts opened at the same moment used to
+// take the same number — the same derivation path, address and private key,
+// and either customer's session could spend the other's coins.
+//
+// Two things settle it and BOTH are asserted here, because either alone leaves
+// a hole: the partial unique index refuses the second writer, and the loser
+// retries for a number nobody holds. Without the index they collide; without
+// the retry the loser keeps no index at all and ensureWallets returns early, so
+// the account silently ends up with no wallets.
+//
+// This asserted the BUG — it counted collisions and skipped when it found none.
+// That made it a permanent skip the moment the fix landed: eight runs, eight
+// skips, affirming nothing. What must be true on EVERY run is stated instead,
+// so it passes when the mechanisms hold and fails the moment either goes.
 func TestRedChainIndexCollides(t *testing.T) {
 	app := newBankApp(t)
 
@@ -174,27 +185,27 @@ func TestRedChainIndexCollides(t *testing.T) {
 	close(start)
 	wg.Wait()
 
+	t.Logf("indices assigned: %v", seeds)
+
 	seen := map[string]int{}
-	collisions := 0
 	for i, s := range seeds {
+		// Empty means the account never claimed a number: the retry gave up, and
+		// ensureWallets will return early leaving it with no wallets at all.
 		if s == "" {
-			t.Logf("account %d got NO index (save lost the race)", i)
-			continue
+			t.Fatalf("account %d claimed no chain index — the retry did not find it one", i)
+		}
+		if s == "0" {
+			t.Fatalf("account %d claimed index 0, which belongs to the bank's treasury", i)
 		}
 		if was, dup := seen[s]; dup {
-			collisions++
-			t.Logf("COLLISION: account %d and account %d both hold chainIndex %s"+
-				" — same key, same address, shared balance", i, was, s)
-			continue
+			t.Fatalf("accounts %d and %d both hold chainIndex %s — one derivation path, "+
+				"one address, one balance, two customers", was, i, s)
 		}
 		seen[s] = i
 	}
-	t.Logf("indices assigned: %v", seeds)
-	if collisions == 0 {
-		t.Skip("no collision this run — the race is timing dependent, rerun with -count")
+	if len(seen) != n {
+		t.Fatalf("%d accounts hold %d distinct indices", n, len(seen))
 	}
-	t.Fatalf("CONFIRMED: %d of %d accounts share a chain index (and therefore a private key)",
-		collisions, n)
 }
 
 // RED-3: viewEarnSummary adds a ledger position's debt (USD cents) to a chain
