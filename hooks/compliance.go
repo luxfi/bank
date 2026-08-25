@@ -69,7 +69,19 @@ func RegisterComplianceHooks(app core.App) {
 		// AML screening above threshold — normalized to USD cents so a
 		// high-value crypto send can't slip under a USD threshold (and a
 		// trivial stablecoin transfer isn't needlessly screened).
-		amount := collections.USDCents(int64(math.Round(e.Record.GetFloat("amount"))), e.Record.GetString("currency"))
+		//
+		// The same normalization answers ZERO for a currency it cannot price,
+		// which is below every threshold — so an unpriced transfer of any size
+		// would skip screening entirely, which is the exact evasion the sentence
+		// above says this exists to stop. Screen it rather than price it at
+		// nothing: unable to value is not the same as small. The limit gate in
+		// accounts.go refuses these outright; this does not depend on running
+		// after it.
+		currency := e.Record.GetString("currency")
+		amount := collections.USDCents(int64(math.Round(e.Record.GetFloat("amount"))), currency)
+		if !collections.CanPrice(currency) {
+			amount = amlThreshold
+		}
 		if amount >= amlThreshold {
 			if err := screenAML(app, accountId, e.Record); err != nil {
 				return apis.NewForbiddenError("transaction blocked by AML screening", nil)

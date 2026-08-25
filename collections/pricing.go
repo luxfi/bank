@@ -62,6 +62,26 @@ func MinorToUSD(minor int64, cur string) float64 {
 	return float64(minor) / math.Pow10(DecimalsFor(cur)) * UnitPriceUSD(cur)
 }
 
+// CanPrice reports whether cur has a reference price here.
+//
+// USDCents answers 0 for a currency it cannot price, and 0 clears every
+// USD-denominated ceiling: an unpriced transfer of any size sits below the AML
+// threshold, never exceeds a daily limit, and adds nothing to the running total
+// it should have consumed. The currency field is an unconstrained three-letter
+// string, so "KRW" — which DecimalsFor names while PerUSD carries no rate for it
+// — and "ZZZ" alike arrive priced at nothing.
+//
+// A caller enforcing a limit has to ask this BEFORE trusting the number. A value
+// that cannot be compared is not a small value.
+func CanPrice(cur string) bool {
+	cur = strings.ToUpper(cur)
+	if _, ok := CryptoUSD[cur]; ok {
+		return true
+	}
+	rate, ok := PerUSD[cur]
+	return ok && rate != 0
+}
+
 // USDCents converts a minor-unit amount in cur to integer USD cents — the
 // common unit for comparing transaction value against USD-denominated limits
 // and thresholds regardless of the transacted currency.

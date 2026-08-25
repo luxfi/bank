@@ -87,7 +87,22 @@ func RegisterAccountHooks(app core.App) {
 
 		// Normalize the incoming amount to USD cents so it is comparable to the
 		// USD-denominated limits and the USD-normalized running totals.
-		amount := collections.USDCents(int64(math.Round(e.Record.GetFloat("amount"))), e.Record.GetString("currency"))
+		//
+		// A currency with no reference price normalizes to ZERO, and zero clears
+		// every ceiling below — it would never exceed the daily limit and would
+		// add nothing to the total it should have consumed. The currency field is
+		// an unconstrained three-letter string, so this is reachable by typing
+		// one. A limit cannot be enforced in a unit that cannot be converted, so
+		// the transaction is refused rather than admitted at nothing.
+		currency := e.Record.GetString("currency")
+		if !collections.CanPrice(currency) {
+			app.Logger().Warn("accounts: refusing a transaction in an unpriceable currency",
+				slog.String("accountId", accountId),
+				slog.String("currency", currency),
+			)
+			return apis.NewBadRequestError("currency is not priced by this bank", nil)
+		}
+		amount := collections.USDCents(int64(math.Round(e.Record.GetFloat("amount"))), currency)
 
 		// Check daily limit.
 		dailySpent := getDailySpent(app, accountId)
