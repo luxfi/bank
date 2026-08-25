@@ -35,9 +35,15 @@ func EnsureBalanceCollection(app core.App) error {
 		},
 
 		// Available balance in minor units (cents).
+		//
+		// NOT Required: a required number field refuses its zero value ("available:
+		// cannot be blank"), and zero is the balance every account opens with. The
+		// hook that creates a balance on account creation set it to 0 and was
+		// refused every time — it logs and returns nil, so each new customer was
+		// created with no balance row at all and nothing said so. `held` was never
+		// marked required, which is what the pair should always have looked like.
 		&core.NumberField{
-			Name:     "available",
-			Required: true,
+			Name: "available",
 		},
 
 		// Held (pending) balance in minor units.
