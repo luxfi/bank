@@ -1,15 +1,21 @@
-# The Lux Financial on-chain stack. Nothing is defined in this project — the
-# tokens come from luxfi/standard, the self-repaying-loan protocol from
-# luxfi/liquid, and all this does is broadcast them and record the addresses.
+# The Lux Financial on-chain stack. The tokens come from luxfi/standard and the
+# self-repaying-loan protocol from luxfi/liquid; this broadcasts them, hands the
+# result to its owner, and records the addresses.
 #
-# The two repos disagree on solc: standard pins ^0.8.31, liquid pins 0.8.28.
-# So each step compiles under the pragma of the repo it deploys from, and the
-# steps hand addresses to each other through deploy.json. No contract is ever
-# re-declared to bridge the gap.
+# Two contracts are defined here, both under the protocol's pragma, and both
+# because the shape of this deployment has no expression upstream. Index prices a
+# like-kind market, which neither adapter in the protocol repo can describe.
+# Regent is a market's admin for the one transaction that builds it, so that the
+# deploy key never is.
 #
-#   tokens   (0.8.31)  WLUX, LETH, LBTC, LUSD          -> out/tokens.json
-#   protocol (0.8.28)  a Liquid market per collateral  -> deploy.json
-#   grants   (0.8.31)  LUSD mint rights to each market -> (reads deploy.json)
+# The two repos disagree on solc: standard pins ^0.8.31, liquid pins 0.8.28. So
+# each step compiles under the pragma of the repo it deploys from, and the steps
+# hand addresses to each other through JSON. No contract is ever re-declared to
+# bridge the gap.
+#
+#   tokens   (0.8.31)  collateral and synthetics       -> out/tokens.<chain>.json
+#   protocol (0.8.28)  a Liquid market per collateral  -> deploy/<chain>.json
+#   grants   (0.8.31)  mint rights, then the handover  -> (reads deploy/<chain>.json)
 
 [profile.tokens]
 src = "script/tokens"

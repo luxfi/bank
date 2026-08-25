@@ -3,6 +3,7 @@ pragma solidity ^0.8.31;
 
 import {Script, console} from "forge-std/Script.sol";
 import {WLUX} from "@luxfi/standard/tokens/WLUX.sol";
+import {LRC20B} from "@luxfi/standard/bridge/LRC20B.sol";
 import {BridgedETH} from "@luxfi/standard/bridge/collateral/ETH.sol";
 import {BridgedBTC} from "@luxfi/standard/bridge/collateral/BTC.sol";
 import {LiquidToken} from "@luxfi/standard/liquid/LiquidToken.sol";
@@ -30,25 +31,41 @@ import {LiquidToken} from "@luxfi/standard/liquid/LiquidToken.sol";
 /// documents as the base for exactly these tokens, implements the surface the
 /// protocol actually calls; the LRC20B-based ones would take deposits and never
 /// let the debt be repaid.
+///
+/// The bridged tier leaves here finished: minting it is a bridge's job, so the
+/// only account that can is `OWNER`, and the float this run creates is the
+/// owner's too. The liquid tier does not — its markets do not exist yet, so it
+/// stays under the deploy key until Grants points each synthetic at its market
+/// and hands it over in turn.
 contract Tokens is Script {
     function run() external {
         uint256 pk = vm.envUint("PRIVATE_KEY");
         address deployer = vm.addr(pk);
+        address owner = vm.envAddress("OWNER");
+        require(owner != deployer, "owner is the deploy key");
+
         // Native coin the treasury wraps, so a market has ERC-20 collateral.
         uint256 wrap = vm.envOr("WRAP_NATIVE", uint256(1_000 ether));
-        // Bridged float the treasury holds, standing in for what a bridge mints.
+        // Bridged float the treasury holds, standing in for what a bridge would
+        // mint. Nothing has actually crossed a bridge, so a chain that means its
+        // collateral to be real sets this to zero and waits for the bridge.
         uint256 bridged = vm.envOr("BRIDGE_FLOAT", uint256(1_000 ether));
 
         vm.startBroadcast(pk);
 
         WLUX wlux = new WLUX();
-        wlux.deposit{value: wrap}();
+        if (wrap > 0) {
+            wlux.deposit{value: wrap}();
+            require(wlux.transfer(owner, wrap), "wrapped LUX did not reach the owner");
+        }
 
         BridgedETH eth = new BridgedETH();
-        eth.mint(deployer, bridged);
+        if (bridged > 0) eth.mint(owner, bridged);
+        _hand(eth, deployer, owner);
 
         BridgedBTC btc = new BridgedBTC();
-        btc.mint(deployer, bridged / 1e10); // 8 decimals, not 18
+        if (bridged > 0) btc.mint(owner, bridged / 1e10); // 8 decimals, not 18
+        _hand(btc, deployer, owner);
 
         // Flash fee at the floor the token enforces (1bp). The markets never
         // flash-mint; this only satisfies the constructor's minimum.
@@ -57,6 +74,9 @@ contract Tokens is Script {
         LiquidToken lbtc = new LiquidToken("Liquid BTC", "LBTC", 1);
 
         vm.stopBroadcast();
+
+        _audit(eth, deployer, owner);
+        _audit(btc, deployer, owner);
 
         string memory j = "tokens";
         vm.serializeAddress(j, "WLUX", address(wlux));
@@ -71,5 +91,23 @@ contract Tokens is Script {
         console.log("WLUX", address(wlux));
         console.log("ETH ", address(eth));
         console.log("BTC ", address(btc));
+    }
+
+    /// Moves every power a bridged token grants its deployer over to `owner`.
+    /// Admin goes last: it is what authorizes the rest.
+    function _hand(LRC20B token, address deployer, address owner) internal {
+        token.grantAdmin(owner);
+        token.grantMinter(owner);
+        token.transferOwnership(owner);
+        token.revokeMinter(deployer);
+        token.revokeAdmin(deployer);
+    }
+
+    function _audit(LRC20B token, address deployer, address owner) internal view {
+        require(token.owner() == owner, "bridged token is not the owner's");
+        require(token.hasRole(token.DEFAULT_ADMIN_ROLE(), owner), "owner cannot administer the bridged token");
+        require(token.hasRole(token.MINTER_ROLE(), owner), "owner cannot bridge the token in");
+        require(!token.hasRole(token.DEFAULT_ADMIN_ROLE(), deployer), "deploy key can administer the bridged token");
+        require(!token.hasRole(token.MINTER_ROLE(), deployer), "deploy key can mint collateral");
     }
 }

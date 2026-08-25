@@ -1,0 +1,17 @@
+# The upstream this deployment was driven against and verified on. One line per
+# step: the name of its foundry profile, then a hash over the content of every
+# .sol file in that step's import closure — its own script, the contracts it
+# deploys, and everything those pull in from luxfi/standard and luxfi/liquid.
+#
+# lib/standard and lib/liquid are symlinks to checkouts. A tag would pin the
+# checkout and not the symlink, and a working tree has no tag at all, so what
+# gets recorded here is the thing that actually determines the bytecode: the
+# source. deploy.sh recomputes it and stops before broadcasting anything if the
+# two disagree.
+#
+# Moving a line means the deployed contracts change. Exercise the markets against
+# the new upstream — deposit, borrow, repay, withdraw — before writing it down.
+
+tokens    3038f7b0bf7d7170519329ccdd4b9b7b585e274e69a57c4e505865f283c9b157
+protocol  913cb4a01823218a20bfa8b1c2409808f84f98f4aa31dabfa87214f497470ab4
+grants    5ea124ac6829a1f6b519963120eaedf534b69c4debbf8e20b63f432be0f508aa
