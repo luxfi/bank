@@ -68,8 +68,8 @@ custom HTTP routes, and scheduled jobs.
 | GET | /v1/bank/accounts/{id}/balances | JWT | Multi-currency balance query |
 | GET | /v1/bank/accounts/{id}/wallets | JWT | Wallet list per account |
 | GET | /v1/bank/accounts/{id}/transactions | JWT | Transaction history |
-| POST | /v1/bank/fx/quote | JWT | FX rate quote (proxied to forex service) |
-| POST | /v1/bank/fx/execute | JWT | Execute FX conversion |
+| POST | /v1/bank/exchange/quote | JWT | Price a conversion — fiat FX and crypto alike |
+| POST | /v1/bank/exchange/execute | JWT | Execute the conversion |
 | POST | /v1/bank/webhooks/payments/callback | HMAC | Payment status callback from forex service |
 | GET | /v1/bank/health | None | Health check |
 | GET | /v1/bank/account/summary | JWT | Account summary |
@@ -574,8 +574,8 @@ VITE_BANK_API_URL=http://localhost:8070 pnpm dev
 | POST /v1/base/collections/documents/records | Documents (upload) |
 | GET /v1/bank/accounts/{id}/balances | Dashboard, Accounts |
 | POST /v1/bank/payments/outbound | Payments |
-| POST /v1/bank/fx/quote | Conversions |
-| POST /v1/bank/fx/execute | Conversions |
+| POST /v1/bank/exchange/quote | Conversions |
+| POST /v1/bank/exchange/execute | Conversions |
 
 ### Build
 

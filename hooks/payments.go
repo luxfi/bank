@@ -57,8 +57,19 @@ func RegisterPaymentHooks(app core.App) {
 		accountId := e.Record.GetString("account")
 		currency := e.Record.GetString("currency")
 
-		// Atomic balance check + hold within a transaction to prevent races.
-		err := e.App.RunInTransaction(func(txApp core.App) error {
+		// The hold and the transaction it belongs to commit together or not at
+		// all. Reading the balance and writing the hold in one transaction is
+		// what keeps two concurrent debits from both passing the check — but
+		// that transaction used to close before the rest of the create ran, so
+		// a later refusal (a daily limit, a fee rule) left the money held
+		// against a record that was never written, with nothing left pointing
+		// at it to give it back. Carrying e.Next() inside means the same
+		// refusal now unwinds the hold with it.
+		original := e.App
+		return e.App.RunInTransaction(func(txApp core.App) error {
+			e.App = txApp
+			defer func() { e.App = original }()
+
 			bal, err := txApp.FindFirstRecordByFilter(
 				collections.BalanceCollectionName,
 				`account = {:accountId} && currency = {:currency}`,
@@ -73,22 +84,14 @@ func RegisterPaymentHooks(app core.App) {
 				return apis.NewBadRequestError("insufficient balance", nil)
 			}
 
-			// Floor check: ensure available would not go negative.
-			if available-amount < 0 {
-				return apis.NewBadRequestError("insufficient balance", nil)
-			}
-
-			// Hold funds atomically: available -= amount, held += amount.
 			held := int64(math.Round(bal.GetFloat("held")))
 			bal.Set("available", available-amount)
 			bal.Set("held", held+amount)
-			return txApp.Save(bal)
+			if err := txApp.Save(bal); err != nil {
+				return err
+			}
+			return e.Next()
 		})
-		if err != nil {
-			return err
-		}
-
-		return e.Next()
 	})
 
 	// Post-create: route outbound payments to forex service.
