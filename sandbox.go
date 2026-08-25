@@ -137,17 +137,24 @@ func newTx(app core.App, fields map[string]any) (*core.Record, error) {
 	if err := app.Save(rec); err != nil {
 		return nil, err
 	}
-	return rec, nil
+	// Return a freshly loaded record. The instance just saved still carries its
+	// pre-create snapshot as Original(), so a caller that amends it — to record
+	// a transaction hash, say — would look to the status guard like a move out
+	// of nothing and be refused. Reloading here spares every caller the trap.
+	return app.FindRecordById(collections.TransactionCollectionName, rec.Id)
 }
 
-// settle drives a pending transaction through processing → completed, which
-// runs the real settlement hooks (release debit hold / credit available). This
-// is how sandbox transfers, conversions and card/crypto trades settle instantly.
+// settle drives a pending transaction to completed, running the settlement
+// hooks that release a debit hold or credit available funds. This is how
+// sandbox transfers, conversions and card/crypto trades settle instantly.
 //
-// Each step re-reads the record: a record instance's Original() snapshot is not
-// refreshed between saves, so reusing one instance would make the second
-// transition see a stale "pending" baseline and the status-transition guard
-// would reject pending → completed. Reloading per step keeps the baseline correct.
+// One transition, not two. "processing" is what an external rail reports while
+// it still holds a payment; nothing in the ledger reads it, and the settlement
+// hook fires once on arrival at "completed" either way. Walking through it here
+// bought a second durable write on the hottest path and nothing else.
+//
+// The record is re-read rather than trusted: that is what makes settling twice
+// harmless, and a caller may have amended its copy since.
 func settle(app core.App, rec *core.Record) error {
 	cur, err := app.FindRecordById(collections.TransactionCollectionName, rec.Id)
 	if err != nil {
@@ -156,17 +163,23 @@ func settle(app core.App, rec *core.Record) error {
 	if cur.GetString("status") != "pending" {
 		return nil
 	}
-	for _, next := range []string{"processing", "completed"} {
-		fresh, err := app.FindRecordById(collections.TransactionCollectionName, rec.Id)
-		if err != nil {
-			return err
-		}
-		fresh.Set("status", next)
-		if err := app.Save(fresh); err != nil {
-			return err
-		}
+	cur.Set("status", "completed")
+	return app.Save(cur)
+}
+
+// release fails a pending transaction, returning the funds its hold reserved.
+// It is settle's counterpart: exactly one of the two must run for every pending
+// debit, or money stays held against a movement that never happened.
+func release(app core.App, rec *core.Record) error {
+	fresh, err := app.FindRecordById(collections.TransactionCollectionName, rec.Id)
+	if err != nil {
+		return err
 	}
-	return nil
+	if fresh.GetString("status") != "pending" {
+		return nil
+	}
+	fresh.Set("status", "failed")
+	return app.Save(fresh)
 }
 
 // -----------------------------------------------------------------------------

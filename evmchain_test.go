@@ -224,7 +224,7 @@ func post(t *testing.T, app *tests.TestApp, h map[string]string, url, body strin
 	return out
 }
 
-func principalID(t *testing.T, app core.App) string {
+func principalID(t testing.TB, app core.App) string {
 	t.Helper()
 	su, err := app.FindAuthRecordByEmail(core.CollectionNameSuperusers, "test@lux.financial")
 	if err != nil {

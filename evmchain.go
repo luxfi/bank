@@ -69,16 +69,26 @@ type evmChain struct {
 	mu      sync.Mutex
 	keys    map[string]*ecdsa.PrivateKey
 	tokenDp map[common.Address]int32
+
+	// One key has one nonce sequence, and the treasury's is shared by every
+	// customer it funds. Two concurrent top-ups read the same pending nonce and
+	// the second is rejected as a replacement — so the treasury signs one at a
+	// time. Customers' own sends are unaffected: each has its own key.
+	spend sync.Mutex
 }
 
 // The backend is built once per configured endpoint and reused: dialing and
 // re-reading the address book on every request would be wasteful, but pinning it
 // forever would mean the process could never be pointed anywhere else.
 var (
-	evmMu     sync.Mutex
-	evmInst   *evmChain
-	evmFrom   string
-	evmFailed time.Time
+	evmMu   sync.Mutex
+	evmInst *evmChain
+	evmFrom string
+
+	// The backoff is remembered per endpoint. One shared timestamp meant a
+	// failed dial to one chain suppressed a good dial to another for the whole
+	// window — the process could be re-pointed and would refuse to notice.
+	evmFailed = map[string]time.Time{}
 )
 
 // evmRetryAfter is how long a failed dial is remembered. Dialing happens under
@@ -105,12 +115,12 @@ func evm() *evmChain {
 	if evmInst != nil && evmFrom == rpc {
 		return evmInst
 	}
-	if time.Since(evmFailed) < evmRetryAfter {
+	if time.Since(evmFailed[rpc]) < evmRetryAfter {
 		return nil
 	}
 	c, err := newEVM(rpc)
 	if err != nil {
-		evmFailed = time.Now()
+		evmFailed[rpc] = time.Now()
 		// A configured-but-unreachable chain must not quietly degrade into the
 		// simulation: that would hand a customer a fabricated receipt for a
 		// transfer nothing broadcast. Leave the backend unset so the on-chain
@@ -118,7 +128,8 @@ func evm() *evmChain {
 		evmInst, evmFrom = nil, ""
 		return nil
 	}
-	evmInst, evmFrom, evmFailed = c, rpc, time.Time{}
+	evmInst, evmFrom = c, rpc
+	delete(evmFailed, rpc)
 	return c
 }
 
@@ -275,7 +286,7 @@ func (c *evmChain) Balance(seed, asset string) (int64, error) {
 		if err != nil {
 			return 0, err
 		}
-		return c.toMinor(wei, 18), nil
+		return c.toMinor(wei, 18)
 	}
 	var out *big.Int
 	if err := c.read(ctx, token, erc20ABI, "balanceOf", &out, owner); err != nil {
@@ -285,7 +296,7 @@ func (c *evmChain) Balance(seed, asset string) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-	return c.toMinor(out, dp), nil
+	return c.toMinor(out, dp)
 }
 
 // Send signs a transfer from the account's own key and broadcasts it, then
@@ -329,17 +340,45 @@ func (c *evmChain) Send(seed, asset, to string, amount int64) (string, error) {
 // mnemonic alone and two accounts can never collide onto one address — which is
 // exactly what hashing an account id into an index would eventually do.
 func (c *evmChain) key(seed string) (*ecdsa.PrivateKey, error) {
-	c.mu.Lock()
-	defer c.mu.Unlock()
-	if k, ok := c.keys[seed]; ok {
-		return k, nil
-	}
 	index, err := strconv.ParseUint(strings.TrimSpace(seed), 10, 31)
 	if err != nil {
 		return nil, fmt.Errorf("chain index %q is not a number", seed)
 	}
-	node := c.master
-	for _, step := range append(append(accounts.DerivationPath{}, c.prefix...), uint32(index)) {
+	return c.derive(customer, uint32(index))
+}
+
+// hardened is BIP-32's 2^31 offset, and every step of a bank key's path carries
+// it — the account index included.
+//
+// An unhardened last step runs backwards. CKDpriv is k_i = IL + k_par (mod n),
+// where IL comes from the parent's PUBLIC key and chain code, so anyone holding
+// one child key and the parent xpub subtracts and recovers k_par — and from
+// there every sibling. The xpub is not secret by design; that is the whole point
+// of a watch-only wallet. So one exported customer key would be every customer's
+// key. Hardening derives from the parent's private key instead, and there is
+// nothing to subtract.
+const hardened = uint32(0x80000000)
+
+// Whose money a key signs for. Customers and the bank are different in kind, so
+// they get different branches rather than different numbers on one branch: the
+// treasury is not account zero, and no arithmetic on an account index arrives
+// at it.
+const (
+	customer = uint32(0)
+	treasury = uint32(1)
+)
+
+// derive walks m/9000'/<net>'/<env>'/<branch>'/<index>' and caches the result.
+func (c *evmChain) derive(branch, index uint32) (*ecdsa.PrivateKey, error) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	name := fmt.Sprintf("%d/%d", branch, index)
+	if k, ok := c.keys[name]; ok {
+		return k, nil
+	}
+	node, err := c.master, error(nil)
+	path := append(append(accounts.DerivationPath{}, c.prefix...), branch|hardened, index|hardened)
+	for _, step := range path {
 		if node, err = node.NewChildKey(step); err != nil {
 			return nil, errors.New("key derivation failed")
 		}
@@ -348,7 +387,7 @@ func (c *evmChain) key(seed string) (*ecdsa.PrivateKey, error) {
 	if err != nil {
 		return nil, errors.New("derived key is not a valid signing key")
 	}
-	c.keys[seed] = k
+	c.keys[name] = k
 	return k, nil
 }
 
@@ -360,13 +399,11 @@ func addressOf(key *ecdsa.PrivateKey) common.Address {
 	return common.BytesToAddress(a[:])
 }
 
-// treasuryIndex is the chain index the bank itself holds. Accounts start at 1,
-// so index 0 is never an account and is free to pay everyone's gas.
-const treasuryIndex = "0"
-
 // Treasury is the bank's own address on this chain — the account that holds the
 // deployment and funds gas.
-func (c *evmChain) Treasury() (*ecdsa.PrivateKey, error) { return c.key(treasuryIndex) }
+func (c *evmChain) Treasury() (*ecdsa.PrivateKey, error) {
+	return c.derive(treasury, 0)
+}
 
 // -----------------------------------------------------------------------------
 // Transactions
@@ -402,7 +439,12 @@ func (c *evmChain) submit(ctx context.Context, key *ecdsa.PrivateKey, to common.
 	}
 	gas = gas * 12 / 10
 
-	if err := c.fund(ctx, from, new(big.Int).Add(value, new(big.Int).Mul(feeCap, new(big.Int).SetUint64(gas)))); err != nil {
+	// The treasury pays GAS, and only gas. Putting `value` in here made the bank
+	// the source of the transfer itself: a customer holding nothing could ask to
+	// send any amount and the treasury would hand it over, because a shortfall
+	// was indistinguishable from an empty gas tank. What a customer can send is
+	// what a customer holds.
+	if err := c.fund(ctx, from, new(big.Int).Mul(feeCap, new(big.Int).SetUint64(gas))); err != nil {
 		return "", err
 	}
 
@@ -436,12 +478,11 @@ func (c *evmChain) submit(ctx context.Context, key *ecdsa.PrivateKey, to common.
 // fund tops the sender up from the treasury when it cannot cover a transaction.
 // The treasury funds itself, so it is skipped.
 func (c *evmChain) fund(ctx context.Context, who common.Address, need *big.Int) error {
-	treasury, err := c.Treasury()
+	key, err := c.Treasury()
 	if err != nil {
 		return err
 	}
-	bank := addressOf(treasury)
-	if bank == who {
+	if addressOf(key) == who {
 		return nil
 	}
 	have, err := c.client.BalanceAt(ctx, who, nil)
@@ -451,10 +492,21 @@ func (c *evmChain) fund(ctx context.Context, who common.Address, need *big.Int) 
 	if have.Cmp(need) >= 0 {
 		return nil
 	}
-	// Twice the shortfall, so a customer is not back at the window on their
-	// next transfer.
+	c.spend.Lock()
+	defer c.spend.Unlock()
+	// Re-read under the lock: while this caller waited its turn, the top-up it
+	// was queued behind may already have covered it.
+	if have, err = c.client.BalanceAt(ctx, who, nil); err != nil {
+		return err
+	}
+	if have.Cmp(need) >= 0 {
+		return nil
+	}
+	// Twice the shortfall, so a customer is not back at the window on their next
+	// transfer. `need` is one transaction's fee, so twice it is two — a bounded
+	// amount of the chain's own coin, not a fraction of anyone's balance.
 	top := new(big.Int).Mul(new(big.Int).Sub(need, have), big.NewInt(2))
-	if _, err := c.submit(ctx, treasury, who, top, nil); err != nil {
+	if _, err := c.submit(ctx, key, who, top, nil); err != nil {
 		return fmt.Errorf("gas funding failed: %w", err)
 	}
 	return nil
@@ -533,16 +585,43 @@ var liquidErrors = map[string]string{
 // else, so no caller ever holds a number in the wrong denomination.
 // -----------------------------------------------------------------------------
 
-func (c *evmChain) scale(dp int32) *big.Int {
-	return new(big.Int).Exp(big.NewInt(10), big.NewInt(int64(dp)-int64(cryptoDecimals)), nil)
+// scale is the factor between a token's own units and the ledger's, and whether
+// it is reached by multiplying or dividing. A token with FEWER decimals than the
+// ledger has to divide, which one factor cannot express: big.Int holds no
+// fractions, and Exp with a negative exponent returns 1 — so a 2-decimal token
+// silently scaled by 1 and every amount was ten thousand times too large.
+func (c *evmChain) scale(dp int32) (factor *big.Int, up bool) {
+	d := int64(dp) - int64(cryptoDecimals)
+	if d < 0 {
+		return new(big.Int).Exp(big.NewInt(10), big.NewInt(-d), nil), false
+	}
+	return new(big.Int).Exp(big.NewInt(10), big.NewInt(d), nil), true
 }
 
 func (c *evmChain) toWei(minor int64, dp int32) *big.Int {
-	return new(big.Int).Mul(big.NewInt(minor), c.scale(dp))
+	factor, up := c.scale(dp)
+	if up {
+		return new(big.Int).Mul(big.NewInt(minor), factor)
+	}
+	return new(big.Int).Div(big.NewInt(minor), factor)
 }
 
-func (c *evmChain) toMinor(wei *big.Int, dp int32) int64 {
-	return new(big.Int).Div(wei, c.scale(dp)).Int64()
+// toMinor converts a chain amount into ledger minor units, and refuses rather
+// than answers when the holding will not fit. Int64 on an oversized big.Int
+// wraps, and a balance that came back negative would satisfy every "is there
+// enough" test in the bank.
+func (c *evmChain) toMinor(amount *big.Int, dp int32) (int64, error) {
+	factor, up := c.scale(dp)
+	v := new(big.Int)
+	if up {
+		v.Div(amount, factor)
+	} else {
+		v.Mul(amount, factor)
+	}
+	if !v.IsInt64() {
+		return 0, fmt.Errorf("balance %s does not fit the ledger's precision", v)
+	}
+	return v.Int64(), nil
 }
 
 // decimals reads and remembers a token's decimals.

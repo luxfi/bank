@@ -2,6 +2,10 @@ package bank
 
 import (
 	"context"
+	"crypto/ecdsa"
+	"crypto/hmac"
+	"crypto/sha512"
+	"encoding/binary"
 	"fmt"
 	"math/big"
 	"net/http"
@@ -12,8 +16,14 @@ import (
 	"time"
 
 	"github.com/hanzoai/base/core"
+	"github.com/luxfi/bank/collections"
+	"github.com/hanzoai/dbx"
 	"github.com/hanzoai/base/tests"
+	"github.com/luxfi/crypto"
+	"github.com/luxfi/geth/accounts"
 	"github.com/luxfi/geth/common"
+	bip32 "github.com/luxfi/go-bip32"
+	bip39 "github.com/luxfi/go-bip39"
 )
 
 // -----------------------------------------------------------------------------
@@ -23,7 +33,7 @@ import (
 
 // postRaw is `post` without the content assertions, so a test can look at what
 // actually came back rather than assert a shape up front.
-func postRaw(t *testing.T, app *tests.TestApp, h map[string]string, url, body string, want int) map[string]any {
+func postRaw(t *testing.T, app *tests.TestApp, h map[string]string, url, body string, want int, contains ...string) map[string]any {
 	t.Helper()
 	var out map[string]any
 	run(t, app, tests.ApiScenario{
@@ -31,8 +41,9 @@ func postRaw(t *testing.T, app *tests.TestApp, h map[string]string, url, body st
 		Method:         http.MethodPost,
 		URL:            url,
 		Body:           strings.NewReader(body),
-		Headers:        h,
-		ExpectedStatus: want,
+		Headers:         h,
+		ExpectedStatus:  want,
+		ExpectedContent: contains,
 		TestAppFactory: func(testing.TB) *tests.TestApp { return app },
 		AfterTestFunc: func(t testing.TB, _ *tests.TestApp, res *http.Response) {
 			dec := res.Body
@@ -208,10 +219,14 @@ func TestRedChainIndexCollides(t *testing.T) {
 	}
 }
 
-// RED-3: viewEarnSummary adds a ledger position's debt (USD cents) to a chain
-// position's debt (like-kind minor units of the underlying) in one int64, then
-// subtracts that sum from a USD-cents collateral figure. The dash renders the
-// result as dollars. No chain needed — this is arithmetic.
+// RED-3 (fixed, now a guard): viewEarnSummary added each position's raw debt
+// into a USD-cents running total. Debt is counted in the vault's own asset, so
+// the sum was cents plus ETH — and the dash printed it with a dollar sign: a
+// healthy position at the ceiling read as $5,600 under water on $340 of equity.
+//
+// The summary now takes DebtUsd and nothing else, so both sides of every
+// addition and of the subtraction are cents. No chain needed — this is
+// arithmetic.
 func TestRedEarnSummaryMixesUnits(t *testing.T) {
 	app := newBankApp(t)
 	_, _ = seedPrincipal(t, app)
@@ -250,30 +265,48 @@ func TestRedEarnSummaryMixesUnits(t *testing.T) {
 	s := viewEarnSummary(app, acct.Id)
 
 	ethUSD := unitPriceUSD("ETH")
-	trueCollateralUSD := 1.0 * ethUSD
-	trueDebtUSD := 0.9 * ethUSD
-	trueNetUSD := trueCollateralUSD - trueDebtUSD
+	wantCollateral := collections.USDCents(1_000000, "ETH")
+	wantDebt := collections.USDCents(900000, "ETH")
+	wantNet := wantCollateral - wantDebt
 
 	t.Logf("ETH marked at $%.2f", ethUSD)
 	t.Logf("truth:     collateral $%.2f, debt $%.2f, net $%.2f",
-		trueCollateralUSD, trueDebtUSD, trueNetUSD)
-	t.Logf("position:  collateralUsd=%d cents ($%.2f), debt=%d, debtUsd=%d cents ($%.2f), borrowable=%d",
-		pv.CollateralUsd, float64(pv.CollateralUsd)/100, pv.Debt, pv.DebtUsd,
-		float64(pv.DebtUsd)/100, pv.Borrowable)
-	t.Logf("summary:   collateralUsd=%d, debt=%d, netUsd=%d", s.CollateralUsd, s.Debt, s.NetUsd)
-	t.Logf("dash renders (Earn.tsx:119,130,307):")
-	t.Logf("    Net       = formatUSD(netUsd/100)     = $%.2f   (truth $%.2f)",
-		float64(s.NetUsd)/100, trueNetUSD)
-	t.Logf("    Borrowed  = formatUSD(debt/100)       = $%.2f   (truth $%.2f)",
-		float64(s.Debt)/100, trueDebtUSD)
-	t.Logf("    Left      = formatUSD(borrowable/100) = $%.2f",
-		float64(pv.Borrowable)/100)
+		float64(wantCollateral)/100, float64(wantDebt)/100, float64(wantNet)/100)
+	t.Logf("position:  collateral=%d (%.3f ETH), collateralUsd=%d, debt=%d (%.3f ETH), debtUsd=%d, borrowable=%d",
+		pv.Collateral, float64(pv.Collateral)/1e6, pv.CollateralUsd,
+		pv.Debt, float64(pv.Debt)/1e6, pv.DebtUsd, pv.Borrowable)
+	t.Logf("summary:   collateralUsd=%d, debt=%d, netUsd=%d", s.CollateralUsd, s.DebtUsd, s.NetUsd)
+	t.Logf("dash renders: Net $%.2f · Borrowed $%.2f (hero, USD) · %.3f ETH (per vault, its own asset)",
+		float64(s.NetUsd)/100, float64(s.DebtUsd)/100, float64(pv.Debt)/1e6)
 
-	if s.NetUsd >= 0 {
-		t.Errorf("expected the mixed-unit net to go negative on a healthy position, got %d", s.NetUsd)
+	if s.CollateralUsd != wantCollateral {
+		t.Errorf("summary collateral %d cents, want %d", s.CollateralUsd, wantCollateral)
 	}
-	t.Logf("CONFIRMED: a 90%%-LTV position with $%.2f of real equity is shown as $%.2f",
-		trueNetUSD, float64(s.NetUsd)/100)
+	if s.DebtUsd != wantDebt {
+		t.Errorf("summary debt %d cents, want %d — a debt in ETH reached a dollar total",
+			s.DebtUsd, wantDebt)
+	}
+	if s.NetUsd != wantNet {
+		t.Errorf("summary net %d cents, want %d", s.NetUsd, wantNet)
+	}
+	// The position keeps the debt in the asset it is owed in, and the dollars
+	// beside it. The ratio of the two raw amounts is the LTV, with no price in
+	// it, which is what the 90% ceiling rests on.
+	if pv.Debt != 900000 || pv.DebtUsd != wantDebt {
+		t.Errorf("position debt %d / %d cents, want 900000 / %d", pv.Debt, pv.DebtUsd, wantDebt)
+	}
+	if pv.LTV != 0.9 || pv.Borrowable != 0 {
+		t.Errorf("position at the ceiling reports ltv %v, borrowable %d; want 0.9 and 0",
+			pv.LTV, pv.Borrowable)
+	}
+
+	// Control. The old sum — cents plus the raw debt — still goes badly negative
+	// on this same position, so the checks above are testing the arithmetic and
+	// not a case where every way of adding happens to agree.
+	if mixed := s.CollateralUsd - pv.Debt; mixed >= 0 {
+		t.Fatalf("cents minus ETH came out at %d, so this position no longer "+
+			"distinguishes the two units and proves nothing", mixed)
+	}
 }
 
 // RED-4: two sends from one account at the same time both read the same pending
@@ -524,6 +557,82 @@ func TestRedReceiptMisnamesTheNetwork(t *testing.T) {
 		networkName(), c.Network(), c.chainID)
 }
 
+// RED-1 (fixed, now a guard): the ledger reserves before the chain moves.
+//
+// The send used to broadcast first and check the balance afterwards, so a
+// customer with one micro-LUX could ask for any amount, watch it leave, and
+// then be told "insufficient balance" for money already gone. Worse, the gas
+// top-up counted the transfer's own value as a shortfall and covered twice it
+// out of the treasury — so the bank funded the theft.
+//
+// Point the bank at a chain it cannot reach and the reply says which half ran
+// first: 422 is the ledger refusing before anything was broadcast, 502 is the
+// chain having already been asked.
+func TestRedSendChecksTheLedgerBeforeTheChain(t *testing.T) {
+	t.Setenv("BANK_CHAIN_RPC", "http://10.255.255.1:8645")
+	evmMu.Lock()
+	evmInst, evmFrom = nil, ""
+	evmMu.Unlock()
+	defer func() {
+		evmMu.Lock()
+		evmInst, evmFrom = nil, ""
+		evmMu.Unlock()
+	}()
+
+	if _, off := chain().(offChain); !off {
+		t.Skip("this configuration reaches a chain; the ordering shows in RED-1 proper")
+	}
+
+	app := newBankApp(t)
+	_, token := seedPrincipal(t, app)
+	h := map[string]string{"Authorization": token, "Content-Type": "application/json"}
+	acct := primaryAccount(app, principalID(t, app))
+	if acct == nil {
+		t.Fatal("no account")
+	}
+
+	// One micro-LUX. Base rejects a literal zero on a required number field.
+	if err := setBalance(app, acct.Id, "LUX", 1); err != nil {
+		t.Fatal(err)
+	}
+	before := balanceOf(t, app, acct.Id, "LUX")
+
+	const sink = "0x00000000000000000000000000000000deadbeef"
+	body := `{"asset":"LUX","amount":20000000,"toAddress":"` + sink + `"}`
+	postRaw(t, app, h, "/v1/bank/crypto/send", body, http.StatusUnprocessableEntity,
+		"Insufficient balance")
+
+	// And the reservation left nothing behind: the balance is untouched, and no
+	// transaction stands against it.
+	if after := balanceOf(t, app, acct.Id, "LUX"); after != before {
+		t.Errorf("balance moved on a refused send: %d -> %d", before, after)
+	}
+	txs, err := app.FindRecordsByFilter(collections.TransactionCollectionName,
+		"account = {:a} && currency = 'LUX' && type = 'withdrawal'", "", 0, 0,
+		dbx.Params{"a": acct.Id})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, tx := range txs {
+		if st := tx.GetString("status"); st != "failed" && st != "cancelled" {
+			t.Errorf("a refused send left a %s transaction of %d LUX standing",
+				st, int64(tx.GetFloat("amount")))
+		}
+	}
+}
+
+// balanceOf is the account's available balance in an asset, or zero.
+func balanceOf(t *testing.T, app core.App, accountID, currency string) int64 {
+	t.Helper()
+	recs, err := app.FindRecordsByFilter(collections.BalanceCollectionName,
+		"account = {:a} && currency = {:c}", "", 1, 0,
+		dbx.Params{"a": accountID, "c": currency})
+	if err != nil || len(recs) == 0 {
+		return 0
+	}
+	return int64(recs[0].GetFloat("available"))
+}
+
 // RED-10: when the configured chain is unreachable, evm() holds a process-wide
 // mutex across a dial-and-identify with a 15s timeout. Every request that asks
 // which backend is active queues behind it.
@@ -684,4 +793,210 @@ func TestRedRefuseContract(t *testing.T) {
 		}
 	})
 	reset()
+}
+
+// offlineChain is the key material with no chain behind it. Derivation is pure
+// BIP-32, so the properties that matter about it — hardening, branch
+// separation — hold without an RPC and are checked on every run.
+func offlineChain(t testing.TB) *evmChain {
+	t.Helper()
+	const mnemonic = "test test test test test test test test test test test junk"
+	master, err := bip32.NewMasterKey(bip39.NewSeed(mnemonic, ""))
+	if err != nil {
+		t.Fatal(err)
+	}
+	prefix, err := accounts.ParseDerivationPath("m/9000'/3'/2'")
+	if err != nil {
+		t.Fatal(err)
+	}
+	return &evmChain{master: master, prefix: prefix, keys: map[string]*ecdsa.PrivateKey{}}
+}
+
+// RED-13 (fixed, now a guard): the treasury key was a NON-HARDENED SIBLING of
+// every customer key.
+//
+// BIP-32's CKDpriv for a non-hardened index is k_i = (IL + k_par) mod n, with
+// IL = HMAC-SHA512(chain code, serP(K_par) || ser32(i)) — computable from the
+// parent's extended PUBLIC key, which is not secret material by design. So
+// anyone holding that xpub and ONE customer's private key could solve for k_par
+// and derive every sibling from it, the treasury included.
+//
+// Hardened derivation feeds ser256(k_par) into the HMAC instead of serP(K_par).
+// There is no public input, so there is nothing to subtract. This test runs the
+// attack against the current derivation and requires it to come up empty.
+func TestRedTreasuryKeyRecoverableFromOneCustomerKey(t *testing.T) {
+	c := offlineChain(t)
+
+	// The account-level node, m/9000'/n'/e'. Its public half is what a
+	// watch-only service, a monitoring exporter, or a backup legitimately holds.
+	node := c.master
+	var err error
+	for _, step := range c.prefix {
+		if node, err = node.NewChildKey(step); err != nil {
+			t.Fatal(err)
+		}
+	}
+	branch, err := node.NewChildKey(customer | hardened)
+	if err != nil {
+		t.Fatal(err)
+	}
+	xpub := branch.PublicKey() // public key + chain code. No private material.
+
+	// The leak: one customer's signing key. Index 7 — any index will do.
+	const victim = uint32(7)
+	leakedKey, err := c.key("7")
+	if err != nil {
+		t.Fatal(err)
+	}
+	leaked := new(big.Int).SetBytes(crypto.FromECDSA(leakedKey))
+
+	// The attack: recover the parent as k_par = (k_child - IL) mod n.
+	mac := hmac.New(sha512.New, xpub.ChainCode)
+	mac.Write(xpub.Key) // serP(K_par), 33-byte compressed
+	var idx [4]byte
+	binary.BigEndian.PutUint32(idx[:], victim)
+	mac.Write(idx[:])
+	il := new(big.Int).SetBytes(mac.Sum(nil)[:32])
+
+	n := crypto.S256().Params().N
+	recovered := new(big.Int).Mod(new(big.Int).Sub(leaked, il), n)
+
+	if truth := new(big.Int).SetBytes(branch.Key); recovered.Cmp(truth) == 0 {
+		t.Fatal("the account-level private key fell out of one customer key and the " +
+			"xpub — the final path element is not hardened")
+	}
+
+	// And with the parent out of reach, so is every sibling. Forge ahead with
+	// the wrong parent and confirm it lands nowhere near the treasury.
+	forged := *branch
+	forged.Key = recovered.FillBytes(make([]byte, 32))
+	for _, step := range []uint32{0, hardened, victim, victim | hardened} {
+		guess, err := (&forged).NewChildKey(step)
+		if err != nil {
+			continue // an invalid child is also a failed attack
+		}
+		guessed, err := crypto.ToECDSA(guess.Key)
+		if err != nil {
+			continue
+		}
+		real, err := c.Treasury()
+		if err != nil {
+			t.Fatal(err)
+		}
+		if addressOf(guessed) == addressOf(real) {
+			t.Fatalf("step %d off the forged parent reaches the treasury at %s",
+				step, addressOf(real).Hex())
+		}
+		if addressOf(guessed) == addressOf(leakedKey) {
+			t.Fatalf("step %d off the forged parent reaches the victim's own key", step)
+		}
+	}
+
+	// The treasury is not on the customer branch at all, so no index reaches it.
+	real, err := c.Treasury()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for i := 0; i < 8; i++ {
+		k, err := c.key(fmt.Sprint(i))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if addressOf(k) == addressOf(real) {
+			t.Fatalf("account index %d IS the treasury at %s", i, addressOf(real).Hex())
+		}
+	}
+
+	// Control. The same arithmetic against an UNHARDENED child recovers the
+	// parent exactly — which is what the code used to hand out. Without this,
+	// the checks above would pass just as well if the attack itself were broken.
+	loose, err := branch.NewChildKey(victim)
+	if err != nil {
+		t.Fatal(err)
+	}
+	back := new(big.Int).Mod(new(big.Int).Sub(
+		new(big.Int).SetBytes(loose.Key), il), n)
+	if back.Cmp(new(big.Int).SetBytes(branch.Key)) != 0 {
+		t.Fatal("the recovery arithmetic does not work even against an unhardened " +
+			"child — this test proves nothing about the hardened one")
+	}
+}
+
+// RED-14 (fixed, now a guard): every unit conversion goes through scale().
+// It was 10^(dp-6) computed with big.Int.Exp, and Exp with a negative exponent
+// and a nil modulus returns 1 — silently — so any token with fewer than 6
+// decimals converted by a factor of 1 instead of a fraction. toMinor() also
+// finished with Int64() on a value that need not fit in one.
+func TestRedUnitScalingEdges(t *testing.T) {
+	c := &evmChain{}
+
+	t.Run("fewer decimals than the ledger divides, not scales by 1", func(t *testing.T) {
+		for _, dp := range []int32{0, 2, 4} {
+			factor, up := c.scale(dp)
+			want := new(big.Int).Exp(big.NewInt(10), big.NewInt(int64(cryptoDecimals)-int64(dp)), nil)
+			if up || factor.Cmp(want) != 0 {
+				t.Errorf("dp=%d: scale returned (%s, up=%v), want (%s, up=false)", dp, factor, up, want)
+			}
+			// One whole token of a dp-decimal asset is 10^dp of its own units.
+			one := new(big.Int).Exp(big.NewInt(10), big.NewInt(int64(dp)), nil)
+			if got := c.toWei(1_000000, dp); got.Cmp(one) != 0 {
+				t.Errorf("dp=%d: one token converts to %s, want %s", dp, got, one)
+			}
+		}
+	})
+
+	t.Run("bridged BTC truncates sub-unit value", func(t *testing.T) {
+		// BridgedBTC is 8dp; the ledger counts 6. 199 satoshi is one ledger unit
+		// and 99 satoshi are below the ledger's resolution. Truncation is the
+		// right direction — it never reports money that isn't there.
+		got, err := c.toMinor(big.NewInt(199), 8)
+		if err != nil || got != 1 {
+			t.Fatalf("199 sat -> (%d, %v), want (1, nil)", got, err)
+		}
+		if back := c.toWei(got, 8); back.Cmp(big.NewInt(100)) != 0 {
+			t.Errorf("round trip 199 sat -> %d minor -> %s sat, want 100", got, back)
+		}
+	})
+
+	t.Run("a balance too large for the ledger is an error, not a negative number", func(t *testing.T) {
+		// 10 trillion tokens of an 18dp synthetic. This used to read as
+		// -8446744073709551616 via big.Int.Int64() on a value that does not fit.
+		huge := new(big.Int).Mul(big.NewInt(10_000_000_000_000), big.NewInt(1e18))
+		got, err := c.toMinor(huge, 18)
+		if err == nil {
+			t.Fatalf("a 10e12-token holding reported as %d instead of erroring", got)
+		}
+		if got < 0 {
+			t.Errorf("returned a negative balance %d alongside the error", got)
+		}
+	})
+
+	t.Run("each Earn verb scales by its own token", func(t *testing.T) {
+		// The BTC market: collateral BridgedBTC 8dp, debt LiquidBTC 18dp. call()
+		// once read decimals from m.collateral and used that one scalar for every
+		// verb, so burn() and mint() — which take the synthetic — were off by
+		// 1e10. Each verb now names the token that denominates its amount.
+		const oneBTC = int64(1_000000) // 1 BTC in the ledger's 6dp minor units
+		asCollateral, asDebt := c.toWei(oneBTC, 8), c.toWei(oneBTC, 18)
+		if asCollateral.Cmp(big.NewInt(1e8)) != 0 {
+			t.Errorf("1 BTC as 8dp collateral is %s, want 100000000", asCollateral)
+		}
+		if asDebt.Cmp(new(big.Int).SetUint64(1e18)) != 0 {
+			t.Errorf("1 BTC as 18dp synthetic is %s, want 1e18", asDebt)
+		}
+		src, err := os.ReadFile("evmmarket.go")
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, verb := range []struct{ method, unit string }{
+			{"deposit", "m.collateral"}, {"withdraw", "m.collateral"},
+			{"mint", "m.synthetic"}, {"burn", "m.synthetic"},
+		} {
+			want := `m.call(seed, "` + verb.method + `", ` + verb.unit
+			if !strings.Contains(string(src), want) {
+				t.Errorf("%s must be scaled by %s; no call site matches %q",
+					verb.method, verb.unit, want)
+			}
+		}
+	})
 }

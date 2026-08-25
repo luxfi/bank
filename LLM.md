@@ -187,10 +187,35 @@ position still counts debt in USD cents.
 
 ### On-chain deployment (chain/)
 
-A foundry project that defines nothing and only wires two canonical repos
-together: tokens from `luxfi/standard`, the self-repaying-loan protocol from
-`luxfi/liquid`, reached through `chain/lib/{standard,liquid}` symlinks (repoint a
-symlink to pin a release instead of a working tree).
+A foundry project that wires two canonical repos together: tokens from
+`luxfi/standard`, the self-repaying-loan protocol from `luxfi/liquid`, reached
+through `chain/lib/{standard,liquid}` symlinks. Those point at checkouts, so what
+gets pinned is the source and not a tag: `chain/pins` holds a hash over the
+content of every `.sol` file in each step's import closure, and `deploy.sh`
+recomputes it and stops before broadcasting anything if upstream has moved.
+Changing a line in `pins` changes the deployed contracts — drive the markets
+against the new upstream before writing it down.
+
+Two contracts are defined here, both because this deployment's shape has no
+expression upstream:
+
+- `script/protocol/Index.sol` — the price feed of a like-kind market. The engine
+  binds an adapter only if it reports the market's own pair, and
+  `SecurityTokenAdapter` gives one address to both halves of that pair while
+  `EulerUSDCAdapter` reads its price out of an ERC-4626 vault, which bridged ETH
+  and wrapped LUX are not. `Index` reports collateral priced in its own
+  synthetic, opening at parity and rising as yield accrues. It cannot fall: both
+  sides of a like-kind position are the same asset, so an external price move
+  takes them together and leaves the ratio alone. Nothing the oracle does can
+  make a position liquidatable.
+- `script/protocol/Regent.sol` — a market's admin for the one transaction that
+  builds it. The position NFT and the fee vault both need the market's own
+  address, so they are set after it exists, by its admin; and the engine and the
+  transmuter both hand authority on by nomination, which the nominee has to
+  accept. A deploy key that nominates a multisig stays admin until the multisig
+  signs. The `Regent` does the wiring inside its constructor and declares no
+  other function, so the authority it holds is real and unreachable, and the
+  deploy key never has it.
 
 The two repos disagree on solc — standard pins `^0.8.31`, liquid pins `0.8.28` —
 so the deploy is three steps, each compiling under the pragma of the repo it
@@ -200,23 +225,50 @@ to bridge the gap.
 | Step | solc | Deploys |
 |------|------|---------|
 | `script/tokens` | 0.8.31 | WLUX, BridgedETH, BridgedBTC; LLUX/LETH/LBTC synthetics |
-| `script/protocol` | 0.8.28 | One `Liquid` market per collateral, + adapter, transmuter, position NFT, fee vault |
-| `script/grants` | 0.8.31 | Mint rights on each synthetic, and the fee vault's float |
+| `script/protocol` | 0.8.28 | One `Liquid` market per collateral, + `Index`, `Regent`, transmuter, position NFT, fee vault |
+| `script/grants` | 0.8.31 | Mint rights on each synthetic, then the synthetics' handover |
 
 ```bash
-cd chain && RPC=http://127.0.0.1:8645 PRIVATE_KEY=0x… ./deploy.sh
+cd chain && RPC=http://127.0.0.1:8645 PRIVATE_KEY=0x… OWNER=0x… ORACLE=0x… ./deploy.sh
 ```
 
 Output is `chain/deploy/<chainId>.json`, keyed by chain so Lux, Zoo and Hanzo
-each get their own and the bank resolves by the id its RPC reports.
+each get their own and the bank resolves by the id its RPC reports. That is the
+one address book per chain, and it carries the source digests it was built from.
+
+**The deploy key signs and owns nothing.** `OWNER` — a multisig — ends up holding
+the protocol. `ORACLE` ends up holding one thing, each market's yield index, and
+can only raise it. Every step re-reads the chain before it exits and fails the run
+if any of this is untrue:
+
+| Contract | owner | oracle | deploy key |
+|----------|-------|--------|------------|
+| `Liquid` | nominated admin, protocol fees | — | nothing, and not a guardian |
+| `LiquidTransmuter` | nominated admin, fees | — | nothing |
+| `LiquidTokenVault` | owner, authorized | — | not authorized |
+| `Index` | — | may raise the index | nothing |
+| `LiquidToken` (synthetic) | ADMIN, SENTINEL, flash fees | — | no role, not whitelisted |
+| `LRC20B` (bridged) | owner, DEFAULT_ADMIN, MINTER | — | no role |
+
+Between the deploy and the owner's `acceptAdmin`, each market's admin is its
+`Regent` — an address that holds the role and cannot use it.
+
+Nothing mints synthetic outside a market. A fee-vault float would be synthetic
+that `totalSyntheticsIssued` never counted, and the transmuter decrements that
+figure as holders redeem, so a supply the engine does not know about is one its
+own arithmetic underflows on. The liquidation bonus is a courtesy the engine
+skips when the vault is empty, not a precondition; the owner funds the vault from
+real synthetic through its `deposit`.
 
 **Two asset tiers, not interchangeable.** Collateral is the bridged tier —
 `BridgedETH` (symbol `ETH`), `BridgedBTC` (symbol `BTC`, **8 decimals**), and WLUX
 wrapping the native coin. Debt is the liquid tier, one synthetic per collateral.
+The bridged tier can only be minted by `OWNER`, so a chain that means its
+collateral to be real runs with `BRIDGE_FLOAT=0` and waits for the bridge.
 
 **Every market is like-kind**: `yieldToken` is the collateral and both `debtToken`
-and `underlyingToken` are that same asset's synthetic, priced at parity by the
-adapter and rising only with yield. That is what makes 90% a safe ceiling — a
+and `underlyingToken` are that same asset's synthetic, priced at parity by
+`Index` and rising only with yield. That is what makes 90% a safe ceiling — a
 price move changes both sides at once and cannot move the ratio. `Liquid` does
 **not** enforce this; it takes three unrelated addresses and trusts the adapter,
 so a dollar-denominated debt against volatile collateral is constructible. The
@@ -228,14 +280,14 @@ Settings that differ from the protocol repo's own scripts, each deliberately:
   90.0009%.
 - `globalMinimumCollateralization` **below** `minimumCollateralization`. Above it
   (their 1.15e18) a fully drawn protocol sits permanently in the bad-debt branch
-  and every liquidation takes it. `setGlobalMinimumCollateralization` enforces the
-  opposite ordering, so this is only reachable through `initialize`.
+  and every liquidation takes it.
+- `maxPriceDeviation = 1` BPS per block. Zero pins the price where it was
+  initialized and no yield ever reaches a borrower; one is the tightest rate the
+  parameter can express and still four orders of magnitude looser than a real
+  index needs — a 20% year against `blocksPerYear` is 0.00013 BPS a block.
 - Transmuter fees in **basis points** (50/200). Theirs are written as 1e18 fixed
   point against a `BPS` divisor, inflating them 1e14× and leaving redemptions
   unclaimable.
-- `navStalenessMax` long but finite — `price()` computes
-  `navTimestamp + navStalenessMax`, so `type(uint256).max` overflows and panics,
-  and anything short freezes the whole market when the NAV ages out.
 - Yul optimizer **on**. Liquid's own `yul = false` yields 30,893 bytes, past
   EIP-170; with Yul it lands at 21,550 and can reach a real chain.
 - Init calldata rides in the `ERC1967Proxy` constructor — `initialize` is
@@ -296,6 +348,58 @@ All other transitions are rejected.
 ### Balance Lifecycle (credit)
 
 1. On completion: available += amount (creates balance record if new currency)
+
+## On-chain money paths — what an adversarial pass found
+
+An adversarial review of the EVM integration produced two findings that moved
+real money on a live chain, and both are now guarded by tests that fail if the
+shape ever comes back (`red_attack_test.go`).
+
+**The ledger reserves, then the chain moves.** A send used to broadcast first
+and check the balance afterwards, so a customer holding one micro-LUX could ask
+for any amount, watch it settle on chain, and then be told "insufficient
+balance" for money already gone. Worse, gas funding counted the transfer's own
+`value` as part of the shortfall and covered *twice* it out of the treasury — so
+the bank financed the theft, and held no record of any of it. The order is now
+`newTx` (which holds the funds and runs the limit checks) → broadcast →
+`settle`, with `release` returning the hold if the chain refuses. `fund` covers
+gas and only gas: what a customer can send is what a customer holds.
+
+`release` is `settle`'s counterpart in sandbox.go — exactly one of the two must
+run for every pending debit. `newTx` returns a freshly reloaded record, because
+the instance it used to return carried its pre-create snapshot as `Original()`
+and amending it looked to the status guard like a move out of nothing.
+
+**Every step of a bank key's path is hardened.** BIP-32's CKDpriv for an
+unhardened index is `k_i = IL + k_par (mod n)` with `IL` computed from the
+parent's *public* key and chain code — so one leaked customer key plus an xpub
+(not secret material by design; it is what a watch-only service holds) solved
+for the parent and from there every sibling. The treasury sat at index 0 among
+those siblings. Hardening feeds `ser256(k_par)` into the HMAC instead, leaving
+nothing to subtract, and the treasury moved off the customer branch entirely:
+
+    m/9000'/<networkId>'/<envId>'/<branch>'/<index>'
+    branch 0 = customer, branch 1 = treasury
+
+The treasury is not account zero — it shares no number space with the accounts
+it funds, so no arithmetic on an account index arrives at it.
+
+**One key, one nonce sequence.** Every customer short of gas routes through the
+treasury key, and two concurrent top-ups read the same pending nonce — the
+second is rejected as a replacement. Treasury spending is serialized (`spend`),
+and re-reads the balance under the lock, since the top-up a caller queued behind
+may already have covered it. Customers' own sends are unaffected: separate keys.
+
+**Units are per token, not per market.** `toMinor` returns an error rather than
+wrapping `Int64`, `scale` divides for tokens with fewer decimals than the ledger
+(`big.Int.Exp` with a negative exponent silently returns 1), and each Earn verb
+scales by the token that denominates *its* amount — deposit and withdraw move
+the collateral, mint and burn move the synthetic, and 8dp bridged BTC against an
+18dp synthetic differ by 1e10.
+
+**A configured chain that is unreachable refuses; it never falls back to the
+simulation.** The dial backoff is keyed by endpoint, so a failure at one address
+no longer suppresses a good dial at another.
 
 ## Security Hardening (2026-03-31)
 

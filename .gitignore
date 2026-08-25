@@ -23,3 +23,7 @@ sdk/node_modules/
 sdk/dist/
 mcp/node_modules/
 mcp/dist/
+
+# Go test binaries, and the scratch file the review agents pass notes through.
+*.test
+/MEMORY.md

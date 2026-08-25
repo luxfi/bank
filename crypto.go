@@ -167,8 +167,22 @@ func handleCryptoSend(app core.App) func(*core.RequestEvent) error {
 		if !cb.Valid(asset, req.ToAddress) {
 			return apis.NewBadRequestError("invalid destination address", nil)
 		}
-		// The bank ledger movement below is independent of the chain — the
-		// backend owns only the on-chain half.
+		// The ledger reserves first and the chain moves second. A pending debit
+		// holds the funds, so an account that cannot cover the send is refused
+		// before anything is broadcast — and nothing irreversible happens on
+		// behalf of money the bank has not already accounted for. Broadcasting
+		// first meant the balance check arrived after the coins were gone.
+		tx, err := newTx(app, map[string]any{
+			"account": acct.Id, "type": "withdrawal", "direction": "debit",
+			"amount": req.Amount, "currency": asset, "status": "pending",
+			"reference": "Send " + asset + " to " + req.ToAddress,
+			"metadata": map[string]any{
+				"toAddress": req.ToAddress, "network": cb.Network(),
+			},
+		})
+		if err != nil {
+			return errJSON(e, http.StatusUnprocessableEntity, err.Error())
+		}
 		hash, err := cb.Send(chainSeed(app, acct), asset, req.ToAddress, req.Amount)
 		if err != nil {
 			// The caller is told only that it failed — a chain error can carry
@@ -176,24 +190,23 @@ func handleCryptoSend(app core.App) func(*core.RequestEvent) error {
 			// send that fails without a recorded cause takes hours to diagnose.
 			app.Logger().Error("on-chain send failed",
 				"asset", asset, "account", acct.Id, "err", err)
+			if rerr := release(app, tx); rerr != nil {
+				app.Logger().Error("hold survived a failed send",
+					"tx", tx.Id, "err", rerr)
+			}
 			return errJSON(e, http.StatusBadGateway, "on-chain send failed")
 		}
-		tx, err := newTx(app, map[string]any{
-			"account": acct.Id, "type": "withdrawal", "direction": "debit",
-			"amount": req.Amount, "currency": asset, "status": "pending",
-			"reference": "Send " + asset + " to " + req.ToAddress,
-			"metadata": map[string]any{
-				"txHash": hash, "toAddress": req.ToAddress, "network": chain().Network(),
-			},
+		tx.Set("metadata", map[string]any{
+			"txHash": hash, "toAddress": req.ToAddress, "network": cb.Network(),
 		})
-		if err != nil {
-			return errJSON(e, http.StatusUnprocessableEntity, err.Error())
+		if err := app.Save(tx); err != nil {
+			return apis.NewInternalServerError("could not record the transaction", err)
 		}
 		if err := settle(app, tx); err != nil {
 			return apis.NewInternalServerError("settlement failed", err)
 		}
 		return e.JSON(http.StatusOK, map[string]any{
-			"txHash": hash, "network": networkName(), "asset": asset,
+			"txHash": hash, "network": cb.Network(), "asset": asset,
 			"amount": req.Amount, "toAddress": req.ToAddress,
 			"balances": viewBalances(app, acct.Id),
 		})
