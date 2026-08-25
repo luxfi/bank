@@ -4,6 +4,7 @@ go 1.26.5
 
 require (
 	github.com/hanzoai/base v1.5.16
+	github.com/hanzoai/dbx v1.17.2
 	github.com/luxfi/crypto v1.20.2
 	github.com/luxfi/geth v1.20.1
 	github.com/luxfi/go-bip32 v1.1.0
@@ -52,7 +53,6 @@ require (
 	github.com/hanzoai/authz v1.10.29 // indirect
 	github.com/hanzoai/cek v0.2.3 // indirect
 	github.com/hanzoai/csqlite v0.1.0 // indirect
-	github.com/hanzoai/dbx v1.17.2 // indirect
 	github.com/hanzoai/namespace v1.2.0 // indirect
 	github.com/hanzoai/orm v0.6.16 // indirect
 	github.com/hanzoai/pubsub-go v1.0.0 // indirect
@@ -90,7 +90,7 @@ require (
 	github.com/luxfi/magnetar v1.2.3 // indirect
 	github.com/luxfi/math v1.5.1 // indirect
 	github.com/luxfi/math/big v0.1.0 // indirect
-	github.com/luxfi/mdns v0.1.1 // indirect
+	github.com/luxfi/mdns v0.2.1 // indirect
 	github.com/luxfi/metric v1.8.1 // indirect
 	github.com/luxfi/mlwe v0.3.0 // indirect
 	github.com/luxfi/mock v0.1.1 // indirect
@@ -101,7 +101,7 @@ require (
 	github.com/luxfi/threshold v1.12.3 // indirect
 	github.com/luxfi/tls v1.1.1 // indirect
 	github.com/luxfi/vm v1.3.2 // indirect
-	github.com/luxfi/zap v1.2.7 // indirect
+	github.com/luxfi/zap v1.2.9 // indirect
 	github.com/mattn/go-colorable v0.1.15 // indirect
 	github.com/mattn/go-isatty v0.0.22 // indirect
 	github.com/miekg/dns v1.1.72 // indirect
