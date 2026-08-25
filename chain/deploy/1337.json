@@ -1,0 +1,41 @@
+{
+  "chainId": 1337,
+  "markets": {
+    "BTC": {
+      "adapter": "0x9E545E3C0baAB3E08CdfD552C960A1050f373042",
+      "collateral": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
+      "feeVault": "0x99bbA657f2BbC93c02D617f8bA121cB8Fc104Acf",
+      "liquid": "0xf5059a5D33d5853360D16C683c16e67980206f36",
+      "position": "0x95401dc811bb5740090279Ba06cfA8fcF6113778",
+      "synthetic": "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6",
+      "transmuter": "0x1613beB3B2C4f22Ee086B2b38C1476A3cE7f78E8"
+    },
+    "ETH": {
+      "adapter": "0x59b670e9fA9D0A427751Af201D676719a970857b",
+      "collateral": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+      "feeVault": "0xE6E340D132b5f46d1e472DebcD681B2aBc16e57E",
+      "liquid": "0x4A679253410272dd5232B3Ff7cF5dbB88f295319",
+      "position": "0x7a2088a1bFc9d81c55368AE168C2C02570cB814F",
+      "synthetic": "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853",
+      "transmuter": "0x322813Fd9A801c5507c9de605d63CEA4f2CE6c44"
+    },
+    "LUX": {
+      "adapter": "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318",
+      "collateral": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      "feeVault": "0x68B1D87F95878fE05B998F19b66F4baba5De1aed",
+      "liquid": "0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82",
+      "position": "0x9A676e781A523b5d0C0e43731313A708CB607508",
+      "synthetic": "0x0165878A594ca255338adfa4d48449f69242Eb8F",
+      "transmuter": "0xB7f8BC63BbcaD18155201308C8f3540b07f84F5e"
+    }
+  },
+  "maxLtvBps": 9000,
+  "tokens": {
+    "BTC": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
+    "ETH": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+    "LBTC": "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6",
+    "LETH": "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853",
+    "LLUX": "0x0165878A594ca255338adfa4d48449f69242Eb8F",
+    "WLUX": "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+  }
+}

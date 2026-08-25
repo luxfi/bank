@@ -9,8 +9,20 @@ const AccountCollectionName = "accounts"
 // CurrencyCloud account ID, status, and KYC state.
 func EnsureAccountCollection(app core.App) error {
 	if existing, err := app.FindCollectionByNameOrId(AccountCollectionName); err == nil {
+		added := false
 		if existing.Fields.GetByName("plan") == nil {
 			existing.Fields.Add(planField())
+			added = true
+		}
+		if existing.Fields.GetByName("chainIndex") == nil {
+			existing.Fields.Add(chainIndexField())
+			added = true
+		}
+		if idx := chainIndexUnique(); !hasIndex(existing.Indexes, idx) {
+			existing.Indexes = append(existing.Indexes, idx)
+			added = true
+		}
+		if added {
 			return app.Save(existing)
 		}
 		return nil
@@ -93,6 +105,10 @@ func EnsureAccountCollection(app core.App) error {
 		},
 
 		planField(),
+		chainIndexField(),
+	)
+	c.Indexes = append(c.Indexes, chainIndexUnique())
+	c.Fields.Add(
 
 		// Free-form metadata blob (e.g. CurrencyCloud extra fields).
 		&core.JSONField{
@@ -112,4 +128,33 @@ func EnsureAccountCollection(app core.App) error {
 	)
 
 	return app.Save(c)
+}
+
+// chainIndexField is the account's place in the deploy mnemonic's derivation
+// path — the one number its on-chain address and signing key come from. It is
+// assigned once and never reused, so an address is reproducible from the
+// mnemonic alone. Deriving it from the account id instead would mean hashing
+// into a 2^31 space, where a few hundred thousand accounts is enough for two of
+// them to land on one address and share a balance.
+func chainIndexField() *core.NumberField {
+	return &core.NumberField{Name: "chainIndex", OnlyInt: true}
+}
+
+// chainIndexUnique is what actually keeps two accounts off one key. Claiming an
+// index is a read of the current maximum followed by a write, so two accounts
+// opened at the same moment read the same number and both try to take it. The
+// database refuses the second, and the loser reads again and takes the next —
+// which is only true while this index exists. Unassigned accounts hold 0, so
+// the constraint is partial.
+func chainIndexUnique() string {
+	return "CREATE UNIQUE INDEX `idx_accounts_chainIndex` ON `accounts` (`chainIndex`) WHERE `chainIndex` > 0"
+}
+
+func hasIndex(indexes []string, want string) bool {
+	for _, got := range indexes {
+		if got == want {
+			return true
+		}
+	}
+	return false
 }

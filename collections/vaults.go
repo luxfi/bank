@@ -51,7 +51,11 @@ const PositionCollectionName = "positions"
 // outstanding debt (USD cents). Superuser-only; read/written through the
 // authenticated /v1/bank/earn routes.
 func EnsurePositionCollection(app core.App) error {
-	if _, err := app.FindCollectionByNameOrId(PositionCollectionName); err == nil {
+	if existing, err := app.FindCollectionByNameOrId(PositionCollectionName); err == nil {
+		if existing.Fields.GetByName("tokenId") == nil {
+			existing.Fields.Add(tokenIDField())
+			return app.Save(existing)
+		}
 		return nil
 	}
 	c := core.NewBaseCollection(PositionCollectionName, PositionCollectionName)
@@ -71,8 +75,17 @@ func EnsurePositionCollection(app core.App) error {
 		&core.NumberField{Name: "collateral"},
 		// Outstanding borrowed debt, in USD cents.
 		&core.NumberField{Name: "debt"},
+		tokenIDField(),
 		&core.AutodateField{Name: "created", OnCreate: true},
 		&core.AutodateField{Name: "updated", OnCreate: true, OnUpdate: true},
 	)
 	return app.Save(c)
+}
+
+// tokenIDField holds the position NFT that carries this loan on chain, and zero
+// when the position is only a ledger row. It settles which of the two the
+// numbers beside it mean: a chain position is like-kind, so its debt is counted
+// in the vault's own asset, while a ledger position counts debt in USD cents.
+func tokenIDField() *core.NumberField {
+	return &core.NumberField{Name: "tokenId", OnlyInt: true}
 }

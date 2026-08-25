@@ -144,12 +144,13 @@ func handleCryptoSend(app core.App) func(*core.RequestEvent) error {
 		if err != nil {
 			return err
 		}
-		// The sandbox settles on-chain sends against the internal testnet
-		// ledger. Live mode has no chain signer/broadcaster yet, so it must
-		// refuse rather than debit funds against a fabricated receipt that is
-		// never broadcast — the same discipline the exchange applies when
-		// forexd is absent. Real mainnet send lands behind this guard.
-		if !Sandbox() {
+		cb := chain()
+		// A send has to reach a chain that can actually carry it. The sandbox
+		// settles against its own testnet ledger; a configured chain signs and
+		// broadcasts. With neither, refuse rather than debit funds against a
+		// receipt nothing broadcast — the same discipline the exchange applies
+		// when it has no rate source.
+		if _, live := cb.(*evmChain); !live && !Sandbox() {
 			return errJSON(e, http.StatusServiceUnavailable, "on-chain send unavailable")
 		}
 		req, err := bindBody[cryptoSendReq](e)
@@ -160,14 +161,21 @@ func handleCryptoSend(app core.App) func(*core.RequestEvent) error {
 		if !isCrypto(asset) || req.Amount <= 0 {
 			return apis.NewBadRequestError("invalid asset or amount", nil)
 		}
-		if !validAddress(asset, req.ToAddress) {
+		// The address family is the chain's to judge: the simulation models
+		// separate chains, so BTC is bech32 there, while on one EVM every asset
+		// including bridged BTC is sent to a 0x address.
+		if !cb.Valid(asset, req.ToAddress) {
 			return apis.NewBadRequestError("invalid destination address", nil)
 		}
-		// Broadcast through the chain backend (sandbox simulates; a real backend
-		// signs + broadcasts). The bank ledger movement below is independent of
-		// the chain — the backend only owns the on-chain half.
-		hash, err := chain().Send(asset, req.ToAddress, req.Amount)
+		// The bank ledger movement below is independent of the chain — the
+		// backend owns only the on-chain half.
+		hash, err := cb.Send(chainSeed(app, acct), asset, req.ToAddress, req.Amount)
 		if err != nil {
+			// The caller is told only that it failed — a chain error can carry
+			// an address or a balance. The reason goes to the log, because a
+			// send that fails without a recorded cause takes hours to diagnose.
+			app.Logger().Error("on-chain send failed",
+				"asset", asset, "account", acct.Id, "err", err)
 			return errJSON(e, http.StatusBadGateway, "on-chain send failed")
 		}
 		tx, err := newTx(app, map[string]any{

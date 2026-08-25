@@ -1,6 +1,8 @@
 package bank
 
 import (
+	"math"
+	"strconv"
 	"time"
 
 	"github.com/hanzoai/base/core"
@@ -40,7 +42,7 @@ func ProvisionCustomer(app core.App, user *core.Record, kyc KYC) (*core.Record, 
 	if acct := primaryAccount(app, user.Id); acct != nil {
 		// Backfill any wallet the account is missing — an account opened by an
 		// earlier build predates per-asset wallets, so this self-heals it.
-		ensureWallets(app, acct.Id, user.Id)
+		ensureWallets(app, acct)
 		return acct, nil
 	}
 
@@ -103,7 +105,7 @@ func ProvisionCustomer(app core.App, user *core.Record, kyc KYC) (*core.Record, 
 	// deposit address (a BTC address is bech32, an EVM asset is 0x). Production
 	// provisions keys by threshold MPC; the sandbox derives stable display
 	// addresses from the principal via the chain backend.
-	ensureWallets(app, acct.Id, user.Id)
+	ensureWallets(app, acct)
 
 	if Sandbox() {
 		if err := fundSandbox(app, acct, name); err != nil {
@@ -114,13 +116,52 @@ func ProvisionCustomer(app core.App, user *core.Record, kyc KYC) (*core.Record, 
 	return acct, nil
 }
 
+// chainSeed is the account's derivation index, assigned on first use and stored
+// so the account's address never moves. Index 0 belongs to the bank's own
+// treasury, which is why accounts start at 1.
+func chainSeed(app core.App, acct *core.Record) string {
+	if n := int64(math.Round(acct.GetFloat("chainIndex"))); n > 0 {
+		return strconv.FormatInt(n, 10)
+	}
+	// Claiming an index is a read of the current maximum and then a write, so
+	// two accounts opened at the same moment both read the same number. The
+	// unique index on chainIndex is what settles it: one save wins, the other
+	// is refused and comes back here to take the next number. Without the
+	// retry a loser would keep the index it lost, and two customers would sign
+	// from one key, at one address, over one balance.
+	for attempt := 0; attempt < 16; attempt++ {
+		next := int64(1)
+		if taken, _ := app.FindRecordsByFilter(collections.AccountCollectionName,
+			"chainIndex > 0", "-chainIndex", 1, 0, nil); len(taken) > 0 {
+			next = int64(math.Round(taken[0].GetFloat("chainIndex"))) + 1
+		}
+		acct.Set("chainIndex", next)
+		if err := app.Save(acct); err == nil {
+			return strconv.FormatInt(next, 10)
+		}
+	}
+	// Every attempt lost the race. Returning no seed refuses the operation,
+	// which is the safe end: a wrong index would be a wrong key.
+	acct.Set("chainIndex", 0)
+	return ""
+}
+
 // ensureWallets creates one wallet per SupportedCrypto asset for an account,
 // each with its own chain-derived deposit address. Idempotent: an asset that
 // already has a wallet is left untouched, so it both provisions new accounts
 // and backfills accounts opened before per-asset wallets existed.
-func ensureWallets(app core.App, accountID, seed string) {
+//
+// On a real EVM every one of those rows carries the SAME address — an account
+// has one address there and receives the coin and every token at it. The rows
+// stay per-asset because the row is also where the asset's network and status
+// live, and because the simulation really does model separate chains.
+func ensureWallets(app core.App, acct *core.Record) {
 	walletColl, err := app.FindCollectionByNameOrId(collections.WalletCollectionName)
 	if err != nil {
+		return
+	}
+	accountID, seed := acct.Id, chainSeed(app, acct)
+	if seed == "" {
 		return
 	}
 	cb := chain()
@@ -154,7 +195,7 @@ func seedBeneficiaries(app core.App, accountID string) {
 	}
 	seeds := []struct {
 		name, holder, currency, country, paymentType string
-		details                                       map[string]any
+		details                                      map[string]any
 	}{
 		{"Northwind Ltd", "Northwind Trading Ltd", "GBP", "GB", "regular", map[string]any{"iban": "GB29NWBK60161331926819", "bic": "NWBKGB2L", "sortCode": "601613", "accountNumber": "31926819"}},
 		{"Lindqvist AB", "Lindqvist Handels AB", "EUR", "SE", "regular", map[string]any{"iban": "SE4550000000058398257466", "bic": "ESSESESS"}},
@@ -311,7 +352,9 @@ func issueCardRecord(app core.App, accountID, holder, currency string) *core.Rec
 // account holds is disturbed. It backfills per-asset wallets, recipients, Earn
 // positions, and the crypto balances added in later builds.
 func refreshDemoAccount(app core.App, accountID, seed string) {
-	ensureWallets(app, accountID, seed)
+	if acct, err := app.FindRecordById(collections.AccountCollectionName, accountID); err == nil {
+		ensureWallets(app, acct)
+	}
 	seedBeneficiaries(app, accountID)
 	seedPositions(app, accountID)
 	// Crypto balances added after the account was first funded — set only when

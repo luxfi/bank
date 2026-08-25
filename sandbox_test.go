@@ -57,8 +57,13 @@ func TestUnitPriceUSD(t *testing.T) {
 	}
 }
 
+// The simulation models each asset as its own chain, so it hands out one
+// address per asset. That is a property of the simulation, not of the bank —
+// on a real EVM an account has a single address and the assets are token
+// contracts — so this names simChain rather than asking chain() what is
+// configured.
 func TestChainAddressDeterministic(t *testing.T) {
-	cb := chain()
+	var cb ChainBackend = simChain{}
 	a := cb.Address("user-123", "ETH")
 	b := cb.Address("user-123", "ETH")
 	if a != b {

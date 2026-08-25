@@ -563,9 +563,14 @@ func handleGetWallet(app core.App) func(*core.RequestEvent) error {
 				holdings = append(holdings, b)
 			}
 		}
+		// `contracts` is what makes the address list honest on a real chain: the
+		// wallet rows there all carry the same address, because an account has
+		// one, and what actually distinguishes the assets is the token contract
+		// each lives at. An empty contract means the chain's own coin.
 		return e.JSON(http.StatusOK, map[string]any{
 			"wallet": &wallets[0], "wallets": wallets, "holdings": holdings,
-			"network": networkName(), "sandbox": Sandbox(),
+			"contracts": chain().Assets(),
+			"network":   chain().Network(), "sandbox": Sandbox(),
 		})
 	}
 }

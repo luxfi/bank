@@ -1,0 +1,90 @@
+# The Lux Financial on-chain stack. Nothing is defined in this project — the
+# tokens come from luxfi/standard, the self-repaying-loan protocol from
+# luxfi/liquid, and all this does is broadcast them and record the addresses.
+#
+# The two repos disagree on solc: standard pins ^0.8.31, liquid pins 0.8.28.
+# So each step compiles under the pragma of the repo it deploys from, and the
+# steps hand addresses to each other through deploy.json. No contract is ever
+# re-declared to bridge the gap.
+#
+#   tokens   (0.8.31)  WLUX, LETH, LBTC, LUSD          -> out/tokens.json
+#   protocol (0.8.28)  a Liquid market per collateral  -> deploy.json
+#   grants   (0.8.31)  LUSD mint rights to each market -> (reads deploy.json)
+
+[profile.tokens]
+src = "script/tokens"
+script = "script/tokens"
+test = "script/tokens"
+out = "out/tokens"
+libs = []
+solc_version = "0.8.31"
+evm_version = "cancun"
+optimizer = true
+optimizer_runs = 200
+via_ir = false
+fs_permissions = [{ access = "read-write", path = "./" }]
+allow_paths = ["lib", "../../standard", "../../liquid"]
+remappings = [
+    "forge-std/=lib/standard/lib/forge-std/src/",
+    "@openzeppelin/contracts/=lib/standard/lib/openzeppelin-contracts/contracts/",
+    "solmate/=lib/standard/lib/solmate/src/",
+    "@luxfi/standard/=lib/standard/contracts/",
+]
+
+[profile.protocol]
+src = "script/protocol"
+script = "script/protocol"
+test = "script/protocol"
+out = "out/protocol"
+libs = []
+solc_version = "0.8.28"
+evm_version = "cancun"
+optimizer = true
+# Liquid needs the IR pipeline (stack-too-deep in _sync without it), and it
+# needs the Yul optimizer left ON — with Yul disabled the runtime comes out at
+# 30,893 bytes, past the EIP-170 limit, so it would deploy on a node with a
+# raised cap and nowhere else. With Yul on it lands at 21,550.
+optimizer_runs = 800
+via_ir = true
+fs_permissions = [{ access = "read-write", path = "./" }]
+allow_paths = ["lib", "../../standard", "../../liquid"]
+remappings = [
+    "forge-std/=lib/liquid/lib/forge-std/src/",
+    "@openzeppelin/contracts/=lib/liquid/lib/openzeppelin-contracts/contracts/",
+    "openzeppelin-contracts-upgradeable/=lib/liquid/lib/openzeppelin-contracts-upgradeable/contracts/",
+    "@chainlink/contracts/=lib/liquid/lib/chainlink-brownie-contracts/contracts/",
+    "@luxfi/oz/=lib/liquid/lib/openzeppelin-contracts/contracts/",
+    "@luxfi/oz-upgradeable/=lib/liquid/lib/openzeppelin-contracts-upgradeable/contracts/",
+    "@luxfi/erc-3643/=lib/liquid/lib/erc-3643/",
+    "@luxfi/onchain-id/=lib/liquid/lib/onchain-id/",
+    "@onchain-id/solidity/=lib/liquid/lib/onchain-id/",
+    "@permit2/=lib/liquid/lib/permit2/src/",
+    "@luxfi/liquid/=lib/liquid/src/",
+]
+
+[profile.grants]
+src = "script/grants"
+script = "script/grants"
+test = "script/grants"
+out = "out/grants"
+libs = []
+solc_version = "0.8.31"
+evm_version = "cancun"
+optimizer = true
+optimizer_runs = 200
+via_ir = false
+fs_permissions = [{ access = "read-write", path = "./" }]
+allow_paths = ["lib", "../../standard", "../../liquid"]
+remappings = [
+    "forge-std/=lib/standard/lib/forge-std/src/",
+    "@openzeppelin/contracts/=lib/standard/lib/openzeppelin-contracts/contracts/",
+    "solmate/=lib/standard/lib/solmate/src/",
+    "@luxfi/standard/=lib/standard/contracts/",
+]
+
+[profile.default]
+src = "script/tokens"
+script = "script/tokens"
+out = "out/tokens"
+libs = []
+solc_version = "0.8.31"

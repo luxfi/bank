@@ -123,23 +123,123 @@ Routes: public `GET /v1/bank/vaults` (catalog, like /plans); authed
 `POST /v1/bank/earn/{deposit,borrow,repay,withdraw}`. The overview carries an
 `earn` summary (collateralUsd, debt, netUsd, yieldUsdYear, positions, netApy).
 
-### Chain backend (chain.go)
+### Chain backend (chain.go, evmchain.go, evmmarket.go)
 
 `ChainBackend` is the on-chain half of the wallet — the same seam shape as
-`Issuer` and `FXProvider`. Three methods: `Network()` (lux-testnet /
-lux-mainnet), `Address(seed, asset)` (deterministic deposit address — bech32
-for BTC, 0x for EVM assets, distinct per asset), `Send(asset, to, amount)`
-(broadcast, returns tx hash). `chain()` selects it. `simChain` is the sandbox:
-deterministic display addresses (real bech32 checksum so a BTC receive address
-passes the bank's own `validAddress`), random testnet tx hashes, no broadcast.
-No real backend yet — live mode has none, so `handleCryptoSend` refuses
-on-chain sends outside sandbox and never reaches `chain()`. A real backend
-(chain RPC + signer + broadcast) drops in behind this interface. The bank
-ledger hold/settle stays on the bank side; the backend owns only the chain.
+`Issuer` and `FXProvider`. `Network()`, `Assets()` (asset → token contract, empty
+for the chain's own coin), `Address(seed, asset)`, `Valid(asset, addr)`,
+`Balance(seed, asset)`, `Send(seed, asset, to, amount)`, `Market(asset)`.
 
-Each account provisions one wallet per `SupportedCrypto` asset, each with its
-own `Address(...)`. `GET /v1/bank/wallet` and the overview expose a per-asset
-`wallets` array (plus the single `wallet` = wallets[0] for compat).
+`chain()` picks one of three:
+
+- **`evmChain`** (evmchain.go) — a real EVM, selected when `BANK_CHAIN_RPC` is
+  set. Keys are derived from the deploy mnemonic at `m/9000'/<networkId>'/<envId>'/<index>`;
+  `Send` signs a DynamicFeeTx, broadcasts, and waits for the receipt before
+  returning a hash. Balances are read from the chain.
+- **`simChain`** — the sandbox. Deterministic display addresses (real bech32
+  checksum so a BTC address passes `validAddress`), random hashes, no broadcast.
+  Still the default: the demo has to run with nothing configured.
+- **`offChain`** — configured but unreachable. Every operation fails. This case
+  must never fall through to `simChain`, which would answer a send with a
+  receipt for a transfer that never happened.
+
+**One address, many assets.** On a real EVM an account has a single address that
+receives the native coin and every token; per-asset addresses were a sandbox
+artifact of pretending each asset had its own chain. The wallet rows stay
+per-asset (the row carries network + status), but on `evmChain` they all hold the
+same address, and `Assets()` is what distinguishes native from token.
+
+**`accounts.chainIndex`** is the account's derivation index, assigned once and
+stored. Index 0 is the bank's treasury, which funds customers' gas; accounts
+start at 1. Hashing an account id into an index instead would collide inside
+2^31 well before a million accounts, and a collision means two customers share
+an address.
+
+Addresses are verified on load: `symbol()` is read from each recorded contract
+before it is trusted, because deployment-order addresses are not unique across
+chains (the same address holds LETH on Lux 96369 and ZETH on Zoo 200200).
+
+#### Per-chain configuration
+
+| Env | Purpose |
+|-----|---------|
+| `BANK_CHAIN_RPC` | EVM endpoint. Its presence selects the real backend. |
+| `BANK_CHAIN_MNEMONIC` | BIP-39 deploy mnemonic. Dev only — production reads `providers/<org>/deploy-mnemonic` from KMS. Never logged. |
+| `BANK_CHAIN_NETWORK` | Display name (`lux-local`, `lux-mainnet`, …). |
+| `BANK_CHAIN_NETWORK_ID` / `BANK_CHAIN_ENV_ID` | Lux primary network and env for the derivation path. |
+| `BANK_CHAIN_DEPLOY` | Directory of `<chainId>.json` address books (default `chain/deploy`). |
+
+The chain id comes from the RPC, and the address book is looked up by it, so Lux,
+Zoo and Hanzo are separate deployment files rather than separate code paths.
+
+#### Earn on chain (evmmarket.go)
+
+`Market` is one collateral asset's lending market: `Deposit`, `Borrow`, `Repay`,
+`Withdraw`, `Position`. When `chain().Market(vault.Underlying)` returns one,
+`earnAction` hands the movement to it and records what the chain did; otherwise
+Earn stays on the ledger. The borrow ceiling is enforced by the contract —
+`Undercollateralized` becomes the same 422 the ledger path returns.
+
+Positions carry `tokenId`, the position NFT. It settles what the numbers beside
+it mean: an on-chain position is **like-kind** (debt is the collateral's own
+synthetic), so its LTV is debt/collateral with no price in it, while a ledger
+position still counts debt in USD cents.
+
+### On-chain deployment (chain/)
+
+A foundry project that defines nothing and only wires two canonical repos
+together: tokens from `luxfi/standard`, the self-repaying-loan protocol from
+`luxfi/liquid`, reached through `chain/lib/{standard,liquid}` symlinks (repoint a
+symlink to pin a release instead of a working tree).
+
+The two repos disagree on solc — standard pins `^0.8.31`, liquid pins `0.8.28` —
+so the deploy is three steps, each compiling under the pragma of the repo it
+deploys from, handing addresses on through JSON. No contract is ever re-declared
+to bridge the gap.
+
+| Step | solc | Deploys |
+|------|------|---------|
+| `script/tokens` | 0.8.31 | WLUX, BridgedETH, BridgedBTC; LLUX/LETH/LBTC synthetics |
+| `script/protocol` | 0.8.28 | One `Liquid` market per collateral, + adapter, transmuter, position NFT, fee vault |
+| `script/grants` | 0.8.31 | Mint rights on each synthetic, and the fee vault's float |
+
+```bash
+cd chain && RPC=http://127.0.0.1:8645 PRIVATE_KEY=0x… ./deploy.sh
+```
+
+Output is `chain/deploy/<chainId>.json`, keyed by chain so Lux, Zoo and Hanzo
+each get their own and the bank resolves by the id its RPC reports.
+
+**Two asset tiers, not interchangeable.** Collateral is the bridged tier —
+`BridgedETH` (symbol `ETH`), `BridgedBTC` (symbol `BTC`, **8 decimals**), and WLUX
+wrapping the native coin. Debt is the liquid tier, one synthetic per collateral.
+
+**Every market is like-kind**: `yieldToken` is the collateral and both `debtToken`
+and `underlyingToken` are that same asset's synthetic, priced at parity by the
+adapter and rising only with yield. That is what makes 90% a safe ceiling — a
+price move changes both sides at once and cannot move the ratio. `Liquid` does
+**not** enforce this; it takes three unrelated addresses and trusts the adapter,
+so a dollar-denominated debt against volatile collateral is constructible. The
+invariant lives in the deploy script, not the protocol.
+
+Settings that differ from the protocol repo's own scripts, each deliberately:
+
+- `minimumCollateralization = 1e36/9e17` — 90% exactly. Their `1.1111e18` is
+  90.0009%.
+- `globalMinimumCollateralization` **below** `minimumCollateralization`. Above it
+  (their 1.15e18) a fully drawn protocol sits permanently in the bad-debt branch
+  and every liquidation takes it. `setGlobalMinimumCollateralization` enforces the
+  opposite ordering, so this is only reachable through `initialize`.
+- Transmuter fees in **basis points** (50/200). Theirs are written as 1e18 fixed
+  point against a `BPS` divisor, inflating them 1e14× and leaving redemptions
+  unclaimable.
+- `navStalenessMax` long but finite — `price()` computes
+  `navTimestamp + navStalenessMax`, so `type(uint256).max` overflows and panics,
+  and anything short freezes the whole market when the NAV ages out.
+- Yul optimizer **on**. Liquid's own `yul = false` yields 30,893 bytes, past
+  EIP-170; with Yul it lands at 21,550 and can reach a real chain.
+- Init calldata rides in the `ERC1967Proxy` constructor — `initialize` is
+  unpermissioned, so a separate second transaction is a window to claim admin.
 
 ### Membership plans (collections/plans.go)
 
