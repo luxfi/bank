@@ -245,8 +245,14 @@ func handleOnboard(app core.App) func(*core.RequestEvent) error {
 // handleOverview returns everything the dashboard needs in one call.
 func handleOverview(app core.App) func(*core.RequestEvent) error {
 	return func(e *core.RequestEvent) error {
-		acct := primaryAccount(app, e.Auth.Id)
-		if acct == nil {
+		// Overview is the first call the shell makes, so in sandbox it is where
+		// the demo account gets opened: requireAccount provisions on first sight
+		// because the owner is IAM's subject and nothing knows that until someone
+		// signs in. Reporting onboarded:false here instead left the shell in its
+		// pre-onboarding state — no nav, nothing to click — for a customer who
+		// had just signed in successfully.
+		acct, err := requireAccount(app, e)
+		if err != nil {
 			return e.JSON(http.StatusOK, map[string]any{"sandbox": Sandbox(), "onboarded": false})
 		}
 		return e.JSON(http.StatusOK, buildOverview(app, acct))

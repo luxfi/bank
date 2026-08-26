@@ -4,13 +4,14 @@ import { expect, type Page } from '@playwright/test'
 // just submitting the form the customer is shown.
 export const DEMO_EMAIL = 'z@lux.financial'
 
-// signIn submits the prefilled demo credential and waits for the authenticated
-// shell (nav rail) to render.
+// signIn runs the real sign-in: the OIDC redirect to Lux ID and back through
+// /callback. There is no password to type any more — IAM is the only auth
+// source, so the button is the whole of it, and the identity provider the suite
+// redirects to is e2e/iam-stub.mjs.
 export async function signIn(page: Page) {
   await page.goto('/login')
-  await expect(page.getByLabel('Email')).toHaveValue(DEMO_EMAIL)
-  await page.getByRole('button', { name: 'Sign in', exact: true }).click()
-  await expect(page).toHaveURL(/\/app$/)
+  await page.getByRole('button', { name: /Sign in with Lux ID/i }).click()
+  await expect(page).toHaveURL(/\/app$/, { timeout: 20_000 })
   await expect(page.getByRole('link', { name: 'Wallet' }).first()).toBeVisible()
 }
 

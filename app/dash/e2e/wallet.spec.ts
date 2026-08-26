@@ -10,7 +10,9 @@ test.beforeEach(async ({ page }) => {
 })
 
 test('the wallet names its network and address', async ({ page }) => {
-  await expect(page.getByText('lux-testnet', { exact: true })).toBeVisible()
+  // The network is named on every holding row, so this asserts it is named at
+  // all rather than pinning a count that moves with the number of assets held.
+  await expect(page.getByText('lux-testnet', { exact: true }).first()).toBeVisible()
   await expect(page.getByRole('button', { name: /0x[0-9a-fA-F]{4}….{4}/ })).toBeVisible()
   // The sandbox flag lives in the shell header, and only there — one badge per
   // screen, so it reads as a state and not as decoration.

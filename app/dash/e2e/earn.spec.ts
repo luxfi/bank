@@ -13,9 +13,13 @@ function vault(page: Page, name: string): Locator {
 
 // figure pulls a labelled USD figure out of a card or panel ("Collateral" →
 // 3125). The label and its number are adjacent lines in the rendered text.
+// figure reads the number a position states under a label. Collateral and debt
+// are shown in the vault's own token now rather than in dollars, so this takes
+// either — what it is asserting is that the figure MOVED, and the unit it moved
+// in is the screen's business.
 async function figure(scope: Locator, label: string): Promise<number> {
   const text = await scope.innerText()
-  const m = text.match(new RegExp(`${label}\\s*\\n\\s*\\$([\\d,]+\\.\\d{2})`))
+  const m = text.match(new RegExp(`${label}\\s*\\n?\\s*\\$?([\\d,]+(?:\\.\\d+)?)`))
   if (!m) throw new Error(`no "${label}" figure in:\n${text}`)
   return parseFloat(m[1].replace(/,/g, ''))
 }
@@ -34,7 +38,7 @@ test('Earn is a destination in the shell and opens on the seeded positions', asy
   // A position states what is at stake and how long the yield takes to clear
   // it — in years, which is the truth about a self-repaying loan.
   const stlux = vault(page, 'Staked LUX')
-  await expect(stlux).toContainText('Self-repays in')
+  await expect(stlux).toContainText(/Clears in/)
   await expect(stlux).toContainText(/~[\d.]+ years/)
   expect(await figure(stlux, 'Collateral')).toBeGreaterThan(0)
 
@@ -73,8 +77,14 @@ test('a borrow inside the limit raises the debt', async ({ page }) => {
   const before = await figure(stlux, 'Borrowed')
 
   await stlux.click()
+  // Borrow a slice of what the screen says is actually left, rather than a fixed
+  // number: the figures are in the vault's own token and the position carries
+  // debt from the specs before this one, so a constant is either trivially small
+  // or over the limit depending on what ran first.
+  const headroom = await figure(page.getByRole('dialog'), 'Left to borrow')
+  expect(headroom, 'the position should have room to borrow into').toBeGreaterThan(1)
   await page.getByRole('button', { name: 'Borrow', exact: true }).first().click()
-  await page.getByLabel('Amount in USD').fill('100')
+  await page.getByLabel(/^Amount in /).fill(String(Math.max(1, Math.floor(headroom / 4))))
   await page.getByRole('button', { name: 'Borrow', exact: true }).last().click()
 
   await expect(page.getByText(/Borrow of .* settled/)).toBeVisible()
@@ -96,19 +106,28 @@ test('a borrow past the collateral limit is refused — by the screen and by the
   // The screen refuses first: the amount is named as over the limit and the
   // action will not fire.
   await page.getByRole('button', { name: 'Borrow', exact: true }).first().click()
-  await page.getByLabel('Amount in USD').fill(String(Math.ceil(headroom) + 1000))
+  await page.getByLabel(/^Amount in /).fill(String(Math.ceil(headroom) + 1000))
   await expect(panel.getByText(/more than the .* available for this move/)).toBeVisible()
   await expect(page.getByRole('button', { name: 'Borrow', exact: true }).last()).toBeDisabled()
 
   await shot(page, 'earn-over-limit')
 
   // And the ledger refuses too, so the limit is not merely a disabled button.
-  const token = await page.evaluate(() => sessionStorage.getItem('bank_demo_token'))
+  // The bearer the app itself holds — IAM's access token, under the key the SDK
+  // stores it at (IAM_TOKEN_KEY). There is no bank-minted token any more.
+  const token = await page.evaluate(
+    () => sessionStorage.getItem('hanzo_iam_access_token') ?? localStorage.getItem('hanzo_iam_access_token'),
+  )
+  expect(token, 'the app should hold an IAM access token after signing in').toBeTruthy()
   // Through the app's own origin (the dash proxies /v1 to bankd), so this holds
   // against a deployment as well as a local run.
+  // Far past any limit the seeded collateral could support. The screen reads
+  // its figures in the vault's own token now, so deriving the amount from what
+  // is displayed would be arithmetic across two units — and the ledger's answer
+  // does not depend on landing just over the line.
   const res = await page.request.post(new URL('/v1/bank/earn/borrow', page.url()).toString(), {
     headers: { Authorization: `Bearer ${token}` },
-    data: { vault: 'stlux', amount: Math.round(headroom * 100) + 100_000 },
+    data: { vault: 'stlux', amount: 1_000_000_000_000 },
   })
   expect(res.status()).toBe(422)
   expect((await res.json()).error).toMatch(/over the borrow limit/)

@@ -61,7 +61,7 @@ test('the IAM sign-in redirect carries a single /v1/iam prefix', async ({ page }
   // The SSO button starts an OIDC redirect; capture where it points.
   const [nav] = await Promise.all([
     page.waitForRequest((r) => r.url().includes('/oauth/authorize'), { timeout: 8000 }).catch(() => null),
-    page.getByRole('button', { name: /Sign in with SSO/i }).click(),
+    page.getByRole('button', { name: /Sign in with Lux ID/i }).click(),
   ])
   if (nav) {
     expect(nav.url()).toContain('/v1/iam/oauth/authorize')

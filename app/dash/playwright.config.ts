@@ -6,6 +6,8 @@ import { defineConfig, devices } from '@playwright/test'
 const DASH = process.env.DASH_URL || 'http://localhost:3000'
 const BANKD = process.env.BANKD_URL || 'http://127.0.0.1:8070'
 const remote = Boolean(process.env.DASH_URL)
+// The stand-in identity provider the suite signs in against (e2e/iam-stub.mjs).
+const IAM = process.env.IAM_STUB_URL || 'http://127.0.0.1:8071'
 
 export default defineConfig({
   testDir: './e2e',
@@ -25,9 +27,21 @@ export default defineConfig({
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: remote ? undefined : [
     {
+      command: 'node e2e/iam-stub.mjs',
+      url: `${IAM}/.well-known/openid-configuration`,
+      reuseExistingServer: true,
+      timeout: 30_000,
+      stdout: 'ignore',
+      stderr: 'pipe',
+    },
+    {
       command: 'go run ./cmd/bankd',
       cwd: '../..',
-      env: { CGO_ENABLED: '0', GOWORK: 'off' },
+      // Point bankd at the stub identity provider. The app never addresses IAM
+      // directly — bankd proxies /v1/iam/* and verifies every bearer against the
+      // JWKS it finds there — so this one variable puts the whole sign-in on the
+      // stub, and the browser runs exactly the redirect it runs in production.
+      env: { CGO_ENABLED: '0', GOWORK: 'off', IAM_ENDPOINT: IAM },
       url: `${BANKD}/v1/bank/health`,
       reuseExistingServer: true,
       timeout: 180_000,
