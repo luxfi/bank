@@ -173,7 +173,7 @@ export function Exchange() {
         </Button>
       </View>
 
-      <p style={{ textAlign: 'center', fontSize: 11.2, color: 'var(--color-fg-subtle)' }}>Sandbox rates include a 0.2% demo spread. Settles instantly.</p>
+      <p style={{ textAlign: 'center', fontSize: 11.2, color: 'var(--color-fg-subtle)' }}>Sandbox rates include a 0.2% demo spread. Conversions settle immediately in the sandbox.</p>
       </View>
 
       <View style={{ display: 'grid', minWidth: 0 }}><Conversions key={done ?? 'idle'} /></View>

@@ -6,6 +6,7 @@ import {
   Icon, AssetAvatar, ActionTile, AssetRow, PageHeader, SectionHeader, Skeleton, EmptyState, formatUSD, font,
 } from '@/components/ui'
 import { Allocation } from '@/components/Allocation'
+import { Custody } from '@/components/Custody'
 import { shortAddress } from '@/lib/format'
 import { View } from '@/gui'
 
@@ -91,6 +92,11 @@ export function Wallet() {
         <ActionTile label="Receive" icon="arrowDown" active={open === 'receive'} onClick={() => setOpen(open === 'receive' ? null : 'receive')} />
       </View>
 
+      {/* Sits under the actions rather than at the foot of the page: the send
+          and receive panels open directly below it, so whoever is about to move
+          crypto reads who signs for it first. */}
+      <Custody subject="this wallet" also="Sends are broadcast by us from the account’s address." />
+
       {open === 'send' && <SendPanel holdings={data.holdings} onDone={setHoldings} />}
       {open === 'receive' && (
         <ReceivePanel wallets={data.wallets ?? [data.wallet]} network={data.network} onDeposit={setHoldings} />
@@ -100,8 +106,11 @@ export function Wallet() {
       <section>
         <SectionHeader title="Holdings" />
         {data.holdings.length === 0 ? (
-          <EmptyState icon="coins" title="No crypto yet" body="Buy LUX, BTC, ETH or DAI to fund your wallet."
-            action={<Link to="/app/exchange?from=USD&to=LUX" className="btn btn-primary">Buy crypto</Link>} />
+          // Naming four assets and pre-selecting LUX made the empty state a
+          // recommendation to acquire the house token. It points at the two ways
+          // in instead, and lets the exchange open on its own defaults.
+          <EmptyState icon="coins" title="No crypto yet" body="Convert from a cash balance, or receive to your deposit address."
+            action={<Link to="/app/exchange" className="btn btn-primary">Open exchange</Link>} />
         ) : (
           <View className="card list" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', overflow: 'hidden' }}>
             {data.holdings.map((h) => (
@@ -117,10 +126,6 @@ export function Wallet() {
           </View>
         )}
       </section>
-
-      <p style={{ textAlign: 'center', fontSize: 11.2, ...subtle }}>
-        Testnet assets only. In production this wallet is secured by threshold MPC — no single key.
-      </p>
     </View>
   )
 }

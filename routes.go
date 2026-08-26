@@ -29,10 +29,6 @@ func RegisterRoutes(app core.App) {
 			e.Router.GET("/v1/bank/vaults", func(re *core.RequestEvent) error {
 				return re.JSON(http.StatusOK, collections.Vaults)
 			})
-			// Sandbox-only password login → mints a superuser token.
-			if Sandbox() {
-				e.Router.POST("/v1/bank/login", handleSandboxLogin(app))
-			}
 			e.Router.GET("/v1/bank/config", func(re *core.RequestEvent) error {
 				network := "lux-mainnet"
 				disclaimer := "Banking services are provided by SF Private Bank LTD, International Banking License (L17601/SFPB) " +
@@ -42,7 +38,7 @@ func RegisterRoutes(app core.App) {
 					network = "lux-testnet"
 					disclaimer = "Demo — " + disclaimer + " Sandbox environment, not for real deposits."
 				}
-				// The demo email is only surfaced in sandbox — production must
+				// The demo identity is only named in sandbox — production must
 				// never publish a login identity from an unauthenticated route.
 				demoEmail := ""
 				if Sandbox() {
@@ -50,7 +46,6 @@ func RegisterRoutes(app core.App) {
 				}
 				return re.JSON(http.StatusOK, map[string]any{
 					"sandbox":    Sandbox(),
-					"demoLogin":  Sandbox(),
 					"demoEmail":  demoEmail,
 					"fiat":       SupportedFiat,
 					"crypto":     SupportedCrypto,

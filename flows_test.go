@@ -36,31 +36,6 @@ func openAccount(t *testing.T, app core.App, ownerID string, usd Minor) string {
 	return a.Id
 }
 
-func TestSandboxLogin(t *testing.T) {
-	app := newBankApp(t)
-	if _, err := ensureDemoSuperuser(app, "hero@lux.financial", "s3cret-demo-pass"); err != nil {
-		t.Fatalf("ensure demo superuser: %v", err)
-	}
-	run(t, app, tests.ApiScenario{
-		Name:            "sandbox login mints a token for valid credentials",
-		Method:          http.MethodPost,
-		URL:             "/v1/bank/login",
-		Body:            strings.NewReader(`{"email":"hero@lux.financial","password":"s3cret-demo-pass"}`),
-		Headers:         map[string]string{"Content-Type": "application/json"},
-		ExpectedStatus:  200,
-		ExpectedContent: []string{`"token":`, `"email":"hero@lux.financial"`},
-	})
-	run(t, app, tests.ApiScenario{
-		Name:            "sandbox login rejects a wrong password",
-		Method:          http.MethodPost,
-		URL:             "/v1/bank/login",
-		Body:            strings.NewReader(`{"email":"hero@lux.financial","password":"wrong"}`),
-		Headers:         map[string]string{"Content-Type": "application/json"},
-		ExpectedStatus:  401,
-		ExpectedContent: []string{`"status":401`},
-	})
-}
-
 func TestBookTransferBetweenOwnAccounts(t *testing.T) {
 	app := newBankApp(t)
 	id, token := seedPrincipal(t, app)

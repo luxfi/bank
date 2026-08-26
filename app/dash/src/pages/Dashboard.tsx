@@ -130,7 +130,7 @@ export function Dashboard() {
             </View>
             <p style={{ ...font(12), ...subtle, marginTop: 12 }}>
               {formatUSD(earn.collateralUsd / 100)} of collateral against {formatUSD(earn.debt / 100)} borrowed —
-              the yield repays it.
+              collateral yield is applied to the debt.
             </p>
           </Link>
         </section>

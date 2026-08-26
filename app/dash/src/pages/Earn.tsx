@@ -7,6 +7,7 @@ import { useOverview } from '@/hooks/overview'
 import {
   AssetAvatar, Button, EmptyState, Icon, Modal, PageHeader, SectionHeader, Skeleton, formatUSD, font, truncate,
 } from '@/components/ui'
+import { Custody } from '@/components/Custody'
 import { formatHorizon, formatMoney, formatPercent, toMajor, toMinor } from '@/lib/format'
 import { View } from '@/gui'
 
@@ -56,7 +57,12 @@ export function Earn() {
     <View className="page" style={{ display: 'grid' }}>
       <PageHeader
         title="Earn"
-        subtitle="Liquid Protocol — borrow against yield-bearing collateral and let the yield repay it."
+        subtitle="Liquid Protocol — borrow against yield-bearing collateral. The collateral’s yield is applied to the debt."
+      />
+
+      <Custody
+        subject="the positions on this screen"
+        also="Collateral and borrowed tokens are held at the account’s address, which we control."
       />
 
       {summary && summary.positions > 0 && <Summary summary={summary} />}
@@ -192,8 +198,8 @@ function VaultCard({ vault, onOpen }: { vault: VaultView; onOpen: () => void }) 
           <Health ltv={p.ltv} maxLtv={vault.maxLtv} />
           <p style={{ ...font(12), color: 'var(--color-fg-subtle)' }}>
             {p.debt > 0
-              ? `Self-repays in ${formatHorizon(p.selfRepayDays)} at today's yield`
-              : 'No debt — the yield accrues to you'}
+              ? `Clears in ${formatHorizon(p.selfRepayDays)} at today’s yield`
+              : 'No debt — the yield accrues to the position'}
           </p>
         </View>
       ) : (
@@ -223,7 +229,10 @@ function Health({ ltv, maxLtv }: { ltv: number; maxLtv: number }) {
           LTV <span className="tnum" style={{ color: 'var(--color-fg-muted)' }}>{formatPercent(ltv * 100, 1)}</span> of{' '}
           <span className="tnum">{formatPercent(maxLtv * 100, 0)}</span>
         </span>
-        <span className="tnum" style={{ fontWeight: 500, color }}>{warn ? 'Near the limit' : 'Safe'}</span>
+        {/* The bar reports where the position sits against the vault's ceiling.
+            "Safe" read as a verdict on the risk of holding it, which is not
+            something a ratio can tell you. */}
+        <span className="tnum" style={{ fontWeight: 500, color }}>{warn ? 'Near the limit' : 'Within limit'}</span>
       </View>
       <div
         style={{ height: 6, borderRadius: 9999, background: 'var(--color-surface-3)', overflow: 'hidden' }}
@@ -242,8 +251,8 @@ function Health({ ltv, maxLtv }: { ltv: number; maxLtv: number }) {
 // -- Vault detail ------------------------------------------------------------
 
 const ACTIONS: { id: EarnAction; label: string; note: (v: VaultView) => string }[] = [
-  { id: 'deposit', label: 'Deposit', note: (v) => `Add ${v.underlying} collateral. It earns ${formatPercent(v.apy)} and backs what you borrow.` },
-  { id: 'borrow', label: 'Borrow', note: (v) => `Draw ${v.synthetic} against your collateral — it lands in your ${v.underlying} balance, one for one. The yield pays it back.` },
+  { id: 'deposit', label: 'Deposit', note: (v) => `Add ${v.underlying} collateral. It carries a ${formatPercent(v.apy)} yield today and backs what you borrow.` },
+  { id: 'borrow', label: 'Borrow', note: (v) => `Draw ${v.synthetic} against your collateral — it lands in your ${v.underlying} balance, one for one. Collateral yield is applied to the debt.` },
   { id: 'repay', label: 'Repay', note: (v) => `Clear ${v.synthetic} debt early from your ${v.underlying} balance.` },
   { id: 'withdraw', label: 'Withdraw', note: (v) => `Take ${v.underlying} back out. What stays must still cover the debt.` },
 ]
@@ -309,7 +318,9 @@ function VaultDetail({
             <Figure label="Collateral" value={formatMoney(p.collateral, vault.underlying)} />
             <Figure label="Value" value={formatUSD(p.collateralUsd / 100)} />
             <Figure label="Borrowed" value={formatMoney(p.debt, vault.underlying)} />
-            <Figure label="Left to borrow" value={formatMoney(p.borrowable, vault.underlying)} tone="positive" />
+            {/* Headroom is capacity to take on debt, not a gain. Green made
+                drawing more of it read as the favourable move. */}
+            <Figure label="Left to borrow" value={formatMoney(p.borrowable, vault.underlying)} />
           </dl>
           <Health ltv={p.ltv} maxLtv={vault.maxLtv} />
           {p.debt > 0 && (
@@ -345,6 +356,13 @@ function VaultDetail({
       </View>
 
       <p style={{ marginTop: 12, ...font(12), color: 'var(--color-fg-muted)', lineHeight: 1.625 }}>{note}</p>
+
+      {/* The modal covers the page, so the note out there is not on screen at
+          the moment the movement is actually committed. It is repeated here for
+          that reason, next to the verb that signs. */}
+      <View style={{ display: 'grid', marginTop: 12 }}>
+        <Custody subject="this position" />
+      </View>
 
       <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 8, marginTop: 12 }}>
         <View style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', gap: 8 }}>

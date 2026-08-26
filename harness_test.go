@@ -35,7 +35,6 @@ func newBankApp(t testing.TB) *tests.TestApp {
 		collections.EnsureConversionCollection,
 		collections.EnsureAuditCollection,
 		collections.EnsureSessionCollection,
-		collections.EnsureCredentialCollection,
 		collections.EnsureDocumentCollection,
 		collections.EnsurePositionCollection,
 	} {

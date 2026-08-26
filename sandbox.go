@@ -22,21 +22,14 @@ import (
 // this file talks to a real payment processor.
 // -----------------------------------------------------------------------------
 
-// DemoEmail / DemoPassword are the hero sandbox login credential. Defaults are
-// baked in for the investor demo; overridable via env. Only the bcrypt hash of
-// the password is ever persisted (see EnsureCredentialCollection).
+// DemoEmail names the identity the sandbox demo signs in as. It is a name, not
+// a credential: IAM holds the password and IAM checks it. The value is surfaced
+// on the config route so the demo can prefill the field, and nowhere else.
 func DemoEmail() string {
 	if v := strings.TrimSpace(os.Getenv("BANK_DEMO_EMAIL")); v != "" {
 		return v
 	}
 	return "z@lux.financial"
-}
-
-func DemoPassword() string {
-	if v := os.Getenv("BANK_DEMO_PASSWORD"); v != "" {
-		return v
-	}
-	return "IloveLux2026!!!"
 }
 
 // Sandbox reports whether the daemon is running in sandbox/demo mode.

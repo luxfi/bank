@@ -401,46 +401,27 @@ func refreshDemoAccount(app core.App, accountID, seed string) {
 	}
 }
 
-// SeedSandbox seeds the hero demo identity on boot (sandbox only):
-//   - a _superusers record (so the shared DB is writable/seedable and the
-//     demo login can mint a superuser token — the only local token bankd's
-//     external-auth mode accepts),
-//   - a bcrypt-hashed sandbox credential for that email (never plaintext),
-//   - a fully-funded customer account owned by the superuser id.
+// SeedSandbox seeds what a demo needs and no identity (sandbox only).
 //
-// The hero logs in at app.lux.financial with email + password (sandbox login),
-// landing on a populated dashboard. Real signups still use IAM (lux.id).
+// Everyone signs in through IAM, so the hero's account is opened on the first
+// authenticated request rather than at boot — see requireAccount. What is seeded
+// here is the curated book of business the console reads, which belongs to
+// nobody in particular.
 func SeedSandbox(app core.App) {
 	if !Sandbox() {
 		return
 	}
-	email := DemoEmail()
 
-	su, err := ensureDemoSuperuser(app, email, DemoPassword())
-	if err != nil {
-		app.Logger().Warn("seed: demo superuser failed", "err", err)
-		return
-	}
-
-	if acct := primaryAccount(app, su.Id); acct == nil {
-		if _, err := ProvisionCustomer(app, su, KYC{
-			Name: "Lux Demo", Country: "US", EntityType: "individual",
-			DOB: "1990-01-01", AddressLine: "1 Market St", City: "San Francisco", PostalCode: "94105",
-		}); err != nil {
-			app.Logger().Warn("seed: provisioning failed", "err", err)
-			return
-		}
-	} else {
-		// The demo account already exists — likely opened by an earlier build
-		// (a live sandbox that predates per-asset wallets, receiving details,
-		// crypto balances, or Earn). Backfill the current seed idempotently so a
-		// redeploy brings the standing demo up to the app's full surface without
-		// wiping anything the account already holds.
-		refreshDemoAccount(app, acct.Id, su.Id)
-	}
-	app.Logger().Info("sandbox seed: hero customer ready", "email", email)
+	// The hero account is NOT seeded here any more, because seeding it needs an
+	// owner and the owner is IAM's subject — a value this process cannot know at
+	// boot. It is opened on the first authenticated request instead
+	// (requireAccount), which owns it by whoever IAM actually signed in.
+	//
+	// What stood here minted a local _superusers record and a bcrypt credential
+	// to own it. Base accepts no locally-minted token now, so that account
+	// belonged to an identity that could never sign in.
 
 	// Curated book of business so the admin console reads like a live
-	// institution (not a one-customer sandbox). Idempotent.
+	// institution (not a one-customer sandbox). Needs no identity. Idempotent.
 	seedPortfolio(app)
 }

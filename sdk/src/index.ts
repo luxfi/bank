@@ -28,7 +28,6 @@ export class BankError extends Error {
 
 export interface Config {
   sandbox: boolean
-  demoLogin?: boolean
   demoEmail?: string
   fiat: string[]
   crypto: string[]

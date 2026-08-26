@@ -5,6 +5,7 @@ import { useBrand } from '@/hooks/brand'
 import { useConfig } from '@/lib/config'
 import { getPlans, listVaults, type Plan, type Vault } from '@/api/client'
 import { AssetAvatar, Icon, SandboxBadge, font, pill, truncate } from '@/components/ui'
+import { Custody } from '@/components/Custody'
 import { formatPercent } from '@/lib/format'
 import { View } from '@/gui'
 
@@ -17,11 +18,11 @@ const STATS: [string, string][] = [
 
 const FEATURES = [
   { icon: 'bank', title: 'Multi-currency IBAN accounts', body: 'Hold 30+ currencies with a dedicated IBAN. Real-time available and pending balances.' },
-  { icon: 'send', title: 'Global payments & instant FX', body: 'SWIFT, SEPA, ACH and wires worldwide, with conversion at institutional rates — no hidden spread.' },
-  { icon: 'wallet', title: 'Built-in crypto wallet', body: 'Every account ships with a non-custodial wallet secured by threshold MPC — no single key.' },
+  { icon: 'send', title: 'Global payments & FX', body: 'SWIFT, SEPA, ACH and wires worldwide. Every conversion is quoted, spread included, before you confirm it.' },
+  { icon: 'wallet', title: 'Built-in crypto wallet', body: 'Every account ships with a crypto wallet. We hold its key and sign on your instruction — the same custody as your cash balances.' },
   { icon: 'card', title: 'Cards, virtual to metal', body: 'Issue a virtual card in a tap; carry plastic or metal on higher tiers. Pairs with lux.credit.' },
-  { icon: 'earn', title: 'Earn & borrow — Liquid Protocol', body: 'Collateralize crypto in non-custodial vaults and borrow against it while yield repays you. Lux’s native lending protocol, built in.' },
-  { icon: 'shield', title: 'Bank-grade security', body: 'Lux ID sign-in, KMS-managed secrets, and continuous KYC / AML / sanctions screening.' },
+  { icon: 'earn', title: 'Earn & borrow — Liquid Protocol', body: 'Deposit crypto collateral into a Liquid vault and borrow the vault’s synthetic against it, up to its LTV. Collateral yield is applied to the debt. We hold the key and sign each movement.' },
+  { icon: 'shield', title: 'Sign-in and screening', body: 'Lux ID sign-in, KMS-managed secrets, and continuous KYC / AML / sanctions screening.' },
 ]
 
 // The panel every hero and closing band is cut from.
@@ -109,7 +110,7 @@ function Hero() {
       </h1>
       <p style={{ ...font(18), ...muted, marginTop: 20, maxWidth: 576, marginInline: 'auto' }}>
         Open a multi-currency account with a built-in crypto wallet in under two minutes.
-        Send globally, convert instantly, spend anywhere.
+        Send globally, convert between currencies, spend on card.
       </p>
       <View style={{ display: 'grid', gridAutoFlow: 'column', justifyContent: 'center', alignItems: 'center', marginTop: 32, gap: 12 }}>
         <Link to="/signup" className="btn btn-primary" style={{ ...font(16), paddingInline: 24, paddingBlock: 12 }}>
@@ -207,23 +208,23 @@ const BEATS: { icon: string; title: string; body: string }[] = [
   {
     // Down then up: what goes in, then what comes out against it.
     icon: 'arrowDown',
-    title: 'Deposit collateral that already earns',
-    body: 'wstETH, rETH, USDC, stLUX and more go into a Liquid vault and keep earning exactly as they did outside it.',
+    title: 'Collateral that already earns',
+    body: 'wstETH, rETH, USDC, stLUX and more go into a Liquid vault and keep accruing the yield they carry outside it.',
   },
   {
     icon: 'arrowUp',
     title: 'Borrow against it, up to 90%',
-    body: 'Draw the vault’s x* token against what you put in. It moves and spends like any other token you hold.',
+    body: 'Draw the vault’s x* token against what you put in, up to the vault’s LTV. It is an ERC-20 and transfers like one.',
   },
   {
     icon: 'earn',
     title: 'The yield goes to the debt',
-    body: 'Mix-Yield Token strategies spread your collateral’s yield across protocols and put all of it against what you owe. Nothing to schedule.',
+    body: 'Mix-Yield Token strategies allocate the collateral across the protocols that vault names, and the yield they return is applied to what you owe. Nothing to schedule.',
   },
   {
     icon: 'swap',
     title: 'Convert back on a fixed cycle',
-    body: 'x* tokens redeem for the underlying through the transmuter over ninety days. Fixed duration, predictable redemption.',
+    body: 'x* tokens redeem for the underlying through the transmuter over ninety days, as transmuter capacity allows.',
   },
 ]
 
@@ -285,13 +286,24 @@ function Liquid() {
         >
           Liquid Protocol V3
         </span>
-        <h2 className="h1" style={{ ...display, marginTop: 16 }}>Your collateral pays the loan back.</h2>
+        <h2 className="h1" style={{ ...display, marginTop: 16 }}>The yield on your collateral goes to the debt.</h2>
         <p style={{ ...muted, marginTop: 12, maxWidth: 560 }}>
           Liquid is Lux’s lending layer, and it sits in the same account as your balances. Deposit
-          collateral that already earns. Borrow x* tokens against it. The yield clears the debt.
+          yield-bearing collateral, borrow x* tokens against it up to the vault’s LTV, and the
+          collateral’s yield is applied to what you owe. How long that takes to clear the debt
+          depends on the yield, which moves.
         </p>
       </View>
       {vaults?.length ? <Figures vaults={vaults} /> : null}
+      {/* Read before the mechanics, because everything below describes moving
+          money on a chain and a reader who knows DeFi will assume they sign for
+          it themselves. Here they do not. */}
+      <View style={{ display: 'grid', maxWidth: 640, marginInline: 'auto', marginTop: 24 }}>
+        <Custody
+          subject="every vault position opened here"
+          also="Liquid is reached through your account, not through a wallet you connect."
+        />
+      </View>
       <Beats />
       <LikeKind />
       <Machinery />
@@ -343,9 +355,9 @@ function Beats() {
       <View className="card-2" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', gap: 6, padding: 20 }}>
         <p style={{ ...font(12, 600), ...subtle, textTransform: 'uppercase', letterSpacing: '0.04em' }}>One path through</p>
         <p style={{ ...font(14), ...muted, lineHeight: 1.625 }}>
-          Deposit wstETH. Borrow xETH at 90%. Spend the xETH across DeFi while Lido and EigenLayer
-          staking yield clears the loan behind you. Convert xETH back to ETH through the transmuter
-          when you want out.
+          Deposit wstETH. Borrow xETH up to 90%. The xETH is yours to move, and Lido and EigenLayer
+          staking yield is applied to the loan behind you. Convert xETH back to ETH through the
+          transmuter when you want out.
         </p>
       </View>
     </View>
@@ -370,21 +382,27 @@ function LikeKind() {
         <h3 className="h2" style={display}>Both sides of the loan are the same asset.</h3>
         <p style={{ ...muted, marginTop: 16, lineHeight: 1.625 }}>
           You borrow xETH against ETH, never dollars against ETH. When the price of ETH moves, the
-          collateral and the debt move together by the same amount, and the ratio between them does
-          not change.
+          collateral and the debt move together, and the ratio between them is unchanged by price
+          alone.
         </p>
         <p style={{ ...muted, marginTop: 12, lineHeight: 1.625 }}>
           A dollar loan against volatile collateral has a liquidation price: the point where the
-          collateral stops covering what you owe. This loan has no such point. That is what makes
-          90% a safe ceiling rather than a reckless one.
+          collateral stops covering what you owe. A like-kind loan has no such price. That is what
+          a 90% ceiling rests on — arithmetic, not a view about where the market goes.
         </p>
       </View>
       <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 12, marginTop: 28, position: 'relative' }}>
         {PRICES.map((p) => <Priced key={p} price={p} ltv={ltv} />)}
       </View>
+      {/* The argument is sound only while the synthetic tracks its underlying,
+          and that tracking is set by how each vault is configured at deploy —
+          the protocol takes three token addresses and does not check they are
+          like-kind. Stating the ceiling without stating what it rests on is the
+          half that would not survive review. */}
       <p style={{ ...font(12), ...subtle, marginTop: 16, position: 'relative', lineHeight: 1.625, maxWidth: 640 }}>
         The same position at two prices, {DROP}% apart. Both sides fall together, so the ratio
-        holds. Yield is the only thing that moves it, and it moves it your way.
+        holds. It holds while the synthetic tracks its underlying — a property of how each vault is
+        configured, not one the protocol enforces.
       </p>
     </View>
   )
@@ -425,7 +443,7 @@ function Machinery() {
           <h3 style={{ fontWeight: 500 }}>x* tokens</h3>
           <p style={{ ...font(14), ...muted, marginTop: 6, lineHeight: 1.625 }}>
             The x is for multiplied. Six debt tokens across Lux, Zoo, Hanzo and Pars, each one
-            redeemable for its own underlying.
+            redeemable for its own underlying through that vault’s transmuter.
           </p>
           {/* Six tokens read as two rows of three; letting them auto-fit strands
               the last one on a line of its own at most widths. */}
@@ -440,17 +458,17 @@ function Machinery() {
         <View className="card" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', padding: 24 }}>
           <h3 style={{ fontWeight: 500 }}>Positions are NFTs</h3>
           <p style={{ ...font(14), ...muted, marginTop: 6, lineHeight: 1.625 }}>
-            Every position is an NFT: transferable, composable, tradeable on any marketplace. The
-            collateral and the debt travel together with the token, so selling the position sells
-            both halves at once.
+            Every position is an NFT: transferable, composable, tradeable wherever the standard is
+            supported. The collateral and the debt travel together with the token, so selling the
+            position sells both halves at once.
           </p>
         </View>
       </View>
       <View className="card" style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'minmax(0,1fr)', padding: 24 }}>
         <h3 style={{ fontWeight: 500 }}>Mix-Yield Token strategies</h3>
         <p style={{ ...font(14), ...muted, marginTop: 6, lineHeight: 1.625 }}>
-          Where the collateral actually works. Yield is allocated across these and routed to your
-          debt, so the loan pays down whether or not you are watching.
+          Where the collateral actually works. Each vault names the strategies it allocates to, and
+          the yield they return is applied to your debt. Nothing to schedule.
         </p>
         <View style={{ display: 'grid', alignContent: 'start', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: 8, marginTop: 16 }}>
           {MYT.map(([protocol, ticker]) => (

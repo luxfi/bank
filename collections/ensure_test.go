@@ -23,7 +23,6 @@ var ensures = []struct {
 	{"conversion", EnsureConversionCollection, ConversionCollectionName},
 	{"audit", EnsureAuditCollection, AuditCollectionName},
 	{"session", EnsureSessionCollection, SessionCollectionName},
-	{"credential", EnsureCredentialCollection, CredentialCollectionName},
 	{"document", EnsureDocumentCollection, DocumentCollectionName},
 	{"position", EnsurePositionCollection, PositionCollectionName},
 }

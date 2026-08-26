@@ -195,10 +195,31 @@ func viewTxns(app core.App, accountID string, limit int) []txView {
 	return out
 }
 
-// requireAccount resolves the caller's primary account or 404s.
+// requireAccount resolves the caller's primary account.
+//
+// In sandbox it OPENS one on first sight instead of refusing. The demo account
+// cannot be seeded at boot any more: its owner is IAM's subject, and this process
+// does not know that value until somebody signs in. So the first authenticated
+// request claims it, and the account belongs to whoever IAM actually
+// authenticated rather than to a local identity that could never log in.
+//
+// A live deployment still refuses: an account is opened by onboarding, which
+// takes a KYC body, and inventing one for whoever appears is the opposite of
+// that.
 func requireAccount(app core.App, e *core.RequestEvent) (*core.Record, error) {
-	acct := primaryAccount(app, e.Auth.Id)
-	if acct == nil {
+	if acct := primaryAccount(app, e.Auth.Id); acct != nil {
+		return acct, nil
+	}
+	if !Sandbox() {
+		return nil, apis.NewNotFoundError("no account — complete onboarding first", nil)
+	}
+
+	acct, err := ProvisionCustomer(app, e.Auth, KYC{
+		Name: "Lux Demo", Country: "US", EntityType: "individual",
+		DOB: "1990-01-01", AddressLine: "1 Market St", City: "San Francisco", PostalCode: "94105",
+	})
+	if err != nil {
+		app.Logger().Warn("sandbox: could not open the demo account", "owner", e.Auth.Id, "err", err)
 		return nil, apis.NewNotFoundError("no account — complete onboarding first", nil)
 	}
 	return acct, nil
