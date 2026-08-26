@@ -349,6 +349,89 @@ All other transitions are rejected.
 
 1. On completion: available += amount (creates balance record if new currency)
 
+## Auth — Lux ID, and nothing else
+
+Base v1.5.72 removed the `_superusers` local-token fallback, deliberately: one
+process serves many orgs' Bases, and a second independently-keyed door to
+schema, settings, backups and logs is one more than can be reasoned about.
+
+The sandbox login was that door. It kept a bcrypt hash in its own collection and
+minted a `_superusers` token, and until that release Base honoured such a token
+as a fallback. After it, the route answered 200 with a token and the very next
+request answered 401 — a login that succeeds and authenticates nothing. It was
+also the custom auth this estate does not build.
+
+Gone: `login.go`, the credentials collection, the token minting, the demo
+password that was a constant in a file every browser downloads, and the merged
+hook shape that let one path stand in for the other. The SPA already had the
+PKCE flow, in `pages/Login.tsx`, `pages/Callback.tsx` and `lib/iam.ts`.
+
+**`z@lux.financial` must exist in Lux IAM under org `lux`, app `lux-bank`.** The
+demo cannot sign in until it does. That is an IAM seeding task following the same
+convention every other surface uses, not a code one.
+
+The test suite cannot see this class of break: `newBankApp` never registers the
+org plugin, so every authed route passes in tests while the real binary refuses.
+A change to the auth path has to be exercised against a running bankd.
+
+## Money is typed
+
+`Cents` and `Minor` are distinct types (money.go). Cents is US dollars in
+hundredths; Minor is one asset's smallest unit at the ledger's resolution, which
+is not the token's resolution on chain. The only crossing is `usd()`, which needs
+a price — which is why it should be the only one.
+
+They were both `int64` with the unit in a comment, and comments do not typecheck:
+a debt in cents was subtracted from a balance in an asset's own units and a +$340
+vault position rendered as −$5,600. `money[T]` reads a whole amount off a record
+and rounds once, rather than at the thirty call sites that each had to remember.
+
+## A collection whose name equals its own id cannot be updated
+
+Base's `checkUniqueName` looks up a collection whose id equals the new name and
+does not exclude the one being saved, so every collection built as
+`NewBaseCollection(name, name)` — which is all of them — was creatable once and
+never updatable. A schema addition failed a running bank at startup. Fixed
+upstream in base v1.5.72; the workaround it replaced was `SaveNoValidate` on the
+upgrade path, where nothing changes a name.
+
+## Custody — the bank holds every key
+
+`chainSeed` assigns an account its stored `chainIndex`; `evmChain.key` turns that
+into a private key; `derive` walks `m/9000'/<networkId>'/<envId>'/<branch>'/<index>'`
+from `BANK_CHAIN_MNEMONIC`. Branch 0 is the customer, branch 1 the treasury,
+which funds customers' gas. Only `handleCryptoSend` and `earnOnChain` reach a
+key, and both hand `chainSeed` to a backend that signs. There is no connect-wallet
+path.
+
+So this is a custodial bank, and the landing page's claim of a "non-custodial
+wallet" and "non-custodial vaults" was false — those being the terms the April
+2026 interface relief is defined around. `components/Custody.tsx` states the one
+mechanical fact, who signs, and sits where the customer commits.
+
+Custody is a layer, not a platform property. The investor layer is who holds the
+signing key — here, the bank. The underlying asset layer is where the asset
+actually sits, and the wallet's `ETH` and `BTC` are **bridged** tokens
+(`BridgedETH`/`BridgedBTC` per `chain/deploy/96369.json`), so a holder has a
+claim on bridge backing rather than the asset. No screen says that yet, and who
+backs the bridge is not established anywhere. See COMPLIANCE.md.
+
+## The dash is also a library
+
+`app/dash` builds twice: the app, and `@luxfi/bank-dash` (`vite.lib.config.ts`,
+`src/index.ts`, `src/Finance.tsx`). lux.finance renders it whole; the Lux Cloud
+console renders the same screens beside a validator's nodes and keys.
+
+`bankd` validates a bearer at IAM's `userinfo` and checks no audience, so a
+console session already authorizes the bank — no second sign-in, no exchange.
+
+Four things a host needs that the app got for free, all now carried by `Finance`:
+the layout runtime's theme (`GuiRoot`), the brand tokens, the account
+(`OverviewProvider`), and the gate that waits for it (`Ready`, shared with
+`Layout`). The library defines `process.env` at build time because the runtime
+reads it unguarded thirty times, ships no typeface (they were 205 of 219 kB), and
+does not rename its host's tab — `label()` is called by the app, not at import.
+
 ## On-chain money paths — what an adversarial pass found
 
 An adversarial review of the EVM integration produced two findings that moved
