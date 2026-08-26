@@ -38,7 +38,7 @@ var Plans = []Plan{
 		Perks: []string{
 			"Virtual card in Apple Pay + Google Pay",
 			"Multi-currency ewallet + P2P",
-			"Non-custodial crypto wallet",
+			"Built-in crypto wallet",
 		},
 	},
 	{

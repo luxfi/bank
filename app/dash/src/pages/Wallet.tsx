@@ -117,7 +117,10 @@ export function Wallet() {
               <AssetRow
                 key={h.currency}
                 code={h.currency}
-                note="Testnet"
+                // The network the backend reports, never a constant. A hardcoded
+                // "Testnet" here labelled mainnet holdings as play money, which
+                // is the one direction a custody label must never be wrong in.
+                note={data.network}
                 minor={h.available}
                 decimals={h.decimals}
                 valueUsd={h.valueUsd}

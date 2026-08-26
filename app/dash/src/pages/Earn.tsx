@@ -60,9 +60,14 @@ export function Earn() {
         subtitle="Liquid Protocol — borrow against yield-bearing collateral. The collateral’s yield is applied to the debt."
       />
 
+      {/* The second sentence corrects a location, not a custody claim. Deposited
+          collateral is transferred into the vault's own contract (evmMarket.Deposit);
+          what lands back at the account's address is the position NFT and anything
+          borrowed. Saying the collateral sits at the account's address was wrong,
+          and wrong in a way that hides which contract holds the money. */}
       <Custody
         subject="the positions on this screen"
-        also="Collateral and borrowed tokens are held at the account’s address, which we control."
+        also="Where a vault runs on chain its collateral sits in that vault’s contract; the position and anything borrowed sit at the account’s address."
       />
 
       {summary && summary.positions > 0 && <Summary summary={summary} />}

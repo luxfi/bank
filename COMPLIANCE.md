@@ -10,6 +10,46 @@ marked **LEGAL** are questions for counsel, deliberately left unanswered.
 
 ---
 
+## What "custody" is being asked about
+
+The word does three jobs. The product copy used it as though it did one, which
+is how a claim about a key became a claim about a whole platform. Kept apart
+here, because a true statement about one of these is not a statement about
+either of the others:
+
+- **Investor layer** — who holds the key that controls voluntary disposition.
+  This is the layer the April 2026 statement conditions on, and the layer
+  "self-custodial" is a term of art about.
+- **Underlying asset layer** — where the thing behind a position actually sits.
+  A qualified custodian, a direct registered holding, a trust, a bridge's
+  reserve. Never automatically the investor's wallet.
+- **Register layer** — who may freeze a position, reissue against a lost key, or
+  execute a court order against a holding. A transfer agent function, separate
+  from both of the above.
+
+Where this surface lands on each:
+
+| Layer | On `lux.finance` |
+|---|---|
+| Investor | **The bank.** Every key is derived and held by `bankd`; the customer holds none. Set out below. |
+| Underlying asset | Mixed, and disclosed nowhere. `ETH` and `BTC` in the wallet are bridged tokens on a Lux chain, not ETH on Ethereum or BTC on Bitcoin. Earn collateral, where a vault runs on chain, sits inside that vault's contract rather than at the account's address. Fiat balances are ledger rows; **where the money behind them is actually held is not established in this repository.** |
+| Register | Not established. Who may pause, blacklist or reissue the deployed tokens is recorded nowhere `bankd` reads, and no screen says. |
+
+Two things follow, and both outlast the vocabulary:
+
+**A self-custodial investor layer would not make the other two disappear.** If
+this product ever hands the key to the customer, the bridged asset behind a
+wallet balance still sits with whoever backs the bridge, and someone still holds
+whatever pause and reissue powers the token contracts carry. Becoming
+self-custodial and then saying "non-custodial" full stop swaps one unqualified
+claim for another.
+
+**The finding below is an investor-layer finding and it is the severe one.** The
+bank holds every key. That is the fact the relief turns on, the fact the landing
+page denied, and nothing in this section softens it.
+
+---
+
 ## Where the keys are
 
 **The bank holds every signing key on this surface. The customer holds none.**
@@ -99,6 +139,10 @@ nor the wallet provider having custody of, or access to, the user's private key.
 On this surface the operator has both: it derives the key, stores the seed, and
 signs with it.
 
+That condition is an investor-layer condition and only that. It asks who holds
+the key. It does not ask where the underlying sits, and it does not ask who can
+correct the register, so satisfying it would answer neither.
+
 So the relief does not reach the Wallet send flow, and it does not reach any of
 the four Earn movements. It does not reach anything else either, because nothing
 else touches a chain.
@@ -136,10 +180,16 @@ closed** are current.
 | `Wallet.tsx:122` | "Testnet assets only. In production this wallet is secured by threshold MPC — no single key." | Deleted. Replaced by the custody note beside the actions. |
 
 The two `non-custodial` claims were the most serious thing found. They used the
-exact term the relief is defined around, to describe a product that is the
-opposite. The threshold-MPC claim was false twice over: it described custody the
-customer does not have, and it described a mechanism that does not exist — the
-implementation derives one ordinary ECDSA key per account from one seed.
+exact term the relief is defined around, to describe a product that is its
+opposite at precisely the layer that term is about. The threshold-MPC claim was
+false twice over: it described custody the customer does not have, and it
+described a mechanism that does not exist — the implementation derives one
+ordinary ECDSA key per account from one seed.
+
+Neither replacement claims anything the other way. "We hold its key and sign on
+your instruction" is an investor-layer statement, checkable against
+`evmchain.go`, and it is silent about where a bridged asset's backing sits and
+about who can pause a token. Those are the gaps below, not claims made here.
 
 ### Custody disclosure added
 
@@ -164,6 +214,36 @@ Placed at:
 The wording is mechanical on purpose. It says who signs, which is checkable
 against the code, and claims nothing about how the key is protected — that was
 the failure mode of the line it replaces.
+
+**It is an investor-layer disclosure and nothing more.** It answers who holds the
+key. It does not tell a customer that the `ETH` in their wallet is a bridged
+token whose backing sits elsewhere, and it does not tell them who can pause that
+token. Those remain undisclosed on every screen — see *Gaps not closed*. A
+reader should not take the presence of this component as covering them.
+
+The `Earn.tsx` note carried a location error, corrected in this pass:
+
+| Where | Was | Now |
+|---|---|---|
+| `Earn.tsx:65` | "Collateral and borrowed tokens are **held at the account's address**, which we control." | "Where a vault runs on chain its collateral sits in **that vault's contract**; the position and anything borrowed sit at the account's address." |
+
+`evmMarket.Deposit` (`evmmarket.go:195`) transfers the collateral into the market
+contract and mints the position NFT to the account's address; `Borrow`
+(`evmmarket.go:210`) mints the synthetic to that same address. The original
+sentence put the collateral in the wrong place, which is a custody statement
+that misses which contract actually holds the money — and it overstated the
+bank's grip while understating the protocol's.
+
+### Network mislabelled
+
+| Where | Was | Now |
+|---|---|---|
+| `Wallet.tsx:120` | Every holding row rendered `note="Testnet"`, a constant | `note={data.network}` — the network `GET /v1/bank/wallet` reports |
+
+The page subtitle already carried the true network; the rows contradicted it with
+a hardcoded string. On mainnet that labelled real assets as test assets, which is
+the one direction this label must never be wrong in — a customer who reads
+"Testnet" beside a balance has been told the holding is not real.
 
 ### Outcome stated as certain
 
@@ -246,6 +326,62 @@ that issues it.
 
 Blunt list. None of these were fixed, and each is a real finding.
 
+**The membership ladder still sells a "Non-custodial crypto wallet".**
+`collections/plans.go:41` lists it as the third Silver perk and
+`GET /v1/bank/plans` serves it to `Landing.tsx`. It is the same false claim the
+landing hero just stopped making, in the same product, one screen away — and it
+survived this pass only because the string lives in Go and Go was outside the
+edit scope. **This is the most serious thing left open in this document.** One
+word:
+
+| Where | Is | Should be |
+|---|---|---|
+| `collections/plans.go:41` | `"Non-custodial crypto wallet"` | `"Built-in crypto wallet"` |
+
+`~/work/lux-apps/credit/src/content/plans.ts:32` is a hand-maintained mirror of
+that same array and carries the identical string, so the two change in one
+commit or the ladder disagrees with itself across two surfaces.
+
+**The lux.credit funnel is built on the claim this document retracts.**
+`lux.credit` is the card marketing and signup surface for this bank, and its
+copy reads as though the product were self-custodial throughout. Not edited here
+— different repository, and the page needs rewriting rather than a string swap —
+but it is the largest live exposure found and it must not ship as written. All
+paths under `~/work/lux-apps/credit/`:
+
+| Where | Text |
+|---|---|
+| `src/app/page.tsx:407` | Section eyebrow "NON-CUSTODIAL" |
+| `src/app/page.tsx:412` | "Your collateral stays in smart contracts you control. No custodial risk. No counterparty exposure. Your keys, your crypto, always." |
+| `src/app/page.tsx:418` | Card heading "Non-Custodial Collateral" |
+| `src/app/page.tsx:21` | "Deposit L* tokens (LETH, LBTC, LUSD) into your non-custodial vault. Your assets remain yours." |
+| `src/app/checkout/client.tsx:215` | "Non-custodial. Your assets remain in your control at all times." |
+| `src/app/checkout/client.tsx:260` | "Deposit L* tokens into your non-custodial vault." |
+| `src/app/layout.tsx:16, 38, 51` | Page and share descriptions: "…quantum-safe security, and full self-custody of your assets." |
+| `src/app/layout.tsx:17` | SEO keywords include `'self-custody'` |
+
+"Your keys, your crypto, always" is the plainest of them and the customer has no
+key at any point. The `layout.tsx` strings are worse than page copy because they
+are what a search result and a shared link show, so they make the claim to
+people who never open the page.
+
+**Bridged assets are presented as the assets they are bridged from.** The wallet
+lists `ETH` and `BTC`, and `chain/deploy/96369.json` maps both to contracts on
+the Lux chain — `BridgedETH` and `BridgedBTC` from `chain/script/tokens`. What
+the customer holds is a claim against whatever backs that bridge, not ETH on
+Ethereum or BTC on Bitcoin, and no screen says so. This is the underlying asset
+layer, it is undisclosed everywhere, and it does not become disclosed by the
+investor-layer note added above. **Who backs the bridge, and on what reserve, is
+not established in this repository either.**
+
+**Nothing records who can pause, blacklist or reissue the deployed tokens.** The
+register layer. `chain/deploy/*.json` carries addresses and no authority map;
+`bankd` reads the addresses and never asks. A customer cannot find out from the
+product whether their position can be frozen by anyone, and neither can a
+reviewer reading this repository. That question has to be answered from the
+token sources in `luxfi/standard` before any claim about it is made in either
+direction.
+
 **Vault descriptions still carry advice-flavoured copy, and they render on two
 screens.** They live in Go (`collections/vaults.go`) and were outside the edit
 scope for this pass. They reach the customer through `Landing.tsx` and
@@ -268,11 +404,6 @@ synthetics (`xLUX`, `xETH`, `xUSD`). `xZOO`, `xAI` and `xPARS` do not exist in
 anything `bankd` returns. A marketing surface naming instruments the platform
 does not offer is a straightforward accuracy problem independent of any
 securities question.
-
-**Wallet rows are hardcoded "Testnet".** `Wallet.tsx` labels every holding
-`note="Testnet"` regardless of the network the backend reports. On mainnet this
-mislabels real assets. The page subtitle already carries the true network from
-`networkName()`; the row note does not.
 
 **Wallet action tiles pre-select pairs.** Buy / Sell / Convert hardcode
 `USD→LUX`, `LUX→USD`, `LUX→DAI`. Neutral verbs, but the house token is
@@ -319,6 +450,22 @@ both need answering, separately.
 facilitates?** The product markets them as tradeable. Whether pointing at that
 tradability, from an interface the operator runs, has exchange or ATS
 implications.
+
+**What sits behind a bridged balance, and does a custody rule attach there?**
+Separate from the seed question below, and it survives any change to it. `ETH`
+and `BTC` on this surface are claims on a bridge reserve. Who holds that reserve,
+under what arrangement, and whether a qualified-custodian requirement reaches it
+are underlying-asset-layer questions this repository cannot answer.
+
+**Does anything in this product amount to a transfer agent function, and if so
+does §17A(c) reach it?** Registration under §17A(c) generally attaches to
+performing transfer agent functions for a Section 12 security, and generally does
+not attach for private vehicles whose interests are not Section 12 securities —
+the definition of the *activity* and the *trigger* to register are distinct, and
+conflating them is the usual error. Whether either applies to any Lux entity or
+instrument here is **counsel's, and is not answered anywhere in this document.**
+Recorded because the position NFT, the vault catalog and the balance ledger
+together do register-layer work, and nobody has named who owns it.
 
 **What custody regime applies to customer crypto held under one operator seed?**
 Exchange Act Rule 15c3-3, state trust and custody requirements, or neither. The
@@ -404,3 +551,10 @@ not have.
 **And the threshold question stays open regardless.** If the synthetics are not
 crypto asset securities, the statement is not the relevant frame in the first
 place. That determination comes before any of this work is worth starting.
+
+**Finishing this list buys the investor layer and nothing else.** Every item
+above is about who holds the key. None of it moves a bridge reserve, and none of
+it settles who can pause a token. A product that completes this work has earned
+the word "self-custodial" for the layer it describes, and has still not earned
+"non-custodial" said flat — the copy that ships alongside has to keep the three
+apart the way this document does.
