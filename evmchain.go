@@ -442,12 +442,17 @@ func (c *evmChain) submit(ctx context.Context, key *ecdsa.PrivateKey, to common.
 	}
 	gas = gas * 12 / 10
 
-	// The treasury pays GAS, and only gas. Putting `value` in here made the bank
-	// the source of the transfer itself: a customer holding nothing could ask to
-	// send any amount and the treasury would hand it over, because a shortfall
-	// was indistinguishable from an empty gas tank. What a customer can send is
-	// what a customer holds.
-	if err := c.fund(ctx, from, new(big.Int).Mul(feeCap, new(big.Int).SetUint64(gas))); err != nil {
+	// The treasury pays GAS, and only gas. What the sender must end up holding
+	// is the value AND the fee — asking only whether they could cover the fee
+	// meant an account holding exactly what it wanted to send passed the check,
+	// was funded nothing, and could not send: the chain wants both. A customer
+	// could never empty their wallet.
+	//
+	// The value stays the sender's to hold. Covering a shortfall in it would
+	// make the bank the source of the transfer, which is how an account holding
+	// nothing could ask for any amount and have the treasury hand it over.
+	fee := new(big.Int).Mul(feeCap, new(big.Int).SetUint64(gas))
+	if err := c.fund(ctx, from, new(big.Int).Add(value, fee), fee); err != nil {
 		return "", err
 	}
 
@@ -480,7 +485,12 @@ func (c *evmChain) submit(ctx context.Context, key *ecdsa.PrivateKey, to common.
 
 // fund tops the sender up from the treasury when it cannot cover a transaction.
 // The treasury funds itself, so it is skipped.
-func (c *evmChain) fund(ctx context.Context, who common.Address, need *big.Int) error {
+//
+// need is everything the transaction costs — the value it moves and the fee to
+// move it. fee is the part the treasury will pay for: a shortfall larger than
+// that is a sender who does not hold what they are sending, and financing it is
+// what the bank must not do. Such a send is left to the chain to refuse.
+func (c *evmChain) fund(ctx context.Context, who common.Address, need, fee *big.Int) error {
 	key, err := c.Treasury()
 	if err != nil {
 		return err
@@ -505,10 +515,16 @@ func (c *evmChain) fund(ctx context.Context, who common.Address, need *big.Int) 
 	if have.Cmp(need) >= 0 {
 		return nil
 	}
-	// Twice the shortfall, so a customer is not back at the window on their next
-	// transfer. `need` is one transaction's fee, so twice it is two — a bounded
-	// amount of the chain's own coin, not a fraction of anyone's balance.
-	top := new(big.Int).Mul(new(big.Int).Sub(need, have), big.NewInt(2))
+	// Twice the fee, so a customer is not back at the window on their next
+	// transfer — a bounded amount of the chain's own coin, never a fraction of
+	// anyone's balance.
+	top := new(big.Int).Mul(fee, big.NewInt(2))
+	if new(big.Int).Sub(need, have).Cmp(top) > 0 {
+		// More is missing than any amount of gas accounts for, so what is short
+		// is the value itself. The chain refuses it, and the treasury does not
+		// quietly become the sender.
+		return nil
+	}
 	if _, err := c.submit(ctx, key, who, top, nil); err != nil {
 		return fmt.Errorf("gas funding failed: %w", err)
 	}
