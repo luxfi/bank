@@ -395,7 +395,57 @@ never updatable. A schema addition failed a running bank at startup. Fixed
 upstream in base v1.5.72; the workaround it replaced was `SaveNoValidate` on the
 upgrade path, where nothing changes a name.
 
-## Custody — the bank holds every key
+## Custody — where it is going
+
+Lux holds nothing. Every layer has a holder, and none of them is us.
+
+| Layer | Who holds it | How |
+|-------|--------------|-----|
+| Fiat | SF Private Bank | the BaaS relationship already in the footer |
+| Custodial crypto | a crypto-native custodian (Alpaca or equivalent) | custody as a service |
+| On-chain signatures | the customer | Safe, native — `standard/contracts/safe`, incl. `pq/PQSigner.sol` |
+| Threshold signing | the customer | their own MPC nodes, launched and run from lux.cloud / zoo.cloud |
+| Bridge wallets on other chains | M-Chain validators | t-of-n threshold on the primary network |
+| Bridge operations | B-Chain | native VM on the primary network |
+
+Two things this settles that a diagram does not.
+
+**Threshold is not custody-free by itself.** An operator holding every share of a
+t-of-n key is a custodian with extra steps, and the definition the interface
+relief uses says so — self-custodial means the provider has neither custody of
+**nor access to** the key. Shares we can combine without the customer are access.
+What makes the MPC layer honest here is that the customer runs the nodes; we do
+not hold a share to combine.
+
+**Non-custodial is about the HOLDER authority, not all of them.** `Authority.sol`
+in `luxfi/standard` separates HOLDER from REGISTER, and REGISTER is what a
+transfer agent needs: correction, freeze, reissue, court order, lost-key
+recovery, estates. A register authority never holds a key — it corrects the
+record. Giving that up is not what non-custodial means, and giving it up would
+delete the transfer-agency product rather than strengthen it.
+
+### What that means for this codebase
+
+`chainSeed` (provision.go:122) hands an account's derivation index to
+`evmChain.key`, which walks the deploy mnemonic and returns a private key the
+bank holds. That is the custody, and it is reached from exactly two places:
+`crypto.go:186` (send) and `liquid.go:315` (earn). Those are the seams to move.
+
+The shape to copy is `Issuer` (issuer.go): a provider-neutral interface, a
+sandbox implementation, and one env-selected constructor. A `Custodian` follows
+it — but `seed` does not survive the move. A custodian is asked for a customer's
+address and asked to sign for that customer; it is never handed a derivation
+index, because the index only means something to whoever holds the mnemonic.
+
+The split that falls out: money the bank holds for a customer sits with the
+custodian, and anything that signs on chain — a vault deposit, a swap — is the
+customer's own Safe. The bank keeps the ledger and the interface. It stops
+keeping keys.
+
+`evmChain` does not disappear. The treasury is the bank's own money and stays the
+bank's own key, and reading chain state needs no custody at all.
+
+## Custody — what it is today
 
 `chainSeed` assigns an account its stored `chainIndex`; `evmChain.key` turns that
 into a private key; `derive` walks `m/9000'/<networkId>'/<envId>'/<branch>'/<index>'`
