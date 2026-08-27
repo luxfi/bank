@@ -2,6 +2,7 @@ package bank
 
 import (
 	"net/http"
+	"strings"
 	"testing"
 
 	"github.com/hanzoai/base/core"
@@ -136,5 +137,92 @@ func seedRecordsFor(t *testing.T, app core.App, account string) {
 	}
 	if card := issueCardRecord(app, account, "Someone Else", "USD"); card == nil {
 		t.Fatal("could not give the other account a card")
+	}
+}
+
+// Reading through the collection door is scoped; writing through it is not
+// open at all. Every collection here carries a list and view rule and nothing
+// else, so create, update and delete are superuser-only — and that is what
+// stands between a customer and their own ledger.
+//
+// A credit written straight into the transactions collection is the whole
+// point: the settlement hook fires on anything reaching "completed" and credits
+// the balance, so a customer who could create one has a mint. The hooks are not
+// the guard here — they would run and do exactly as told.
+func TestACustomerCannotWriteThroughTheCollectionDoor(t *testing.T) {
+	app := newBankApp(t)
+	mine, token := signIn(t, app, "mine@example.com")
+	h := map[string]string{"Authorization": token, "Content-Type": "application/json"}
+
+	before := availableOf(t, app, mine, "USD")
+	if before == 0 {
+		t.Fatal("the account holds nothing, so a mint would not show")
+	}
+
+	run(t, app, tests.ApiScenario{
+		Name:   "a completed credit written straight into the ledger",
+		Method: http.MethodPost,
+		URL:    "/v1/collections/" + collections.TransactionCollectionName + "/records",
+		Body: strings.NewReader(`{"account":"` + mine + `","type":"deposit","direction":"credit",` +
+			`"amount":100000000,"currency":"USD","status":"completed","reference":"minted"}`),
+		Headers:         h,
+		ExpectedStatus:  http.StatusForbidden,
+		ExpectedContent: []string{"message"},
+	})
+	if after := availableOf(t, app, mine, "USD"); after != before {
+		t.Fatalf("a customer minted %d out of nothing", after-before)
+	}
+
+	// Their own account is theirs to read and not to edit: KYC approval and the
+	// membership that sets the limits are both fields on it, so an account a
+	// customer could write is a customer who approves themselves and raises
+	// their own ceiling.
+	run(t, app, tests.ApiScenario{
+		Name:            "approving their own KYC",
+		Method:          http.MethodPatch,
+		URL:             "/v1/collections/" + collections.AccountCollectionName + "/records/" + mine,
+		Body:            strings.NewReader(`{"kycStatus":"approved","plan":"sovereign","riskRating":"low"}`),
+		Headers:         h,
+		ExpectedStatus:  http.StatusForbidden,
+		ExpectedContent: []string{"message"},
+	})
+
+	acct, err := app.FindRecordById(collections.AccountCollectionName, mine)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := acct.GetString("plan"); got != "" {
+		t.Errorf("a customer set their own membership to %q", got)
+	}
+
+	// And an existing row is not theirs to amend or remove — a settled debit
+	// deleted is a debit that never happened.
+	txs, err := app.FindRecordsByFilter(collections.TransactionCollectionName,
+		"account = {:a}", "-created", 1, 0, map[string]any{"a": mine})
+	if err != nil || len(txs) == 0 {
+		t.Fatalf("no transaction to try to amend: %v", err)
+	}
+	for _, tc := range []struct {
+		name, method, body string
+	}{
+		{"amending a settled transaction", http.MethodPatch, `{"amount":1,"status":"failed"}`},
+		{"deleting a settled transaction", http.MethodDelete, ""},
+	} {
+		s := tests.ApiScenario{
+			Name:            tc.name,
+			Method:          tc.method,
+			URL:             "/v1/collections/" + collections.TransactionCollectionName + "/records/" + txs[0].Id,
+			Headers:         h,
+			ExpectedStatus:  http.StatusForbidden,
+			ExpectedContent: []string{"message"},
+		}
+		if tc.body != "" {
+			s.Body = strings.NewReader(tc.body)
+		}
+		run(t, app, s)
+	}
+
+	if _, err := app.FindRecordById(collections.TransactionCollectionName, txs[0].Id); err != nil {
+		t.Errorf("a customer deleted a settled transaction: %v", err)
 	}
 }
