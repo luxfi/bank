@@ -593,12 +593,37 @@ var liquidErrors = map[string]string{
 // ledger has to divide, which one factor cannot express: big.Int holds no
 // fractions, and Exp with a negative exponent returns 1 — so a 2-decimal token
 // silently scaled by 1 and every amount was ten thousand times too large.
+// powers of ten, computed once. A token declares somewhere between 0 and 18
+// decimals and the ledger counts 6, so every factor either side of that gap is
+// already here. Computing 10^n with big.Int.Exp instead cost three allocations
+// on the path of every balance read, for one of about thirty answers.
+//
+// The returned factor is shared, so a caller must not write to it. Both do the
+// same thing — pass it as an operand to Mul or Div, which write to their own
+// receiver — and a caller that needs to keep one should copy it.
+var powers = func() [40]*big.Int {
+	var p [40]*big.Int
+	for i := range p {
+		p[i] = new(big.Int).Exp(big.NewInt(10), big.NewInt(int64(i)), nil)
+	}
+	return p
+}()
+
+func tenTo(n int64) *big.Int {
+	if n >= 0 && int(n) < len(powers) {
+		return powers[n]
+	}
+	// A contract can declare any decimals it likes. Nothing sane lands here,
+	// but answering is cheaper than deciding what a refusal would mean.
+	return new(big.Int).Exp(big.NewInt(10), big.NewInt(n), nil)
+}
+
 func (c *evmChain) scale(dp int32) (factor *big.Int, up bool) {
 	d := int64(dp) - int64(cryptoDecimals)
 	if d < 0 {
-		return new(big.Int).Exp(big.NewInt(10), big.NewInt(-d), nil), false
+		return tenTo(-d), false
 	}
-	return new(big.Int).Exp(big.NewInt(10), big.NewInt(d), nil), true
+	return tenTo(d), true
 }
 
 func (c *evmChain) toWei(minor Minor, dp int32) *big.Int {
