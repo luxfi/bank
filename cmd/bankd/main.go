@@ -123,6 +123,16 @@ func main() {
 	})
 
 	// ---- hooks ----
+	//
+	// A bank that has declared itself real screens for sanctions and AML. Both
+	// are fail-closed, and with no service configured there is nothing to be
+	// closed against — every transaction and every beneficiary would pass
+	// unscreened, silently, because a screen that cannot run reports nothing.
+	// Refusing to start is the only answer that cannot be missed. The sandbox
+	// has no screener and wants none.
+	if !bank.Sandbox() && hooks.Screener() == "" {
+		log.Fatal("COMPLIANCE_SERVICE_URL is not set: outside the sandbox there is nothing to screen against, and AML and sanctions screening are fail-closed")
+	}
 
 	hooks.RegisterCurrencyCloudWebhooks(app)
 	hooks.RegisterComplianceHooks(app)

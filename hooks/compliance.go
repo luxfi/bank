@@ -7,6 +7,7 @@ import (
 	"math"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/hanzoai/base/apis"
@@ -171,6 +172,17 @@ func RegisterComplianceHooks(app core.App) {
 	})
 }
 
+// Screener is the compliance service every screen is put to, or "" when none is
+// configured. It is read here and nowhere else.
+//
+// Nothing to screen against means nothing is screened, and AML and sanctions
+// are declared fail-closed — so the likeliest failure of all, the service
+// simply not being configured, was the one that let everything through
+// quietly. A sandbox has no screener and wants none; a deployment that has
+// declared itself real is refused at startup rather than run without one, so
+// the gap cannot exist unnoticed. bankd asks this before it mounts anything.
+func Screener() string { return strings.TrimSpace(os.Getenv("COMPLIANCE_SERVICE_URL")) }
+
 // screen runs one payload through the compliance service, the single place
 // that reads COMPLIANCE_SERVICE_URL and applies fail policy. A missing service
 // always allows (dev mode). blockValue is the result string that rejects
@@ -178,7 +190,7 @@ func RegisterComplianceHooks(app core.App) {
 // allows (true) or blocks (false). Callers declare the payload and the policy;
 // this owns the mechanism.
 func screen(app core.App, kind, blockValue string, failOpen bool, payload map[string]any) error {
-	url := os.Getenv("COMPLIANCE_SERVICE_URL")
+	url := Screener()
 	if url == "" {
 		return nil
 	}

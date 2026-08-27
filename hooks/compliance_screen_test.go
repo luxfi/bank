@@ -132,3 +132,22 @@ func TestAnErrorStatusBlocksTheFailClosedScreensOnly(t *testing.T) {
 		t.Fatalf("a 503 stopped onboarding: PEP is fail-open on both roads, got %v", err)
 	}
 }
+
+// Screener is the one place the compliance service is named, and both the
+// screens and bankd's startup ask it — so what counts as "configured" has to be
+// the same answer to both. Whitespace is not a URL: read untrimmed it is a
+// non-empty string that every screen would then try to POST to, and outside the
+// sandbox bankd refuses to start on exactly this answer.
+func TestScreenerTreatsWhitespaceAsNoService(t *testing.T) {
+	for name, tc := range map[string]struct{ set, want string }{
+		"a real service":  {"https://compliance.example", "https://compliance.example"},
+		"padded":          {"  https://compliance.example  ", "https://compliance.example"},
+		"whitespace only": {"   ", ""},
+		"empty":           {"", ""},
+	} {
+		t.Setenv("COMPLIANCE_SERVICE_URL", tc.set)
+		if got := Screener(); got != tc.want {
+			t.Errorf("%s: Screener() = %q, want %q", name, got, tc.want)
+		}
+	}
+}
