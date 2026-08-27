@@ -174,9 +174,19 @@ func (deriving) Send(app core.App, acct *core.Record, asset, to string, amount M
 // Market asks the chain what it lends against before asking the account for an
 // identity, so a vault the chain carries no market for costs the account
 // nothing — it falls to the ledger, which is where it was always going.
+//
+// A chain that cannot be reached is the other empty answer and not the same
+// one. Bank custody is only chosen when a chain is configured, so nothing to
+// ask means an outage, and answering "no market" would hand the movement to the
+// ledger: a borrow credited against collateral no chain is holding, sized
+// against a position the chain overwrites as soon as it returns. Send refuses
+// over an outage and so does this.
 func (deriving) Market(app core.App, acct *core.Record, asset string) (Market, error) {
 	c := evm()
-	if c == nil || !c.lends(asset) {
+	if c == nil {
+		return nil, errChainDown
+	}
+	if !c.lends(asset) {
 		return nil, nil
 	}
 	i := chainIndex(app, acct)

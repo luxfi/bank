@@ -1,6 +1,7 @@
 package bank
 
 import (
+	"errors"
 	"math"
 	"net/http"
 	"strings"
@@ -229,6 +230,11 @@ func earnAction(app core.App, act earnAct) func(*core.RequestEvent) error {
 		// custodian that cannot act at all is not the same thing as a vault with
 		// no market behind it, and must never be read as one.
 		m, err := custodian().Market(app, acct, v.Underlying)
+		if errors.Is(err, errChainDown) {
+			// Not a fault of this request, and not a vault without a market.
+			// Same words and same status the movement itself would answer with.
+			return errJSON(e, http.StatusBadGateway, "the chain is unreachable")
+		}
 		if err != nil {
 			return apis.NewInternalServerError("account has no chain identity", err)
 		}

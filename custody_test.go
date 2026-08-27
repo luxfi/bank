@@ -183,3 +183,73 @@ func TestDerivingGivesOneAddress(t *testing.T) {
 		}
 	}
 }
+
+// TestDerivingReachesNoMarketOverAnOutage is the same rule as the wallet above,
+// applied where it costs money instead of confusing a customer.
+//
+// A market lookup has two ways to come back empty and they are not the same
+// fact. This chain carries no market for this asset is a property of the
+// deployment: Earn was always going to be a ledger loan, and answering nil is
+// right. This chain cannot be reached is an outage, and answering nil hands the
+// movement to the ledger — which credits a borrow against collateral no chain is
+// holding, sizes it against a position the chain will overwrite the moment it
+// comes back, and pays out real money in between.
+//
+// Bank custody is only chosen when a chain IS configured, so an unreachable one
+// is the only way to arrive here with nothing to ask. It has to refuse, the way
+// Send does.
+func TestDerivingReachesNoMarketOverAnOutage(t *testing.T) {
+	t.Setenv("BANK_CHAIN_RPC", "http://127.0.0.1:1")
+	evmMu.Lock()
+	evmInst, evmFrom = nil, ""
+	evmMu.Unlock()
+	t.Cleanup(func() {
+		evmMu.Lock()
+		evmInst, evmFrom = nil, ""
+		evmMu.Unlock()
+	})
+
+	app := newBankApp(t)
+	seedPrincipal(t, app)
+	acct := primaryAccount(app, principalID(t, app))
+	if acct == nil {
+		t.Fatal("no account provisioned")
+	}
+
+	m, err := deriving{}.Market(app, acct, "LUX")
+	if m != nil {
+		t.Fatalf("Market() = %v over an outage, want none", m)
+	}
+	if err == nil {
+		t.Fatal("Market() reported no market rather than an outage — Earn falls to the ledger and credits a borrow against collateral no chain is holding")
+	}
+}
+
+// The name is what a receipt and a log line carry, so it is the field an
+// operator reads to know who signed. Renaming one silently re-labels every
+// record written before it.
+func TestCustodiansSayWhoTheyAre(t *testing.T) {
+	for want, cu := range map[string]Custodian{
+		"bank":    deriving{},
+		"sandbox": simCustodian{},
+		"none":    unheld{},
+	} {
+		if got := cu.Name(); got != want {
+			t.Errorf("%T.Name() = %q, want %q", cu, got, want)
+		}
+	}
+}
+
+// A vault whose asset the chain carries no market for is the OTHER empty
+// answer, and it must stay empty-with-no-error: Earn belongs on the ledger and
+// always did. The sandbox holds nothing on any chain, so it is that case for
+// every asset.
+func TestSandboxHasNoMarketAndSaysSoWithoutFailing(t *testing.T) {
+	m, err := simCustodian{}.Market(nil, nil, "LUX")
+	if m != nil {
+		t.Errorf("Market() = %v, want none", m)
+	}
+	if err != nil {
+		t.Errorf("Market() failed with %v — a vault with no market behind it is not an error, it is a ledger loan", err)
+	}
+}
