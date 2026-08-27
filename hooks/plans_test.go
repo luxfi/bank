@@ -103,3 +103,58 @@ func TestEveryAdvertisedTierIsOneAnAccountCanHold(t *testing.T) {
 		}
 	}
 }
+
+// A running total that cannot be computed must not read as nothing spent.
+// Nothing spent clears every ceiling, so a history the bank cannot total in one
+// unit would let an account move whatever it liked — the same sentence the
+// incoming amount is already held to, applied to what came before it.
+func TestALimitIsRefusedRatherThanGuessedFromAnUnreadableHistory(t *testing.T) {
+	app := limitApp(t)
+	acct := account(t, app)
+
+	// A debit already on the books in a currency with no reference price. The
+	// gate refuses to create one now, so this is what a row written before that
+	// existed — or around it — looks like.
+	col, err := app.FindCollectionByNameOrId(collections.TransactionCollectionName)
+	if err != nil {
+		t.Fatal(err)
+	}
+	r := core.NewRecord(col)
+	r.Set("account", acct)
+	r.Set("type", "payment")
+	r.Set("direction", "debit")
+	r.Set("amount", 1_000_00)
+	r.Set("currency", "ZZZ")
+	r.Set("status", "completed")
+	if err := app.Save(r); err != nil {
+		t.Fatalf("writing the unpriceable row: %v", err)
+	}
+
+	if _, err := getDailySpent(app, acct); err == nil {
+		t.Error("a history holding a currency the bank cannot price totalled cleanly — an amount it could not value counted as nothing")
+	}
+
+	// And the gate refuses rather than admitting on a total it does not have.
+	RegisterAccountHooks(app)
+	if err := debit(t, app, acct, 1_00); err == nil {
+		t.Error("a debit was admitted while the account's running total could not be read")
+	}
+}
+
+// The ordinary case still works: a readable history totals and the gate uses it.
+func TestAReadableHistoryStillTotals(t *testing.T) {
+	app := limitApp(t)
+	acct := account(t, app)
+	RegisterAccountHooks(app)
+
+	if err := debit(t, app, acct, 1_000_00); err != nil {
+		t.Fatalf("an ordinary debit was refused: %v", err)
+	}
+	spent, err := getDailySpent(app, acct)
+	if err != nil {
+		t.Fatalf("reading the daily total: %v", err)
+	}
+	if spent != 1_000_00 {
+		t.Errorf("daily spent = %d, want 100000", spent)
+	}
+}

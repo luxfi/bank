@@ -76,3 +76,20 @@ func TestTheExchangeAcceptsEverythingOffered(t *testing.T) {
 		}
 	}
 }
+
+// A vault names the asset its collateral and its like-kind debt are held in.
+// Nothing about lending depends on a price — the borrow ceiling is a ratio
+// between two amounts of the same asset, which is what makes 90% safe — but the
+// position a customer reads is valued in USD, so a vault whose asset the bank
+// cannot price shows somebody holding collateral worth nothing.
+func TestEveryVaultAssetCanBePriced(t *testing.T) {
+	for _, v := range collections.Vaults {
+		if !collections.CanPrice(v.Underlying) {
+			t.Errorf("vault %q is denominated in %s, which has no reference price — its position reads as $0",
+				v.ID, v.Underlying)
+		}
+		if !supportedAsset(v.Underlying) {
+			t.Errorf("vault %q is denominated in %s, which the bank does not carry", v.ID, v.Underlying)
+		}
+	}
+}

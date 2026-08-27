@@ -1,6 +1,7 @@
 package hooks
 
 import (
+	"fmt"
 	"log/slog"
 	"math"
 	"time"
@@ -112,7 +113,14 @@ func RegisterAccountHooks(app core.App) {
 		amount := collections.USDCents(int64(math.Round(e.Record.GetFloat("amount"))), currency)
 
 		// Check daily limit.
-		dailySpent := getDailySpent(app, accountId)
+		dailySpent, err := getDailySpent(app, accountId)
+		if err != nil {
+			app.Logger().Error("accounts: refusing a transaction whose daily total cannot be read",
+				slog.String("accountId", accountId),
+				slog.String("error", err.Error()),
+			)
+			return apis.NewForbiddenError("transaction limits cannot be checked right now", nil)
+		}
 		if dailySpent+amount > limits.daily {
 			app.Logger().Warn("accounts: daily limit exceeded",
 				slog.String("accountId", accountId),
@@ -124,7 +132,14 @@ func RegisterAccountHooks(app core.App) {
 		}
 
 		// Check monthly limit.
-		monthlySpent := getMonthlySpent(app, accountId)
+		monthlySpent, err := getMonthlySpent(app, accountId)
+		if err != nil {
+			app.Logger().Error("accounts: refusing a transaction whose monthly total cannot be read",
+				slog.String("accountId", accountId),
+				slog.String("error", err.Error()),
+			)
+			return apis.NewForbiddenError("transaction limits cannot be checked right now", nil)
+		}
 		if monthlySpent+amount > limits.monthly {
 			app.Logger().Warn("accounts: monthly limit exceeded",
 				slog.String("accountId", accountId),
@@ -171,31 +186,43 @@ func RegisterAccountHooks(app core.App) {
 // normalized to USD before summing — otherwise a crypto send and a fiat
 // payment would be added as if they shared a unit, and the sum compared to a
 // USD-denominated limit would be meaningless.
-func getDailySpent(app core.App, accountId string) int64 {
+func getDailySpent(app core.App, accountId string) (int64, error) {
 	return sumDebitsUSDCents(app,
 		`account = {:accountId} && direction = "debit" && status != "failed" && status != "cancelled" && created >= @todayStart`,
 		map[string]any{"accountId": accountId})
 }
 
 // getMonthlySpent sums the last 30 days of debits as USD cents.
-func getMonthlySpent(app core.App, accountId string) int64 {
+func getMonthlySpent(app core.App, accountId string) (int64, error) {
 	thirtyDaysAgo := time.Now().UTC().AddDate(0, 0, -30).Format("2006-01-02 15:04:05.000Z")
 	return sumDebitsUSDCents(app,
 		`account = {:accountId} && direction = "debit" && status != "failed" && status != "cancelled" && created >= {:since}`,
 		map[string]any{"accountId": accountId, "since": thirtyDaysAgo})
 }
 
-func sumDebitsUSDCents(app core.App, filter string, params map[string]any) int64 {
+// sumDebitsUSDCents totals what an account has already spent in a window, or
+// says it cannot.
+//
+// Answering zero for a total it could not compute is the one answer that must
+// not be given: nothing spent clears every ceiling, so a failed query and a row
+// in a currency with no reference price both read as an account that has moved
+// nothing today. A limit cannot be enforced in a unit that cannot be converted,
+// and it cannot be enforced against a history that cannot be read — the same
+// sentence the incoming amount is already held to.
+func sumDebitsUSDCents(app core.App, filter string, params map[string]any) (int64, error) {
 	records, err := app.FindRecordsByFilter(collections.TransactionCollectionName, filter, "", 0, 0, params)
 	if err != nil {
-		return 0
+		return 0, err
 	}
 	var total int64
 	for _, r := range records {
-		amt := int64(math.Round(r.GetFloat("amount")))
-		total += collections.USDCents(amt, r.GetString("currency"))
+		cur := r.GetString("currency")
+		if !collections.CanPrice(cur) {
+			return 0, fmt.Errorf("transaction %s is in %s, which has no reference price", r.Id, cur)
+		}
+		total += collections.USDCents(int64(math.Round(r.GetFloat("amount"))), cur)
 	}
-	return total
+	return total, nil
 }
 
 // writeAudit creates an audit_log record.

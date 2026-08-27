@@ -89,7 +89,10 @@ func TestSpendIsSummedInUSDAcrossCurrencies(t *testing.T) {
 	tx(t, app, id, "debit", "completed", "BTC", 1_000_000, time.Time{})
 	// 1 BTC at 6dp = 1_000_000 minor = $64,000 = 6_400_000 cents.
 
-	got := getDailySpent(app, id)
+	got, err := getDailySpent(app, id)
+	if err != nil {
+		t.Fatalf("reading the daily total: %v", err)
+	}
 	want := int64(10_000 + 6_400_000)
 	if got != want {
 		t.Fatalf("daily spent = %d cents, want %d — raw minor units were added as if "+
@@ -109,7 +112,11 @@ func TestOnlyLiveDebitsCountAgainstTheLimit(t *testing.T) {
 	tx(t, app, id, "debit", "failed", "USD", 70_000, time.Time{})
 	tx(t, app, id, "debit", "cancelled", "USD", 80_000, time.Time{})
 
-	if got, want := getDailySpent(app, id), int64(8_000); got != want {
+	got, err := getDailySpent(app, id)
+	if err != nil {
+		t.Fatalf("reading the daily total: %v", err)
+	}
+	if want := int64(8_000); got != want {
 		t.Fatalf("daily spent = %d, want %d", got, want)
 	}
 }
@@ -135,7 +142,11 @@ func TestSpendIsPerAccount(t *testing.T) {
 	tx(t, app, mine, "debit", "completed", "USD", 1_000, time.Time{})
 	tx(t, app, other.Id, "debit", "completed", "USD", 99_000, time.Time{})
 
-	if got := getDailySpent(app, mine); got != 1_000 {
+	got, err := getDailySpent(app, mine)
+	if err != nil {
+		t.Fatalf("reading the daily total: %v", err)
+	}
+	if got != 1_000 {
 		t.Fatalf("daily spent = %d, want 1000 — another account's debits leaked in", got)
 	}
 }
@@ -150,7 +161,10 @@ func TestMonthlyWindowExcludesWhatFellOutOfIt(t *testing.T) {
 	tx(t, app, id, "debit", "completed", "USD", 2_000, now.AddDate(0, 0, -29))
 	tx(t, app, id, "debit", "completed", "USD", 90_000, now.AddDate(0, 0, -45)) // outside
 
-	got := getMonthlySpent(app, id)
+	got, err := getMonthlySpent(app, id)
+	if err != nil {
+		t.Fatalf("reading the monthly total: %v", err)
+	}
 	if got != 3_000 {
 		t.Fatalf("monthly spent = %d, want 3000 — the window is not 30 days", got)
 	}
@@ -161,10 +175,18 @@ func TestMonthlyWindowExcludesWhatFellOutOfIt(t *testing.T) {
 func TestNoTransactionsIsZeroSpent(t *testing.T) {
 	app := limitApp(t)
 	id := account(t, app)
-	if got := getDailySpent(app, id); got != 0 {
+	daily, err := getDailySpent(app, id)
+	if err != nil {
+		t.Fatalf("reading the daily total: %v", err)
+	}
+	if got := daily; got != 0 {
 		t.Fatalf("daily = %d, want 0", got)
 	}
-	if got := getMonthlySpent(app, id); got != 0 {
+	monthly, err := getMonthlySpent(app, id)
+	if err != nil {
+		t.Fatalf("reading the monthly total: %v", err)
+	}
+	if got := monthly; got != 0 {
 		t.Fatalf("monthly = %d, want 0", got)
 	}
 }
