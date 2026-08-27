@@ -683,6 +683,38 @@ without `chain/deploy.sh`: with anvil on 8645 and a `{"chainId":31337,
 "tokens":{},"markets":{}}` file, derivation and a real value transfer both pass
 against a live EVM. Everything past that needs the protocol.
 
+### Simulation reachable where the bank has declared itself real
+
+One bug class, four instances, all found the same way: ask what a surface does
+with `BANK_SANDBOX=false`. The flag defaults ON, so only a deployment that has
+deliberately turned it off is affected — and that is exactly the deployment
+whose customers are real.
+
+The rule is the one `evm()` already stated for a chain it cannot reach: a bank
+must not quietly degrade into the simulation. What was missing is that the same
+sentence applies to a simulation nobody configured a way out of.
+
+  - **No chain configured** gave `simChain` reporting `lux-mainnet`, the sandbox
+    custodian, and a deposit address that is a hash of the account index. Coins
+    sent there are gone — nobody holds that key. `bankd` refuses to start.
+  - **No screener configured** made AML and sanctions pass everything, silently,
+    while both are declared fail-closed. `bankd` refuses to start.
+  - **`POST /v1/bank/cards`** issued a card numbered 4242424242 plus four random
+    digits — the test BIN every processor publishes — with a CVV generated on
+    the call. Refused outside the sandbox, pointing at
+    `/v1/bank/cards/virtual`, which is provider-backed and was gated correctly
+    all along.
+  - **The receiving coordinates** were digits derived from the account id, under
+    a bank name and SWIFT that are ours to invent. Measured: routing 099510477,
+    account 3685660557. A customer hands those to a payer. There are none now
+    until a rail issues them.
+
+**How to look for the next one.** Find what produces a value the bank does not
+have — a `sim*`/`sandbox*` helper, a `randDigits`, a hardcoded BIN — and follow
+its callers up to a route. If nothing on that path asks `Sandbox()`, a real
+deployment serves it. The sweep that found the last two is a table of those
+producers against their callers; everything else it turned up was already gated.
+
 ### What running the adversarial suite found
 
 Every chain test skipped for want of a chain, so the fifteen `TestRed*` ones had
