@@ -2,6 +2,7 @@ package bank
 
 import (
 	"errors"
+	"fmt"
 	"math"
 	"net/http"
 	"strings"
@@ -280,22 +281,38 @@ func earnAction(app core.App, act earnAct) func(*core.RequestEvent) error {
 		// movement in the activity feed. One vault moves one asset: the synthetic
 		// tracks the underlying at parity, so a borrow lands in that balance and a
 		// repayment comes back out of it.
-		tx, err := newTx(app, map[string]any{
-			"account": acct.Id, "type": "earn", "direction": direction,
-			"amount": req.Amount, "currency": v.Underlying, "status": "pending",
-			"reference": ref, "metadata": map[string]any{"vault": v.ID},
-		})
-		if err != nil {
+		// The movement and the position it changes are one act. Written
+		// separately, a position that failed to save after the money had
+		// settled cost somebody every way round: a deposit debited without
+		// crediting the collateral, a borrow paid out without recording the
+		// debt, a repayment taken without reducing it, a withdrawal handed over
+		// while the collateral stayed on the books.
+		var ours error
+		if err := app.RunInTransaction(func(txApp core.App) error {
+			tx, err := newTx(txApp, map[string]any{
+				"account": acct.Id, "type": "earn", "direction": direction,
+				"amount": req.Amount, "currency": v.Underlying, "status": "pending",
+				"reference": ref, "metadata": map[string]any{"vault": v.ID},
+			})
+			if err != nil {
+				return err
+			}
+			if err := settle(txApp, tx); err != nil {
+				ours = fmt.Errorf("settlement failed: %w", err)
+				return err
+			}
+			pos.Set("collateral", collateral)
+			pos.Set("debt", debt)
+			if err := txApp.Save(pos); err != nil {
+				ours = fmt.Errorf("position update failed: %w", err)
+				return err
+			}
+			return nil
+		}); err != nil {
+			if ours != nil {
+				return apis.NewInternalServerError(ours.Error(), err)
+			}
 			return errJSON(e, http.StatusUnprocessableEntity, err.Error())
-		}
-		if err := settle(app, tx); err != nil {
-			return apis.NewInternalServerError("settlement failed", err)
-		}
-
-		pos.Set("collateral", collateral)
-		pos.Set("debt", debt)
-		if err := app.Save(pos); err != nil {
-			return apis.NewInternalServerError("position update failed", err)
 		}
 
 		return e.JSON(http.StatusOK, map[string]any{
