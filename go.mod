@@ -3,7 +3,7 @@ module github.com/luxfi/bank
 go 1.26.5
 
 require (
-	github.com/hanzoai/base v1.5.73
+	github.com/hanzoai/base v1.5.74
 	github.com/hanzoai/dbx v1.17.2
 	github.com/hanzoai/notify v1.7.2
 	github.com/luxfi/crypto v1.20.2
