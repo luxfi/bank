@@ -53,7 +53,31 @@ func expireStaleTransactions(app core.App) {
 		return
 	}
 
+	var expired int
+	var unresolved []string
 	for _, r := range records {
+		// A movement the ledger handed to a chain is not one the ledger may
+		// decide the outcome of. Failing a debit returns the funds it held, so
+		// a send that reached the chain and then lost its follow-up write —
+		// the process restarting between the broadcast and the settle — would
+		// be refunded to a customer who already holds the coins. The clock is
+		// not evidence about somebody else's ledger; only the chain can say.
+		//
+		// A send that never reached the chain releases its own hold on the way
+		// out, so what is left here has been broadcast or cannot be told apart
+		// from one that was. Both are an operator's to reconcile.
+		//
+		// Nothing is lost in a simulation, where a send settles in the same
+		// call and is never pending an hour later, let alone a day.
+		var meta struct {
+			Network string `json:"network"`
+		}
+		_ = r.UnmarshalJSONField("metadata", &meta)
+		if meta.Network != "" {
+			unresolved = append(unresolved, r.Id)
+			continue
+		}
+
 		r.Set("status", "failed")
 		r.Set("reason", "timed out: pending > 24h")
 
@@ -62,10 +86,18 @@ func expireStaleTransactions(app core.App) {
 				slog.String("id", r.Id),
 				slog.String("error", err.Error()),
 			)
+			continue
 		}
+		expired++
 	}
 
-	if len(records) > 0 {
-		app.Logger().Info("cron: expired stale transactions", slog.Int("count", len(records)))
+	if expired > 0 {
+		app.Logger().Info("cron: expired stale transactions", slog.Int("count", expired))
+	}
+	if len(unresolved) > 0 {
+		app.Logger().Error("cron: pending on-chain movements need reconciling against the chain",
+			slog.Int("count", len(unresolved)),
+			slog.Any("ids", unresolved),
+		)
 	}
 }
