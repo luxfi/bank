@@ -3,6 +3,9 @@ package hooks
 import (
 	"strings"
 	"testing"
+
+	"github.com/hanzoai/base/core"
+	"github.com/luxfi/bank/collections"
 )
 
 // With no SMTP host the notification is skipped, not failed. A bank that cannot
@@ -73,5 +76,88 @@ func TestTheRecipientIsWhereTheLibraryWouldLetAHeaderThrough(t *testing.T) {
 	}
 	if !strings.Contains(err.Error(), "forge a header") {
 		t.Fatalf("err = %v — refused, but not by the guard; the library does not refuse this", err)
+	}
+}
+
+// What a customer is told their money was. The amount lives in minor units, so
+// a notification that prints the stored number tells someone their $250.00
+// transfer was 25000 — and for crypto it is off by a million.
+func TestATransactionNoticeSaysTheAmountAPersonSent(t *testing.T) {
+	app := limitApp(t)
+	col, err := app.FindCollectionByNameOrId(collections.TransactionCollectionName)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	for _, tc := range []struct {
+		kind, currency string
+		amount         int64
+		want, wrong    string
+	}{
+		{"transfer", "USD", 25000, "USD 250.00", "25000"},
+		{"deposit", "EUR", 1, "EUR 0.01", " 1 "},
+		{"withdrawal", "BTC", 1000000, "BTC 1.000000", "1000000"},
+		{"transfer", "JPY", 25000, "JPY 25000", "250.00"},
+	} {
+		r := core.NewRecord(col)
+		r.Set("type", tc.kind)
+		r.Set("currency", tc.currency)
+		r.Set("amount", tc.amount)
+
+		subject, body := transactionNotice(r)
+		if subject != "Transaction Completed" {
+			t.Errorf("subject = %q", subject)
+		}
+		if !strings.Contains(body, tc.want) {
+			t.Errorf("a %d %s %s reads as %q, and should say %q",
+				tc.amount, tc.currency, tc.kind, body, tc.want)
+		}
+		if strings.Contains(body, tc.wrong) {
+			t.Errorf("a %d %s %s still shows %q: %q", tc.amount, tc.currency, tc.kind, tc.wrong, body)
+		}
+		if !strings.Contains(body, tc.kind) {
+			t.Errorf("the notice does not say what kind of transaction it was: %q", body)
+		}
+	}
+}
+
+// The KYC decision has to be in the message, since approved and rejected are
+// the same mail otherwise.
+func TestADocumentNoticeCarriesTheDecision(t *testing.T) {
+	app := limitApp(t)
+	if err := collections.EnsureDocumentCollection(app); err != nil {
+		t.Fatalf("ensure documents: %v", err)
+	}
+	col, err := app.FindCollectionByNameOrId(collections.DocumentCollectionName)
+	if err != nil {
+		t.Fatal(err)
+	}
+	r := core.NewRecord(col)
+	r.Set("type", "passport")
+
+	for _, status := range []string{"approved", "rejected"} {
+		subject, body := documentNotice(r, status)
+		if !strings.Contains(subject, status) {
+			t.Errorf("subject %q does not carry the decision %q", subject, status)
+		}
+		if !strings.Contains(body, status) || !strings.Contains(body, "passport") {
+			t.Errorf("body %q does not say the passport was %s", body, status)
+		}
+	}
+}
+
+// Nobody to tell is not a failure. A record whose account or owner has gone
+// leaves no address, and the notification stops there rather than raising.
+func TestNoOwnerLeavesNobodyToTell(t *testing.T) {
+	app := limitApp(t)
+	col, err := app.FindCollectionByNameOrId(collections.TransactionCollectionName)
+	if err != nil {
+		t.Fatal(err)
+	}
+	r := core.NewRecord(col)
+	r.Set("account", "nosuchaccountid")
+
+	if to := recipient(app, r); to != "" {
+		t.Errorf("recipient of a transaction with no account = %q, want none", to)
 	}
 }

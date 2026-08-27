@@ -50,89 +50,75 @@ func RegisterEmailHooks(app core.App) {
 	})
 }
 
+// recipient is the address the account's owner reads, or "" when there is
+// nobody to tell — a record whose account or owner has gone is not an error
+// worth raising from a notification.
+func recipient(app core.App, record *core.Record) string {
+	account, err := app.FindRecordById(collections.AccountCollectionName, record.GetString("account"))
+	if err != nil {
+		return ""
+	}
+	owner, err := app.FindRecordById("users", account.GetString("owner"))
+	if err != nil {
+		return ""
+	}
+	return owner.GetString("email")
+}
+
+// tell sends one notification and records a failure to deliver it. Notifying is
+// best effort by design: nothing the customer did depends on the mail arriving,
+// so a dead SMTP host must not turn a settled transaction into an error.
+func tell(app core.App, to, subject, body string) {
+	if err := sendEmail(to, subject, body); err != nil {
+		app.Logger().Warn("email: notification not sent",
+			slog.String("to", to),
+			slog.String("subject", subject),
+			slog.String("error", err.Error()),
+		)
+	}
+}
+
+// transactionNotice is what a settled transaction says. It is a function of the
+// record alone, so what a customer reads can be checked without sending
+// anything.
+//
+// The amount is held in minor units, so it is rendered rather than printed: the
+// stored number for a $250.00 transfer is 25000, and that is the figure the
+// customer was being given as their own.
+func transactionNotice(record *core.Record) (subject, body string) {
+	cur := record.GetString("currency")
+	return "Transaction Completed", fmt.Sprintf(
+		"Your %s transaction of %s %s has been completed.",
+		record.GetString("type"), cur,
+		collections.Format(int64(record.GetFloat("amount")), cur))
+}
+
+// documentNotice is what a KYC decision says.
+func documentNotice(record *core.Record, status string) (subject, body string) {
+	return "KYC Document " + status,
+		fmt.Sprintf("Your %s document has been %s.", record.GetString("type"), status)
+}
+
 func sendTransactionEmail(app core.App, record *core.Record) {
 	// Best-effort notification: a failure (or a DB access racing daemon
 	// shutdown) must never crash the process from this detached goroutine.
 	defer func() { _ = recover() }()
 
-	accountId := record.GetString("account")
-	account, err := app.FindRecordById(collections.AccountCollectionName, accountId)
-	if err != nil {
-		return
-	}
-
-	owner, err := app.FindRecordById("users", account.GetString("owner"))
-	if err != nil {
-		return
-	}
-
-	email := owner.GetString("email")
-	if email == "" {
-		return
-	}
-
-	subject := "Transaction Completed"
-	body := fmt.Sprintf("Your %s transaction of %s %s has been completed.",
-		record.GetString("type"),
-		record.GetString("currency"),
-		record.GetString("amount"),
-	)
-
-	if err := sendEmail(email, subject, body); err != nil {
-		app.Logger().Warn("email: failed to send transaction notification",
-			slog.String("to", email),
-			slog.String("error", err.Error()),
-		)
+	if to := recipient(app, record); to != "" {
+		subject, body := transactionNotice(record)
+		tell(app, to, subject, body)
 	}
 }
 
 func sendDocumentEmail(app core.App, record *core.Record, status string) {
 	defer func() { _ = recover() }()
 
-	accountId := record.GetString("account")
-	account, err := app.FindRecordById(collections.AccountCollectionName, accountId)
-	if err != nil {
-		return
-	}
-
-	owner, err := app.FindRecordById("users", account.GetString("owner"))
-	if err != nil {
-		return
-	}
-
-	email := owner.GetString("email")
-	if email == "" {
-		return
-	}
-
-	subject := fmt.Sprintf("KYC Document %s", status)
-	body := fmt.Sprintf("Your %s document has been %s.", record.GetString("type"), status)
-
-	if err := sendEmail(email, subject, body); err != nil {
-		app.Logger().Warn("email: failed to send document notification",
-			slog.String("to", email),
-			slog.String("error", err.Error()),
-		)
+	if to := recipient(app, record); to != "" {
+		subject, body := documentNotice(record, status)
+		tell(app, to, subject, body)
 	}
 }
 
-// sendEmail hands a notice to hanzoai/notify.
-//
-// It used to assemble the message itself — "From: %s\r\nTo: %s\r\n..." into
-// smtp.SendMail — which meant this repo owned an email format, a header-escaping
-// problem it had to solve by hand, and no path to any other channel. notify is
-// the estate's answer for that, and it carries SMS beside email behind the same
-// Notifier.Send, so a notice can reach a phone without a second sender being
-// written here.
-//
-// Header forgery is still ours to guard, and NOT where you would expect.
-// Measured against the library: a line break in the SUBJECT is Q-encoded and
-// harmless (`Subject: =?UTF-8?q?Receipt=0D=0ABcc:...?=`), but one in the
-// RECIPIENT is obeyed — jordan-wright/email splits it and a real
-// `Bcc: thief@evil.com` header lands in the message. So the address is checked
-// here, and the subject with it, because relying on the encoding of one field
-// while the field beside it forges freely is a distinction nobody should have to
-// remember.
 func sendEmail(to, subject, body string) error {
 	if strings.ContainsAny(to, "\r\n") || strings.ContainsAny(subject, "\r\n") {
 		return errors.New("email: a line break in the recipient or subject would forge a header")

@@ -1,7 +1,9 @@
 package collections
 
 import (
+	"fmt"
 	"math"
+	"strconv"
 	"strings"
 )
 
@@ -43,6 +45,37 @@ func DecimalsFor(cur string) int {
 	default:
 		return 2
 	}
+}
+
+// Format writes an amount the way a person reads it, in the currency's own
+// number of decimal places. Everything is stored in minor units, so the stored
+// number is cents or micro-units — printing it raw tells a customer their
+// $250.00 transfer was 25000, and a yen amount, which has no minor unit at all,
+// would grow a decimal point it never had.
+//
+// The arithmetic is integer throughout. Money rendered through a float is money
+// rounded by whatever the float could hold.
+func Format(minor int64, cur string) string {
+	d := DecimalsFor(cur)
+	if d <= 0 {
+		return strconv.FormatInt(minor, 10)
+	}
+	unit := int64(1)
+	for range d {
+		unit *= 10
+	}
+	// Go truncates toward zero, so both parts of a negative amount are
+	// negative and the sign has to be carried separately — otherwise -0.50
+	// prints as 0.50, the loss reading as a gain.
+	whole, frac := minor/unit, minor%unit
+	sign := ""
+	if frac < 0 {
+		frac = -frac
+	}
+	if minor < 0 && whole == 0 {
+		sign = "-"
+	}
+	return fmt.Sprintf("%s%d.%0*d", sign, whole, d, frac)
 }
 
 // UnitPriceUSD returns the USD value of one whole unit of the currency.
