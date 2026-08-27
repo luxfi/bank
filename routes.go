@@ -175,6 +175,15 @@ func handleTransfer(app core.App) func(*core.RequestEvent) error {
 			return apis.NewInternalServerError("", nil)
 		}
 
+		// Both legs are one act. Written separately, a credit the hooks refuse
+		// — the destination has not passed KYC, say, which is checked on every
+		// transaction and not only on the outbound one — left the debit saved
+		// and holding the sender's funds against a transfer that had already
+		// been reported as failed. Either the money moves or nothing did.
+		//
+		// Nesting is safe as long as everything inside uses the callback's app,
+		// so the balance hooks join this transaction rather than opening their
+		// own.
 		debit := core.NewRecord(txCollection)
 		debit.Set("account", req.FromAccountID)
 		debit.Set("type", "payment")
@@ -184,11 +193,6 @@ func handleTransfer(app core.App) func(*core.RequestEvent) error {
 		debit.Set("status", "pending")
 		debit.Set("reference", req.Reference)
 
-		if err := app.Save(debit); err != nil {
-			return errJSON(e, http.StatusUnprocessableEntity, err.Error())
-		}
-
-		// Create matching credit transaction.
 		credit := core.NewRecord(txCollection)
 		credit.Set("account", req.ToAccountID)
 		credit.Set("type", "deposit")
@@ -198,20 +202,32 @@ func handleTransfer(app core.App) func(*core.RequestEvent) error {
 		credit.Set("status", "pending")
 		credit.Set("reference", req.Reference)
 
-		if err := app.Save(credit); err != nil {
-			return errJSON(e, http.StatusUnprocessableEntity, err.Error())
-		}
-
 		status := "pending"
-		if Sandbox() {
-			// Instant, deterministic settlement for the demo.
-			if err := settle(app, debit); err != nil {
-				return apis.NewInternalServerError("settlement failed", err)
+		var unsettled error
+		if err := app.RunInTransaction(func(txApp core.App) error {
+			if err := txApp.Save(debit); err != nil {
+				return err
 			}
-			if err := settle(app, credit); err != nil {
-				return apis.NewInternalServerError("settlement failed", err)
+			if err := txApp.Save(credit); err != nil {
+				return err
+			}
+			if !Sandbox() {
+				return nil
+			}
+			// Instant, deterministic settlement for the demo.
+			for _, leg := range []*core.Record{debit, credit} {
+				if err := settle(txApp, leg); err != nil {
+					unsettled = err
+					return err
+				}
 			}
 			status = "completed"
+			return nil
+		}); err != nil {
+			if unsettled != nil {
+				return apis.NewInternalServerError("settlement failed", unsettled)
+			}
+			return errJSON(e, http.StatusUnprocessableEntity, err.Error())
 		}
 
 		return e.JSON(http.StatusCreated, map[string]any{

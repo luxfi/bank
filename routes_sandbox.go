@@ -537,31 +537,46 @@ func handleExchangeExecute(app core.App) func(*core.RequestEvent) error {
 		}
 		ref := "Exchange " + from + " → " + to
 
-		debit, err := newTx(app, map[string]any{
-			"account": acct.Id, "type": "conversion", "direction": "debit",
-			"amount": req.Amount, "currency": from, "status": "pending",
-			"sellCurrency": from, "buyCurrency": to,
-			"sellAmount": req.Amount, "buyAmount": toMinor, "exchangeRate": rate,
-			"reference": ref,
-		})
-		if err != nil {
+		// A conversion is one act with two legs, and the sold leg was settled
+		// before the bought leg existed — so anything refusing the credit left
+		// the customer's money spent and nothing bought, with a completed
+		// transaction the stale sweep will never revisit. Either both legs land
+		// or neither does.
+		//
+		// Nesting is safe as long as everything inside uses the callback's app,
+		// so the balance hooks join this transaction rather than opening their
+		// own.
+		var debit, credit *core.Record
+		var unsettled error
+		leg := func(txApp core.App, dir, cur string, amount Minor) (*core.Record, error) {
+			return newTx(txApp, map[string]any{
+				"account": acct.Id, "type": "conversion", "direction": dir,
+				"amount": amount, "currency": cur, "status": "pending",
+				"sellCurrency": from, "buyCurrency": to,
+				"sellAmount": req.Amount, "buyAmount": toMinor, "exchangeRate": rate,
+				"reference": ref,
+			})
+		}
+		if err := app.RunInTransaction(func(txApp core.App) error {
+			var err error
+			if debit, err = leg(txApp, "debit", from, req.Amount); err != nil {
+				return err
+			}
+			if credit, err = leg(txApp, "credit", to, toMinor); err != nil {
+				return err
+			}
+			for _, r := range []*core.Record{debit, credit} {
+				if err := settle(txApp, r); err != nil {
+					unsettled = err
+					return err
+				}
+			}
+			return nil
+		}); err != nil {
+			if unsettled != nil {
+				return apis.NewInternalServerError("settlement failed", unsettled)
+			}
 			return errJSON(e, http.StatusUnprocessableEntity, err.Error())
-		}
-		if err := settle(app, debit); err != nil {
-			return apis.NewInternalServerError("settlement failed", err)
-		}
-		credit, err := newTx(app, map[string]any{
-			"account": acct.Id, "type": "conversion", "direction": "credit",
-			"amount": toMinor, "currency": to, "status": "pending",
-			"sellCurrency": from, "buyCurrency": to,
-			"sellAmount": req.Amount, "buyAmount": toMinor, "exchangeRate": rate,
-			"reference": ref,
-		})
-		if err != nil {
-			return apis.NewInternalServerError("credit failed", err)
-		}
-		if err := settle(app, credit); err != nil {
-			return apis.NewInternalServerError("settlement failed", err)
 		}
 		return e.JSON(http.StatusOK, map[string]any{
 			"fromCurrency": from, "toCurrency": to,
