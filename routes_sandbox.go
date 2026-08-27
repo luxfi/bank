@@ -410,6 +410,20 @@ func handleIssueCard(app core.App) func(*core.RequestEvent) error {
 		if currency == "" {
 			currency = acct.GetString("currency")
 		}
+		// The card this issues is a simulation: its number is the BIN
+		// 4242424242 — the test card every payment processor publishes —
+		// with four random digits, and its CVV is three more, generated
+		// fresh on each call and belonging to nothing. Handing that to a
+		// customer as their card is the bank claiming to have issued one.
+		//
+		// A deployment that has declared itself real reaches its issuer at
+		// /v1/bank/cards/virtual, which is provider-backed. Saying so is more
+		// use than a card that will decline everywhere.
+		if !Sandbox() {
+			return errJSON(e, http.StatusNotImplemented,
+				"card issuance is not available here; use /v1/bank/cards/virtual")
+		}
+
 		card := issueCardRecord(app, acct.Id, acct.GetString("entityName"), currency)
 		if card == nil {
 			return apis.NewInternalServerError("card issue failed", nil)
