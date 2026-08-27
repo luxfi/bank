@@ -649,9 +649,34 @@ unverified market addresses are guarded by tests that do not run.
 
 Measured both ways: without a chain the chain code sits at **25%** and the repo
 at **71%**; with the protocol deployed locally and the chain tests selected, the
-chain code reaches **78%** and the union of the two runs is **81%**. Standing a
-chain up in CI is the single highest-value gap left, and it is worth about ten
-points plus every adversarial guard.
+chain code reaches **78%** and the union of the two runs is **81%**. That is what
+a chain in CI is worth — about ten points, plus every adversarial guard, which
+matters more than the number.
+
+**Why it is not a gate yet, and what would make it one.** `hanzo.yml` states the
+contract every gate is held to: offline and deterministic, so a red gate means
+the code is wrong and never that something was unreachable. The chain suite
+fails that on its dependencies rather than its content. `chain/lib/standard` and
+`chain/lib/liquid` are symlinks to whatever those checkouts happen to be, which
+is deliberate — the pin hashes source because a tag would pin the checkout and
+not the symlink — but it means a builder has nothing to resolve them to, and the
+pin correctly refuses the moment upstream moves. A build going red for that says
+upstream moved, which is exactly the sentence a gate must never say.
+
+Two tiers, and they need different things:
+
+  - **anvil alone**, with a deployment naming no tokens and no markets, needs no
+    Solidity and no sibling checkout. It covers derivation and a real value
+    transfer — `send`, `submit`, `fund`, `confirm` — which is the custody core.
+    Its only cost is foundry on the builder.
+  - **the deployed protocol** additionally needs `standard` and `liquid` at
+    known commits. Fetching them at a pinned sha is the change that makes this
+    reproducible; until then the pin is a developer's guard rather than a
+    builder's.
+
+A gate that skips when foundry is missing is worse than none — it passes
+vacuously, which is how a suite comes to report green over tests that have never
+run. This whole section exists because that had already happened.
 
 `BANK_CHAIN_DEPLOY` points at the address book, so a bare chain can be reached
 without `chain/deploy.sh`: with anvil on 8645 and a `{"chainId":31337,
