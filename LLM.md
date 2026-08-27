@@ -590,6 +590,57 @@ eight were correct, including the two a plausible guess gets wrong —
 `UnauthorizedAccountAccessError`. The test recomputes each from the signature it
 claims to be, so the table cannot drift from `luxfi/liquid`.
 
+### Two writes that are one act
+
+Four money paths wrote a movement and the thing it changes as separate saves,
+with a return between them. Each is the same defect and each cost somebody a
+different way; all four are one transaction now. Nesting is safe as long as
+everything inside uses the callback's app, so the balance hooks join the
+caller's transaction rather than opening their own.
+
+- **A transfer** saved the debit, then the credit. KYC is checked on every
+  transaction rather than only outbound ones, so sending to your own account
+  while it is still in review left the debit standing and holding the sender's
+  money against a movement they had already been told failed.
+- **A conversion** settled the sold leg before the bought leg existed. Anything
+  refusing the credit left the money spent and nothing bought, recorded as a
+  completed transaction the stale sweep will never revisit.
+- **An Earn movement** settled, then saved the position. A position that failed
+  to write meant a deposit debited without crediting the collateral, a borrow
+  paid out without recording the debt, a repayment taken without reducing it.
+- **A new wallet's status** was set after `e.Next()`, which IS the write, so the
+  default lived on the instance in hand and the row kept the empty string. Every
+  reader after the creator, the customer's own wallet list included, saw a wallet
+  with no status.
+
+**The on-chain paths are deliberately not this.** A broadcast cannot sit inside
+a database transaction, and rolling one back does not un-send it. They reserve,
+move, then settle, releasing the hold if the chain refuses — which leaves one
+window, the process restarting between the broadcast and the settle, and that is
+what the sweep below is careful about.
+
+### A timeout is not a verdict
+
+Failing a debit returns the funds it held, so the stale sweep meeting a send
+that had reached the chain refunded a customer who already holds the coins. A
+send that never reached the chain releases its own hold on the way out, so what
+is still pending has been broadcast or cannot be told apart from one that was.
+Neither is the ledger's to decide by clock. Those rows stay pending and are
+logged for reconciling; the sweep goes on timing out the movements the ledger
+performed itself.
+
+### A membership raises, never lowers
+
+The tier replaced the entity-type limits instead of raising them, so the entry
+tier cut an individual from $50,000 a day to $10,000 — paying made you worse off
+than never subscribing. Nothing sets a plan today (the ladder is served to the
+landing page and no route puts an account on one), so nobody has been caught by
+it. The baseline is what an account has before it buys anything.
+
+Worth knowing for pricing: with the baseline at $50k/$500k for an individual,
+silver and gold buy no additional headroom. That is a catalogue question, not a
+code one.
+
 ### What the tests cannot reach
 
 Every chain test skips without `BANK_CHAIN_RPC`, including the eight adversarial
