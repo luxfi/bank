@@ -27,6 +27,14 @@ var allowedTransitions = map[string][]string{
 	"processing": {"completed", "failed", "cancelled"},
 }
 
+// movesTo reports whether a transaction can take the status a provider has
+// reported. Repeating a status it already holds counts: a webhook delivered
+// twice is the same fact twice, not a move.
+func movesTo(r *core.Record, to string) bool {
+	from := r.GetString("status")
+	return from == to || validTransition(from, to)
+}
+
 func validTransition(from, to string) bool {
 	for _, s := range allowedTransitions[from] {
 		if s == to {

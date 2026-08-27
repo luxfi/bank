@@ -73,7 +73,21 @@ func handleCCPayment(app core.App) func(e *core.RequestEvent) error {
 		}
 
 		record := records[0]
-		record.Set("status", mapCCStatus(payload.Status))
+		// A status the transaction cannot move to is not something the sender
+		// can fix — webhooks arrive out of order, and a transaction that has
+		// reached a terminal state has nowhere left to go. Acknowledge it.
+		// Answering 500 turns one late delivery into a retry every few
+		// minutes, forever.
+		to := mapCCStatus(payload.Status)
+		if !movesTo(record, to) {
+			app.Logger().Warn("cc webhook: a status the transaction cannot move to",
+				slog.String("id", record.Id),
+				slog.String("from", record.GetString("status")),
+				slog.String("to", to),
+			)
+			return e.JSON(http.StatusOK, map[string]string{"status": "ignored"})
+		}
+		record.Set("status", to)
 		if payload.Reason != "" {
 			record.Set("reason", payload.Reason)
 		}
@@ -130,7 +144,21 @@ func handleCCConversion(app core.App) func(e *core.RequestEvent) error {
 		}
 
 		record := records[0]
-		record.Set("status", mapCCStatus(payload.Status))
+		// A status the transaction cannot move to is not something the sender
+		// can fix — webhooks arrive out of order, and a transaction that has
+		// reached a terminal state has nowhere left to go. Acknowledge it.
+		// Answering 500 turns one late delivery into a retry every few
+		// minutes, forever.
+		to := mapCCStatus(payload.Status)
+		if !movesTo(record, to) {
+			app.Logger().Warn("cc webhook: a status the transaction cannot move to",
+				slog.String("id", record.Id),
+				slog.String("from", record.GetString("status")),
+				slog.String("to", to),
+			)
+			return e.JSON(http.StatusOK, map[string]string{"status": "ignored"})
+		}
+		record.Set("status", to)
 		record.Set("buyAmount", payload.BuyAmount)
 		record.Set("buyCurrency", payload.BuyCurrency)
 		record.Set("sellAmount", payload.SellAmount)
@@ -177,7 +205,21 @@ func handleIFXSettlement(app core.App) func(e *core.RequestEvent) error {
 		}
 
 		record := records[0]
-		record.Set("status", mapIFXStatus(payload.Status))
+		// A status the transaction cannot move to is not something the sender
+		// can fix — webhooks arrive out of order, and a transaction that has
+		// reached a terminal state has nowhere left to go. Acknowledge it.
+		// Answering 500 turns one late delivery into a retry every few
+		// minutes, forever.
+		to := mapIFXStatus(payload.Status)
+		if !movesTo(record, to) {
+			app.Logger().Warn("ifx webhook: a status the transaction cannot move to",
+				slog.String("id", record.Id),
+				slog.String("from", record.GetString("status")),
+				slog.String("to", to),
+			)
+			return e.JSON(http.StatusOK, map[string]string{"status": "ignored"})
+		}
+		record.Set("status", to)
 
 		if err := app.Save(record); err != nil {
 			return e.JSON(http.StatusInternalServerError, map[string]string{"error": "update failed"})
