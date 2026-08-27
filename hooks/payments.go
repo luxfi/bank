@@ -187,10 +187,12 @@ func updateBalance(app core.App, accountId, currency string, availableDelta, hel
 			map[string]any{"accountId": accountId, "currency": currency},
 		)
 		if err != nil {
-			// For credits to a new currency, create the balance record.
+			// For credits to a new currency, create the balance record. Its
+			// failure is the transaction's failure: swallowing it committed a
+			// settlement with no balance row behind it, so the credit was gone
+			// and nothing anywhere said so.
 			if availableDelta > 0 && heldDelta == 0 {
-				createBalance(txApp, accountId, currency, availableDelta)
-				return nil
+				return createBalance(txApp, accountId, currency, availableDelta)
 			}
 			return fmt.Errorf("balance not found for %s/%s", accountId, currency)
 		}
@@ -211,17 +213,21 @@ func updateBalance(app core.App, accountId, currency string, availableDelta, hel
 	}
 }
 
-func createBalance(app core.App, accountId, currency string, amount int64) {
+// createBalance opens an account's first balance in a currency. It reports what
+// went wrong rather than absorbing it: this runs inside the settlement's own
+// transaction, and a credit whose row could not be written has to take the
+// settlement down with it.
+func createBalance(app core.App, accountId, currency string, amount int64) error {
 	col, err := app.FindCollectionByNameOrId(collections.BalanceCollectionName)
 	if err != nil {
-		return
+		return err
 	}
 	bal := core.NewRecord(col)
 	bal.Set("account", accountId)
 	bal.Set("currency", currency)
 	bal.Set("available", amount)
 	bal.Set("held", 0)
-	_ = app.Save(bal)
+	return app.Save(bal)
 }
 
 // routeToForex sends outbound payment details to the forex service.
