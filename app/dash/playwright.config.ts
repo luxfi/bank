@@ -6,8 +6,24 @@ import { defineConfig, devices } from '@playwright/test'
 const DASH = process.env.DASH_URL || 'http://localhost:3000'
 const BANKD = process.env.BANKD_URL || 'http://127.0.0.1:8070'
 const remote = Boolean(process.env.DASH_URL)
-// The stand-in identity provider the suite signs in against (e2e/iam-stub.mjs).
-const IAM = process.env.IAM_STUB_URL || 'http://127.0.0.1:8071'
+// Where the suite signs in. Point IAM_URL at a real Hanzo IAM — https://lux.id
+// for this brand — and the local provider is not started at all: bankd proxies
+// /v1/iam/* to whatever this names, so one variable moves the whole sign-in.
+//
+// Two things have to be true at lux.id before that works, and neither is ours
+// to set from here:
+//
+//   * the `lux-bank` application must carry this origin's callback among its
+//     redirect URIs. It does not today — authorize answers
+//     "invalid redirect_uri" for http://localhost:3000/callback.
+//   * the runner needs an identity to sign in as, supplied through the
+//     environment and never written down here.
+//
+// Until both hold, e2e/iam-stub.mjs stands in: a real OIDC provider, RS256 over
+// its own JWKS, running locally. It is the identity leg only — every other
+// service the suite touches is the real one.
+const IAM = process.env.IAM_URL || 'http://127.0.0.1:8071'
+const localIAM = !process.env.IAM_URL
 
 export default defineConfig({
   testDir: './e2e',
@@ -25,15 +41,19 @@ export default defineConfig({
     screenshot: 'only-on-failure',
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
-  webServer: remote ? undefined : [
-    {
-      command: 'node e2e/iam-stub.mjs',
-      url: `${IAM}/.well-known/openid-configuration`,
-      reuseExistingServer: true,
-      timeout: 30_000,
-      stdout: 'ignore',
-      stderr: 'pipe',
-    },
+  webServer: remote ? undefined : ([
+    ...(localIAM
+      ? [
+          {
+            command: 'node e2e/iam-stub.mjs',
+            url: `${IAM}/.well-known/openid-configuration`,
+            reuseExistingServer: true,
+            timeout: 30_000,
+            stdout: 'ignore' as const,
+            stderr: 'pipe' as const,
+          },
+        ]
+      : []),
     {
       command: 'go run ./cmd/bankd',
       cwd: '../..',
@@ -56,5 +76,5 @@ export default defineConfig({
       stdout: 'ignore',
       stderr: 'pipe',
     },
-  ],
+  ]),
 })

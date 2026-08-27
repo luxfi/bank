@@ -683,6 +683,43 @@ without `chain/deploy.sh`: with anvil on 8645 and a `{"chainId":31337,
 "tokens":{},"markets":{}}` file, derivation and a real value transfer both pass
 against a live EVM. Everything past that needs the protocol.
 
+### The e2e talks to the real bank; only the identity leg does not
+
+Nothing in the suite intercepts a bank response any more. The receive specs used
+to rewrite `/v1/bank/wallet` and `/v1/bank/overview` in the browser, so what they
+proved was that the page renders a fixture — the addresses, the bank name and
+the routing number were all written in the spec. They read the real ones now,
+and assert what the screen has to get right whatever those values are.
+
+Removing the stub is what showed that **an IBAN market cannot be reached**.
+`ProvisionCustomer` sets every account to USD and nothing else ever writes that
+field, so `receivingFor`'s IBAN branch — EUR, GBP, CHF, SGD, AED — answers no
+account this bank can open. Stubbing was the only way that spec could pass.
+Either onboarding should choose a currency (the country is already in the KYC
+body) or the branch is dead; both are product calls, so it is written down
+rather than decided here.
+
+**Identity is the one leg still local, and it is not a shortcut.**
+`e2e/iam-stub.mjs` is a real OIDC provider — RS256 over its own JWKS, discovery,
+authorize, token, userinfo — and `IAM_URL` points the whole sign-in somewhere
+else in one variable, with the local one not started at all when it is set.
+bankd proxies `/v1/iam/*` to whatever it names, so `IAM_URL=https://lux.id` is
+the entire change on this side.
+
+Two things at lux.id have to be true first, and neither can be done from the
+repo:
+
+  - the `lux-bank` application must carry the runner's callback among its
+    redirect URIs. It does not — `authorize` answers
+    `authorization error: invalid redirect_uri` for
+    `http://localhost:3000/callback` today, which is the whole blocker.
+  - the runner needs an identity to sign in as, supplied through the
+    environment. No credential belongs in this repo.
+
+lux.id itself is live and correct: discovery serves the HIP-0111 paths
+(`/v1/iam/oauth/authorize`, `/v1/iam/oauth/token`,
+`/v1/iam/.well-known/jwks`).
+
 ### Two doors onto the same data, and only one of them is a handler
 
 `/v1/bank/*` is the product surface, and Base serves every collection at
