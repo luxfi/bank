@@ -43,7 +43,7 @@ func chain() ChainBackend {
 	if c := evm(); c != nil {
 		return c
 	}
-	if chainConfigured() {
+	if ChainConfigured() {
 		return offChain{}
 	}
 	return simChain{}

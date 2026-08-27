@@ -87,7 +87,7 @@ var errUnheld = errors.New("no custodian holds this account")
 // own. A name nobody implements gets nothing, because the alternative is a
 // deployment that asked for the customer's Safe and quietly got the bank's key.
 func custodian() Custodian {
-	if !chainConfigured() {
+	if !ChainConfigured() {
 		return simCustodian{}
 	}
 	switch strings.ToLower(strings.TrimSpace(os.Getenv("BANK_CUSTODY"))) {

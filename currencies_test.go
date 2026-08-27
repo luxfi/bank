@@ -93,3 +93,50 @@ func TestEveryVaultAssetCanBePriced(t *testing.T) {
 		}
 	}
 }
+
+// Why bankd refuses to start outside the sandbox with no chain configured.
+//
+// The simulation is chosen on the chain being absent, not on the sandbox flag,
+// and it names the network from the sandbox flag alone. So a deployment that
+// has declared itself real and was pointed at no chain gets the simulation
+// calling itself mainnet: invented deposit addresses, receipts for transfers
+// that never happened, and a customer who sends real coins to one loses them,
+// because nobody holds that key and no operator can sweep it.
+//
+// A configured chain that is merely unreachable already refuses rather than
+// degrading into the simulation. This is the same rule for the case where none
+// was configured at all, and it is enforced where a deployment is read rather
+// than on every call — so this test is what keeps the reason written down.
+func TestTheSimulationWouldCallItselfMainnet(t *testing.T) {
+	t.Setenv("BANK_SANDBOX", "false")
+	t.Setenv("BANK_CHAIN_RPC", "")
+	evmMu.Lock()
+	evmInst, evmFrom = nil, ""
+	evmMu.Unlock()
+	t.Cleanup(func() {
+		evmMu.Lock()
+		evmInst, evmFrom = nil, ""
+		evmMu.Unlock()
+	})
+
+	if ChainConfigured() {
+		t.Fatal("a chain is configured, so this proves nothing")
+	}
+	if _, simulated := chain().(simChain); !simulated {
+		t.Fatalf("the backend with no chain configured is %T, not the simulation", chain())
+	}
+	if got := chain().Network(); got != "lux-mainnet" {
+		t.Errorf("the simulation names itself %q outside the sandbox; the hazard this documents has changed shape", got)
+	}
+	if _, simulated := custodian().(simCustodian); !simulated {
+		t.Errorf("the custodian with no chain configured is %T, not the simulation", custodian())
+	}
+	// And what it would hand a customer is an address no key answers for.
+	addr := simAddress("1", "LUX")
+	if !validEVMAddress(addr) {
+		t.Fatalf("the simulation's address %q is not even well formed", addr)
+	}
+	if addr == "" {
+		t.Fatal("the simulation named no address")
+	}
+}

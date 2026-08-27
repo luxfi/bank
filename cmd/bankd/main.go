@@ -134,6 +134,20 @@ func main() {
 		log.Fatal("COMPLIANCE_SERVICE_URL is not set: outside the sandbox there is nothing to screen against, and AML and sanctions screening are fail-closed")
 	}
 
+	// A bank with no chain to be custodian of falls to the simulation, which
+	// invents a deposit address and answers a send with a receipt for a
+	// transfer that never happened — and names the network from the sandbox
+	// flag alone, so with that flag off it calls itself mainnet. A customer
+	// sending real coins to an invented address loses them: nobody holds that
+	// key, and no operator can sweep it.
+	//
+	// A configured chain that is merely unreachable already refuses rather than
+	// degrading into the simulation. This is the same rule for the case where
+	// none was configured at all.
+	if !bank.Sandbox() && !bank.ChainConfigured() {
+		log.Fatal("BANK_CHAIN_RPC is not set: outside the sandbox there is no chain to hold anything on, and the simulation would hand out deposit addresses nobody holds the keys to")
+	}
+
 	hooks.RegisterCurrencyCloudWebhooks(app)
 	hooks.RegisterComplianceHooks(app)
 	hooks.RegisterPaymentHooks(app)

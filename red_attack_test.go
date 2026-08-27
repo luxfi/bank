@@ -649,7 +649,7 @@ func TestRedUnreachableChainSerializesEveryRequest(t *testing.T) {
 	evmInst, evmFrom = nil, ""
 	evmMu.Unlock()
 
-	if !chainConfigured() {
+	if !ChainConfigured() {
 		t.Fatal("expected a configured chain")
 	}
 	const n = 3

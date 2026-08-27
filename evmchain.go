@@ -100,10 +100,10 @@ var (
 // answer they were going to get.
 const evmRetryAfter = 5 * time.Second
 
-// chainConfigured reports whether the bank has been pointed at a chain at all.
+// ChainConfigured reports whether the bank has been pointed at a chain at all.
 // It is the difference between "no chain here" and "the chain is down", which
 // are the same silence but must not get the same answer.
-func chainConfigured() bool { return strings.TrimSpace(os.Getenv("BANK_CHAIN_RPC")) != "" }
+func ChainConfigured() bool { return strings.TrimSpace(os.Getenv("BANK_CHAIN_RPC")) != "" }
 
 // evm returns the configured EVM backend, or nil when BANK_CHAIN_RPC is unset.
 func evm() *evmChain {
