@@ -643,12 +643,15 @@ code one.
 
 ### What the tests cannot reach
 
-Every chain test skips without `BANK_CHAIN_RPC`, including the eight adversarial
-`TestRed*` ones — so treasury drain, nonce sharing and unverified market
-addresses are guarded by tests that never run in CI. Coverage is **83% of the
-code that does not need a chain**, and 25% of the code that does; the whole-repo
-figure is ~71% and cannot rise much further without a deployed protocol in CI.
-That is the single highest-value gap left.
+Every chain test skips without `BANK_CHAIN_RPC`, the fifteen adversarial
+`TestRed*` ones included — so in CI today, treasury drain, nonce sharing and
+unverified market addresses are guarded by tests that do not run.
+
+Measured both ways: without a chain the chain code sits at **25%** and the repo
+at **71%**; with the protocol deployed locally and the chain tests selected, the
+chain code reaches **78%** and the union of the two runs is **81%**. Standing a
+chain up in CI is the single highest-value gap left, and it is worth about ten
+points plus every adversarial guard.
 
 `BANK_CHAIN_DEPLOY` points at the address book, so a bare chain can be reached
 without `chain/deploy.sh`: with anvil on 8645 and a `{"chainId":31337,
