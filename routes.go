@@ -370,23 +370,11 @@ func handleGetWallets(app core.App) func(*core.RequestEvent) error {
 		if account.GetString("owner") != e.Auth.Id {
 			return apis.NewForbiddenError("not your account", nil)
 		}
-		wallets, err := app.FindRecordsByFilter(collections.WalletCollectionName,
-			"account = {:accountId}", "currency", 0, 0,
-			map[string]any{"accountId": accountId})
-		if err != nil {
-			return apis.NewInternalServerError("", nil)
-		}
-		type wr struct {
-			ID       string `json:"id"`
-			Currency string `json:"currency"`
-			WalletId string `json:"walletId"`
-			Status   string `json:"status"`
-		}
-		out := make([]wr, 0, len(wallets))
-		for _, w := range wallets {
-			out = append(out, wr{w.Id, w.GetString("currency"), w.GetString("walletId"), w.GetString("status")})
-		}
-		return e.JSON(http.StatusOK, out)
+		// The same shape /v1/bank/wallet answers with. This built its own,
+		// which carried the custodian's internal handle and left out the
+		// address — the one thing a wallet is for, so the route could not be
+		// used for the thing it names.
+		return e.JSON(http.StatusOK, viewWallets(app, accountId))
 	}
 }
 
