@@ -224,9 +224,15 @@ func earnAction(app core.App, act earnAct) func(*core.RequestEvent) error {
 		if err != nil {
 			return apis.NewInternalServerError("position unavailable", err)
 		}
-		// When the configured chain carries a market for this vault's asset, the
-		// loan lives there and the ledger only records what the chain did.
-		if m := chain().Market(v.Underlying); m != nil {
+		// When the account's custodian can reach a market for this vault's asset,
+		// the loan lives there and the ledger only records what the chain did. A
+		// custodian that cannot act at all is not the same thing as a vault with
+		// no market behind it, and must never be read as one.
+		m, err := custodian().Market(app, acct, v.Underlying)
+		if err != nil {
+			return apis.NewInternalServerError("account has no chain identity", err)
+		}
+		if m != nil {
 			return earnOnChain(app, e, acct, v, pos, m, act, req.Amount)
 		}
 		collateral := money[Minor](pos, "collateral")
@@ -312,13 +318,9 @@ func earnAction(app core.App, act earnAct) func(*core.RequestEvent) error {
 func earnOnChain(app core.App, e *core.RequestEvent, acct *core.Record, v *collections.Vault,
 	pos *core.Record, m Market, act earnAct, amount Minor) error {
 
-	seed := chainSeed(app, acct)
-	if seed == "" {
-		return apis.NewInternalServerError("account has no chain identity", nil)
-	}
 	cb := chain()
 
-	var move func(string, Minor) (string, error)
+	var move func(Minor) (string, error)
 	var direction, ref string
 	switch act {
 	case actDeposit:
@@ -345,7 +347,7 @@ func earnOnChain(app core.App, e *core.RequestEvent, acct *core.Record, v *colle
 		return errJSON(e, http.StatusUnprocessableEntity, err.Error())
 	}
 
-	hash, err := move(seed, amount)
+	hash, err := move(amount)
 	if err != nil {
 		if rerr := release(app, tx); rerr != nil {
 			app.Logger().Error("hold survived a refused movement", "tx", tx.Id, "err", rerr)
@@ -359,7 +361,7 @@ func earnOnChain(app core.App, e *core.RequestEvent, acct *core.Record, v *colle
 		return errJSON(e, http.StatusBadGateway, "the chain rejected this movement")
 	}
 
-	on, err := m.Position(seed)
+	on, err := m.Position()
 	if err != nil {
 		return apis.NewInternalServerError("position unreadable on chain", err)
 	}

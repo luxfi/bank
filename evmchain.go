@@ -26,11 +26,13 @@ import (
 )
 
 // -----------------------------------------------------------------------------
-// evmChain — the ChainBackend backed by a real EVM. It derives one key per
-// account from the deploy mnemonic, reads balances from the chain, and signs
-// and broadcasts transfers. Which chain is configuration: Lux, Zoo and Hanzo are
-// sovereign L1s with their own EVM chain ids, and each has its own deployment
-// file, so pointing the bank at a different one is an env change.
+// evmChain — the ChainBackend backed by a real EVM. It reads balances from the
+// chain, and it holds the deploy mnemonic, so it is also what turns an index
+// into a key and broadcasts what that key signs. Whose index that is, is the
+// custodian's question and not asked here; only deriving composes the two.
+// Which chain is configuration: Lux, Zoo and Hanzo are sovereign L1s with their
+// own EVM chain ids, and each has its own deployment file, so pointing the bank
+// at a different one is an env change.
 //
 // The design correction a real EVM forces: an account has ONE address, and it
 // receives the native coin and every token at that same address. Per-asset
@@ -253,10 +255,10 @@ func (c *evmChain) Assets() map[string]string {
 	return out
 }
 
-// Address is the account's address on this chain. One address per account, not
-// per asset: everything the account holds arrives here.
-func (c *evmChain) Address(seed, _ string) string {
-	key, err := c.key(seed)
+// address is what the key at an index controls. One address per account, not per
+// asset: everything the account holds arrives here.
+func (c *evmChain) address(index string) string {
+	key, err := c.key(index)
 	if err != nil {
 		return ""
 	}
@@ -267,19 +269,20 @@ func (c *evmChain) Address(seed, _ string) string {
 // family — a bridged BTC balance is sent to a 0x address like anything else.
 func (c *evmChain) Valid(_, addr string) bool { return validEVMAddress(addr) }
 
-// Balance reads the asset's balance at the account's address, from the chain.
-func (c *evmChain) Balance(seed, asset string) (Minor, error) {
+// Balance reads the asset's balance at an address, from the chain. It refuses an
+// address it cannot read rather than falling back on HexToAddress, which pads
+// anything short and would answer for the zero address as if it were somebody's.
+func (c *evmChain) Balance(addr, asset string) (Minor, error) {
 	token, ok := c.assets[strings.ToUpper(asset)]
 	if !ok {
 		return 0, fmt.Errorf("%s is not on %s", asset, c.network)
 	}
-	key, err := c.key(seed)
-	if err != nil {
-		return 0, err
+	if !validEVMAddress(addr) {
+		return 0, fmt.Errorf("%q is not an address on %s", addr, c.network)
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
-	owner := addressOf(key)
+	owner := common.HexToAddress(addr)
 
 	if (token == common.Address{}) {
 		wei, err := c.client.BalanceAt(ctx, owner, nil)
@@ -299,9 +302,9 @@ func (c *evmChain) Balance(seed, asset string) (Minor, error) {
 	return c.toMinor(out, dp)
 }
 
-// Send signs a transfer from the account's own key and broadcasts it, then
-// waits for the receipt so the hash it returns is a hash that settled.
-func (c *evmChain) Send(seed, asset, to string, amount Minor) (string, error) {
+// send signs a transfer from the key at an index and broadcasts it, then waits
+// for the receipt so the hash it returns is a hash that settled.
+func (c *evmChain) send(index, asset, to string, amount Minor) (string, error) {
 	token, ok := c.assets[strings.ToUpper(asset)]
 	if !ok {
 		return "", fmt.Errorf("%s is not on %s", asset, c.network)
@@ -309,7 +312,7 @@ func (c *evmChain) Send(seed, asset, to string, amount Minor) (string, error) {
 	if !validEVMAddress(to) {
 		return "", errors.New("destination is not an address on this chain")
 	}
-	key, err := c.key(seed)
+	key, err := c.key(index)
 	if err != nil {
 		return "", err
 	}
@@ -335,16 +338,16 @@ func (c *evmChain) Send(seed, asset, to string, amount Minor) (string, error) {
 // Keys — one account, one index, one address.
 // -----------------------------------------------------------------------------
 
-// key derives the account's signing key. seed is the account's chain index, a
-// number the bank assigns once and stores, so a key is reproducible from the
-// mnemonic alone and two accounts can never collide onto one address — which is
-// exactly what hashing an account id into an index would eventually do.
-func (c *evmChain) key(seed string) (*ecdsa.PrivateKey, error) {
-	index, err := strconv.ParseUint(strings.TrimSpace(seed), 10, 31)
+// key derives the signing key at an index — a number the bank assigns to an
+// account once and stores, so a key is reproducible from the mnemonic alone and
+// two accounts can never collide onto one address, which is exactly what hashing
+// an account id into an index would eventually do.
+func (c *evmChain) key(index string) (*ecdsa.PrivateKey, error) {
+	n, err := strconv.ParseUint(strings.TrimSpace(index), 10, 31)
 	if err != nil {
-		return nil, fmt.Errorf("chain index %q is not a number", seed)
+		return nil, fmt.Errorf("chain index %q is not a number", index)
 	}
-	return c.derive(customer, uint32(index))
+	return c.derive(customer, uint32(n))
 }
 
 // hardened is BIP-32's 2^31 offset, and every step of a bank key's path carries

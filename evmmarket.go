@@ -32,31 +32,43 @@ type Position struct {
 	TokenID    int64 // the position NFT that holds it
 }
 
-// Market is one collateral asset's lending market.
+// Market is one account's access to one collateral asset's lending market. The
+// account is bound when the custodian hands the market over, so no verb takes a
+// principal — binding whose money it is to the authority that moves it is the
+// whole of what a custodian does, and doing it twice is how the two drift apart.
 type Market interface {
 	// Deposit moves collateral from the account into the market, opening a
 	// position if it has none.
-	Deposit(seed string, amount Minor) (string, error)
+	Deposit(amount Minor) (string, error)
 	// Borrow mints the market's synthetic against the position. It fails when
 	// the chain refuses the borrow.
-	Borrow(seed string, amount Minor) (string, error)
+	Borrow(amount Minor) (string, error)
 	// Repay burns synthetic back into the position's debt.
-	Repay(seed string, amount Minor) (string, error)
+	Repay(amount Minor) (string, error)
 	// Withdraw takes collateral back out, as far as the debt allows.
-	Withdraw(seed string, amount Minor) (string, error)
+	Withdraw(amount Minor) (string, error)
 	// Position reads the account's position from the chain.
-	Position(seed string) (Position, error)
+	Position() (Position, error)
 }
 
-// Market returns the lending market for an asset, or nil when this chain has
-// none — in which case Earn stays on the ledger for that vault.
+// lends reports whether this chain carries a market for an asset. It is the
+// question that decides ledger or chain, and it is a fact about the deployment,
+// so it can be asked before any account is named.
+func (c *evmChain) lends(asset string) bool {
+	m, ok := c.deploy.Markets[strings.ToUpper(asset)]
+	return ok && m.Liquid != ""
+}
+
+// market is the lending market for an asset as reached by the key at an index,
+// or nil when this chain carries none — in which case Earn stays on the ledger
+// for that vault.
 //
 // Nothing is read here. The market proves itself when it is used, not when it is
 // looked up, because a lookup that failed could only answer nil — and nil hands
 // Earn back to the ledger, where a borrow is credited against a loan no chain is
 // holding. A chain that cannot answer has to fail the movement, not quietly turn
 // into a different product.
-func (c *evmChain) Market(asset string) Market {
+func (c *evmChain) market(asset, index string) Market {
 	asset = strings.ToUpper(asset)
 	m, ok := c.deploy.Markets[asset]
 	if !ok || m.Liquid == "" {
@@ -65,6 +77,7 @@ func (c *evmChain) Market(asset string) Market {
 	return &evmMarket{
 		chain:      c,
 		asset:      asset,
+		index:      index,
 		liquid:     common.HexToAddress(m.Liquid),
 		collateral: common.HexToAddress(m.Collateral),
 		synthetic:  common.HexToAddress(m.Synthetic),
@@ -75,6 +88,7 @@ func (c *evmChain) Market(asset string) Market {
 type evmMarket struct {
 	chain                                   *evmChain
 	asset                                   string
+	index                                   string
 	liquid, collateral, synthetic, position common.Address
 
 	// wraps records that this market's collateral is the chain's own coin in
@@ -157,8 +171,8 @@ func (m *evmMarket) takes(ctx context.Context) error {
 // and burn move the synthetic. Scaling everything by the collateral's decimals
 // was right only while the two matched; against 8-decimal bridged BTC and an
 // 18-decimal synthetic it burned a ten-billionth of the debt it was asked to.
-func (m *evmMarket) call(seed, method string, unit common.Address, allow *common.Address, amount Minor, args func(id *big.Int, wei *big.Int) []any) (string, error) {
-	key, err := m.chain.key(seed)
+func (m *evmMarket) call(method string, unit common.Address, allow *common.Address, amount Minor, args func(id *big.Int, wei *big.Int) []any) (string, error) {
+	key, err := m.chain.key(m.index)
 	if err != nil {
 		return "", err
 	}
@@ -176,7 +190,7 @@ func (m *evmMarket) call(seed, method string, unit common.Address, allow *common
 	wei := m.chain.toWei(amount, dp)
 
 	if allow != nil {
-		if err := m.approve(ctx, seed, owner, *allow, wei); err != nil {
+		if err := m.approve(ctx, key, owner, *allow, wei); err != nil {
 			return "", err
 		}
 	}
@@ -192,8 +206,8 @@ func (m *evmMarket) call(seed, method string, unit common.Address, allow *common
 	return m.chain.submit(ctx, key, m.liquid, big.NewInt(0), data)
 }
 
-func (m *evmMarket) Deposit(seed string, amount Minor) (string, error) {
-	key, err := m.chain.key(seed)
+func (m *evmMarket) Deposit(amount Minor) (string, error) {
+	key, err := m.chain.key(m.index)
 	if err != nil {
 		return "", err
 	}
@@ -202,35 +216,35 @@ func (m *evmMarket) Deposit(seed string, amount Minor) (string, error) {
 		return "", err
 	}
 	// tokenId 0 tells the market to open a position and mint its NFT to owner.
-	return m.call(seed, "deposit", m.collateral, &m.collateral, amount, func(id, wei *big.Int) []any {
+	return m.call("deposit", m.collateral, &m.collateral, amount, func(id, wei *big.Int) []any {
 		return []any{wei, owner, id}
 	})
 }
 
-func (m *evmMarket) Borrow(seed string, amount Minor) (string, error) {
-	key, err := m.chain.key(seed)
+func (m *evmMarket) Borrow(amount Minor) (string, error) {
+	key, err := m.chain.key(m.index)
 	if err != nil {
 		return "", err
 	}
 	owner := addressOf(key)
-	return m.call(seed, "mint", m.synthetic, nil, amount, func(id, wei *big.Int) []any {
+	return m.call("mint", m.synthetic, nil, amount, func(id, wei *big.Int) []any {
 		return []any{id, wei, owner}
 	})
 }
 
-func (m *evmMarket) Repay(seed string, amount Minor) (string, error) {
-	return m.call(seed, "burn", m.synthetic, &m.synthetic, amount, func(id, wei *big.Int) []any {
+func (m *evmMarket) Repay(amount Minor) (string, error) {
+	return m.call("burn", m.synthetic, &m.synthetic, amount, func(id, wei *big.Int) []any {
 		return []any{wei, id}
 	})
 }
 
-func (m *evmMarket) Withdraw(seed string, amount Minor) (string, error) {
-	key, err := m.chain.key(seed)
+func (m *evmMarket) Withdraw(amount Minor) (string, error) {
+	key, err := m.chain.key(m.index)
 	if err != nil {
 		return "", err
 	}
 	owner := addressOf(key)
-	hash, err := m.call(seed, "withdraw", m.collateral, nil, amount, func(id, wei *big.Int) []any {
+	hash, err := m.call("withdraw", m.collateral, nil, amount, func(id, wei *big.Int) []any {
 		return []any{wei, owner, id}
 	})
 	if err != nil || !m.wraps {
@@ -309,9 +323,9 @@ func (m *evmMarket) wei(ctx context.Context, amount Minor) (*big.Int, error) {
 }
 
 // Position reads collateral, debt and remaining headroom from the chain.
-func (m *evmMarket) Position(seed string) (Position, error) {
+func (m *evmMarket) Position() (Position, error) {
 	var p Position
-	key, err := m.chain.key(seed)
+	key, err := m.chain.key(m.index)
 	if err != nil {
 		return p, err
 	}
@@ -382,11 +396,7 @@ func (m *evmMarket) tokenID(ctx context.Context, owner common.Address) (*big.Int
 
 // approve raises the market's allowance only when it is short, so a repeat
 // movement does not pay for an approval it already has.
-func (m *evmMarket) approve(ctx context.Context, seed string, owner, token common.Address, wei *big.Int) error {
-	key, err := m.chain.key(seed)
-	if err != nil {
-		return err
-	}
+func (m *evmMarket) approve(ctx context.Context, key *ecdsa.PrivateKey, owner, token common.Address, wei *big.Int) error {
 	var have *big.Int
 	if err := m.chain.read(ctx, token, erc20ABI, "allowance", &have, owner, m.liquid); err != nil {
 		return err

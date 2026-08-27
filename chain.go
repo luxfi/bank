@@ -9,10 +9,10 @@ import (
 )
 
 // -----------------------------------------------------------------------------
-// ChainBackend — the on-chain half of the wallet. It derives deposit addresses,
-// reads balances and broadcasts sends; the bank ledger (hold/settle) stays on
-// the bank side. Same seam shape as Issuer and FXProvider, and no caller touches
-// txHash() or an address literal directly.
+// ChainBackend — what the chain itself can answer: which chain this is, what it
+// carries, whether a destination is well formed, and what an address holds.
+// Every one of those is a read, and a read needs no key, which is why none of it
+// takes a principal. Who holds the keys and who signs is Custodian's, next door.
 //
 // Three implementations, chosen by chain(): evmChain against a real EVM,
 // simChain for the sandbox, and offChain for a chain that was configured and
@@ -26,21 +26,10 @@ type ChainBackend interface {
 	// The chain's own coin has no contract, so its entry is empty — which is
 	// how the wallet view tells a native balance from a token balance.
 	Assets() map[string]string
-	// Address is the deposit address for a principal. On a real EVM the asset
-	// makes no difference — one address receives the coin and every token — but
-	// the simulation models a world of separate chains, where BTC is bech32.
-	Address(seed, asset string) string
 	// Valid reports whether a destination is well formed for an asset here.
 	Valid(asset, addr string) bool
-	// Balance is the asset's balance at the principal's address.
-	Balance(seed, asset string) (Minor, error)
-	// Send signs a transfer with the principal's own key, broadcasts it, and
-	// returns the hash once it has settled. The sandbox returns a random hash
-	// and moves nothing.
-	Send(seed, asset, toAddress string, amount Minor) (string, error)
-	// Market is the lending market for a collateral asset, or nil when this
-	// chain has none and Earn stays on the ledger.
-	Market(asset string) Market
+	// Balance is the asset's balance at an address.
+	Balance(addr, asset string) (Minor, error)
 }
 
 // chain resolves the active backend: the real EVM when one is configured, the
@@ -66,25 +55,27 @@ type offChain struct{}
 
 var errChainDown = errors.New("the configured chain is unreachable")
 
-func (offChain) Network() string                              { return networkName() }
-func (offChain) Assets() map[string]string                    { return map[string]string{} }
-func (offChain) Address(string, string) string                { return "" }
-func (offChain) Valid(_, addr string) bool                    { return validEVMAddress(addr) }
-func (offChain) Balance(string, string) (Minor, error)        { return 0, errChainDown }
-func (offChain) Send(_, _, _ string, _ Minor) (string, error) { return "", errChainDown }
-func (offChain) Market(string) Market                         { return nil }
+func (offChain) Network() string                       { return networkName() }
+func (offChain) Assets() map[string]string             { return map[string]string{} }
+func (offChain) Valid(_, addr string) bool             { return validEVMAddress(addr) }
+func (offChain) Balance(string, string) (Minor, error) { return 0, errChainDown }
 
-// simChain simulates the testnet: deterministic display addresses, random tx
-// hashes, no broadcast.
+// simChain simulates the testnet: it names the network, lists the assets, and
+// has nothing to read a balance from. Its stand-in addresses and receipts belong
+// to simCustodian, because inventing those is custody, not chain.
 type simChain struct{}
 
 func (simChain) Network() string { return networkName() }
 
-func (simChain) Address(seed, asset string) string {
+// simAddress is the simulation's display address for an account in an asset. The
+// simulation models each asset as its own chain, so BTC is bech32 and everything
+// else is 0x — a shape a real EVM does not have, and one more reason the
+// simulation is reachable only with no chain configured at all.
+func simAddress(index, asset string) string {
 	if strings.ToUpper(asset) == "BTC" {
-		return simBTCAddress(seed)
+		return simBTCAddress(index)
 	}
-	return evmAddress(seed, asset)
+	return evmAddress(index, asset)
 }
 
 // Assets: the simulation models each asset as its own chain, so none of them is
@@ -103,13 +94,6 @@ func (simChain) Valid(asset, addr string) bool { return validAddress(asset, addr
 func (simChain) Balance(string, string) (Minor, error) {
 	return 0, errors.New("no chain configured")
 }
-
-func (simChain) Send(_, asset, _ string, _ Minor) (string, error) {
-	return txHashFor(asset), nil
-}
-
-// Market: nothing on chain, so Earn settles on the ledger.
-func (simChain) Market(string) Market { return nil }
 
 // txHashFor returns a random display tx hash in the shape of the asset's chain:
 // Bitcoin hashes are 64 bare hex chars; EVM-family hashes are 0x + 64 hex.

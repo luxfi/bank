@@ -144,7 +144,7 @@ func handleCryptoSend(app core.App) func(*core.RequestEvent) error {
 		if err != nil {
 			return err
 		}
-		cb := chain()
+		cb, cu := chain(), custodian()
 		// A send has to reach a chain that can actually carry it. The sandbox
 		// settles against its own testnet ledger; a configured chain signs and
 		// broadcasts. With neither, refuse rather than debit funds against a
@@ -183,13 +183,17 @@ func handleCryptoSend(app core.App) func(*core.RequestEvent) error {
 		if err != nil {
 			return errJSON(e, http.StatusUnprocessableEntity, err.Error())
 		}
-		hash, err := cb.Send(chainSeed(app, acct), asset, req.ToAddress, req.Amount)
+		// Whoever holds the key signs. Today that is the bank itself, which is
+		// what the seam exists to change; the route says only "this account's
+		// custodian moves this asset" and does not know or care which one.
+		hash, err := cu.Send(app, acct, asset, req.ToAddress, req.Amount)
 		if err != nil {
 			// The caller is told only that it failed — a chain error can carry
 			// an address or a balance. The reason goes to the log, because a
-			// send that fails without a recorded cause takes hours to diagnose.
+			// send that fails without a recorded cause takes hours to diagnose,
+			// and which custodian refused is half of that diagnosis.
 			app.Logger().Error("on-chain send failed",
-				"asset", asset, "account", acct.Id, "err", err)
+				"asset", asset, "account", acct.Id, "custodian", cu.Name(), "err", err)
 			if rerr := release(app, tx); rerr != nil {
 				app.Logger().Error("hold survived a failed send",
 					"tx", tx.Id, "err", rerr)

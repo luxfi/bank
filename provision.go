@@ -1,8 +1,6 @@
 package bank
 
 import (
-	"math"
-	"strconv"
 	"time"
 
 	"github.com/hanzoai/base/core"
@@ -116,40 +114,10 @@ func ProvisionCustomer(app core.App, user *core.Record, kyc KYC) (*core.Record, 
 	return acct, nil
 }
 
-// chainSeed is the account's derivation index, assigned on first use and stored
-// so the account's address never moves. Index 0 belongs to the bank's own
-// treasury, which is why accounts start at 1.
-func chainSeed(app core.App, acct *core.Record) string {
-	if n := int64(math.Round(acct.GetFloat("chainIndex"))); n > 0 {
-		return strconv.FormatInt(n, 10)
-	}
-	// Claiming an index is a read of the current maximum and then a write, so
-	// two accounts opened at the same moment both read the same number. The
-	// unique index on chainIndex is what settles it: one save wins, the other
-	// is refused and comes back here to take the next number. Without the
-	// retry a loser would keep the index it lost, and two customers would sign
-	// from one key, at one address, over one balance.
-	for attempt := 0; attempt < 16; attempt++ {
-		next := int64(1)
-		if taken, _ := app.FindRecordsByFilter(collections.AccountCollectionName,
-			"chainIndex > 0", "-chainIndex", 1, 0, nil); len(taken) > 0 {
-			next = int64(math.Round(taken[0].GetFloat("chainIndex"))) + 1
-		}
-		acct.Set("chainIndex", next)
-		if err := app.Save(acct); err == nil {
-			return strconv.FormatInt(next, 10)
-		}
-	}
-	// Every attempt lost the race. Returning no seed refuses the operation,
-	// which is the safe end: a wrong index would be a wrong key.
-	acct.Set("chainIndex", 0)
-	return ""
-}
-
-// ensureWallets holds an account's wallet rows to the chain the bank is running
-// against right now: one row per SupportedCrypto asset, each carrying the
-// deposit address that backend derives for the account. It provisions new
-// accounts and reconciles standing ones, so it is safe to call on every boot.
+// ensureWallets holds an account's wallet rows to what its custodian answers
+// right now: one row per SupportedCrypto asset, carrying the address the account
+// receives at. It provisions new accounts and reconciles standing ones, so it is
+// safe to call on every boot.
 //
 // On a real EVM every one of those rows carries the SAME address — an account
 // has one address there and receives the coin and every token at it. The rows
@@ -160,58 +128,53 @@ func ensureWallets(app core.App, acct *core.Record) {
 	if err != nil {
 		return
 	}
-	accountID, seed := acct.Id, chainSeed(app, acct)
-	if seed == "" {
-		return
-	}
-	cb := chain()
+	accountID, cu, cb := acct.Id, custodian(), chain()
 	for _, asset := range SupportedCrypto {
-		addr := cb.Address(seed, asset)
+		held := cu.Wallet(app, acct, asset)
 		w, _ := app.FindFirstRecordByFilter(collections.WalletCollectionName,
 			"account = {:a} && currency = {:c}", map[string]any{"a": accountID, "c": asset})
 		switch {
 		case w == nil:
-			// A chain that cannot answer names no address, and an address the
-			// customer cannot receive at is worse than none at all. The row
+			// A custodian that cannot answer names no address, and an address
+			// the customer cannot receive at is worse than none at all. The row
 			// appears on the first boot that can answer for it.
-			if addr == "" {
+			if held.Address == "" {
 				continue
 			}
 			w = core.NewRecord(walletColl)
 			w.Set("account", accountID)
 			w.Set("currency", asset)
-			w.Set("walletId", "mpc:"+asset+":"+seed)
+			w.Set("walletId", held.Ref)
 			w.Set("status", "active")
-		case !replaces(cb, w.GetString("address"), addr):
+		case !replaces(cu, w.GetString("address"), held.Address):
 			continue
 		}
 		// The address and the network it is on are one fact, so they move together.
-		w.Set("address", addr)
+		w.Set("address", held.Address)
 		w.Set("network", cb.Network())
 		_ = app.Save(w)
 	}
 }
 
-// replaces decides whether a backend's answer may take the place of a deposit
+// replaces decides whether a custodian's answer may take the place of a deposit
 // address already on record. Written once and trusted forever, a simulated
 // address survived a real chain being configured, and coins sent to it are
 // unrecoverable — nobody holds that key.
 //
-// Only the real chain may overwrite one, because it is the only backend that
-// derives an address from a key the bank holds. A real address over a simulated
-// one recovers an account that could never have been swept; the reverse points a
-// customer at an address nobody can spend from, so the simulation and an
-// unreachable chain leave what they find. An address nobody has answered for yet
-// is empty, and anything that can answer may fill it.
-func replaces(cb ChainBackend, recorded, answer string) bool {
+// Only a custodian that actually holds a key may overwrite one. A real address
+// over a simulated one recovers an account that could never have been swept; the
+// reverse points a customer at an address nobody can spend from, so the
+// simulation leaves what it finds. An address nobody has answered for yet is
+// empty, and anything that can answer may fill it.
+func replaces(cu Custodian, recorded, answer string) bool {
 	if answer == "" || answer == recorded {
 		return false
 	}
 	if recorded == "" {
 		return true
 	}
-	_, live := cb.(*evmChain)
-	return live
+	_, holds := cu.(deriving)
+	return holds
 }
 
 // seedBeneficiaries seeds a few verified payment recipients so the Send screen
