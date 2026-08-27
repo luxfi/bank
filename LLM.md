@@ -683,6 +683,29 @@ without `chain/deploy.sh`: with anvil on 8645 and a `{"chainId":31337,
 "tokens":{},"markets":{}}` file, derivation and a real value transfer both pass
 against a live EVM. Everything past that needs the protocol.
 
+### Two doors onto the same data, and only one of them is a handler
+
+`/v1/bank/*` is the product surface, and Base serves every collection at
+`/v1/collections/{name}/records` beside it. Both reach the same rows. A
+handler's ownership comparison guards the first; the collection's API rules
+guard the second, and nothing in `/v1/bank` has any bearing on it.
+
+Both are now exercised. Every handler that takes an id from the path compares
+it against the caller — balances, wallets, transactions, a beneficiary, a card —
+and answers not-found for an id nobody holds rather than forbidden, since
+"forbidden" tells a caller which ids are real. Every collection with a rule
+scopes by `account.owner = @request.auth.id`; balances carry no rule at all and
+stay superuser-only, which is why the handler exists.
+
+**The rest of the suite signs in as a superuser.** `seedPrincipal` mints a
+`_superusers` record, and a superuser bypasses collection rules entirely — so a
+leaky rule reads as a pass, and every collection-door test written with the
+harness principal proves nothing. `signIn` in collection_door_test.go opens a
+real `users` identity instead, which is what IAM mirrors a signed-in person
+into. Use that for anything whose answer depends on who is asking; the harness
+principal is fine for a handler that compares ids itself, because that
+comparison does not care what kind of record the caller is.
+
 ### Simulation reachable where the bank has declared itself real
 
 One bug class, four instances, all found the same way: ask what a surface does
