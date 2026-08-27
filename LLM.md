@@ -803,6 +803,13 @@ It is also far slower with a chain configured — every app that comes up dials
 it — so give `go test` a `-timeout` that allows for it, or the panic names
 whichever test happened to be running and tells you nothing.
 
+**Race the chain tests, not the suite.** `go test -race` needs cgo, and without
+a chain it reports a clean zero over code that never ran concurrently: the two
+tests that actually contend — concurrent sends sharing the treasury nonce, and
+two customers needing gas at the same instant — are both chain tests and both
+skip. Run it the way the suite is run above, with `CGO_ENABLED=1`, and check
+they executed rather than trusting the zero. They do, and there are none.
+
 ## Security Hardening (2026-03-31)
 
 ### API Rules (F01)
