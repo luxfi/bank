@@ -1,10 +1,12 @@
 package hooks
 
 import (
+	"errors"
 	"fmt"
 	"log/slog"
 	"net/smtp"
 	"os"
+	"strings"
 
 	"github.com/hanzoai/base/core"
 	"github.com/luxfi/bank/collections"
@@ -127,6 +129,19 @@ func sendEmail(to, subject, body string) error {
 	}
 	if from == "" {
 		from = user
+	}
+
+	// A header cannot carry a line break. The message is assembled by hand, so a
+	// CR or LF reaching `to` or `subject` would close that header and open
+	// whatever follows — a Bcc to somewhere else, a replaced From. Nothing sends
+	// user-written text through here today: the subject is a constant and the
+	// address comes off a validated field. This refuses regardless, because the
+	// next caller is the one that would not know.
+	//
+	// The body is exempt: line breaks are what a body is made of, and it sits
+	// after the blank line where no header is being parsed.
+	if strings.ContainsAny(to, "\r\n") || strings.ContainsAny(subject, "\r\n") {
+		return errors.New("email: a line break in the recipient or subject would forge a header")
 	}
 
 	msg := fmt.Sprintf("From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n%s", from, to, subject, body)
