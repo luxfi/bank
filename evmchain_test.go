@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/ecdsa"
 	"encoding/json"
+	"fmt"
 	"math/big"
 	"net/http"
 	"os"
@@ -129,6 +130,14 @@ func TestChainEarnBorrowAndCeiling(t *testing.T) {
 	if acct == nil {
 		t.Fatal("no account provisioned")
 	}
+	// Its own index, so its own address and its own position. Every test opens
+	// a fresh database and so every first account is index 1 — but one chain
+	// outlives all of them, and a position that already carries another test's
+	// collateral is one this test reads as its own.
+	acct.Set("chainIndex", 51)
+	if err := app.Save(acct); err != nil {
+		t.Fatalf("claim a chain index: %v", err)
+	}
 	seed := chainIndex(app, acct)
 	customer := c.address(seed)
 	t.Logf("account %s is chain index %s at %s", acct.Id, seed, customer)
@@ -142,14 +151,39 @@ func TestChainEarnBorrowAndCeiling(t *testing.T) {
 		atCeiling   = Minor(90_000000)  // exactly 90% of it
 		overCeiling = Minor(1_000000)   // one more, which must not be allowed
 	)
-	seedCollateral(t, c, ctx, customer, collateral*2)
-	if err := setBalance(app, acct.Id, "LUX", collateral*2); err != nil {
+	// One chain outlives every run of this suite, so the position may already
+	// carry an earlier one's collateral — including a run that failed before it
+	// could unwind. Read what is there and start from zero: the ceiling being
+	// checked is a ratio against the collateral actually deposited, so anything
+	// left behind changes the answer.
+	var held Position
+	if m0, ok := c.market("LUX", seed).(*evmMarket); ok && m0 != nil {
+		if p0, err := m0.Position(); err == nil {
+			held = p0
+		}
+	}
+
+	// The customer holds the chain's own coin, which is what an account holds.
+	// The market takes its wrapper and the deposit wraps on the way in, so
+	// seeding the wrapper directly asks the funder for a token nobody has
+	// minted — it only exists by wrapping — and the transfer underflows.
+	//
+	// Enough to unwind whatever is there and then run: repaying is a debit of
+	// the underlying, so a position left open by an earlier run has to be
+	// affordable before this one can start.
+	stake := collateral*2 + held.Debt
+	seedNative(t, c, ctx, customer, stake)
+	if err := setBalance(app, acct.Id, "LUX", stake); err != nil {
 		t.Fatalf("seed ledger balance: %v", err)
+	}
+
+	if held.Debt > 0 || held.Collateral > 0 {
+		unwind(t, app, h, c, seed)
 	}
 
 	// Deposit.
 	body := post(t, app, h, "/v1/bank/earn/deposit", `{"vault":"stlux","amount":100000000}`,
-		http.StatusOK, `"txHash":"0x`, `"tokenId":1`)
+		http.StatusOK, `"txHash":"0x`, `"tokenId"`)
 	t.Logf("deposit tx %s", body["txHash"])
 	requireReceipt(t, c, ctx, body["txHash"].(string))
 
@@ -192,6 +226,47 @@ func TestChainEarnBorrowAndCeiling(t *testing.T) {
 		t.Fatalf("refused borrow still moved debt from %d to %d", before, after.Debt)
 	}
 	t.Logf("chain refused a borrow of %d over the ceiling; debt still %d", overCeiling, after.Debt)
+
+	// Unwind, so the position ends where it started. One chain outlives every
+	// run of this suite, and a test that leaves collateral behind reads it as
+	// its own the next time and borrows against twice what it deposited. The
+	// round trip also proves the two verbs the ceiling check does not.
+	unwind(t, app, h, c, seed)
+}
+
+// unwind returns a position to zero: repay what it owes, then withdraw what is
+// left. Each amount is read immediately before it is used — repaying moves the
+// collateral, so a figure taken before it is already stale and the chain
+// refuses a withdrawal larger than what is there.
+func unwind(t *testing.T, app *tests.TestApp, h map[string]string, c *evmChain, seed string) {
+	t.Helper()
+	m, ok := c.market("LUX", seed).(*evmMarket)
+	if !ok || m == nil {
+		t.Fatal("this chain carries no LUX market")
+	}
+	for range 2 {
+		p, err := m.Position()
+		if err != nil {
+			t.Fatalf("read position while unwinding: %v", err)
+		}
+		if p.Debt == 0 && p.Collateral == 0 {
+			return
+		}
+		if p.Debt > 0 {
+			post(t, app, h, "/v1/bank/earn/repay",
+				fmt.Sprintf(`{"vault":"stlux","amount":%d}`, p.Debt), http.StatusOK, `"txHash":"0x`)
+			continue
+		}
+		post(t, app, h, "/v1/bank/earn/withdraw",
+			fmt.Sprintf(`{"vault":"stlux","amount":%d}`, p.Collateral), http.StatusOK, `"txHash":"0x`)
+	}
+	p, err := m.Position()
+	if err != nil {
+		t.Fatalf("read position after unwinding: %v", err)
+	}
+	if p.Collateral != 0 || p.Debt != 0 {
+		t.Fatalf("the position did not unwind: %d collateral, %d debt left behind", p.Collateral, p.Debt)
+	}
 }
 
 // -----------------------------------------------------------------------------
@@ -264,23 +339,6 @@ func seedNative(t *testing.T, c *evmChain, ctx context.Context, to string, minor
 	t.Helper()
 	if _, err := c.submit(ctx, funderKey(t), common.HexToAddress(to), c.toWei(minor, 18), nil); err != nil {
 		t.Fatalf("seed native: %v", err)
-	}
-}
-
-// seedCollateral gives an address the LUX market's collateral token.
-func seedCollateral(t *testing.T, c *evmChain, ctx context.Context, to string, minor Minor) {
-	t.Helper()
-	token := common.HexToAddress(c.deploy.Markets["LUX"].Collateral)
-	dp, err := c.decimals(ctx, token)
-	if err != nil {
-		t.Fatalf("collateral decimals: %v", err)
-	}
-	data, err := erc20ABI.Pack("transfer", common.HexToAddress(to), c.toWei(minor, dp))
-	if err != nil {
-		t.Fatalf("pack transfer: %v", err)
-	}
-	if _, err := c.submit(ctx, funderKey(t), token, big.NewInt(0), data); err != nil {
-		t.Fatalf("seed collateral: %v", err)
 	}
 }
 

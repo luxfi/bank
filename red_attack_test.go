@@ -54,14 +54,19 @@ func postRaw(t *testing.T, app *tests.TestApp, h map[string]string, url, body st
 	return out
 }
 
-// RED-1: a customer with ZERO ledger balance and ZERO on-chain balance asks the
-// bank to send native coin. submit() calls fund(), which tops the customer up by
-// TWICE (value + gas) out of the treasury — because `value` is inside `need`.
-// The send then succeeds and the value lands at an address the attacker chose.
-// Only AFTER the chain has moved does newTx run the balance check and refuse.
+// RED-2 (fixed, now a guard): an unfunded send moves nothing on chain.
 //
-// Net: the bank paid out the full amount plus an equal amount parked in the
-// customer's own custodial address, and holds no record of any of it.
+// The send used to broadcast first and check the ledger afterwards, so an
+// account holding one micro-LUX could name any amount and watch it land at an
+// address of its choosing — and the gas top-up counted the transfer's own value
+// as a shortfall and covered twice it out of the treasury, so the bank financed
+// the theft and held no record of any of it.
+//
+// The ledger reserves first now. This is the live-chain half of that: the
+// refusal has to arrive with the chain untouched, which is the only thing that
+// distinguishes a bank that checked first from one that got lucky.
+// TestRedSendChecksTheLedgerBeforeTheChain is the same rule where no chain can
+// be reached at all.
 func TestRedTreasuryDrainOnUnfundedSend(t *testing.T) {
 	c := liveChain(t)
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Minute)
@@ -78,17 +83,14 @@ func TestRedTreasuryDrainOnUnfundedSend(t *testing.T) {
 	}
 	seed := chainIndex(app, acct)
 
-	// The attacker has nothing worth speaking of. One micro-LUX on the ledger
-	// (Base rejects a literal zero on a required number field) and nothing at
-	// all on the chain.
+	// One micro-LUX on the ledger — Base rejects a literal zero on a required
+	// number field — and nothing at all on the chain.
 	if err := setBalance(app, acct.Id, "LUX", 1); err != nil {
 		t.Fatalf("floor the ledger balance: %v", err)
 	}
 	customer := common.HexToAddress(c.address(seed))
 	treasuryKey, _ := c.Treasury()
 	treasury := addressOf(treasuryKey)
-
-	// A destination the attacker controls and the bank does not.
 	sink := common.HexToAddress("0x00000000000000000000000000000000DEADBEEF")
 
 	bal := func(a common.Address) *big.Int {
@@ -99,61 +101,38 @@ func TestRedTreasuryDrainOnUnfundedSend(t *testing.T) {
 		return v
 	}
 	treasuryBefore, sinkBefore, customerBefore := bal(treasury), bal(sink), bal(customer)
-	t.Logf("before: treasury=%s customer=%s sink=%s", treasuryBefore, customerBefore, sinkBefore)
 
-	const steal = Minor(20_000000) //
-
-	// The bank refuses with 422 — insufficient ledger balance — AFTER the chain
-	// has already moved. That refusal is the point: it proves no ledger record
-	// exists for money that left.
+	const steal = Minor(20_000000)
 	postRaw(t, app, h, "/v1/bank/crypto/send",
 		fmt.Sprintf(`{"asset":"LUX","amount":%d,"toAddress":%q}`, steal, sink.Hex()),
-		http.StatusUnprocessableEntity)
+		http.StatusUnprocessableEntity, "Insufficient balance")
 
-	treasuryAfter, sinkAfter, customerAfter := bal(treasury), bal(sink), bal(customer)
-	t.Logf("after:  treasury=%s customer=%s sink=%s", treasuryAfter, customerAfter, sinkAfter)
-
-	movedToSink := new(big.Int).Sub(sinkAfter, sinkBefore)
-	drained := new(big.Int).Sub(treasuryBefore, treasuryAfter)
-	parked := new(big.Int).Sub(customerAfter, customerBefore)
-
-	t.Logf("EXPLOIT: treasury -%s wei, sink +%s wei, attacker custodial +%s wei",
-		drained, movedToSink, parked)
-
-	if movedToSink.Sign() == 0 {
-		t.Fatalf("no value reached the sink — attack did not land")
+	// Nothing reached the destination, nothing left the treasury, and nothing
+	// was parked in the customer's own address on the way.
+	for _, m := range []struct {
+		what   string
+		before *big.Int
+		after  *big.Int
+	}{
+		{"the destination", sinkBefore, bal(sink)},
+		{"the customer's chain address", customerBefore, bal(customer)},
+		{"the treasury", treasuryBefore, bal(treasury)},
+	} {
+		if m.before.Cmp(m.after) != 0 {
+			t.Errorf("%s moved by %s wei on a send the ledger refused",
+				m.what, new(big.Int).Sub(m.after, m.before))
+		}
 	}
-	want := c.toWei(steal, 18)
-	if movedToSink.Cmp(want) != 0 {
-		t.Fatalf("sink moved by %s, expected exactly %s", movedToSink, want)
-	}
 
-	// And the ledger holds no trace.
+	// And the ledger holds no trace either.
 	txs, _ := app.FindRecordsByFilter("transactions",
 		"account = {:a} && currency = 'LUX'", "-created", 20, 0, map[string]any{"a": acct.Id})
 	for _, tx := range txs {
 		if strings.Contains(tx.GetString("reference"), sink.Hex()) {
-			t.Fatalf("unexpected: a ledger record exists for the stolen send")
+			t.Fatalf("a ledger record stands for a send that was refused")
 		}
 	}
-	t.Logf("CONFIRMED: %s wei left the bank with no transaction record", movedToSink)
 }
-
-// RED-2, now the guard on its own fix. Claiming a chainIndex is a read of the
-// maximum followed by a write, so accounts opened at the same moment used to
-// take the same number — the same derivation path, address and private key,
-// and either customer's session could spend the other's coins.
-//
-// Two things settle it and BOTH are asserted here, because either alone leaves
-// a hole: the partial unique index refuses the second writer, and the loser
-// retries for a number nobody holds. Without the index they collide; without
-// the retry the loser keeps no index at all and ensureWallets returns early, so
-// the account silently ends up with no wallets.
-//
-// This asserted the BUG — it counted collisions and skipped when it found none.
-// That made it a permanent skip the moment the fix landed: eight runs, eight
-// skips, affirming nothing. What must be true on EVERY run is stated instead,
-// so it passes when the mechanisms hold and fails the moment either goes.
 func TestRedChainIndexCollides(t *testing.T) {
 	app := newBankApp(t)
 
@@ -439,9 +418,14 @@ func TestRedWalletAddressesFreezeAtSimulation(t *testing.T) {
 	}
 }
 
-// RED-6: the bank's LUX asset is the chain's native coin, but the LUX market's
-// collateral is WLUX, an ERC-20 the bank never mentions and never wraps into.
-// A customer holding LUX cannot deposit into the LUX vault at all.
+// RED-6 (fixed, now a guard): a market whose collateral is the wrapper of the
+// chain's own coin wraps on the way in.
+//
+// The bank's LUX is the chain's native coin and the LUX market takes WLUX, an
+// ERC-20. A customer holding LUX therefore held none of what the market wanted,
+// and the deposit reverted on a zero balance. The market wraps now, and it
+// reads the wrapper's own name off the chain before believing an address is
+// one — a token that merely sits at the recorded address is not evidence.
 func TestRedLuxVaultCollateralIsNotTheLuxAsset(t *testing.T) {
 	c := liveChain(t)
 
@@ -449,27 +433,36 @@ func TestRedLuxVaultCollateralIsNotTheLuxAsset(t *testing.T) {
 	if !ok {
 		t.Fatal("LUX is not an asset on this chain")
 	}
-	marketCollateral := common.HexToAddress(c.deploy.Markets["LUX"].Collateral)
-	t.Logf("bank asset LUX      = %s (native, no contract)", native.Hex())
-	t.Logf("LUX market collateral = %s", marketCollateral.Hex())
+	if (native != common.Address{}) {
+		t.Skipf("LUX is a token at %s on this chain, so nothing needs wrapping", native.Hex())
+	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
+	marketCollateral := common.HexToAddress(c.deploy.Markets["LUX"].Collateral)
 	var sym string
 	if err := c.read(ctx, marketCollateral, erc20ABI, "symbol", &sym); err != nil {
 		t.Fatalf("collateral symbol: %v", err)
 	}
-	t.Logf("the LUX vault actually takes %q as collateral", sym)
-	if (native == common.Address{}) && sym != "LUX" {
-		t.Errorf("CONFIRMED: the stlux vault's underlying is LUX (native) but its "+
-			"collateral token is %s. A customer's LUX balance cannot be deposited; "+
-			"the deposit reverts on a zero %s balance.", sym, sym)
-	}
-}
 
-// RED-7: the market addresses in deploy/<chainId>.json are used without ever
-// asking the contract at them who it is — unlike the token addresses, which are
-// checked against symbol(). An approve() is granted to whatever is there.
+	m, _ := c.market("LUX", "1").(*evmMarket)
+	if m == nil {
+		t.Fatal("this chain carries no LUX market")
+	}
+	// A market proves itself on first use rather than at lookup, and proving is
+	// where it settles what it takes — so ask it before reading the answer.
+	if err := m.prove(ctx); err != nil {
+		t.Fatalf("the LUX market does not prove out: %v", err)
+	}
+	if !m.wraps {
+		t.Errorf("the LUX market takes %s at %s while LUX is the chain's own coin, "+
+			"and the market does not wrap — a customer's LUX balance cannot be "+
+			"deposited and the deposit reverts on a zero %s balance",
+			sym, marketCollateral.Hex(), sym)
+	}
+	// TestChainEarnFromNativeCoin is the other half: it moves a real balance
+	// through deposit, borrow, repay and withdraw on this same market.
+}
 func TestRedMarketAddressesAreNeverVerified(t *testing.T) {
 	c := liveChain(t)
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
@@ -494,18 +487,33 @@ func TestRedMarketAddressesAreNeverVerified(t *testing.T) {
 		"the JSON directly; load() verifies only Tokens, never Markets.")
 }
 
-// RED-8: every customer send that is short of gas routes through the treasury's
-// single key. Two customers paying at the same time contend for one nonce.
+// RED-8 (fixed, now a guard): two customers short of gas at the same moment
+// both get paid.
+//
+// Every top-up is signed by the one treasury key, so two concurrent ones read
+// the same pending nonce and the second is rejected as a replacement. Treasury
+// spending is serialized, and re-reads the balance under the lock because the
+// top-up a caller queued behind may already have covered it.
+//
+// The customers hold their own coin here. The treasury covers gas and only gas
+// — covering the transfer's own value is what funded RED-2 — so a customer with
+// nothing on chain cannot send, and testing serialization needs them funded.
 func TestRedTreasuryGasFundingSerializes(t *testing.T) {
 	c := liveChain(t)
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Minute)
 	defer cancel()
 	fundTreasury(t, c, ctx)
 
-	// Two customers, both broke on chain, both with somewhere to send.
+	// Their own indexes, so their own addresses and their own nonces.
 	payers := []string{"31", "32"}
 	dest := c.address("33")
 	const amount = Minor(100000)
+
+	// Each holds what it is about to send, and no gas — so both need the
+	// treasury at the same instant, which is the contention being tested.
+	for _, p := range payers {
+		seedNative(t, c, ctx, c.address(p), amount)
+	}
 
 	type res struct {
 		who string
@@ -531,48 +539,80 @@ func TestRedTreasuryGasFundingSerializes(t *testing.T) {
 	for r := range out {
 		if r.err != nil {
 			failed++
-			t.Logf("customer %s could not pay: %v", r.who, r.err)
-			continue
+			t.Errorf("customer %s could not pay while another was being funded: %v", r.who, r.err)
 		}
-		t.Logf("customer %s paid", r.who)
 	}
 	if failed > 0 {
-		t.Errorf("CONFIRMED: %d of %d concurrent customer payments failed on treasury "+
-			"nonce contention — one key, no serialization (evmchain.go:390, 412-435)",
-			failed, len(payers))
+		t.Errorf("%d of %d concurrent payments failed — the treasury signs one at a time, "+
+			"so two customers needing gas at once must both be served", failed, len(payers))
 	}
 }
 
-// RED-9: the network a receipt claims is derived from the sandbox flag, not from
-// the chain the transaction actually went to. The same response body carries two
-// different answers.
+// RED-9 (fixed, now a guard): a receipt names the chain the transaction went
+// to, and names it once.
+//
+// The top level came from the sandbox flag and the metadata came from the
+// chain, so one response carried two answers — and a bank with the flag off
+// labelled every receipt "lux-mainnet" wherever it had actually been pointed.
+// Both now read the backend.
+//
+// The flag-derived name still exists, for the simulation and for a chain that
+// cannot be reached, which is exactly why a deployment outside the sandbox with
+// no chain configured is refused at startup rather than left to call itself
+// mainnet.
 func TestRedReceiptMisnamesTheNetwork(t *testing.T) {
 	c := liveChain(t)
-	t.Logf("BANK_CHAIN_RPC   = %s", os.Getenv("BANK_CHAIN_RPC"))
-	t.Logf("chain id          = %s", c.chainID)
-	t.Logf("chain().Network() = %q   (metadata.network, from BANK_CHAIN_NETWORK)", c.Network())
-	t.Logf("networkName()     = %q   (top-level `network`, from Sandbox() alone)", networkName())
-	if c.Network() == networkName() {
-		t.Skip("they agree under this configuration")
-	}
-	t.Errorf("CONFIRMED: one send response reports network=%q at the top level and "+
-		"network=%q in metadata, for the same transaction on chain %s. "+
-		"A production bank (Sandbox()=false) pointed at any chain labels every "+
-		"receipt \"lux-mainnet\" regardless of where it went. (crypto.go:33-38, 181, 191)",
-		networkName(), c.Network(), c.chainID)
-}
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Minute)
+	defer cancel()
+	fundTreasury(t, c, ctx)
 
-// RED-1 (fixed, now a guard): the ledger reserves before the chain moves.
-//
-// The send used to broadcast first and check the balance afterwards, so a
-// customer with one micro-LUX could ask for any amount, watch it leave, and
-// then be told "insufficient balance" for money already gone. Worse, the gas
-// top-up counted the transfer's own value as a shortfall and covered twice it
-// out of the treasury — so the bank funded the theft.
-//
-// Point the bank at a chain it cannot reach and the reply says which half ran
-// first: 422 is the ledger refusing before anything was broadcast, 502 is the
-// chain having already been asked.
+	app := newBankApp(t)
+	_, token := seedPrincipal(t, app)
+	h := map[string]string{"Authorization": token, "Content-Type": "application/json"}
+	acct := primaryAccount(app, principalID(t, app))
+	if acct == nil {
+		t.Fatal("no account")
+	}
+	acct.Set("chainIndex", 41)
+	if err := app.Save(acct); err != nil {
+		t.Fatalf("claim a chain index: %v", err)
+	}
+	seed := chainIndex(app, acct)
+
+	const amount = Minor(50000)
+	seedNative(t, c, ctx, c.address(seed), amount*4)
+	if err := setBalance(app, acct.Id, "LUX", amount*4); err != nil {
+		t.Fatalf("seed the ledger balance: %v", err)
+	}
+
+	body := post(t, app, h, "/v1/bank/crypto/send",
+		fmt.Sprintf(`{"asset":"LUX","amount":%d,"toAddress":%q}`, amount, c.address("42")),
+		http.StatusOK, `"txHash":"0x`)
+
+	top, _ := body["network"].(string)
+	if top != c.Network() {
+		t.Errorf("the receipt names the network %q at the top level; the chain it went to is %q",
+			top, c.Network())
+	}
+
+	// The stored transaction carries the same answer.
+	txs, err := app.FindRecordsByFilter("transactions",
+		"account = {:a} && currency = 'LUX' && type = 'withdrawal'", "-created", 1, 0,
+		map[string]any{"a": acct.Id})
+	if err != nil || len(txs) == 0 {
+		t.Fatalf("no withdrawal recorded: %v", err)
+	}
+	var meta struct {
+		Network string `json:"network"`
+	}
+	if err := txs[0].UnmarshalJSONField("metadata", &meta); err != nil {
+		t.Fatalf("reading the metadata: %v", err)
+	}
+	if meta.Network != top {
+		t.Errorf("one receipt carries two networks: %q at the top level, %q in its metadata",
+			top, meta.Network)
+	}
+}
 func TestRedSendChecksTheLedgerBeforeTheChain(t *testing.T) {
 	t.Setenv("BANK_CHAIN_RPC", "http://10.255.255.1:8645")
 	evmMu.Lock()

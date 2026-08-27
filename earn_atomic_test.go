@@ -26,6 +26,20 @@ func TestAnEarnMovementAndItsPositionMoveTogether(t *testing.T) {
 		{"borrow", `{"vault":"stlux","amount":1000000}`},
 	} {
 		t.Run(act.verb, func(t *testing.T) {
+			// This is the ledger path's atomicity. With a chain configured the
+			// movement goes to the market instead, where the position the
+			// contract reports back is the position and none of this applies —
+			// so the path is pinned rather than left to the environment.
+			t.Setenv("BANK_CHAIN_RPC", "")
+			evmMu.Lock()
+			evmInst, evmFrom = nil, ""
+			evmMu.Unlock()
+			t.Cleanup(func() {
+				evmMu.Lock()
+				evmInst, evmFrom = nil, ""
+				evmMu.Unlock()
+			})
+
 			app := newBankApp(t)
 			_, token := seedPrincipal(t, app)
 			acct := primaryAccount(app, principalID(t, app))
