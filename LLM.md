@@ -534,6 +534,76 @@ the collateral, mint and burn move the synthetic, and 8dp bridged BTC against an
 simulation.** The dial backoff is keyed by endpoint, so a failure at one address
 no longer suppresses a good dial at another.
 
+## Where money went quiet — a second pass
+
+Five defects, each of which failed by doing nothing rather than by erroring, so
+none of them appeared in a status code or a failing test. All are guarded now,
+and every guard was checked by breaking the code it watches.
+
+**An unreachable chain used to book an Earn movement on the ledger.** A market
+lookup comes back empty two ways: this chain carries no market for this asset,
+which is a property of the deployment and means Earn was always going to be a
+ledger loan; and this chain cannot be reached, which is an outage. Both answered
+nil, and the caller reads nil as the first — so during an outage deposit and
+borrow returned **200** and the movement went onto the bank's own books. A borrow
+credited against collateral no chain was holding, sized from a position the chain
+overwrites the moment it returns, with real money paid out in between. Bank
+custody is only chosen when a chain is configured, so having nothing to ask can
+only mean an outage; `deriving.Market` refuses now, as `Send` already did.
+
+**A credit whose balance row could not be written was committed anyway.**
+`createBalance` runs inside the settlement's transaction and discarded its error,
+and the caller returned nil regardless. The ledger recorded money arriving, no
+balance carried it, and nothing said so. Related, and the reason it never fired
+in practice: a required number field refuses its zero value, so `held` and
+`available` must not be `Required` — a balance opens at zero.
+
+**No payment has ever been charged a fee.** A fee row's type is a closed
+vocabulary the collection enforces (`FeeTypes`, now written down once). The
+schedule built its own name — the rail's, plus `_fee` — and seven of the eight
+rails spell something the collection rejects, so every payment fee was refused on
+save with only a log line. The name was `swift_fee` because no caller passes a
+rail and the schedule defaulted to one; that default also priced the charge, so a
+$100.00 payment came to $35.50 for a network it never used. A rail's flat cost
+joins the service fee when a caller knows the rail, rather than renaming it: what
+a charge IS and which network carried it are two facts.
+
+**Sanctions and AML screening passed everything when unconfigured.** Both are
+declared fail-closed and the policy held for every failure except the likeliest —
+`COMPLIANCE_SERVICE_URL` simply not being set, which made `screen` return nil.
+The sandbox has no screener and wants none, so the distinction is one the
+deployment already makes: `BANK_SANDBOX` defaults to on, and turning it off says
+this is real. `bankd` asks before it mounts anything and refuses to start
+otherwise. A log line about missing sanctions screening is a log line nobody
+reads.
+
+**A notification quoted the stored number.** Amounts are minor units everywhere,
+so a $250.00 transfer told the customer it was 25000, and a whole bitcoin told
+them 1000000. `collections.Format` renders one, in integer arithmetic, beside the
+function that already knows how many decimal places a currency has.
+
+**The revert selectors are checked against the contract that emits them.** A
+reverted call arrives as four bytes, and which four decides whether a customer is
+told the LTV ceiling refused their borrow or handed an opaque RPC error. All
+eight were correct, including the two a plausible guess gets wrong —
+`BurnLimitExceeded` carries `(amount, available)`, and the error is really named
+`UnauthorizedAccountAccessError`. The test recomputes each from the signature it
+claims to be, so the table cannot drift from `luxfi/liquid`.
+
+### What the tests cannot reach
+
+Every chain test skips without `BANK_CHAIN_RPC`, including the eight adversarial
+`TestRed*` ones — so treasury drain, nonce sharing and unverified market
+addresses are guarded by tests that never run in CI. Coverage is **83% of the
+code that does not need a chain**, and 25% of the code that does; the whole-repo
+figure is ~71% and cannot rise much further without a deployed protocol in CI.
+That is the single highest-value gap left.
+
+`BANK_CHAIN_DEPLOY` points at the address book, so a bare chain can be reached
+without `chain/deploy.sh`: with anvil on 8645 and a `{"chainId":31337,
+"tokens":{},"markets":{}}` file, derivation and a real value transfer both pass
+against a live EVM. Everything past that needs the protocol.
+
 ## Security Hardening (2026-03-31)
 
 ### API Rules (F01)
