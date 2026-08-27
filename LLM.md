@@ -655,6 +655,71 @@ without `chain/deploy.sh`: with anvil on 8645 and a `{"chainId":31337,
 "tokens":{},"markets":{}}` file, derivation and a real value transfer both pass
 against a live EVM. Everything past that needs the protocol.
 
+### What running the adversarial suite found
+
+Every chain test skipped for want of a chain, so the fifteen `TestRed*` ones had
+never executed. Against a deployed protocol, four failed and one was a real bug.
+
+**A customer could never empty their wallet.** The treasury pays gas, and the
+check for whether it needed to asked only whether the sender could cover the
+FEE. An account holding exactly what it wanted to send passed that check, was
+funded nothing, and then could not send — the chain wants the value and the fee.
+What the sender must end up holding is both, so that is what is asked for; the
+value stays theirs to hold, the top-up is bounded by the fee, and a larger
+shortfall is left to the chain to refuse. It reproduces only where the sender has
+no prior balance, which is why it survived: a second run funds the account enough
+to hide it.
+
+The other three failures were stale rather than findings, and all are guards now.
+**A red-team test that demonstrates an exploit has to be inverted when the fix
+lands** — otherwise it fails forever and gets read as noise, or deleted. The
+drain test asserted value reached the sink; it asserts the refusal arrives with
+the chain untouched. The LUX vault test asserted a customer's coin could not be
+deposited; the market wraps on the way in. The receipt test asserted one response
+carried two network names; both read the backend.
+
+Two things about writing tests against a chain that outlives them. An account
+index is derived from the mnemonic, so every test whose account is index 1 shares
+one address, one position and each other's leftovers — take an index of your own.
+And a position left open is read by the next run as its own, so unwind what you
+find as well as what you leave, re-reading between the repay and the withdraw
+because repaying moves the collateral.
+
+### Running the chain suite locally
+
+The whole protocol deploys onto a local anvil in about a minute, and the suite
+then runs against it — every skip disappears, the adversarial ones included.
+
+    anvil --port 8645 --chain-id 31337 --silent &
+    cd chain && RPC=http://127.0.0.1:8645 \
+      PRIVATE_KEY=<anvil account 0> \
+      OWNER=<anvil account 1> ORACLE=<anvil account 2> ./deploy.sh
+    BANK_CHAIN_RPC=http://127.0.0.1:8645 \
+      BANK_CHAIN_DEPLOY=chain/deploy \
+      BANK_CHAIN_MNEMONIC="test test test test test test test test test test test junk" \
+      go test -run 'TestChain|TestRed|TestMarket' ./ -timeout 900s
+
+**Select the chain tests; do not run the whole suite this way.** Most of the
+suite is written against the simulation, and configuring a chain moves the same
+routes onto it — an Earn verb goes to the market instead of the ledger, a send
+needs a chain balance the seeded account has never had, and the wallet names
+the configured network rather than the sandbox one. Those tests fail for
+disagreeing with the environment, not for finding anything.
+
+Two things that stop it, both deliberate. `OWNER` may not be the deploy key —
+the deployer signs and owns nothing when it returns. And `pins` is a hash over
+the import closure of each step, so upstream moving is a refusal rather than a
+surprise: `deploy.sh` prints the digest it found, and the market checks
+(deposit, borrow, repay, withdraw against the new upstream) are what earn the
+right to write it down.
+
+To run against upstream you have not pinned yet, copy `chain/` somewhere else
+and repin there — never edit `pins` to make a deploy go through.
+
+It is also far slower with a chain configured — every app that comes up dials
+it — so give `go test` a `-timeout` that allows for it, or the panic names
+whichever test happened to be running and tells you nothing.
+
 ## Security Hardening (2026-03-31)
 
 ### API Rules (F01)
