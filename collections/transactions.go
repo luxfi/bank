@@ -144,6 +144,13 @@ func EnsureTransactionCollection(app core.App) error {
 	return app.Save(c)
 }
 
+// FeeTypes are the kinds of charge a fee row may record. It is a closed
+// vocabulary and this is the only place it is written down: a fee whose type is
+// not one of these is refused by the collection, so a caller that invents a name
+// does not record a smaller fee, it records none at all — silently, since the
+// charge is raised in a hook that only logs.
+var FeeTypes = []string{"wire_fee", "conversion_spread", "service_fee", "compliance_surcharge"}
+
 // EnsureFeeCollection creates the fees collection. Fees are linked to
 // transactions and track markup, spread, and compliance surcharges.
 func EnsureFeeCollection(app core.App) error {
@@ -165,7 +172,7 @@ func EnsureFeeCollection(app core.App) error {
 		},
 		&core.SelectField{
 			Name:      "type",
-			Values:    []string{"wire_fee", "conversion_spread", "service_fee", "compliance_surcharge"},
+			Values:    FeeTypes,
 			Required:  true,
 			MaxSelect: 1,
 		},

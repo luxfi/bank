@@ -64,15 +64,23 @@ func CalculateFee(entityType, txType string, amount, monthlyVolume int64, rail .
 		return
 
 	case "payment":
-		// Percentage fee.
+		// The platform's own charge, which every payment carries.
 		feeAmount = amount * rateBP / 10000
-		// Add flat rail fee based on payment network.
-		r := RailSWIFT
+
+		// A rail's flat fee is a network cost passed through, so it is added
+		// only when the caller knows which network carried the payment. This
+		// defaulted to SWIFT and named the fee after it, so a $100 payment was
+		// charged $35.50 — and "swift_fee" is not a type a fee row may hold, so
+		// every one of them was refused and no fee was recorded at all. Seven of
+		// the eight rails spell a name the collection rejects.
+		//
+		// Nothing records a rail on a transaction today, so nothing reaches
+		// this. When something does, the flat cost joins the service fee rather
+		// than renaming it: what the charge IS and which network carried it are
+		// two facts, and only the first is what a fee row records.
 		if len(rail) > 0 {
-			r = rail[0]
+			feeAmount += RailFee(rail[0])
 		}
-		feeAmount += RailFee(r)
-		feeType = string(r) + "_fee"
 		return
 
 	default:
