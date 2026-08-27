@@ -80,9 +80,16 @@ func RegisterAccountHooks(app core.App) {
 		if !ok {
 			limits = accountLimits["individual"]
 		}
-		// A membership plan overrides the entity-type defaults.
+		// A membership raises what an account may move. It never lowers it.
+		//
+		// The entity-type limits are the baseline every account has, and the
+		// tier replaced them outright — so the entry tier, which is the cheapest
+		// thing a customer can buy, cut an individual from $50k a day to $10k.
+		// Paying made you worse off than never subscribing, and the ladder is
+		// advertised on the landing page, so it is a promise about to be sold.
 		if plan, ok := collections.PlanByID(account.GetString("plan")); ok {
-			limits.daily, limits.monthly = plan.DailyLimit, plan.MonthlyLimit
+			limits.daily = max(limits.daily, plan.DailyLimit)
+			limits.monthly = max(limits.monthly, plan.MonthlyLimit)
 		}
 
 		// Normalize the incoming amount to USD cents so it is comparable to the
