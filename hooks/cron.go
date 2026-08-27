@@ -2,6 +2,7 @@ package hooks
 
 import (
 	"log/slog"
+	"time"
 
 	"github.com/hanzoai/base/core"
 	"github.com/luxfi/bank/collections"
@@ -21,16 +22,29 @@ func RegisterCronJobs(app core.App) {
 	})
 }
 
-// expireStaleTransactions marks pending transactions older than 24 hours
-// as failed and reverses any held funds.
+// stalePendingAfter is how long a transaction may sit pending before it is
+// treated as timed out.
+const stalePendingAfter = 24 * time.Hour
+
+// expireStaleTransactions marks transactions that have been pending longer than
+// stalePendingAfter as failed, with the reason recorded on the row.
 func expireStaleTransactions(app core.App) {
+	// The instant is computed HERE and bound as a value. It was written as
+	// `created < @staleThreshold` with the parameter holding the string
+	// "@now -24h", and a parameter binds a value rather than a filter
+	// expression — so the comparison was against that literal text, matched
+	// nothing, and this job ran every hour and expired nothing. Pending
+	// transactions accumulated for as long as the deployment had been up.
+	//
+	// Same shape getMonthlySpent already uses for its own window.
+	cutoff := time.Now().UTC().Add(-stalePendingAfter).Format("2006-01-02 15:04:05.000Z")
 	records, err := app.FindRecordsByFilter(
 		collections.TransactionCollectionName,
-		`status = "pending" && created < @staleThreshold`,
+		`status = "pending" && created < {:cutoff}`,
 		"",
 		0,
 		0,
-		map[string]any{"staleThreshold": "@now -24h"},
+		map[string]any{"cutoff": cutoff},
 	)
 	if err != nil {
 		app.Logger().Error("cron: failed to query stale transactions",
