@@ -6,14 +6,14 @@ import (
 )
 
 // offChain stands in for a chain the bank was TOLD to use and cannot reach. The
-// whole contract is that it invents nothing: no address a customer might send
-// to, no balance a caller might spend against, no transaction hash that would
-// record a settlement that never happened.
+// whole contract is that it invents nothing: no asset list a caller might act
+// on, no balance anyone might spend against.
 //
-// It is the shape that makes an outage safe. simChain answers everything and is
+// It is the shape that makes an outage safe. simChain answers what it can and is
 // only ever selected when no chain is configured; the real backend answers from
 // the chain. This is the third case, and the one where inventing an answer would
-// be indistinguishable from working.
+// be indistinguishable from working. What an outage does to addresses and sends
+// is custody's half, and lives with the custodians.
 func TestOffChainInventsNothing(t *testing.T) {
 	var c ChainBackend = offChain{}
 
@@ -27,26 +27,8 @@ func TestOffChainInventsNothing(t *testing.T) {
 		t.Errorf("Assets() = %v, want empty — an unreachable chain lists no assets", got)
 	}
 
-	// An address is the dangerous one: hand a customer a deposit address derived
-	// while the chain is down and they may send real coin to it.
-	if got := c.Address("seed", "LUX"); got != "" {
-		t.Errorf("Address() = %q, want empty — a deposit address must not be invented", got)
-	}
-
-	if _, err := c.Balance("seed", "LUX"); !errors.Is(err, errChainDown) {
+	if _, err := c.Balance("0x1111111111111111111111111111111111111111", "LUX"); !errors.Is(err, errChainDown) {
 		t.Errorf("Balance() err = %v, want errChainDown — a zero balance reads as an empty account", err)
-	}
-
-	hash, err := c.Send("seed", "LUX", "0x1111111111111111111111111111111111111111", 1)
-	if !errors.Is(err, errChainDown) {
-		t.Errorf("Send() err = %v, want errChainDown", err)
-	}
-	if hash != "" {
-		t.Errorf("Send() returned hash %q — a receipt for a transfer that never happened", hash)
-	}
-
-	if m := c.Market("LUX"); m != nil {
-		t.Errorf("Market() = %v, want nil — there is no market to borrow against", m)
 	}
 }
 

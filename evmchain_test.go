@@ -51,14 +51,15 @@ func liveChain(t *testing.T) *evmChain {
 }
 
 // TestChainDerivesDistinctAddresses checks the property the ledger depends on:
-// every account index yields its own address, reproducibly, and one address
-// carries every asset rather than one address per asset.
+// every account index yields its own address, reproducibly. That one address
+// carries every asset is no longer a thing to check — address() has no asset to
+// vary, and a per-asset answer cannot be written down.
 func TestChainDerivesDistinctAddresses(t *testing.T) {
 	c := liveChain(t)
 
 	seen := map[string]string{}
 	for _, seed := range []string{"0", "1", "2", "3"} {
-		addr := c.Address(seed, "LUX")
+		addr := c.address(seed)
 		if !validEVMAddress(addr) {
 			t.Fatalf("index %s produced %q, not an address", seed, addr)
 		}
@@ -66,14 +67,8 @@ func TestChainDerivesDistinctAddresses(t *testing.T) {
 			t.Fatalf("index %s collided with index %s at %s", seed, was, addr)
 		}
 		seen[addr] = seed
-		if again := c.Address(seed, "LUX"); again != addr {
+		if again := c.address(seed); again != addr {
 			t.Fatalf("index %s is not reproducible: %s then %s", seed, addr, again)
-		}
-		// One chain, one address. ETH and BTC arrive at the same place as LUX.
-		for _, asset := range []string{"ETH", "BTC"} {
-			if got := c.Address(seed, asset); got != addr {
-				t.Fatalf("index %s: %s address %s differs from LUX address %s", seed, asset, got, addr)
-			}
 		}
 	}
 }
@@ -87,15 +82,15 @@ func TestChainSendMovesRealValue(t *testing.T) {
 
 	fundTreasury(t, c, ctx)
 	const amount = Minor(5_000000) // 5 LUX in the ledger's 6dp minor units
-	seedNative(t, c, ctx, c.Address("7", "LUX"), amount*4)
+	seedNative(t, c, ctx, c.address("7"), amount*4)
 
-	to := c.Address("8", "LUX")
-	before, err := c.Balance("8", "LUX")
+	to := c.address("8")
+	before, err := c.Balance(to, "LUX")
 	if err != nil {
 		t.Fatalf("balance before: %v", err)
 	}
 
-	hash, err := c.Send("7", "LUX", to, amount)
+	hash, err := c.send("7", "LUX", to, amount)
 	if err != nil {
 		t.Fatalf("send: %v", err)
 	}
@@ -108,7 +103,7 @@ func TestChainSendMovesRealValue(t *testing.T) {
 	}
 	t.Logf("sent %d LUX minor units, tx %s in block %d", amount, hash, receipt.BlockNumber)
 
-	after, err := c.Balance("8", "LUX")
+	after, err := c.Balance(to, "LUX")
 	if err != nil {
 		t.Fatalf("balance after: %v", err)
 	}
@@ -134,8 +129,8 @@ func TestChainEarnBorrowAndCeiling(t *testing.T) {
 	if acct == nil {
 		t.Fatal("no account provisioned")
 	}
-	seed := chainSeed(app, acct)
-	customer := c.Address(seed, "LUX")
+	seed := chainIndex(app, acct)
+	customer := c.address(seed)
 	t.Logf("account %s is chain index %s at %s", acct.Id, seed, customer)
 
 	// Stand the customer up the way an operator would: the deployer seeds the
@@ -165,11 +160,11 @@ func TestChainEarnBorrowAndCeiling(t *testing.T) {
 	requireReceipt(t, c, ctx, body["txHash"].(string))
 
 	// The position the bank reports must be the position the chain holds.
-	m := c.Market("LUX")
+	m := c.market("LUX", seed)
 	if m == nil {
 		t.Fatal("chain has no LUX market")
 	}
-	on, err := m.Position(seed)
+	on, err := m.Position()
 	if err != nil {
 		t.Fatalf("read position: %v", err)
 	}
@@ -189,7 +184,7 @@ func TestChainEarnBorrowAndCeiling(t *testing.T) {
 	post(t, app, h, "/v1/bank/earn/borrow", `{"vault":"stlux","amount":1000000}`,
 		http.StatusUnprocessableEntity, "over the borrow limit")
 
-	after, err := m.Position(seed)
+	after, err := m.Position()
 	if err != nil {
 		t.Fatalf("read position after refusal: %v", err)
 	}

@@ -60,26 +60,24 @@ func TestUnitPriceUSD(t *testing.T) {
 // The simulation models each asset as its own chain, so it hands out one
 // address per asset. That is a property of the simulation, not of the bank —
 // on a real EVM an account has a single address and the assets are token
-// contracts — so this names simChain rather than asking chain() what is
-// configured.
+// contracts — so this names simAddress rather than asking who the custodian is.
 func TestChainAddressDeterministic(t *testing.T) {
-	var cb ChainBackend = simChain{}
-	a := cb.Address("user-123", "ETH")
-	b := cb.Address("user-123", "ETH")
+	a := simAddress("user-123", "ETH")
+	b := simAddress("user-123", "ETH")
 	if a != b {
 		t.Errorf("address not deterministic: %s != %s", a, b)
 	}
 	if len(a) != 42 || a[:2] != "0x" {
 		t.Errorf("EVM address %q malformed (want 0x + 40 hex)", a)
 	}
-	if cb.Address("other", "ETH") == a {
+	if simAddress("other", "ETH") == a {
 		t.Errorf("distinct seeds produced same address")
 	}
 	// Each asset gets its own address; BTC is bech32, not 0x.
-	if cb.Address("user-123", "DAI") == a {
+	if simAddress("user-123", "DAI") == a {
 		t.Errorf("distinct assets produced same address")
 	}
-	btc := cb.Address("user-123", "BTC")
+	btc := simAddress("user-123", "BTC")
 	if !validAddress("BTC", btc) {
 		t.Errorf("BTC address %q not a valid bech32 address", btc)
 	}

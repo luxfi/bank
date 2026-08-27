@@ -30,7 +30,7 @@ func TestMarketRefusesAnAddressThatIsNotOne(t *testing.T) {
 	defer cancel()
 
 	const seed = "9"
-	owner := common.HexToAddress(c.Address(seed, "LUX"))
+	owner := common.HexToAddress(c.address(seed))
 	collateral := common.HexToAddress(c.deploy.Markets["LUX"].Collateral)
 	empty := common.HexToAddress("0x00000000000000000000000000000000000000ff")
 	if code, err := c.client.CodeAt(ctx, empty, nil); err != nil || len(code) != 0 {
@@ -39,13 +39,13 @@ func TestMarketRefusesAnAddressThatIsNotOne(t *testing.T) {
 	fundTreasury(t, c, ctx)
 
 	bad := rebook(t, c, func(m map[string]any) { m["liquid"] = empty.Hex() })
-	m := bad.Market("LUX")
+	m := bad.market("LUX", seed)
 	if m == nil {
 		t.Fatal("no LUX market in the rewritten book")
 	}
 
 	before := erc20(t, bad, ctx, collateral, "allowance", owner, empty)
-	if _, err := m.Deposit(seed, 5_000000); err == nil {
+	if _, err := m.Deposit(5_000000); err == nil {
 		t.Fatal("the bank reported a deposit into an address that holds no contract")
 	} else {
 		t.Logf("refused: %v", err)
@@ -54,7 +54,7 @@ func TestMarketRefusesAnAddressThatIsNotOne(t *testing.T) {
 	if after.Cmp(before) != 0 {
 		t.Fatalf("granted an allowance of %s to the non-contract at %s", after, empty)
 	}
-	if _, err := m.Position(seed); err == nil {
+	if _, err := m.Position(); err == nil {
 		t.Fatal("read a position out of an address that holds no contract")
 	}
 
@@ -63,7 +63,7 @@ func TestMarketRefusesAnAddressThatIsNotOne(t *testing.T) {
 	swapped := rebook(t, c, func(m map[string]any) {
 		m["liquid"] = c.deploy.Markets["ETH"].Liquid
 	})
-	if _, err := swapped.Market("LUX").Deposit(seed, 5_000000); err == nil {
+	if _, err := swapped.market("LUX", seed).Deposit(5_000000); err == nil {
 		t.Fatal("the bank deposited LUX collateral into the ETH market")
 	} else {
 		t.Logf("refused: %v", err)
@@ -93,8 +93,8 @@ func TestChainEarnFromNativeCoin(t *testing.T) {
 	if err := app.Save(acct); err != nil {
 		t.Fatalf("claim a chain index: %v", err)
 	}
-	seed := chainSeed(app, acct)
-	customer := common.HexToAddress(c.Address(seed, "LUX"))
+	seed := chainIndex(app, acct)
+	customer := common.HexToAddress(c.address(seed))
 	wlux := common.HexToAddress(c.deploy.Markets["LUX"].Collateral)
 
 	fundTreasury(t, c, ctx)
@@ -110,7 +110,7 @@ func TestChainEarnFromNativeCoin(t *testing.T) {
 	if err := setBalance(app, acct.Id, "LUX", held); err != nil {
 		t.Fatalf("seed ledger balance: %v", err)
 	}
-	m := c.Market("LUX")
+	m := c.market("LUX", seed)
 	if m == nil {
 		t.Fatal("chain has no LUX market")
 	}
@@ -128,7 +128,7 @@ func TestChainEarnFromNativeCoin(t *testing.T) {
 	body := post(t, app, h, "/v1/bank/earn/deposit", `{"vault":"stlux","amount":100000000}`,
 		http.StatusOK, `"txHash":"0x`)
 	requireReceipt(t, c, ctx, hash(t, body))
-	on, err := m.Position(seed)
+	on, err := m.Position()
 	if err != nil {
 		t.Fatalf("read position: %v", err)
 	}
@@ -150,7 +150,7 @@ func TestChainEarnFromNativeCoin(t *testing.T) {
 
 	post(t, app, h, "/v1/bank/earn/borrow", `{"vault":"stlux","amount":50000000}`,
 		http.StatusOK, `"txHash":"0x`)
-	if on, err = m.Position(seed); err != nil {
+	if on, err = m.Position(); err != nil {
 		t.Fatalf("read position: %v", err)
 	}
 	if on.Debt != borrow {
@@ -161,7 +161,7 @@ func TestChainEarnFromNativeCoin(t *testing.T) {
 	// is left — the protocol charges a fee against the collateral, so the numbers
 	// to act on are its own.
 	post(t, app, h, "/v1/bank/earn/repay", earn(on.Debt), http.StatusOK, `"txHash":"0x`)
-	if on, err = m.Position(seed); err != nil {
+	if on, err = m.Position(); err != nil {
 		t.Fatalf("read position: %v", err)
 	}
 	if on.Debt != 0 {
@@ -171,7 +171,7 @@ func TestChainEarnFromNativeCoin(t *testing.T) {
 	before := coin()
 	post(t, app, h, "/v1/bank/earn/withdraw", earn(on.Collateral), http.StatusOK, `"txHash":"0x`)
 	returned := on.Collateral
-	if on, err = m.Position(seed); err != nil {
+	if on, err = m.Position(); err != nil {
 		t.Fatalf("read position: %v", err)
 	}
 	if on.Collateral != 0 {

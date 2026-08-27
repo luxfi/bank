@@ -30,11 +30,11 @@ type market struct {
 	no    error // when set, every movement is refused
 }
 
-func (m *market) Deposit(_ string, amount Minor) (string, error)  { return m.move(amount) }
-func (m *market) Borrow(_ string, amount Minor) (string, error)   { return m.move(amount) }
-func (m *market) Repay(_ string, amount Minor) (string, error)    { return m.move(amount) }
-func (m *market) Withdraw(_ string, amount Minor) (string, error) { return m.move(amount) }
-func (m *market) Position(string) (Position, error)               { return m.pos, nil }
+func (m *market) Deposit(amount Minor) (string, error)  { return m.move(amount) }
+func (m *market) Borrow(amount Minor) (string, error)   { return m.move(amount) }
+func (m *market) Repay(amount Minor) (string, error)    { return m.move(amount) }
+func (m *market) Withdraw(amount Minor) (string, error) { return m.move(amount) }
+func (m *market) Position() (Position, error)           { return m.pos, nil }
 
 func (m *market) move(amount Minor) (string, error) {
 	m.moves = append(m.moves, amount)

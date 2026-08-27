@@ -39,7 +39,7 @@ func TestWalletAddressFollowsTheChain(t *testing.T) {
 	if acct == nil {
 		t.Fatal("no account provisioned")
 	}
-	seed := chainSeed(app, acct)
+	seed := chainIndex(app, acct)
 	simulated := walletAddress(t, app, acct.Id, "LUX")
 	if simulated == "" {
 		t.Fatal("the simulation left the wallet without an address")
@@ -49,7 +49,7 @@ func TestWalletAddressFollowsTheChain(t *testing.T) {
 	// cannot sign for, and healing it is the whole job.
 	t.Setenv("BANK_CHAIN_RPC", rpc)
 	c := reach(t)
-	want := c.Address(seed, "LUX")
+	want := c.address(seed)
 	if want == simulated {
 		t.Fatalf("the simulation and the chain agree on %s — nothing to prove", want)
 	}
@@ -98,7 +98,7 @@ func TestWalletWaitsForAnUnreachableChain(t *testing.T) {
 	t.Setenv("BANK_CHAIN_RPC", rpc)
 	c := reach(t)
 	ensureWallets(app, acct)
-	want := c.Address(chainSeed(app, acct), "LUX")
+	want := c.address(chainIndex(app, acct))
 	if got := walletAddress(t, app, acct.Id, "LUX"); got != want {
 		t.Fatalf("wallet shows %q once the chain came up; the account's address is %s", got, want)
 	}

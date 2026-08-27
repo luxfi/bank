@@ -76,7 +76,7 @@ func TestRedTreasuryDrainOnUnfundedSend(t *testing.T) {
 	if acct == nil {
 		t.Fatal("no account")
 	}
-	seed := chainSeed(app, acct)
+	seed := chainIndex(app, acct)
 
 	// The attacker has nothing worth speaking of. One micro-LUX on the ledger
 	// (Base rejects a literal zero on a required number field) and nothing at
@@ -84,7 +84,7 @@ func TestRedTreasuryDrainOnUnfundedSend(t *testing.T) {
 	if err := setBalance(app, acct.Id, "LUX", 1); err != nil {
 		t.Fatalf("floor the ledger balance: %v", err)
 	}
-	customer := common.HexToAddress(c.Address(seed, "LUX"))
+	customer := common.HexToAddress(c.address(seed))
 	treasuryKey, _ := c.Treasury()
 	treasury := addressOf(treasuryKey)
 
@@ -190,7 +190,7 @@ func TestRedChainIndexCollides(t *testing.T) {
 		go func(i int) {
 			defer wg.Done()
 			<-start
-			seeds[i] = chainSeed(app, accts[i])
+			seeds[i] = chainIndex(app, accts[i])
 		}(i)
 	}
 	close(start)
@@ -326,22 +326,21 @@ func TestRedConcurrentSendsShareANonce(t *testing.T) {
 
 	fundTreasury(t, c, ctx)
 	const amount = Minor(1_000000)
-	seedNative(t, c, ctx, c.Address("21", "LUX"), amount*40)
+	seedNative(t, c, ctx, c.address("21"), amount*40)
 
 	// Two DIFFERENT payments — different payees, different amounts — which is
 	// what two customers of one bank actually look like. Identical payloads
 	// would collapse to one hash and the node would dedupe them; distinct ones
 	// contend for the same nonce.
-	dests := []string{c.Address("22", "LUX"), c.Address("23", "LUX")}
+	dests := []string{c.address("22"), c.address("23")}
 	amounts := []Minor{amount, amount * 2}
 
 	before := make([]Minor, len(dests))
 	for i, d := range dests {
 		var err error
-		if before[i], err = c.Balance(fmt.Sprint(22+i), "LUX"); err != nil {
+		if before[i], err = c.Balance(d, "LUX"); err != nil {
 			t.Fatal(err)
 		}
-		_ = d
 	}
 
 	type res struct {
@@ -357,7 +356,7 @@ func TestRedConcurrentSendsShareANonce(t *testing.T) {
 		go func(i int) {
 			defer wg.Done()
 			<-start
-			h, err := c.Send("21", "LUX", dests[i], amounts[i])
+			h, err := c.send("21", "LUX", dests[i], amounts[i])
 			out <- res{i, h, err}
 		}(i)
 	}
@@ -377,7 +376,7 @@ func TestRedConcurrentSendsShareANonce(t *testing.T) {
 
 	settled := Minor(0)
 	for i := range dests {
-		after, err := c.Balance(fmt.Sprint(22+i), "LUX")
+		after, err := c.Balance(dests[i], "LUX")
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -406,13 +405,12 @@ func TestRedWalletAddressesFreezeAtSimulation(t *testing.T) {
 	if acct == nil {
 		t.Fatal("no account")
 	}
-	seed := chainSeed(app, acct)
+	seed := chainIndex(app, acct)
 
 	// What provisioning would have written with no chain configured.
-	var sim ChainBackend = simChain{}
-	simAddr := sim.Address(seed, "LUX")
+	simAddr := simAddress(seed, "LUX")
 	// What the account's key actually controls now that a chain IS configured.
-	realAddr := c.Address(seed, "LUX")
+	realAddr := c.address(seed)
 
 	w, err := app.FindFirstRecordByFilter("wallets",
 		"account = {:a} && currency = 'LUX'", map[string]any{"a": acct.Id})
@@ -506,7 +504,7 @@ func TestRedTreasuryGasFundingSerializes(t *testing.T) {
 
 	// Two customers, both broke on chain, both with somewhere to send.
 	payers := []string{"31", "32"}
-	dest := c.Address("33", "LUX")
+	dest := c.address("33")
 	const amount = Minor(100000)
 
 	type res struct {
@@ -521,7 +519,7 @@ func TestRedTreasuryGasFundingSerializes(t *testing.T) {
 		go func(p string) {
 			defer wg.Done()
 			<-start
-			_, err := c.Send(p, "LUX", dest, amount)
+			_, err := c.send(p, "LUX", dest, amount)
 			out <- res{p, err}
 		}(p)
 	}
@@ -691,7 +689,8 @@ func TestRedDepositToAMarketThatIsNotThere(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
 	defer cancel()
 
-	m := c.Market("LUX")
+	const seed = "41"
+	m := c.market("LUX", seed)
 	if m == nil {
 		t.Skip("no LUX market in this deployment")
 	}
@@ -707,8 +706,7 @@ func TestRedDepositToAMarketThatIsNotThere(t *testing.T) {
 	t.Logf("bank accepted market %s with ZERO bytes of code", em.liquid.Hex())
 
 	fundTreasury(t, c, ctx)
-	seed := "41"
-	owner := common.HexToAddress(c.Address(seed, "LUX"))
+	owner := common.HexToAddress(c.address(seed))
 	// Give the customer real collateral to lose.
 	dp, err := c.decimals(ctx, em.collateral)
 	if err != nil {
@@ -722,7 +720,7 @@ func TestRedDepositToAMarketThatIsNotThere(t *testing.T) {
 		t.Fatalf("seed collateral: %v", err)
 	}
 
-	hash, derr := m.Deposit(seed, 5_000000)
+	hash, derr := m.Deposit(5_000000)
 	t.Logf("Deposit returned hash=%q err=%v", hash, derr)
 
 	var allowance *big.Int
@@ -766,8 +764,11 @@ func TestRedRefuseContract(t *testing.T) {
 		if _, ok := cb.(offChain); !ok {
 			t.Fatalf("got %T, want offChain", cb)
 		}
-		if h, err := cb.Send("1", "LUX", "0x1234567890abcdef1234567890abcdef12345678", 1); err == nil {
-			t.Fatalf("offChain.Send invented hash %q", h)
+		// The custodian half of the same contract. Sending is custody now, and
+		// bank custody with no reachable chain has to refuse before it so much
+		// as looks at an account — which is why nil passes for one here.
+		if h, err := (deriving{}).Send(nil, nil, "LUX", "0x1234567890abcdef1234567890abcdef12345678", 1); err == nil {
+			t.Fatalf("bank custody invented hash %q over an unreachable chain", h)
 		}
 	})
 	t.Run("configured, reachable, but no mnemonic -> offChain", func(t *testing.T) {
@@ -999,7 +1000,7 @@ func TestRedUnitScalingEdges(t *testing.T) {
 			{"deposit", "m.collateral"}, {"withdraw", "m.collateral"},
 			{"mint", "m.synthetic"}, {"burn", "m.synthetic"},
 		} {
-			want := `m.call(seed, "` + verb.method + `", ` + verb.unit
+			want := `m.call("` + verb.method + `", ` + verb.unit
 			if !strings.Contains(string(src), want) {
 				t.Errorf("%s must be scaled by %s; no call site matches %q",
 					verb.method, verb.unit, want)
