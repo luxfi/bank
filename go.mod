@@ -5,6 +5,7 @@ go 1.26.5
 require (
 	github.com/hanzoai/base v1.5.73
 	github.com/hanzoai/dbx v1.17.2
+	github.com/hanzoai/notify v1.7.2
 	github.com/luxfi/crypto v1.20.2
 	github.com/luxfi/geth v1.20.1
 	github.com/luxfi/go-bip32 v1.1.0
@@ -15,7 +16,6 @@ require (
 require (
 	filippo.io/edwards25519 v1.2.0 // indirect
 	github.com/ALTree/bigfloat v0.2.0 // indirect
-	github.com/Masterminds/semver/v3 v3.5.0 // indirect
 	github.com/Microsoft/go-winio v0.6.2 // indirect
 	github.com/andybalholm/brotli v1.2.1 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
@@ -70,6 +70,7 @@ require (
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/pgx/v5 v5.9.2 // indirect
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
+	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible // indirect
 	github.com/klauspost/compress v1.18.6 // indirect
 	github.com/klauspost/cpuid/v2 v2.3.0 // indirect
 	github.com/klauspost/crc32 v1.3.0 // indirect

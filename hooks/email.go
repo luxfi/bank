@@ -1,14 +1,17 @@
 package hooks
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"log/slog"
-	"net/smtp"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/hanzoai/base/core"
+	"github.com/hanzoai/notify"
+	"github.com/hanzoai/notify/service/mail"
 	"github.com/luxfi/bank/collections"
 )
 
@@ -113,39 +116,51 @@ func sendDocumentEmail(app core.App, record *core.Record, status string) {
 	}
 }
 
+// sendEmail hands a notice to hanzoai/notify.
+//
+// It used to assemble the message itself — "From: %s\r\nTo: %s\r\n..." into
+// smtp.SendMail — which meant this repo owned an email format, a header-escaping
+// problem it had to solve by hand, and no path to any other channel. notify is
+// the estate's answer for that, and it carries SMS beside email behind the same
+// Notifier.Send, so a notice can reach a phone without a second sender being
+// written here.
+//
+// Header forgery is still ours to guard, and NOT where you would expect.
+// Measured against the library: a line break in the SUBJECT is Q-encoded and
+// harmless (`Subject: =?UTF-8?q?Receipt=0D=0ABcc:...?=`), but one in the
+// RECIPIENT is obeyed — jordan-wright/email splits it and a real
+// `Bcc: thief@evil.com` header lands in the message. So the address is checked
+// here, and the subject with it, because relying on the encoding of one field
+// while the field beside it forges freely is a distinction nobody should have to
+// remember.
 func sendEmail(to, subject, body string) error {
-	host := os.Getenv("SMTP_HOST")
-	port := os.Getenv("SMTP_PORT")
-	user := os.Getenv("SMTP_USER")
-	pass := os.Getenv("SMTP_PASS")
-	from := os.Getenv("SMTP_FROM")
-
-	if host == "" {
-		slog.Warn("email: SMTP not configured, skipping")
-		return nil
-	}
-	if port == "" {
-		port = "587"
-	}
-	if from == "" {
-		from = user
-	}
-
-	// A header cannot carry a line break. The message is assembled by hand, so a
-	// CR or LF reaching `to` or `subject` would close that header and open
-	// whatever follows — a Bcc to somewhere else, a replaced From. Nothing sends
-	// user-written text through here today: the subject is a constant and the
-	// address comes off a validated field. This refuses regardless, because the
-	// next caller is the one that would not know.
-	//
-	// The body is exempt: line breaks are what a body is made of, and it sits
-	// after the blank line where no header is being parsed.
 	if strings.ContainsAny(to, "\r\n") || strings.ContainsAny(subject, "\r\n") {
 		return errors.New("email: a line break in the recipient or subject would forge a header")
 	}
 
-	msg := fmt.Sprintf("From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n%s", from, to, subject, body)
+	host := os.Getenv("SMTP_HOST")
+	if host == "" {
+		slog.Warn("email: SMTP not configured, skipping")
+		return nil
+	}
+	port := os.Getenv("SMTP_PORT")
+	if port == "" {
+		port = "587"
+	}
+	user := os.Getenv("SMTP_USER")
+	from := os.Getenv("SMTP_FROM")
+	if from == "" {
+		from = user
+	}
 
-	auth := smtp.PlainAuth("", user, pass, host)
-	return smtp.SendMail(host+":"+port, auth, from, []string{to}, []byte(msg))
+	m := mail.New(from, host+":"+port)
+	if user != "" {
+		m.AuthenticateSMTP("", user, os.Getenv("SMTP_PASS"), host)
+	}
+	m.AddReceivers(to)
+	m.BodyFormat(mail.PlainText)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+	return notify.NewWithServices(m).Send(ctx, subject, body)
 }

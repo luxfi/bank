@@ -57,3 +57,21 @@ func TestTheBodyMayContainLineBreaks(t *testing.T) {
 		t.Fatalf("a multi-line body was refused as a forged header: %v", err)
 	}
 }
+
+// The recipient guard is not belt-and-braces over a library that already checks.
+// Measured against jordan-wright/email directly: a line break in the SUBJECT is
+// Q-encoded and inert, and one in the RECIPIENT is obeyed — the address splits
+// and a real Bcc header lands in the message. This pins the half that matters,
+// so removing the guard on the argument that "the library handles it" fails
+// here.
+func TestTheRecipientIsWhereTheLibraryWouldLetAHeaderThrough(t *testing.T) {
+	t.Setenv("SMTP_HOST", "smtp.invalid.example")
+
+	err := sendEmail("a@x.com\r\nBcc: thief@evil.com", "Receipt", "body")
+	if err == nil {
+		t.Fatal("a recipient carrying a line break was accepted")
+	}
+	if !strings.Contains(err.Error(), "forge a header") {
+		t.Fatalf("err = %v — refused, but not by the guard; the library does not refuse this", err)
+	}
+}

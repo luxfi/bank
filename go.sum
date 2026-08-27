@@ -244,6 +244,8 @@ github.com/hanzoai/dbx v1.17.2 h1:EBADhGuOMxCsc4eHj5cJmtE9c7tSKaviyl8URx31NOQ=
 github.com/hanzoai/dbx v1.17.2/go.mod h1:u7f8kFoy1tS6YRzVNEurA/NlkRF9Uq9ZhDEqOchFtSM=
 github.com/hanzoai/namespace v1.2.0 h1:FLEHzR/GyE/OltXozMvT2n2FfUUxTuVVbILKZBkEjLI=
 github.com/hanzoai/namespace v1.2.0/go.mod h1:vGuxMDHg5MdhH5q2bqqjZL/afINBWJubP4WD1YwZTm4=
+github.com/hanzoai/notify v1.7.2 h1:xHaVVcOWLvLMpmtSH128FRgskj4WyfG371K6CI3OC/I=
+github.com/hanzoai/notify v1.7.2/go.mod h1:GZXKmj6UNtNBz32h0XPugNkYf8R34wlJqWuRstytXZE=
 github.com/hanzoai/orm v0.6.25 h1:/ME1t5cVcDvEWUZokJ08vy0EAfBQc8yMiscxeSIZuVQ=
 github.com/hanzoai/orm v0.6.25/go.mod h1:mnnchBPY8Z0gEsI0qzBWQnFKj3LerqHOk7wfoOn6MNA=
 github.com/hanzoai/pubsub-go v1.0.0 h1:nUZ4jK+MFlFQ5qTMri/Yffnqs/R5avI99SfZ9e3t6Cs=
@@ -289,6 +291,8 @@ github.com/jackpal/go-nat-pmp v1.0.2 h1:KzKSgb7qkJvOUTqYl9/Hg/me3pWgBmERKrTGD7Bd
 github.com/jackpal/go-nat-pmp v1.0.2/go.mod h1:QPH045xvCAeXUZOxsnwmrtiCoxIr9eob+4orBN1SBKc=
 github.com/jessevdk/go-flags v0.0.0-20141203071132-1679536dcc89/go.mod h1:4FA24M0QyGHXBuZZK/XkWh8h0e1EYbRYJSGM75WSRxI=
 github.com/jessevdk/go-flags v1.4.0/go.mod h1:4FA24M0QyGHXBuZZK/XkWh8h0e1EYbRYJSGM75WSRxI=
+github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible h1:jdpOPRN1zP63Td1hDQbZW73xKmzDvZHzVdNYxhnTMDA=
+github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible/go.mod h1:1c7szIrayyPPB/987hsnvNzLushdWf4o/79s3P08L8A=
 github.com/jrick/logrotate v1.0.0/go.mod h1:LNinyqDIJnpAur+b8yyulnQw/wDuN1+BYKlTRt3OuAQ=
 github.com/kkdai/bstream v0.0.0-20161212061736-f391b8402d23/go.mod h1:J+Gs4SYgM6CZQHDETBtE9HaSEkGmuNXF86RwHhHUvq4=
 github.com/klauspost/compress v1.18.6 h1:2jupLlAwFm95+YDR+NwD2MEfFO9d4z4Prjl1XXDjuao=
