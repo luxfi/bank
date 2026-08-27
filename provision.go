@@ -67,12 +67,19 @@ func ProvisionCustomer(app core.App, user *core.Record, kyc KYC) (*core.Record, 
 	// Only the sandbox auto-approves. On real rails an account opens pending,
 	// unverified, and medium-risk; status/kycStatus/riskRating transition only
 	// from the compliance service, never from self-asserted onboarding data.
-	// entityType is likewise self-declared here and must NOT be trusted to set
-	// the limit tier outside sandbox — the compliance review sets the tier when
-	// it approves. (See LP-3040 §Security.)
+	// entityType is likewise self-declared, and it is what the limit tier and
+	// the fee rate are read from — a business moves ten times an individual's
+	// daily figure and pays 30bp against 50bp. So outside the sandbox the field
+	// opens at the conservative value whatever was claimed, and the claim is
+	// kept beside the rest of the submission. The compliance review sets the
+	// tier when it approves; an account is superuser-writable and a customer's
+	// is not, so what stands there afterwards is the bank's. (LP-3040 §Security.)
 	status, kyc0, risk, method := "pending", "not_started", "medium", "iam"
+	declared := entityType
 	if Sandbox() {
 		status, kyc0, risk, method = "active", "approved", "low", "sandbox-auto"
+	} else {
+		entityType = "individual"
 	}
 	acct := core.NewRecord(acctColl)
 	acct.Set("owner", user.Id)
@@ -86,6 +93,7 @@ func ProvisionCustomer(app core.App, user *core.Record, kyc KYC) (*core.Record, 
 	acct.Set("metadata", map[string]any{
 		"sandbox": Sandbox(),
 		"kyc": map[string]any{
+			"entityType":  declared,
 			"dob":         kyc.DOB,
 			"addressLine": kyc.AddressLine,
 			"city":        kyc.City,
