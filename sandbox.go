@@ -228,6 +228,18 @@ var ibanCountry = map[string]string{"EUR": "DE", "GBP": "GB", "CHF": "CH", "SGD"
 // markets get an IBAN + BIC. Both carry a SWIFT for inbound international wires.
 // Deterministic in the account id, so the details never shuffle between reads.
 func receivingFor(acct *core.Record) *receivingView {
+	// The coordinates below are invented — a bank name, a SWIFT, and digits
+	// derived from the account id. In the sandbox that is the demo, and the
+	// determinism is so the details do not shuffle between reads.
+	//
+	// Outside it they are the details a customer hands a payer, and a wire
+	// lands wherever those digits actually point. No coordinates is a customer
+	// who asks; wrong ones are somebody's money gone. Until a rail issues them,
+	// there are none.
+	if !Sandbox() {
+		return nil
+	}
+
 	holder := acct.GetString("entityName")
 	cur := strings.ToUpper(acct.GetString("currency"))
 	seed := acct.Id

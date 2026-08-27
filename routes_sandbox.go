@@ -92,12 +92,18 @@ type txView struct {
 // -----------------------------------------------------------------------------
 
 func viewAccount(acct *core.Record) accountView {
+	// nil where no rail has issued any: the account is still an account, it
+	// just has nowhere for a wire to land yet.
 	rec := receivingFor(acct)
+	var iban string
+	if rec != nil {
+		iban = rec.IBAN
+	}
 	return accountView{
 		ID: acct.Id, EntityName: acct.GetString("entityName"),
 		EntityType: acct.GetString("entityType"), Country: acct.GetString("country"),
 		Currency: acct.GetString("currency"), Status: acct.GetString("status"),
-		KYCStatus: acct.GetString("kycStatus"), IBAN: rec.IBAN, Receiving: rec,
+		KYCStatus: acct.GetString("kycStatus"), IBAN: iban, Receiving: rec,
 	}
 }
 
