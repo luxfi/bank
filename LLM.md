@@ -725,13 +725,18 @@ proved was that the page renders a fixture — the addresses, the bank name and
 the routing number were all written in the spec. They read the real ones now,
 and assert what the screen has to get right whatever those values are.
 
-Removing the stub is what showed that **an IBAN market cannot be reached**.
-`ProvisionCustomer` sets every account to USD and nothing else ever writes that
-field, so `receivingFor`'s IBAN branch — EUR, GBP, CHF, SGD, AED — answers no
-account this bank can open. Stubbing was the only way that spec could pass.
-Either onboarding should choose a currency (the country is already in the KYC
-body) or the branch is dead; both are product calls, so it is written down
-rather than decided here.
+Removing the stub is what showed that **an IBAN market could not be reached**.
+`ProvisionCustomer` set every account to USD and nothing else ever wrote that
+field, so `receivingFor`'s IBAN branch — EUR, GBP, CHF, SGD, AED — answered no
+account this bank could open. The whole shape was there and the currency was a
+constant; stubbing was the only way that spec could pass.
+
+An account opens in its own market's money now (`marketCurrency`, by the country
+already in the onboarding body), so a customer is paid in their own currency and
+a payer is given the coordinates that market's rail uses. Anything unmapped
+opens in USD, which is what the bank settles in, and every market named is one
+the bank can price — a currency it cannot value is one whose limits it cannot
+enforce.
 
 **Identity is the one leg still local, and it is not a shortcut.**
 `e2e/iam-stub.mjs` is a real OIDC provider — RS256 over its own JWKS, discovery,
