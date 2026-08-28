@@ -52,15 +52,33 @@ page denied, and nothing in this section softens it.
 
 ## Where the keys are
 
-**The bank holds every signing key on this surface. The customer holds none.**
-There is no exception on any screen, and no path in the product where a customer
-signs anything themselves.
+**On the default deployment the bank holds every signing key, and the customer
+holds none.** There is no exception on any screen, and no path in the product
+where a customer signs anything themselves.
 
-The chain of derivation, end to end:
+That is now a deployment choice rather than the shape of the code.
+`BANK_CUSTODY` selects who holds (`custody.go`), and it has two answers:
 
-- `chainSeed` (`provision.go:122`) assigns each account a `chainIndex`, stored on
-  the account record and never reused. Index 0 is reserved for the bank's own
-  treasury; customers start at 1.
+| `BANK_CUSTODY` | Who holds the key | What the bank can do |
+|---|---|---|
+| `bank` (default) | the bank, derived from one mnemonic | sign anything, for anyone |
+| `holder` | the account's owner | read the chain; sign nothing |
+
+Under `holder` the bank stores one thing about an account's on-chain identity —
+the address its owner declared, which is a public value — and every operation
+that needs a signature refuses. It derives nothing and keeps no material to
+derive from. That is footnote 6 satisfied mechanically rather than asserted.
+
+**No deployment runs `holder` today.** The live surfaces are `bank`, and
+everything below describes them.
+
+The chain of derivation under `bank`, end to end:
+
+- `chainIndex` (`custody.go`) assigns each account an index, stored on the
+  account record and never reused. Index 0 is reserved for the bank's own
+  treasury; customers start at 1. It lives with the custodians rather than with
+  provisioning because it is not a fact about the account — it is a fact about
+  who holds the account's keys, and it goes when they do.
 - `evmChain.key` (`evmchain.go:342`) turns that index into a private key by
   calling `derive(customer, index)`.
 - `derive` (`evmchain.go:372`) walks `m/9000'/<networkId>'/<envId>'/<branch>'/<index>'`
@@ -102,9 +120,12 @@ connect-wallet path to find, partial or otherwise. Verified by search across
 | Activity | View | `GET /v1/bank/transactions` | — | No |
 | Accounts | View balances, wallets, history | `GET /v1/bank/accounts/{id}/*` | — | No |
 
-Only two handlers reach a chain key: `handleCryptoSend` (`crypto.go:186`) and
-`earnOnChain` (`liquid.go:315`). Both pass `chainSeed(app, acct)` into a backend
-that derives and signs.
+Only two handlers reach a chain key, and neither reaches it directly any more:
+`handleCryptoSend` (`crypto.go`) calls `custodian().Send`, and `earnAction`
+(`liquid.go`) calls `custodian().Market`. Whether that ends in a signature is the
+custodian's answer, not the route's — under `bank` it derives and signs, under
+`holder` it refuses. No route names an index, and only a custodian may ask for
+one, which is what keeps the two postures from being one edit apart.
 
 ### Things the map makes visible
 
@@ -492,29 +513,39 @@ entirely, but it is on the same screens.
 
 ---
 
-## What a self-custodial path would require
+## What a self-custodial path still requires
 
-The owner wants connect-wallet DeFi on this surface eventually. Nothing here was
-built toward it. This is the shape of what would have to be true, so a reader can
-act on it later.
+The boundary is built and one half of it is done. `BANK_CUSTODY=holder` holds no
+key, derives nothing, and refuses every operation that would need a signature —
+so the condition below is met at the seam. What is not built is the other half:
+the interface that lets a customer sign, which is what turns a refusal into a
+product.
 
 The operative text is the statement itself, and counsel has to map each condition
 to a specific surface. What follows is the engineering half.
 
-**The key must never be derivable by us.** This is the whole condition, and it is
-structural rather than procedural. A self-custodial flow cannot pass through
-`chainSeed` or `evmChain.key` at any point. The interface builds an unsigned
-transaction, hands it to the user's wallet over EIP-1193 or WalletConnect, and
-the wallet signs. `bankd` must not hold, escrow, or be able to reconstruct that
-key — and "we could derive it but we choose not to" fails the condition.
+**The key must never be derivable by us. Met at the seam.** This is the whole
+condition, and it is structural rather than procedural. Under `holder` nothing
+reaches `evmChain.key` for a customer: the custodian reads a declared address and
+signs nothing, and "we could derive it but we choose not to" is not what is
+happening — there is no index to derive from, because an account under customer
+custody never claims one. Guarded by `TestHolderKeepsNoKey`.
 
-**Custody cannot be taken transiently either.** Today the deposit path wraps the
-native coin on the customer's behalf (`evmMarket.wrap`). Any step where the asset
-passes through an address we control is custody, however brief. In a
-self-custodial flow the wrap is the user's wallet's transaction, not ours.
+**What is missing is the signing interface.** Today `holder` refuses a send
+instead of producing something the customer can sign. The bank has to build the
+unsigned transaction, hand it to the customer's wallet over EIP-1193 or
+WalletConnect, and record the hash the wallet returns. Until that exists, a
+`holder` deployment can receive and can show, and cannot spend.
 
-**Gas cannot be funded the way it is now.** The treasury tops customers up before
-every transaction (`fund`, `evmchain.go:480`). Paying gas for a transaction the
+**Custody cannot be taken transiently either.** Under `bank` the deposit path
+wraps the native coin on the customer's behalf (`evmMarket.wrap`). Any step where
+the asset passes through an address we control is custody, however brief. In a
+self-custodial flow the wrap is the user's wallet's transaction, not ours — which
+is why `holder.Market` refuses outright rather than wrapping first and signing
+later.
+
+**Gas cannot be funded the way it is now.** Under `bank` the treasury tops
+customers up before every transaction (`fund`, `evmchain.go`). Paying gas for a transaction the
 user signs is at minimum a fee question and possibly an agency one. It needs a
 different answer, and the answer needs to be one counsel has seen.
 

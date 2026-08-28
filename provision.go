@@ -107,10 +107,10 @@ func ProvisionCustomer(app core.App, user *core.Record, kyc KYC) (*core.Record, 
 		return nil, err
 	}
 
-	// Crypto wallets — one per supported asset, each with its own chain-derived
-	// deposit address (a BTC address is bech32, an EVM asset is 0x). Production
-	// provisions keys by threshold MPC; the sandbox derives stable display
-	// addresses from the principal via the chain backend.
+	// Crypto wallets — one row per supported asset, carrying the address this
+	// account receives at. Which address that is belongs to the custodian: the
+	// bank derives one from the deploy mnemonic, or the account's owner has
+	// declared one they hold themselves. See custody.go.
 	ensureWallets(app, acct)
 
 	if Sandbox() {
@@ -169,11 +169,17 @@ func ensureWallets(app core.App, acct *core.Record) {
 // address survived a real chain being configured, and coins sent to it are
 // unrecoverable — nobody holds that key.
 //
-// Only a custodian that actually holds a key may overwrite one. A real address
-// over a simulated one recovers an account that could never have been swept; the
-// reverse points a customer at an address nobody can spend from, so the
-// simulation leaves what it finds. An address nobody has answered for yet is
-// empty, and anything that can answer may fill it.
+// Only a custodian whose addresses have a key behind them may overwrite one. A
+// real address over a simulated one recovers an account that could never have
+// been swept; the reverse points a customer at an address nobody can spend from,
+// so the simulation leaves what it finds. An address nobody has answered for yet
+// is empty, and anything that can answer may fill it.
+//
+// The question is Holds, not which type this is. Asking for a concrete type
+// meant every custodian added after the first was silently treated as the
+// simulation — a bank that switched to customer custody would have gone on
+// showing the address it derived, and the customer would have received at a key
+// the bank still held.
 func replaces(cu Custodian, recorded, answer string) bool {
 	if answer == "" || answer == recorded {
 		return false
@@ -181,7 +187,7 @@ func replaces(cu Custodian, recorded, answer string) bool {
 	if recorded == "" {
 		return true
 	}
-	_, holds := cu.(deriving)
+	holds := cu.Holds()
 	return holds
 }
 

@@ -424,40 +424,74 @@ recovery, estates. A register authority never holds a key — it corrects the
 record. Giving that up is not what non-custodial means, and giving it up would
 delete the transfer-agency product rather than strengthen it.
 
-### What that means for this codebase
+### The seam, and what is through it
 
-`chainSeed` (provision.go:122) hands an account's derivation index to
-`evmChain.key`, which walks the deploy mnemonic and returns a private key the
-bank holds. That is the custody, and it is reached from exactly two places:
-`crypto.go:186` (send) and `liquid.go:315` (earn). Those are the seams to move.
+`Custodian` (custody.go) is that shape, following `Issuer`: a provider-neutral
+interface, a sandbox implementation, one env-selected constructor. Every method
+names the ACCOUNT and none takes a derivation index — an index means something
+only to whoever holds the mnemonic it indexes, so a signature that accepts one
+has already answered the question. `chainIndex` is the one function that maps an
+account to an index, it lives in custody.go, and only a custodian calls it.
 
-The shape to copy is `Issuer` (issuer.go): a provider-neutral interface, a
-sandbox implementation, and one env-selected constructor. A `Custodian` follows
-it — but `seed` does not survive the move. A custodian is asked for a customer's
-address and asked to sign for that customer; it is never handed a derivation
-index, because the index only means something to whoever holds the mnemonic.
-
-The split that falls out: money the bank holds for a customer sits with the
-custodian, and anything that signs on chain — a vault deposit, a swap — is the
-customer's own Safe. The bank keeps the ledger and the interface. It stops
-keeping keys.
+The interface says two things about the custodian itself and they are separate:
+`Name` says who holds, `Holds` says whether the addresses it names have a key
+behind them at all. Only the simulation and an unimplemented custodian answer
+`Holds` false, and that is what keeps an invented address from replacing a real
+one. `replaces` (provision.go) asks `Holds` rather than testing for a concrete
+type, which it used to: every custodian added after the first was silently
+treated as the simulation, so a bank switching to customer custody would have
+gone on showing the address it derived, and the customer would have received at
+a key the bank still held.
 
 `evmChain` does not disappear. The treasury is the bank's own money and stays the
 bank's own key, and reading chain state needs no custody at all.
 
 ## Custody — what it is today
 
-`chainSeed` assigns an account its stored `chainIndex`; `evmChain.key` turns that
-into a private key; `derive` walks `m/9000'/<networkId>'/<envId>'/<branch>'/<index>'`
-from `BANK_CHAIN_MNEMONIC`. Branch 0 is the customer, branch 1 the treasury,
-which funds customers' gas. Only `handleCryptoSend` and `earnOnChain` reach a
-key, and both hand `chainSeed` to a backend that signs. There is no connect-wallet
-path.
+`BANK_CUSTODY` chooses who holds, and the answer is a deployment fact:
 
-So this is a custodial bank, and the landing page's claim of a "non-custodial
-wallet" and "non-custodial vaults" was false — those being the terms the April
-2026 interface relief is defined around. `components/Custody.tsx` states the one
-mechanical fact, who signs, and sits where the customer commits.
+| value | who holds | what the bank can do |
+|-------|-----------|----------------------|
+| `bank` (default) | the bank | sign for anyone |
+| `holder` | the account's owner | read the chain; sign nothing |
+
+**Every running deployment is `bank`, so the bank is custodial today.** An
+account claims a `chainIndex`; `evmChain.key` turns that into a private key;
+`derive` walks `m/9000'/<networkId>'/<envId>'/<branch>'/<index>'` from
+`BANK_CHAIN_MNEMONIC`. Branch 0 is the customer, branch 1 the treasury, which
+funds customers' gas. Two handlers reach a key and both go through the custodian:
+`handleCryptoSend` calls `Send`, `earnAction` calls `Market`.
+
+Under `holder` the bank keeps no key at all. The account records one address
+(`accounts.address`) that its owner holds, the bank reads it, and `Send` and
+`Market` refuse: what a customer holds, only a customer moves. It derives
+nothing, claims no index, and has nothing to derive from. That is footnote 6 of
+the April 2026 staff statement met mechanically — the provider has neither
+custody of, nor access to, the key — and `TestHolderKeepsNoKey` is what keeps it
+true. `POST /accounts/{id}/address` exists only under `holder`; where the bank
+derives the address there is nothing for a customer to declare, so the route is
+absent rather than present and refusing.
+
+**What `holder` cannot do yet is spend.** It refuses a send instead of handing
+the customer something to sign. The unsigned-transaction handoff — build it, give
+it to the customer's wallet over EIP-1193 or WalletConnect, record the hash that
+comes back — is not built. A `holder` deployment can receive and can show; it
+cannot move money. That is the honest remaining distance, and it is why the
+default is still `bank`.
+
+The landing page's claim of a "non-custodial wallet" and "non-custodial vaults"
+was false — those being the terms the April 2026 interface relief is defined
+around. `components/Custody.tsx` states the one mechanical fact, who signs, and
+sits where the customer commits.
+
+One claim that reached a customer's own wallet row: `Wallet.Ref` read
+`mpc:<asset>:<index>`, printed through `GET /accounts/{id}/wallets`, asserting
+the key was split across a threshold of parties while one process held the whole
+mnemonic. Nothing in this estate has ever done threshold signing for a customer
+key. The reference is named for the holder now (`bank:`, `sandbox:`, and nothing
+at all under `holder`, where the address is the only handle there is), and the
+two source comments that claimed "production provisions keys by threshold MPC"
+are gone with it.
 
 Custody is a layer, not a platform property. The investor layer is who holds the
 signing key — here, the bank. The underlying asset layer is where the asset

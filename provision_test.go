@@ -51,6 +51,14 @@ func TestOnlyAKeyHolderReplacesAnAddress(t *testing.T) {
 
 		// A custodian that holds nothing cannot speak for an address at all.
 		{"a custodian holding nothing replaces nothing", unheld{}, real, sim, false},
+
+		// The customer's own address is held by the customer, so it carries the
+		// same authority here as one the bank derived. This is the migration
+		// that matters: a deployment that stops holding keys must be able to
+		// point an account at the address its owner holds, or the bank goes on
+		// showing the address it still has the key to.
+		{"the customer replaces a simulated address", holder{}, sim, real, true},
+		{"the customer replaces a bank-derived address", holder{}, real, sim, true},
 	} {
 		if got := replaces(tc.cu, tc.recorded, tc.answer); got != tc.want {
 			t.Errorf("%s: replaces(%T, %q, %q) = %v, want %v",

@@ -19,9 +19,19 @@ func TestCustodianActsForAnAccount(t *testing.T) {
 	app := reflect.TypeOf((*core.App)(nil)).Elem()
 	acct := reflect.TypeOf((*core.Record)(nil))
 
+	// Name and Holds describe the custodian and act for nobody: who it is, and
+	// whether the addresses it names have a key behind them. Both are constant
+	// per deployment, so neither may take an account — a Holds that varied by
+	// account would be the custody question answered per customer, which is not
+	// a thing a deployment can be.
+	describes := map[string]bool{"Name": true, "Holds": true}
+
 	for i := 0; i < custody.NumMethod(); i++ {
 		m := custody.Method(i)
-		if m.Name == "Name" {
+		if describes[m.Name] {
+			if m.Type.NumIn() != 0 {
+				t.Fatalf("Custodian.%s%v takes an argument — it describes the custodian and nothing else", m.Name, m.Type)
+			}
 			continue
 		}
 		if m.Type.NumIn() < 2 || m.Type.In(0) != app || m.Type.In(1) != acct {
@@ -59,6 +69,8 @@ func TestCustodianSelection(t *testing.T) {
 		{"nothing configured", "", "", simCustodian{}},
 		{"sandbox is not the predicate", "http://127.0.0.1:1", "", deriving{}},
 		{"named explicitly", "http://127.0.0.1:1", "bank", deriving{}},
+		{"the customer holds their own", "http://127.0.0.1:1", "holder", holder{}},
+		{"case and spacing do not matter", "http://127.0.0.1:1", "  HOLDER ", holder{}},
 		{"a holder nobody implements", "http://127.0.0.1:1", "alpaca", unheld{}},
 	} {
 		t.Run(c.name, func(t *testing.T) {
@@ -118,7 +130,7 @@ func TestSimCustodianWallet(t *testing.T) {
 		if !validAddress(asset, w.Address) {
 			t.Errorf("%s address %q does not pass the check a sender's would", asset, w.Address)
 		}
-		if want := "mpc:" + asset + ":" + index; w.Ref != want {
+		if want := "sandbox:" + asset + ":" + index; w.Ref != want {
 			t.Errorf("%s ref = %q, want %q", asset, w.Ref, want)
 		}
 	}
@@ -231,6 +243,7 @@ func TestDerivingReachesNoMarketOverAnOutage(t *testing.T) {
 func TestCustodiansSayWhoTheyAre(t *testing.T) {
 	for want, cu := range map[string]Custodian{
 		"bank":    deriving{},
+		"holder":  holder{},
 		"sandbox": simCustodian{},
 		"none":    unheld{},
 	} {
@@ -251,5 +264,98 @@ func TestSandboxHasNoMarketAndSaysSoWithoutFailing(t *testing.T) {
 	}
 	if err != nil {
 		t.Errorf("Market() failed with %v — a vault with no market behind it is not an error, it is a ledger loan", err)
+	}
+}
+
+// The custody posture, stated as behaviour rather than as a claim.
+//
+// Under BANK_CUSTODY=holder the bank has no key for a customer's account and
+// must not be able to acquire one. It reads an address the account declared,
+// which is a public value, and every operation that needs a signature refuses.
+// That is footnote 6 of the April 2026 staff statement satisfied mechanically:
+// no custody of, and no access to, the key — not a share, not a blob, not an
+// index into a mnemonic the bank keeps.
+func TestHolderKeepsNoKey(t *testing.T) {
+	const own = "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+
+	t.Setenv("BANK_CHAIN_RPC", "")
+	app := newBankApp(t)
+	seedPrincipal(t, app)
+	acct := primaryAccount(app, principalID(t, app))
+	if acct == nil {
+		t.Fatal("no account provisioned")
+	}
+
+	var cu Custodian = holder{}
+
+	// This account was opened by the sandbox, which does claim an index. What
+	// matters is that customer custody never touches it: the number is a
+	// position in the bank's own mnemonic, and a custodian that reached for one
+	// would be deriving a key it says it does not have.
+	before := int64(acct.GetFloat("chainIndex"))
+
+	// An account that has declared nothing gets no address. A placeholder here
+	// is an address nobody holds the key to, which is the sandbox's whole
+	// hazard arriving by another door.
+	acct.Set("address", "")
+	for _, asset := range SupportedCrypto {
+		if w := cu.Wallet(app, acct, asset); w.Address != "" {
+			t.Errorf("%s: undeclared account was given %q", asset, w.Address)
+		}
+	}
+
+	acct.Set("address", own)
+	for _, asset := range SupportedCrypto {
+		w := cu.Wallet(app, acct, asset)
+		if w.Address != own {
+			t.Errorf("%s address = %q, want the declared %q", asset, w.Address, own)
+		}
+		// No index, and no handle onto anything the bank keeps: the address is
+		// the whole of what the bank knows about this holding.
+		if w.Ref != "" {
+			t.Errorf("%s ref = %q; the bank holds nothing further to name", asset, w.Ref)
+		}
+	}
+
+	if got := int64(acct.GetFloat("chainIndex")); got != before {
+		t.Errorf("derivation index moved %d -> %d under customer custody", before, got)
+	}
+
+	if h, err := cu.Send(app, acct, "LUX", own, 1); err == nil || h != "" {
+		t.Errorf("Send() = %q, %v; the bank cannot sign for a key it does not have", h, err)
+	}
+	if m, err := cu.Market(app, acct, "LUX"); err == nil || m != nil {
+		t.Errorf("Market() = %v, %v; an Earn movement is a transaction and needs a signer", m, err)
+	}
+}
+
+// The API surface follows the posture. Where the customer holds the key the bank
+// has no address until they declare one, and where the bank holds it there is
+// nothing to declare — so the route exists in exactly one of the two.
+func TestOnlySelfCustodyTakesADeclaredAddress(t *testing.T) {
+	reset := func() {
+		evmMu.Lock()
+		evmInst, evmFrom = nil, ""
+		evmMu.Unlock()
+	}
+	t.Cleanup(reset)
+
+	for _, c := range []struct {
+		name, rpc, custody string
+		want               bool
+	}{
+		{"no chain at all", "", "", false},
+		{"bank custody", "http://127.0.0.1:1", "bank", false},
+		{"customer custody", "http://127.0.0.1:1", "holder", true},
+		{"a custodian nobody implements", "http://127.0.0.1:1", "alpaca", false},
+	} {
+		t.Run(c.name, func(t *testing.T) {
+			t.Setenv("BANK_CHAIN_RPC", c.rpc)
+			t.Setenv("BANK_CUSTODY", c.custody)
+			reset()
+			if got := selfCustody(); got != c.want {
+				t.Fatalf("selfCustody() = %v, want %v", got, c.want)
+			}
+		})
 	}
 }

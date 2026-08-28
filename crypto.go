@@ -11,9 +11,9 @@ import (
 )
 
 // -----------------------------------------------------------------------------
-// Crypto send + receive. The route contract is the product; behind it sits
-// the sandbox testnet ledger today and a live backend (chain MPC, venue, or
-// issuer custody) when one is configured — same shape either way.
+// Crypto send + receive. The route contract is the product; who signs is the
+// account's custodian (custody.go), and the route neither knows nor cares which
+// one — the same shape whether the bank holds the key or its owner does.
 // -----------------------------------------------------------------------------
 
 type cryptoSendReq struct {

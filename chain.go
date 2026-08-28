@@ -114,8 +114,9 @@ func simTxHash() string {
 }
 
 // evmAddress derives a deterministic, display-only EVM (0x) address from a seed
-// and asset. Not a real key — production wallets are provisioned by threshold
-// MPC; this is a stable sandbox stand-in, distinct per asset.
+// and asset. Nobody holds the key to it — it is a stable sandbox stand-in,
+// distinct per asset, and simCustodian.Holds answers false so it can never
+// replace an address somebody can actually spend from.
 func evmAddress(seed, asset string) string {
 	sum := sha256.Sum256([]byte("lux-evm:" + strings.ToUpper(asset) + ":" + seed))
 	return "0x" + hex.EncodeToString(sum[12:32])

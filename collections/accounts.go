@@ -18,6 +18,10 @@ func EnsureAccountCollection(app core.App) error {
 			existing.Fields.Add(chainIndexField())
 			added = true
 		}
+		if existing.Fields.GetByName("address") == nil {
+			existing.Fields.Add(addressField())
+			added = true
+		}
 		if idx := chainIndexUnique(); !hasIndex(existing.Indexes, idx) {
 			existing.Indexes = append(existing.Indexes, idx)
 			added = true
@@ -117,6 +121,7 @@ func EnsureAccountCollection(app core.App) error {
 
 		planField(),
 		chainIndexField(),
+		addressField(),
 	)
 	c.Indexes = append(c.Indexes, chainIndexUnique())
 	c.Fields.Add(
@@ -149,6 +154,19 @@ func EnsureAccountCollection(app core.App) error {
 // them to land on one address and share a balance.
 func chainIndexField() *core.NumberField {
 	return &core.NumberField{Name: "chainIndex", OnlyInt: true}
+}
+
+// addressField is the other answer to the same question chainIndex answers, and
+// they are mutually exclusive by construction: an index says the bank derives
+// this account's key, an address says the account's owner holds it and told us
+// only where to send. An account under customer custody never claims an index,
+// because an index means nothing to anyone but the holder of the mnemonic.
+//
+// It is a plain, unconstrained text field on purpose. What counts as an address
+// is the chain's judgment, not the schema's — the route that writes it asks the
+// configured backend, which knows whether this deployment speaks 0x or bech32.
+func addressField() *core.TextField {
+	return &core.TextField{Name: "address"}
 }
 
 // chainIndexUnique is what actually keeps two accounts off one key. Claiming an

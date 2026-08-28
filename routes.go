@@ -3,6 +3,7 @@ package bank
 import (
 	"math"
 	"net/http"
+	"strings"
 
 	"github.com/hanzoai/base/apis"
 	"github.com/hanzoai/base/core"
@@ -76,6 +77,15 @@ func RegisterRoutes(app core.App) {
 			g.GET("/accounts/{id}/balances", handleGetBalances(app))
 			g.GET("/accounts/{id}/wallets", handleGetWallets(app))
 			g.GET("/accounts/{id}/transactions", handleGetTransactions(app))
+
+			// Where the customer holds the key, the bank has no address until
+			// they say so. Where the bank holds it, there is nothing to say and
+			// the route is absent rather than present and refusing — a 404 is
+			// the honest answer to "let me tell you my address" from a
+			// deployment that already derived one.
+			if selfCustody() {
+				g.POST("/accounts/{id}/address", handleDeclareAddress(app))
+			}
 
 			// Beneficiaries.
 			g.GET("/beneficiaries", handleListBeneficiaries(app))
@@ -375,6 +385,49 @@ func handleGetWallets(app core.App) func(*core.RequestEvent) error {
 		// address — the one thing a wallet is for, so the route could not be
 		// used for the thing it names.
 		return e.JSON(http.StatusOK, viewWallets(app, accountId))
+	}
+}
+
+// -- The address a customer holds --
+
+type declareAddressReq struct {
+	Address string `json:"address"`
+}
+
+// handleDeclareAddress records where an account's owner holds, on a deployment
+// where they hold their own key. The bank never learns anything but the
+// address, which is a public value; it derives nothing and cannot spend from it.
+//
+// Declaring is idempotent and re-declaring is allowed, because a customer moves
+// wallets — to a Safe, to new hardware, off a lost device. What it changes is
+// only where money arrives next; the ledger and the history are untouched, and
+// nothing already on chain follows the change.
+func handleDeclareAddress(app core.App) func(*core.RequestEvent) error {
+	return func(e *core.RequestEvent) error {
+		account, err := app.FindRecordById(collections.AccountCollectionName, e.Request.PathValue("id"))
+		if err != nil {
+			return apis.NewNotFoundError("account not found", nil)
+		}
+		if account.GetString("owner") != e.Auth.Id {
+			return apis.NewForbiddenError("not your account", nil)
+		}
+		req, err := bindBody[declareAddressReq](e)
+		if err != nil {
+			return apis.NewBadRequestError("invalid payload", err)
+		}
+		// What counts as an address is the configured chain's judgment. The
+		// asset is empty because there is one address here: on an EVM an account
+		// receives the coin and every token at the same place.
+		addr := strings.TrimSpace(req.Address)
+		if !chain().Valid("", addr) {
+			return apis.NewBadRequestError("not an address on this network", nil)
+		}
+		account.Set("address", addr)
+		if err := app.Save(account); err != nil {
+			return errJSON(e, http.StatusUnprocessableEntity, "could not record the address")
+		}
+		ensureWallets(app, account)
+		return e.JSON(http.StatusOK, viewWallets(app, account.Id))
 	}
 }
 

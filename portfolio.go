@@ -21,8 +21,8 @@ import (
 // These are ACCOUNT records only: brand-neutral names (no "Lux" string, so the
 // white-label rebrand leaves them clean), plain-string owner ids (the accounts
 // collection stores owner as free text, not a relation), auto-approved-or-not
-// per the curated KYC state. The admin derives balances, cards, MPC wallets,
-// safes and compliance cases deterministically over whatever accounts exist —
+// per the curated KYC state. The admin derives balances, cards, wallets and
+// compliance cases deterministically over whatever accounts exist —
 // so seeding the book here lights up every downstream view. No real money, no
 // real identities; sandbox only.
 // -----------------------------------------------------------------------------
