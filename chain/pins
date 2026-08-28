@@ -1,17 +1,31 @@
 # The upstream this deployment was driven against and verified on. One line per
-# step: the name of its foundry profile, then a hash over the content of every
-# .sol file in that step's import closure — its own script, the contracts it
-# deploys, and everything those pull in from luxfi/standard and luxfi/liquid.
+# step: the name of its foundry profile, then a hash over what solc was fed —
+# every .sol file in that step's import closure by content, and the settings it
+# compiled them under.
 #
 # lib/standard and lib/liquid are symlinks to checkouts. A tag would pin the
 # checkout and not the symlink, and a working tree has no tag at all, so what
-# gets recorded here is the thing that actually determines the bytecode: the
-# source. deploy.sh recomputes it and stops before broadcasting anything if the
-# two disagree.
+# gets recorded here is what actually determines the bytecode. deploy.sh
+# recomputes it and stops before broadcasting anything if the two disagree.
+#
+# Source alone was the whole preimage once, and it passed a build that was
+# nothing like the pinned one: FOUNDRY_OPTIMIZER=false leaves every file
+# byte-identical, grows the tokens bytecode 1.85x, and the pin still read green.
+# The preimage is now solc's own record of what it was handed — compiler version,
+# the whole settings block, source hashes — dropping only the derived half of the
+# metadata, since abi and docs follow from sources that are already hashed.
+# Excluding that one key beats naming the keys to keep: a setting solc adds later
+# is covered the day it lands instead of silently missing.
+#
+# compilationTarget and libraries read like noise and are not. compilationTarget
+# names the file and contract compiled, which deploy.sh fixes by argument, so it
+# cannot churn — and compiling a different contract out of the same closure is a
+# different deployment. libraries stays empty until a library is linked, and a
+# linked address is bytecode.
 #
 # Moving a line means the deployed contracts change. Exercise the markets against
 # the new upstream — deposit, borrow, repay, withdraw — before writing it down.
 
-tokens    3038f7b0bf7d7170519329ccdd4b9b7b585e274e69a57c4e505865f283c9b157
-protocol  913cb4a01823218a20bfa8b1c2409808f84f98f4aa31dabfa87214f497470ab4
-grants    5ea124ac6829a1f6b519963120eaedf534b69c4debbf8e20b63f432be0f508aa
+tokens    ff8b12d034fee759ca79d14c4090ed042c7ab40a9714ec1526a8b4db28e80bc9
+protocol  8fb9f9be0ec7dc2f7a4f5970a0f09479b73c8165e1268237bce794fb6e05881e
+grants    52d0c855468e2d7779d850fea7f4af2f3bca908748d6c4916005d2aade38994a

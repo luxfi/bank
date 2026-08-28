@@ -45,28 +45,54 @@ contract Index is ITokenAdapter {
     /// The only account that may advance the index.
     address public immutable oracle;
 
+    /// The most the index may gain in a year, as a fraction of itself in 1e18.
+    ///
+    /// The collateral earns at some rate, and everything the oracle can name
+    /// above that rate is room a compromised key works in. The engine keeps its
+    /// own limit on the read side, but an engine is the only thing standing
+    /// between a stolen key and an arbitrary price if the write side takes any
+    /// number at all, and a single line is not a line.
+    ///
+    /// The two are deliberately unalike. The engine counts blocks and clamps in
+    /// silence, so that a moving price never stops deposits or liquidations.
+    /// This counts seconds and refuses, so that a report nobody could have
+    /// earned leaves a record and the last good index standing. A mistake in
+    /// either the block time or the clamp still leaves the other holding.
+    uint256 public immutable ceiling;
+
     /// Synthetic units per whole collateral token.
     uint256 public price;
 
+    /// When {price} was last raised. The allowance is measured from here.
+    uint256 public accruedAt;
+
     error Unauthorized();
     error Retrograde();
+    error Runaway(uint256 named, uint256 admissible);
 
     event Accrued(uint256 from, uint256 to);
 
-    constructor(address collateral, address synthetic, address oracle_) {
+    constructor(address collateral, address synthetic, address oracle_, uint256 ceiling_) {
         token = collateral;
         underlyingToken = synthetic;
         oracle = oracle_;
+        ceiling = ceiling_;
         // Parity: one whole collateral token, one whole synthetic, before any
         // yield. Read from the synthetic because that is the unit being counted.
         price = 10 ** IERC20Metadata(synthetic).decimals();
+        accruedAt = block.timestamp;
     }
 
     /// @notice Records yield the collateral has earned since the last call.
     function accrue(uint256 next) external {
         if (msg.sender != oracle) revert Unauthorized();
         if (next <= price) revert Retrograde();
+
+        uint256 room = price * ceiling * (block.timestamp - accruedAt) / (365 days * 1e18);
+        if (next - price > room) revert Runaway(next, price + room);
+
         emit Accrued(price, next);
         price = next;
+        accruedAt = block.timestamp;
     }
 }

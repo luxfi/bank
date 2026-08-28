@@ -51,19 +51,25 @@ contract Protocol is Script {
     uint256 constant LIQUIDATION_BOUND = 1.05e18;
     uint256 constant BLOCKS_PER_YEAR = 15_768_000;
 
-    /// How far, in BPS per block, the engine will follow the adapter. It caps
-    /// the price move it will admit at `this * blocks elapsed`, so zero pins the
-    /// price at whatever it was initialized to and no yield ever reaches a
-    /// borrower — the parameter answers an unbounded-oracle finding, and 0 is
-    /// the answer that also switches the market off.
+    /// The rate the collateral earns, and so the rate everything that limits the
+    /// oracle is calibrated against. Twenty percent a year is a generous read of
+    /// what a bridged staking asset does; whatever is named above what the
+    /// collateral really earns is room a compromised oracle works in for free.
     ///
-    /// One is the tightest rate the parameter can express and is still four
-    /// orders of magnitude looser than anything an index can legitimately do
-    /// here: a 20% year against BLOCKS_PER_YEAR is 0.00013 BPS a block. What is
-    /// left over is the room a compromised oracle would have to work in, and it
-    /// costs an honest one nothing, because a market that goes untouched for a
-    /// while accumulates that room and catches up in a single transaction.
-    uint256 constant MAX_PRICE_DEVIATION = 1;
+    /// Written once and divided two ways below, because the two limits have to
+    /// agree. A ceiling on the write side and a clamp on the read side derived
+    /// from separate numbers is two policies, and the looser one is the policy.
+    uint256 constant YIELD_CEILING = 0.2e18;
+
+    /// How far the engine will follow the adapter in one block, as a fraction of
+    /// the price in 1e18. It admits `this * blocks elapsed`, so zero pins the
+    /// price where it was initialized and no yield ever reaches a borrower.
+    ///
+    /// Expressing it per block is what made the old value wrong: 1 BPS a block
+    /// reads tight and is nearly eight thousand times a 20% year. Deriving it
+    /// from the annual rate puts the number where it can be checked against the
+    /// collateral.
+    uint256 constant MAX_PRICE_DEVIATION = YIELD_CEILING / BLOCKS_PER_YEAR;
 
     /// Transmuter fees divide by BPS, so they are basis points — 50 = 0.5%
     /// transmutation, 200 = 2% exit. Writing them as 1e18 fixed point (as the
@@ -138,6 +144,45 @@ contract Protocol is Script {
         return vm.serializeAddress(j, "liquid", d.liquid);
     }
 
+    /// The terms every market is born on.
+    ///
+    /// Separated from the broadcast so that a test can drive the market this
+    /// deploys rather than one that merely resembles it. A second copy of these
+    /// numbers written out in a test proves only that the copy is self
+    /// consistent.
+    function terms(Market memory m, address index, address owner) public pure returns (LiquidInitializationParams memory) {
+        return LiquidInitializationParams({
+            admin: address(0), // the Regent's own address, set inside it
+            debtToken: m.synthetic,
+            underlyingToken: m.synthetic,
+            yieldToken: m.collateral,
+            depositCap: type(uint128).max,
+            blocksPerYear: BLOCKS_PER_YEAR,
+            minimumCollateralization: MIN_COLLATERALIZATION,
+            globalMinimumCollateralization: GLOBAL_MIN_COLLATERALIZATION,
+            collateralizationLowerBound: LIQUIDATION_BOUND,
+            tokenAdapter: index,
+            maxPriceDeviation: MAX_PRICE_DEVIATION,
+            transmuter: address(0), // likewise the transmuter it deploys
+            protocolFee: PROTOCOL_FEE,
+            protocolFeeReceiver: owner,
+            liquidatorFee: LIQUIDATOR_FEE,
+            repaymentFee: REPAYMENT_FEE
+        });
+    }
+
+    /// The terms the transmuter is born on. Split from {terms} for the same reason.
+    function redemptionTerms(Market memory m, address owner) public pure returns (ILiquidTransmuter.TransmuterInitializationParams memory) {
+        return ILiquidTransmuter.TransmuterInitializationParams({
+            syntheticToken: m.synthetic,
+            feeReceiver: owner,
+            timeToTransmute: TIME_TO_TRANSMUTE,
+            transmutationFee: TRANSMUTATION_FEE,
+            exitFee: EXIT_FEE,
+            graphSize: GRAPH_SIZE
+        });
+    }
+
     /// Deploys one market and hands it over, in two transactions.
     function _deploy(uint256 pk, address engine, Market memory m) internal returns (Deployed memory d) {
         address owner = vm.envAddress("OWNER");
@@ -145,38 +190,8 @@ contract Protocol is Script {
 
         vm.startBroadcast(pk);
 
-        Index index = new Index(m.collateral, m.synthetic, oracle);
-
-        Regent regent = new Regent(
-            owner,
-            engine,
-            LiquidInitializationParams({
-                admin: address(0), // the Regent's own address, set inside it
-                debtToken: m.synthetic,
-                underlyingToken: m.synthetic,
-                yieldToken: m.collateral,
-                depositCap: type(uint128).max,
-                blocksPerYear: BLOCKS_PER_YEAR,
-                minimumCollateralization: MIN_COLLATERALIZATION,
-                globalMinimumCollateralization: GLOBAL_MIN_COLLATERALIZATION,
-                collateralizationLowerBound: LIQUIDATION_BOUND,
-                tokenAdapter: address(index),
-                maxPriceDeviation: MAX_PRICE_DEVIATION,
-                transmuter: address(0), // likewise the transmuter it deploys
-                protocolFee: PROTOCOL_FEE,
-                protocolFeeReceiver: owner,
-                liquidatorFee: LIQUIDATOR_FEE,
-                repaymentFee: REPAYMENT_FEE
-            }),
-            ILiquidTransmuter.TransmuterInitializationParams({
-                syntheticToken: m.synthetic,
-                feeReceiver: owner,
-                timeToTransmute: TIME_TO_TRANSMUTE,
-                transmutationFee: TRANSMUTATION_FEE,
-                exitFee: EXIT_FEE,
-                graphSize: GRAPH_SIZE
-            })
-        );
+        Index index = new Index(m.collateral, m.synthetic, oracle, YIELD_CEILING);
+        Regent regent = new Regent(owner, engine, terms(m, address(index), owner), redemptionTerms(m, owner));
 
         vm.stopBroadcast();
 
@@ -206,6 +221,12 @@ contract Protocol is Script {
         require(liquid.tokenAdapter() == d.adapter, "market is not reading its own index");
         require(liquid.maxPriceDeviation() == MAX_PRICE_DEVIATION, "price rate limit was not applied");
         require(Index(d.adapter).oracle() == oracle, "index answers to someone other than the oracle");
+        require(Index(d.adapter).ceiling() == YIELD_CEILING, "index takes any number the oracle names");
+
+        // The pause is the fast answer to a bad price; the rate limits only buy
+        // the time to reach for it. A market that takes deposits with nobody
+        // holding that lever is a market nobody can stop.
+        require(liquid.guardians(owner), "nobody can pause this market");
 
         require(liquid.liquidPositionNFT() == d.position, "market has no position NFT");
         require(liquid.liquidFeeVault() == d.feeVault, "market has no fee vault");

@@ -34,12 +34,26 @@ for repo in standard liquid; do
         echo "missing sibling checkout ../../$repo" >&2; exit 1; }
 done
 
-# What each step compiles, hashed: every file in its import closure, by content.
-# The checkouts are symlinks to whatever those repos happen to be at right now,
-# so a released tag would not pin them and a branch name pins nothing at all.
-# This does: it is the bytes solc read, and pins holds the bytes this deployment
-# was driven against and verified on.
-digest() { jq -S '.metadata.sources | map_values(.keccak256)' "out/$1/$2.s.sol/$2.json" | shasum -a 256 | cut -c1-64; }
+# What each step compiles, hashed: every file in its import closure by content,
+# and the settings solc compiled them under. The checkouts are symlinks to
+# whatever those repos happen to be at right now, so a released tag would not pin
+# them and a branch name pins nothing at all. This does.
+#
+# Settings belong in the preimage because source is not what deploys. Turn the
+# optimizer off and every file stays byte-identical while the tokens bytecode
+# grows 1.85x — hashing sources alone would call that build the pinned one.
+# Hashing what solc recorded about its own inputs catches it, and catches
+# whatever moved them: a stray FOUNDRY_OPTIMIZER, a foundry.toml edit, a
+# toolchain upgrade that shifts a default.
+#
+# Ask forge where it put the artifact rather than assuming. `forge build` honours
+# FOUNDRY_OUT; a hardcoded path does not, and the gap between them is a stale
+# artifact hashing green while a different build is the one that gets broadcast.
+digest() {
+    local out
+    out=$(FOUNDRY_PROFILE="$1" forge config --json | jq -r .out)
+    jq -S '.metadata | del(.output) | .sources |= map_values(.keccak256)' "$out/$2.s.sol/$2.json" | shasum -a 256 | cut -c1-64
+}
 
 verify() {
     FOUNDRY_PROFILE="$1" forge build >/dev/null

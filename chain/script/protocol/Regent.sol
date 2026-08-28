@@ -27,6 +27,13 @@ import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.s
 /// reaches it and no call it can make. The authority it holds is real and
 /// inert, and it holds it only until `owner` accepts the nomination it leaves
 /// behind. The account that deployed it has none of it at any point.
+///
+/// Inert is not the same as harmless, and the interval before that acceptance
+/// is the one thing here that has to be got right. The market takes deposits as
+/// soon as minting is granted, and the only lever that stops a market fast is
+/// the guardian pause, which only an admin appoints. So the pause is handed to
+/// the owner in this constructor, before the market is reachable at all, rather
+/// than left as the first thing the owner does after accepting.
 contract Regent {
     Liquid public immutable liquid;
     LiquidTransmuter public immutable transmuter;
@@ -64,6 +71,15 @@ contract Regent {
         // back reference and a deposit cap it is deployed and inert.
         transmuter.setLiquid(address(liquid));
         transmuter.setDepositCap(params.depositCap);
+
+        // The market is open the moment minting is granted, and it stays open
+        // for however long the owner takes to accept the nomination below. Only
+        // an admin can appoint a guardian, and after this constructor returns
+        // the admin is this contract, which has no functions. So the pause has
+        // to be handed out here or it cannot be handed out at all until the
+        // handover completes, and the window is exactly the interval in which
+        // nobody can stop a market that is already taking deposits.
+        liquid.setGuardian(owner, true);
 
         liquid.setPendingAdmin(owner);
         transmuter.setPendingAdmin(owner);
