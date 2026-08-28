@@ -48,19 +48,59 @@ type Issuer interface {
 	OrderCard(ctx context.Context, userID string) (json.RawMessage, error)
 }
 
-// issuer resolves the active implementation. Sandbox mode simulates the
-// issuer so the demo works with no upstream credentials; live mode selects
-// by BANK_ISSUER (default sfprivate).
+// issuers are the banking counterparties this build can actually reach. A name
+// outside this set is a deployment asking for a relationship that does not
+// exist yet — banxe is the one being negotiated, and until its partner API
+// reference is issued there is nothing behind that name to call.
+var issuers = map[string]func() Issuer{
+	"sfprivate": func() Issuer { return newSFPrivate() },
+}
+
+// issuer resolves the active implementation. Sandbox mode simulates the issuer
+// so the demo works with no upstream credentials; live mode selects by
+// BANK_ISSUER, defaulting to sfprivate.
+//
+// An unknown name used to fall through to sfprivate. Someone setting
+// BANK_ISSUER=banxe got SF Private Bank and no indication of it — a card
+// issued against the wrong counterparty, under an agreement that does not
+// cover it. IssuerName refuses the name at boot, so this only ever sees one it
+// knows.
 func issuer() Issuer {
 	if Sandbox() {
 		return simIssuer{}
 	}
-	switch strings.ToLower(strings.TrimSpace(os.Getenv("BANK_ISSUER"))) {
-	case "", "sfprivate":
-		return newSFPrivate()
-	default:
-		return newSFPrivate()
+	if make, ok := issuers[IssuerName()]; ok {
+		return make()
 	}
+	return newSFPrivate()
+}
+
+// IssuerName is the configured counterparty, defaulted.
+func IssuerName() string {
+	if n := strings.ToLower(strings.TrimSpace(os.Getenv("BANK_ISSUER"))); n != "" {
+		return n
+	}
+	return "sfprivate"
+}
+
+// IssuerReady reports whether the configured issuer can be reached: that the
+// name is one this build implements, and that it has the credentials to call
+// it. Outside the sandbox a card route would otherwise mount, accept a
+// customer, and fail on the first call to an empty base URL — an onboarding
+// that gets as far as asking for a person's identity documents before it turns
+// out there was never a bank behind it.
+func IssuerReady() error {
+	if Sandbox() {
+		return nil
+	}
+	name := IssuerName()
+	if _, ok := issuers[name]; !ok {
+		return fmt.Errorf("BANK_ISSUER=%q names no issuer this build implements", name)
+	}
+	if os.Getenv("SFPRIVATE_URL") == "" || os.Getenv("SFPRIVATE_API_KEY") == "" {
+		return fmt.Errorf("issuer %q has no credentials: SFPRIVATE_URL and SFPRIVATE_API_KEY are both required", name)
+	}
+	return nil
 }
 
 // -----------------------------------------------------------------------------

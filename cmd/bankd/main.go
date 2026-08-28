@@ -148,6 +148,15 @@ func main() {
 		log.Fatal("BANK_CHAIN_RPC is not set: outside the sandbox there is no chain to hold anything on, and the simulation would hand out deposit addresses nobody holds the keys to")
 	}
 
+	// The card routes are issuer-neutral, which is what lets a counterparty be
+	// swapped. It also means nothing on the route says which bank is behind it,
+	// so a name this build does not implement, or one with no credentials,
+	// mounts a working-looking surface over nothing. A customer gets as far as
+	// handing over identity documents before the first upstream call fails.
+	if err := bank.IssuerReady(); err != nil {
+		log.Fatal(err)
+	}
+
 	hooks.RegisterCurrencyCloudWebhooks(app)
 	hooks.RegisterComplianceHooks(app)
 	hooks.RegisterPaymentHooks(app)
