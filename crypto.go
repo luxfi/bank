@@ -2,6 +2,7 @@ package bank
 
 import (
 	"encoding/hex"
+	"errors"
 	"net/http"
 	"strings"
 
@@ -187,6 +188,17 @@ func handleCryptoSend(app core.App) func(*core.RequestEvent) error {
 		// what the seam exists to change; the route says only "this account's
 		// custodian moves this asset" and does not know or care which one.
 		hash, err := cu.Send(app, acct, asset, req.ToAddress, req.Amount)
+		if errors.Is(err, errHolderSigns) {
+			// Nothing was attempted on chain and nothing failed: the key is the
+			// customer's, so the send is theirs to make from wherever they keep
+			// it. Give the hold back and say so — "on-chain send failed" would
+			// send somebody looking for an outage.
+			if rerr := release(app, tx); rerr != nil {
+				app.Logger().Error("hold survived a refused send", "tx", tx.Id, "err", rerr)
+			}
+			return errJSON(e, http.StatusNotImplemented,
+				"this account's key is held by its owner; send from the wallet that holds it")
+		}
 		if err != nil {
 			// The caller is told only that it failed — a chain error can carry
 			// an address or a balance. The reason goes to the log, because a

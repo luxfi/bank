@@ -236,6 +236,13 @@ func earnAction(app core.App, act earnAct) func(*core.RequestEvent) error {
 			// Same words and same status the movement itself would answer with.
 			return errJSON(e, http.StatusBadGateway, "the chain is unreachable")
 		}
+		if errors.Is(err, errHolderSigns) {
+			// Not a fault and not a missing identity: the account has an
+			// address, its owner holds the key, and a vault movement is a
+			// transaction that needs a signer. Nothing here can become one.
+			return errJSON(e, http.StatusNotImplemented,
+				"this account's key is held by its owner, so the bank cannot move its collateral")
+		}
 		if err != nil {
 			return apis.NewInternalServerError("account has no chain identity", err)
 		}
