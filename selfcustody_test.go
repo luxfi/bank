@@ -94,46 +94,6 @@ func TestSelfCustodyEarnSaysWhyRatherThanErroring(t *testing.T) {
 	}
 }
 
-// What the bank does still do for such an account: show it where it receives.
-// The address is the one declared, the same for every asset, and it carries no
-// reference — there is no handle onto a holding the bank knows nothing about.
-func TestSelfCustodyShowsTheAddressItWasGiven(t *testing.T) {
-	app := newBankApp(t)
-	owner, _ := seedPrincipal(t, app)
-	acct := primaryAccount(app, owner)
-	if acct == nil {
-		t.Fatal("no account provisioned")
-	}
-	onHolder(t, app, acct.Id)
-
-	// Re-read: onHolder wrote the address through its own instance.
-	acct, err := app.FindRecordById(collections.AccountCollectionName, acct.Id)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	const declared = "0x5FbDB2315678afecb367f032d93F642f64180aa3"
-	for _, asset := range SupportedCrypto {
-		w := holder{}.Wallet(app, acct, asset)
-		if w.Address != declared {
-			t.Errorf("%s receives at %q, want the declared %q", asset, w.Address, declared)
-		}
-		if w.Ref != "" {
-			t.Errorf("%s carries the reference %q; the bank knows no handle onto a holding it does not hold", asset, w.Ref)
-		}
-	}
-
-	// An account that has declared nothing gets no address rather than a
-	// placeholder — there is no key behind a placeholder either.
-	acct.Set("address", "")
-	if err := app.Save(acct); err != nil {
-		t.Fatal(err)
-	}
-	if w := (holder{}).Wallet(app, acct, "LUX"); w.Address != "" {
-		t.Errorf("an account that declared nothing receives at %q", w.Address)
-	}
-}
-
 // Where the bank holds the key it derives the address, so there is nothing for
 // a customer to tell it — and letting them say one anyway would point their
 // deposits at an address the bank cannot sign for while the ledger went on

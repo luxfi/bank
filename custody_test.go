@@ -2,6 +2,7 @@ package bank
 
 import (
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/hanzoai/base/core"
@@ -357,5 +358,42 @@ func TestOnlySelfCustodyTakesADeclaredAddress(t *testing.T) {
 				t.Fatalf("selfCustody() = %v, want %v", got, c.want)
 			}
 		})
+	}
+}
+
+// The reference a wallet row carries names who holds the key, and it reaches a
+// customer through their own wallet list. It read "mpc:" once — a claim that
+// the key was split across a threshold of parties — while one process held the
+// whole mnemonic. A reference that names the wrong holder is the custody
+// question answered wrongly in the one place a customer looks, so what each
+// custodian may say is written down here.
+func TestAWalletReferenceNamesWhoActuallyHolds(t *testing.T) {
+	t.Setenv("BANK_CHAIN_RPC", "")
+	app := newBankApp(t)
+	seedPrincipal(t, app)
+	acct := primaryAccount(app, principalID(t, app))
+	if acct == nil {
+		t.Fatal("no account provisioned")
+	}
+	index := chainIndex(app, acct)
+
+	for _, cu := range []Custodian{deriving{}, simCustodian{}, holder{}, unheld{}} {
+		w := cu.Wallet(app, acct, "LUX")
+		if w.Ref == "" {
+			continue // a custodian that keeps no handle says so by keeping none
+		}
+		if want := cu.Name() + ":LUX:" + index; w.Ref != want {
+			t.Errorf("%T names its holding %q, want %q", cu, w.Ref, want)
+		}
+	}
+
+	// The claim that was wrong. Nothing in this estate has ever done threshold
+	// signing for a customer key, so nothing may say it does.
+	for _, cu := range []Custodian{deriving{}, simCustodian{}, holder{}, unheld{}} {
+		for _, asset := range SupportedCrypto {
+			if ref := cu.Wallet(app, acct, asset).Ref; strings.HasPrefix(ref, "mpc:") {
+				t.Errorf("%T tells a customer their %s key is held by a threshold: %q", cu, asset, ref)
+			}
+		}
 	}
 }
