@@ -759,6 +759,32 @@ lux.id itself is live and correct: discovery serves the HIP-0111 paths
 (`/v1/iam/oauth/authorize`, `/v1/iam/oauth/token`,
 `/v1/iam/.well-known/jwks`).
 
+### A rule bound to one door is a rule with a way round it
+
+Three of these in a row, all the same shape: a control written once, bound
+where it was being thought about, and reachable by a path that never passes it.
+
+- **A frozen account gained verified payees.** The rule was on the beneficiary
+  UPDATE — a flag being flipped — and the create route arrives with `verified`
+  already set, so the flag was never flipped and the hook never fired. One
+  predicate bound to both doors now. Measured before the fix: `verified=true` on
+  a suspended account.
+- **A self-custody refusal was reported as something else.** `holder` returns
+  "the bank cannot sign", and the send path answered 502 "on-chain send failed"
+  when nothing had been attempted on chain, while Earn answered 500 "account has
+  no chain identity" — the account has one, and its owner holds the key to it.
+- **A hook's refusal was flattened by its route.** The beneficiary create
+  wrapped every save error as a 400, so "forbidden, the account is frozen"
+  reached the caller as a malformed request. A hook that refuses says what kind
+  of refusal it is; the route hands that back.
+
+The technique that found the first two is worth keeping: grep the comments for a
+rule stated in normative language — "must NOT", "must never", "cannot be
+allowed" — and check that something enforces it on every path, not just the one
+the comment sits beside. That is also how the self-declared entity type turned
+up: the sentence "must NOT be trusted to set the limit tier" was written and
+nothing enforced it.
+
 ### Two doors onto the same data, and only one of them is a handler
 
 `/v1/bank/*` is the product surface, and Base serves every collection at
