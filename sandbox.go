@@ -220,6 +220,31 @@ func detDigits(seed string, n int) string {
 	return b.String()[:n]
 }
 
+// marketCurrency is the money an account opens in, by the country its customer
+// onboards from. A customer is paid in their own market's currency, and the
+// coordinates a payer needs follow from it: an IBAN where the market issues
+// one, a routing number where it does not.
+//
+// Anything not named here opens in USD, which is what the bank settles in. Every
+// currency here is one the bank can price — a market it cannot value is one
+// whose limits it cannot enforce, which currencies_test holds down.
+func marketCurrency(country string) string {
+	if cur, ok := marketOf[strings.ToUpper(country)]; ok {
+		return cur
+	}
+	return "USD"
+}
+
+var marketOf = map[string]string{
+	"US": "USD", "GB": "GBP", "CH": "CHF", "SG": "SGD", "AE": "AED",
+	"JP": "JPY", "CA": "CAD", "AU": "AUD", "HK": "HKD",
+	// The euro area.
+	"AT": "EUR", "BE": "EUR", "CY": "EUR", "DE": "EUR", "EE": "EUR",
+	"ES": "EUR", "FI": "EUR", "FR": "EUR", "GR": "EUR", "HR": "EUR",
+	"IE": "EUR", "IT": "EUR", "LT": "EUR", "LU": "EUR", "LV": "EUR",
+	"MT": "EUR", "NL": "EUR", "PT": "EUR", "SI": "EUR", "SK": "EUR",
+}
+
 // ibanCountry maps a currency to the country code its IBAN carries.
 var ibanCountry = map[string]string{"EUR": "DE", "GBP": "GB", "CHF": "CH", "SGD": "SG", "AED": "AE"}
 

@@ -4,6 +4,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/hanzoai/base/core"
+
 	"github.com/luxfi/bank/collections"
 )
 
@@ -138,5 +140,81 @@ func TestTheSimulationWouldCallItselfMainnet(t *testing.T) {
 	}
 	if addr == "" {
 		t.Fatal("the simulation named no address")
+	}
+}
+
+// An account opens in its own market's money, and the coordinates a payer needs
+// follow from it. Every market the bank names has to be one it can price: a
+// currency it cannot value is one whose limits it cannot enforce and whose
+// balance reads as nothing.
+func TestEveryMarketOpensInACurrencyTheBankCarries(t *testing.T) {
+	for country, cur := range marketOf {
+		if len(country) != 2 || country != strings.ToUpper(country) {
+			t.Errorf("%q is not a two-letter country code", country)
+		}
+		if !collections.CanPrice(cur) {
+			t.Errorf("%s opens accounts in %s, which the bank cannot price", country, cur)
+		}
+		if !supportedAsset(cur) {
+			t.Errorf("%s opens accounts in %s, which the bank does not carry", country, cur)
+		}
+	}
+	// A country nobody has mapped settles in what the bank settles in.
+	for _, unknown := range []string{"ZZ", "", "XX", "us"} {
+		if got := marketCurrency(unknown); got != "USD" {
+			t.Errorf("an account from %q opens in %q, want USD", unknown, got)
+		}
+	}
+	// And the ones that are mapped are read case-insensitively, since a country
+	// arrives in an onboarding body.
+	if got := marketCurrency("de"); got != "EUR" {
+		t.Errorf("a lower-case country opens in %q, want EUR", got)
+	}
+}
+
+// The IBAN markets are the reason this mapping exists: receivingFor shapes the
+// coordinates by the account's currency, and until an account could open in one
+// of them that whole branch answered no account this bank could open.
+func TestAnIBANMarketOpensAnAccountWithAnIBAN(t *testing.T) {
+	app := newBankApp(t)
+	col, err := app.FindCollectionByNameOrId(collections.AccountCollectionName)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for country, wantCur := range map[string]string{"DE": "EUR", "GB": "GBP", "CH": "CHF", "US": "USD"} {
+		r := core.NewRecord(col)
+		r.Set("owner", "owner-"+country)
+		r.Set("entityName", "Acme")
+		r.Set("entityType", "individual")
+		r.Set("country", country)
+		r.Set("currency", marketCurrency(country))
+		r.Set("status", "active")
+		r.Set("kycStatus", "approved")
+		if err := app.Save(r); err != nil {
+			t.Fatalf("%s account: %v", country, err)
+		}
+		if got := r.GetString("currency"); got != wantCur {
+			t.Errorf("%s opens in %q, want %q", country, got, wantCur)
+		}
+
+		rec := receivingFor(r)
+		if rec == nil {
+			t.Fatalf("%s account has no coordinates", country)
+		}
+		if country == "US" {
+			if rec.IBAN != "" {
+				t.Errorf("a US account carries the IBAN %q; the US issues none", rec.IBAN)
+			}
+			if rec.RoutingNumber == "" {
+				t.Error("a US account carries no routing number")
+			}
+			continue
+		}
+		if rec.IBAN == "" {
+			t.Errorf("a %s account carries no IBAN", country)
+		}
+		if rec.RoutingNumber != "" {
+			t.Errorf("a %s account carries the routing number %q; its rail is the IBAN", country, rec.RoutingNumber)
+		}
 	}
 }

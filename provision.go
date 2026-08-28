@@ -1,6 +1,7 @@
 package bank
 
 import (
+	"strings"
 	"time"
 
 	"github.com/hanzoai/base/core"
@@ -55,7 +56,7 @@ func ProvisionCustomer(app core.App, user *core.Record, kyc KYC) (*core.Record, 
 	if entityType != "business" {
 		entityType = "individual"
 	}
-	country := kyc.Country
+	country := strings.ToUpper(kyc.Country)
 	if len(country) != 2 {
 		country = "US"
 	}
@@ -86,7 +87,7 @@ func ProvisionCustomer(app core.App, user *core.Record, kyc KYC) (*core.Record, 
 	acct.Set("entityName", name)
 	acct.Set("entityType", entityType)
 	acct.Set("country", country)
-	acct.Set("currency", "USD")
+	acct.Set("currency", marketCurrency(country))
 	acct.Set("status", status)
 	acct.Set("kycStatus", kyc0)
 	acct.Set("riskRating", risk)
