@@ -52,6 +52,13 @@ func TestOnlyAKeyHolderReplacesAnAddress(t *testing.T) {
 		// A custodian that holds nothing cannot speak for an address at all.
 		{"a custodian holding nothing replaces nothing", unheld{}, real, sim, false},
 
+		// Self-custody holds too, which is what lets a customer move wallets:
+		// re-declaring is the whole point of the route, and a row that kept the
+		// old address would keep sending deposits to a device they have left.
+		{"the owner declares a new address", holder{}, sim, real, true},
+		{"the owner declares their first", holder{}, "", real, true},
+		{"the owner re-declares the same one", holder{}, real, real, false},
+
 		// The customer's own address is held by the customer, so it carries the
 		// same authority here as one the bank derived. This is the migration
 		// that matters: a deployment that stops holding keys must be able to
