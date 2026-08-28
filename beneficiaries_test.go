@@ -145,3 +145,83 @@ func TestRecipientsNeedAnAccount(t *testing.T) {
 		})
 	}
 }
+
+// A frozen account does not gain a verified place to send money to. The rule
+// was bound to the update alone, and a beneficiary reaches "verified" by either
+// door: an update flips the flag, and a create arrives with it already set. The
+// route sets it on the way in, so the flag was never flipped, the hook never
+// fired, and a suspended account added verified payees at will.
+func TestAFrozenAccountGainsNoVerifiedPayee(t *testing.T) {
+	app := newBankApp(t)
+	owner, token := seedPrincipal(t, app)
+	acct := primaryAccount(app, owner)
+	if acct == nil {
+		t.Fatal("no account provisioned")
+	}
+	acct.Set("status", "suspended")
+	if err := app.Save(acct); err != nil {
+		t.Fatal(err)
+	}
+	h := map[string]string{"Authorization": token, "Content-Type": "application/json"}
+
+	// Forbidden, not a malformed request: the account is the reason.
+	run(t, app, tests.ApiScenario{
+		Name:            "a suspended account adds a payee",
+		Method:          http.MethodPost,
+		URL:             "/v1/bank/beneficiaries",
+		Body:            strings.NewReader(`{"name":"New Payee","currency":"USD","accountNumber":"12345678"}`),
+		Headers:         h,
+		ExpectedStatus:  http.StatusForbidden,
+		ExpectedContent: []string{"not active"},
+	})
+
+	got, err := app.FindRecordsByFilter(collections.BeneficiaryCollectionName,
+		"account = {:a} && name = 'New Payee'", "", 5, 0, map[string]any{"a": acct.Id})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != 0 {
+		t.Errorf("a suspended account holds %d new payee(s), verified=%v", len(got), got[0].GetBool("verified"))
+	}
+
+	// The same rule by the other door: verifying one that already exists.
+	col, err := app.FindCollectionByNameOrId(collections.BeneficiaryCollectionName)
+	if err != nil {
+		t.Fatal(err)
+	}
+	unverified := core.NewRecord(col)
+	unverified.Set("account", acct.Id)
+	unverified.Set("name", "Pending Payee")
+	unverified.Set("bankAccountHolder", "Pending Payee")
+	unverified.Set("currency", "USD")
+	unverified.Set("country", "US")
+	unverified.Set("paymentType", "regular")
+	unverified.Set("bankDetails", map[string]any{"accountNumber": "87654321"})
+	unverified.Set("verified", false)
+	if err := app.Save(unverified); err != nil {
+		t.Fatalf("an unverified payee on a frozen account should still record: %v", err)
+	}
+
+	fresh, err := app.FindRecordById(collections.BeneficiaryCollectionName, unverified.Id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	fresh.Set("verified", true)
+	if err := app.Save(fresh); err == nil {
+		t.Error("a payee was verified on a suspended account")
+	}
+}
+
+// And an active account is unaffected — the control is about the account's
+// state, not about adding payees.
+func TestAnActiveAccountStillAddsPayees(t *testing.T) {
+	app := newBankApp(t)
+	owner, token := seedPrincipal(t, app)
+	if primaryAccount(app, owner) == nil {
+		t.Fatal("no account provisioned")
+	}
+	post(t, app, map[string]string{"Authorization": token, "Content-Type": "application/json"},
+		"/v1/bank/beneficiaries",
+		`{"name":"Ordinary Payee","currency":"USD","accountNumber":"12345678"}`,
+		http.StatusCreated, `"id"`)
+}

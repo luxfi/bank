@@ -92,8 +92,13 @@ func RegisterComplianceHooks(app core.App) {
 		return e.Next()
 	})
 
-	// Block beneficiary verification when parent account is not active.
-	app.OnRecordUpdate(collections.BeneficiaryCollectionName).BindFunc(func(e *core.RecordEvent) error {
+	// A frozen account does not gain a verified place to send money to. The
+	// rule is bound to both doors because a beneficiary reaches "verified" by
+	// either: an update flips the flag, and a create arrives with it already
+	// set. Bound only to the update, the create walked straight past it — the
+	// route sets verified on the way in, so the flag was never flipped and the
+	// hook never fired.
+	verifiedOnActiveAccount := func(e *core.RecordEvent) error {
 		if !e.Record.GetBool("verified") {
 			return e.Next()
 		}
@@ -113,7 +118,9 @@ func RegisterComplianceHooks(app core.App) {
 		}
 
 		return e.Next()
-	})
+	}
+	app.OnRecordUpdate(collections.BeneficiaryCollectionName).BindFunc(verifiedOnActiveAccount)
+	app.OnRecordCreate(collections.BeneficiaryCollectionName).BindFunc(verifiedOnActiveAccount)
 
 	// Sanctions check on beneficiary creation.
 	app.OnRecordCreate(collections.BeneficiaryCollectionName).BindFunc(func(e *core.RecordEvent) error {

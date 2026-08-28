@@ -1,12 +1,14 @@
 package bank
 
 import (
+	"errors"
 	"net/http"
 	"strings"
 	"time"
 
 	"github.com/hanzoai/base/apis"
 	"github.com/hanzoai/base/core"
+	"github.com/hanzoai/base/tools/router"
 	"github.com/luxfi/bank/collections"
 )
 
@@ -365,6 +367,13 @@ func handleCreateBeneficiary(app core.App) func(*core.RequestEvent) error {
 		})
 		rec.Set("verified", true) // sandbox auto-verifies
 		if err := app.Save(rec); err != nil {
+			// A hook that refuses says what kind of refusal it is — a frozen
+			// account is forbidden, not a malformed request — so its own answer
+			// is handed back rather than flattened into a 400.
+			var refused *router.ApiError
+			if errors.As(err, &refused) {
+				return refused
+			}
 			return apis.NewBadRequestError(err.Error(), nil)
 		}
 		return e.JSON(http.StatusCreated, map[string]any{"id": rec.Id})
