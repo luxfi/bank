@@ -91,6 +91,21 @@ Selection: sandbox mode -> sim; live -> `BANK_ISSUER` (default `sfprivate`;
 `SFPRIVATE_API_KEY` (KMS: providers/lux/sfprivate-api-key). Issuer KYC never
 substitutes for platform KYC and vice versa.
 
+**A counterparty this build cannot reach is refused at boot.** `issuers` is the
+set of names with an implementation behind them, and `IssuerReady` checks both
+that the configured name is in it and that the credentials to call it exist.
+Neither was checked before: `issuer()` fell through to `sfprivate` for *any*
+`BANK_ISSUER`, so a deployment asking for `banxe` — the relationship still being
+negotiated — got SF Private Bank and no indication of it, and a card issued
+against a counterparty whose agreement does not cover it. Credentials were read
+straight from the environment and only tested on the first upstream call, so an
+unconfigured live bank mounted a working-looking card surface and took a
+customer as far as handing over identity documents before anything failed.
+
+This is the same rule the screener and the chain already state, applied to the
+third outside relationship: a bank that has declared itself real refuses to
+start rather than degrade quietly.
+
 ### Sandbox seed + card PAN (provision.go)
 
 `ProvisionCustomer` is idempotent and self-healing: `ensureWallets` creates one

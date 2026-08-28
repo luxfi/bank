@@ -16,9 +16,14 @@ func RegisterRoutes(app core.App) {
 	app.OnServe().Bind(&hook.Handler[*core.ServeEvent]{
 		Id: "bankRoutes",
 		Func: func(e *core.ServeEvent) error {
-			// Public health/config (unauthenticated).
+			// Public health/config (unauthenticated). Custody is here because
+			// who holds a customer's key is the fact every screen that moves
+			// crypto has to agree with, and a surface that assumes it instead
+			// of asking will one day print the wrong sentence to a customer.
 			e.Router.GET("/v1/bank/health", func(re *core.RequestEvent) error {
-				return re.JSON(http.StatusOK, map[string]any{"status": "ok", "sandbox": Sandbox()})
+				return re.JSON(http.StatusOK, map[string]any{
+					"status": "ok", "sandbox": Sandbox(), "custody": custodian().Name(),
+				})
 			})
 			// Membership ladder — one source for lux.finance, lux.credit,
 			// and the dash pricing surfaces.
