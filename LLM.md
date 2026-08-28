@@ -324,6 +324,7 @@ sandbox.lux.financial = demo, lux.credit = card marketing/signup funnel.
 |---------|---------|
 | FOREX_SERVICE_URL | Outbound payment routing + FX quotes/execution |
 | COMPLIANCE_SERVICE_URL | AML screening, sanctions, PEP checks |
+| DEX_URL | The venue every price is read from. Unset leaves the reference tables standing. |
 
 ### Fee Schedule
 
@@ -400,6 +401,75 @@ They were both `int64` with the unit in a comment, and comments do not typecheck
 a debt in cents was subtracted from a balance in an asset's own units and a +$340
 vault position rendered as −$5,600. `money[T]` reads a whole amount off a record
 and rounds once, rather than at the thirty call sites that each had to remember.
+
+## Price source (collections/pricing.go, dexprices.go)
+
+Every comparison of value needs a price: the daily and monthly limits, the AML
+threshold, a vault's collateral, a balance rendered on a screen. Minor units are
+cents for fiat and micro-units for crypto, so a comparison that does not first
+normalize to USD is not meaningful.
+
+`collections.Source` answers that question, and is the only place it is
+answered. It is a variable because which source is correct is a property of the
+deployment; it is a single variable so that a deployment cannot price a limit
+from one source and a conversion from another.
+
+| Source | What it is |
+|--------|-----------|
+| `tables` (default) | Reference constants. Always returns an answer, and carries no information about liquidity. |
+| `dexPrices` | A venue's order book. `DEX_URL` names the venue; `PriceFromDex` selects this source at boot. |
+
+`dex_get_markets` returns every market's best bid and ask in one response, so
+pricing fourteen assets costs one request. Marks are held for ten seconds
+because a price is read on the path of every transaction, and a request per
+debit would place the venue in the ledger's critical path. A failed refresh
+leaves the previous marks in place until they are twice the hold old, which
+bounds how long a venue that is down can be answered for. Only markets quoted in
+USD are read; deriving a cross rate through a second market compounds the error
+of two books.
+
+Unpriceable is a normal result rather than an error. A market with no book has
+no price, and the bank refuses what it cannot value: `CanPrice` gates the limit
+hook and the AML threshold, and `exchangeRate` refuses a conversion without a
+rate. Each of those refusals has a test. The refusal matters because `USDCents`
+returns 0 for a currency it cannot price, and 0 satisfies every USD-denominated
+ceiling.
+
+### The tables are a source's data, not a second answer
+
+Three call sites read the tables directly rather than through `Source`, and all
+three are fixed.
+
+`handleCryptoPrices` read `CryptoUSD`. With `DEX_URL` set, the route reported
+the constants while conversions used the venue's marks, so the price displayed
+and the price charged differed. It reads `Source` now, and omits an asset the
+source cannot price rather than reporting it at 0, which would render as a free
+asset.
+
+`supportedAsset` decided whether the bank offers a currency by looking it up in
+the fiat rate table, and `IsCrypto` decided whether an asset is crypto by
+looking it up in the crypto price table. Which assets the bank carries and what
+they are worth are separate facts. The catalogue is now one pair of lists,
+`collections.FiatAssets` and `CryptoAssets` (named `SupportedFiat` and
+`SupportedCrypto` in package `bank`), and the tables are keyed by them.
+
+The `IsCrypto` case had a measurable consequence: catalogue and price table had
+to agree, and an asset present in one but not the other fell through to fiat's
+two decimal places instead of six, making every minor-unit amount in that asset
+wrong by a factor of 10^4. An asset the source cannot price is now still
+refused for want of a rate, which is the accurate refusal, rather than reported
+as an unknown currency.
+
+Two tests hold this, and both were verified by reintroducing the defect:
+
+- `TestTheScreensQuoteTheSourceTheLedgerCharges` installs a source that prices
+  one asset at a value no table carries. Restoring the table read fails it,
+  reporting LUX at 12.50 against the source's 1.25.
+- `TestTheCatalogueIsNotThePriceTable` adds a catalogue asset no table prices.
+  Restoring the table lookup fails it, dropping that asset to two decimals.
+
+Without `DEX_URL` the tables remain the source, so a deployment that names no
+venue is unaffected.
 
 ## A collection whose name equals its own id cannot be updated
 

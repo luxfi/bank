@@ -3,6 +3,7 @@ package collections
 import (
 	"fmt"
 	"math"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -57,6 +58,19 @@ func (tables) UnitUSD(cur string) (float64, bool) {
 	return 0, false
 }
 
+// FiatAssets and CryptoAssets are the currencies this bank carries. Which
+// assets are carried and what they are worth are separate facts: the catalogue
+// is a deployment's, a price comes from Source, and a carried asset Source
+// cannot price is refused for want of a rate.
+//
+// The tables below are keyed by these lists and are one source's data rather
+// than the catalogue. IsCrypto previously read CryptoUSD, so the two had to
+// agree; an asset in the catalogue with no table constant fell through to
+// fiat's two decimal places instead of six, making every minor-unit amount in
+// it wrong by a factor of 10^4.
+var FiatAssets = []string{"USD", "EUR", "GBP", "JPY", "CHF", "CAD", "AUD", "SGD", "AED", "HKD"}
+var CryptoAssets = []string{"LUX", "BTC", "ETH", "DAI"}
+
 // PerUSD holds units of each fiat currency per 1 USD.
 var PerUSD = map[string]float64{
 	"USD": 1.00, "EUR": 0.92, "GBP": 0.79, "JPY": 157.0, "CHF": 0.89,
@@ -71,10 +85,9 @@ var CryptoUSD = map[string]float64{
 // CryptoDecimals is the fixed-point precision for crypto balances (6 dp).
 const CryptoDecimals = 6
 
-// IsCrypto reports whether cur is a supported crypto asset.
+// IsCrypto reports whether cur is a crypto asset this bank carries.
 func IsCrypto(cur string) bool {
-	_, ok := CryptoUSD[strings.ToUpper(cur)]
-	return ok
+	return slices.Contains(CryptoAssets, strings.ToUpper(cur))
 }
 
 // DecimalsFor returns the minor-unit precision for a currency.

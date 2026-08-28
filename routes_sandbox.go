@@ -3,6 +3,7 @@ package bank
 import (
 	"errors"
 	"net/http"
+	"slices"
 	"strings"
 	"time"
 
@@ -498,15 +499,22 @@ type exchangeReq struct {
 	Amount       Minor  `json:"amount"` // minor units of FromCurrency
 }
 
+// supportedAsset reports whether this bank offers cur. That is the catalogue's
+// answer, not the price source's: an offered asset the source cannot price
+// today is refused by exchangeRate for want of a rate, which is the accurate
+// refusal, rather than reported here as an unknown currency.
 func supportedAsset(cur string) bool {
 	cur = strings.ToUpper(cur)
-	if isCrypto(cur) {
-		return true
-	}
-	_, ok := perUSD[cur]
-	return ok
+	return isCrypto(cur) || slices.Contains(SupportedFiat, cur)
 }
 
+// handleCryptoPrices reports the catalogue at the prices Source gives, and
+// omits an asset Source cannot price.
+//
+// It read collections.CryptoUSD directly, so with DEX_URL set the route
+// reported the reference constants while conversions used the venue's marks:
+// the price displayed and the price charged differed. An unpriced asset is
+// omitted rather than reported at 0, which would render as a free asset.
 func handleCryptoPrices(app core.App) func(*core.RequestEvent) error {
 	return func(e *core.RequestEvent) error {
 		type p struct {
@@ -516,7 +524,11 @@ func handleCryptoPrices(app core.App) func(*core.RequestEvent) error {
 		}
 		out := make([]p, 0, len(SupportedCrypto))
 		for _, a := range SupportedCrypto {
-			out = append(out, p{Asset: a, USD: cryptoUSD[a], Decimals: cryptoDecimals})
+			usd, ok := collections.Source.UnitUSD(a)
+			if !ok {
+				continue
+			}
+			out = append(out, p{Asset: a, USD: usd, Decimals: cryptoDecimals})
 		}
 		return e.JSON(http.StatusOK, map[string]any{"prices": out, "sandbox": Sandbox()})
 	}

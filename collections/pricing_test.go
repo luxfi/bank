@@ -2,6 +2,7 @@ package collections
 
 import (
 	"math"
+	"slices"
 	"testing"
 )
 
@@ -15,6 +16,32 @@ func TestIsCrypto(t *testing.T) {
 		if IsCrypto(cur) {
 			t.Errorf("IsCrypto(%q) = true", cur)
 		}
+	}
+}
+
+// A carried asset keeps its own precision whether or not the reference tables
+// hold a constant for it.
+//
+// IsCrypto read CryptoUSD, so the catalogue and the price table had to agree.
+// An asset in one but not the other took fiat's two decimal places instead of
+// six, making every minor-unit amount in it wrong by a factor of 10^4.
+func TestTheCatalogueIsNotThePriceTable(t *testing.T) {
+	was := CryptoAssets
+	CryptoAssets = append(slices.Clone(CryptoAssets), "ZOO")
+	t.Cleanup(func() { CryptoAssets = was })
+
+	if _, priced := CryptoUSD["ZOO"]; priced {
+		t.Fatal("the tables carry ZOO, so this proves nothing — pick an asset they do not")
+	}
+	if !IsCrypto("ZOO") {
+		t.Error("an asset in the catalogue is not crypto because no table prices it")
+	}
+	if got := DecimalsFor("ZOO"); got != CryptoDecimals {
+		t.Errorf("ZOO takes %d decimals, not %d", got, CryptoDecimals)
+	}
+	// And it is still unpriceable, which is the refusal the bank already makes.
+	if CanPrice("ZOO") {
+		t.Error("an asset no source prices reports a price")
 	}
 }
 

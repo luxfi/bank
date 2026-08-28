@@ -48,17 +48,20 @@ func Sandbox() bool {
 // FX + asset pricing (sandbox tables)
 // -----------------------------------------------------------------------------
 
-// Pricing is decomplected into collections/pricing.go so the hooks package
-// can normalize transaction value to USD without importing this one. The
-// lowercase names below stay as thin aliases for the local call sites.
-var cryptoUSD = collections.CryptoUSD
-var perUSD = collections.PerUSD
+// Pricing lives in collections/pricing.go so the hooks package can normalize
+// transaction value to USD without importing this one, and so that a price has
+// a single source. Nothing here reads the reference tables behind that source:
+// a route reading a constant while the ledger reads a venue displays one price
+// and charges another.
 
 const cryptoDecimals = collections.CryptoDecimals
 
-// SupportedFiat / SupportedCrypto drive the UI pickers.
-var SupportedFiat = []string{"USD", "EUR", "GBP", "JPY", "CHF", "CAD", "AUD", "SGD", "AED", "HKD"}
-var SupportedCrypto = []string{"LUX", "BTC", "ETH", "DAI"}
+// SupportedFiat / SupportedCrypto are the assets this bank offers, named here
+// for the routes and the UI pickers that read them. The catalogue itself lives
+// beside the pricing it is separate from, because the hooks need to know an
+// asset's decimals without importing this package.
+var SupportedFiat = collections.FiatAssets
+var SupportedCrypto = collections.CryptoAssets
 
 func isCrypto(cur string) bool             { return collections.IsCrypto(cur) }
 func decimalsFor(cur string) int           { return collections.DecimalsFor(cur) }

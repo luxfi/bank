@@ -7,6 +7,9 @@ import (
 	"os"
 	"testing"
 	"time"
+
+	"github.com/hanzoai/base/tests"
+	"github.com/luxfi/bank/collections"
 )
 
 // venue stands in for a DEX read surface serving the markets given. It is not a
@@ -149,4 +152,43 @@ func TestTheRealVenuePricesWhatItHasBooksFor(t *testing.T) {
 			t.Errorf("%s is in the marks and UnitUSD will not price it", cur)
 		}
 	}
+}
+
+// oneAsset prices LUX and nothing else, at a value no reference table carries,
+// so any price a route reports must have come from here.
+type oneAsset struct{}
+
+func (oneAsset) UnitUSD(cur string) (float64, bool) {
+	if cur == "LUX" {
+		return 1.25, true
+	}
+	return 0, false
+}
+
+// The prices route reports what Source gives, not what the tables hold.
+//
+// It read collections.CryptoUSD directly, so with a venue configured the route
+// reported the reference constants while conversions used the venue's marks.
+// It also reported the whole catalogue, so an asset Source cannot price was
+// reported at the table's constant; reporting 0 instead would render as a free
+// asset, so such an asset is omitted.
+func TestTheScreensQuoteTheSourceTheLedgerCharges(t *testing.T) {
+	app := newBankApp(t)
+	_, token := seedPrincipal(t, app)
+
+	was := collections.Source
+	collections.Source = oneAsset{}
+	t.Cleanup(func() { collections.Source = was })
+
+	run(t, app, tests.ApiScenario{
+		Name:            "prices come from the source, and only what it prices",
+		Method:          http.MethodGet,
+		URL:             "/v1/bank/crypto/prices",
+		Headers:         map[string]string{"Authorization": token},
+		ExpectedStatus:  200,
+		ExpectedContent: []string{`"asset":"LUX"`, `"usd":1.25`},
+		// The table's LUX, and every asset this source cannot price. Omission
+		// is the honest answer: the bank has no price for them.
+		NotExpectedContent: []string{`12.5`, `"BTC"`, `"ETH"`, `"DAI"`},
+	})
 }
