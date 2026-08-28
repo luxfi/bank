@@ -122,6 +122,13 @@ func main() {
 		return nil
 	})
 
+	// Where a price comes from. The DEX has an order book, so a mark from it is
+	// one somebody would trade at; the reference tables are constants somebody
+	// typed, and a constant is wrong quietly. DEX_URL names the venue, and
+	// without one the tables stand — a bank pointed at no venue is not a bank
+	// that prices everything at nothing.
+	bank.PriceFromDex()
+
 	// ---- hooks ----
 	//
 	// A bank that has declared itself real screens for sanctions and AML. Both

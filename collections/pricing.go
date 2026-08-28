@@ -7,11 +7,55 @@ import (
 	"strings"
 )
 
-// Canonical reference pricing, shared by the bank package (sandbox exchange)
-// and the hooks package (limit + AML normalization), so both compare value in
-// one unit — USD — instead of raw minor units that mean cents for fiat and
-// micro-units for crypto. Live pricing deals through forexd; these tables are
-// the sandbox reference and the normalization basis for limits.
+// What an asset is worth, in one place, in one unit.
+//
+// Everything that compares value — the limit ceilings, the AML threshold, a
+// vault's collateral, a balance on a screen — asks in USD, because raw minor
+// units mean cents for fiat and micro-units for crypto and adding them is
+// meaningless. This file is where that question is answered and the only place
+// it is answered.
+//
+// Where the answer comes from is one variable. The DEX is the source: it has an
+// order book, so a price there is one somebody would actually trade at, rather
+// than a constant somebody typed. The tables below are what it replaces and are
+// the fallback until every market the bank carries is listed and has a book —
+// see Source.
+
+// Prices is where a price comes from. One implementation asks the DEX; the
+// tables in this file are the other.
+//
+// Unpriceable is not an error: a market with no book has no price, and the bank
+// already refuses what it cannot value — a limit it cannot enforce, an AML
+// threshold it cannot evaluate, a conversion it cannot rate. Returning false is
+// how a source says so, and every one of those refusals is already held down by
+// a test.
+type Prices interface {
+	// UnitUSD is the USD value of one whole unit of cur, and whether this
+	// source can price it at all.
+	UnitUSD(cur string) (float64, bool)
+}
+
+// Source answers every price the bank asks. It is a variable because which
+// source is right is a deployment's answer, not this package's — and it is ONE
+// variable so a deployment cannot end up half-migrated, pricing a limit off one
+// source and a conversion off another.
+var Source Prices = tables{}
+
+// tables is the reference pricing this file has always carried: constants, and
+// therefore always an answer. It cannot be wrong about liquidity because it does
+// not know about liquidity.
+type tables struct{}
+
+func (tables) UnitUSD(cur string) (float64, bool) {
+	cur = strings.ToUpper(cur)
+	if p, ok := CryptoUSD[cur]; ok {
+		return p, true
+	}
+	if r, ok := PerUSD[cur]; ok && r != 0 {
+		return 1.0 / r, true
+	}
+	return 0, false
+}
 
 // PerUSD holds units of each fiat currency per 1 USD.
 var PerUSD = map[string]float64{
@@ -80,14 +124,8 @@ func Format(minor int64, cur string) string {
 
 // UnitPriceUSD returns the USD value of one whole unit of the currency.
 func UnitPriceUSD(cur string) float64 {
-	cur = strings.ToUpper(cur)
-	if p, ok := CryptoUSD[cur]; ok {
-		return p
-	}
-	if r, ok := PerUSD[cur]; ok && r != 0 {
-		return 1.0 / r
-	}
-	return 0
+	p, _ := Source.UnitUSD(cur)
+	return p
 }
 
 // MinorToUSD converts a minor-unit amount in cur to a USD float value.
@@ -107,12 +145,8 @@ func MinorToUSD(minor int64, cur string) float64 {
 // A caller enforcing a limit has to ask this BEFORE trusting the number. A value
 // that cannot be compared is not a small value.
 func CanPrice(cur string) bool {
-	cur = strings.ToUpper(cur)
-	if _, ok := CryptoUSD[cur]; ok {
-		return true
-	}
-	rate, ok := PerUSD[cur]
-	return ok && rate != 0
+	_, ok := Source.UnitUSD(cur)
+	return ok
 }
 
 // USDCents converts a minor-unit amount in cur to integer USD cents — the
