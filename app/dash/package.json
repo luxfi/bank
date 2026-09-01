@@ -10,7 +10,7 @@
     "build:lib": "vite build --config vite.lib.config.ts && tsc -p tsconfig.lib.json"
   },
   "dependencies": {
-    "@hanzo/iam": "^0.11.0",
+    "@hanzo/iam": "^0.21.18",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router": "^7.0.0"
@@ -25,7 +25,7 @@
     "vite": "^6.0.0",
     "@fontsource-variable/geist": "^5.2.9",
     "@fontsource-variable/geist-mono": "^5.2.8",
-    "@hanzo/gui": "8.1.1",
+    "@hanzo/gui": "^8.3.1",
     "@hanzogui/config": "8.1.1",
     "@luxfi/bank": "^1.4.0",
     "react-native-web": "^0.21.2"
@@ -50,7 +50,7 @@
     "react": ">=19",
     "react-dom": ">=19",
     "react-router": ">=7",
-    "@hanzo/iam": "*"
+    "@hanzo/iam": "^0.21.18"
   },
   "publishConfig": {
     "access": "public"
