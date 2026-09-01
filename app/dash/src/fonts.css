@@ -1,4 +1,3 @@
-/* Geist, as lux.finance serves it. Not part of the library: a host embedding
    these screens renders them in its own typeface, which is what a console with
    its own brand should do. The token's fallback carries the rest. */
 @import '@fontsource-variable/geist';

@@ -6,8 +6,8 @@
    flips backgrounds, text, borders, cards, accents everywhere at runtime.
 -------------------------------------------------------------------------------*/
 :root {
-  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-mono: 'Geist Mono Variable', ui-monospace, 'SF Mono', Menlo, monospace;
+  --font-sans: Zen, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: Zen Mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
 
   --color-bg: #000000;
   --color-surface: #0b0b0c;
@@ -119,7 +119,7 @@
   body {
     background: var(--color-bg);
     color: var(--color-fg);
-    font-family: var(--font-sans);
+    font-family: Zen, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     font-feature-settings: 'cv01', 'ss01';
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
