@@ -3,8 +3,8 @@
 # THIS FILE IS THE OPT-IN. A push to git.hanzo.ai fires the platform webhook,
 # which reads this document at the pushed sha, runs the gates, builds one image
 # per `images:` entry, and — on a matching branch — rolls the `deploy:` services.
-# There is no arcd, no GitHub Actions build, and no operator reconcile loop:
-# the only GitHub workflow is mirror.yml, which nudges the forge and nothing more.
+# The only opt-in is this file; the one GitHub workflow is mirror.yml, which
+# nudges the forge and nothing more.
 #
 # Two artifacts, one repo: bankd (the Go BaaS API on hanzoai/base) and bank-dash
 # (the Vite SPA the customer uses). Each is its own image with its own lifecycle.
@@ -21,7 +21,8 @@ images:
 
 build:
   matrix:
-    - { os: linux, arch: amd64 }   # arm64 paused (DOKS has no arm64 droplets)
+    - { os: linux, arch: amd64 }
+    - { os: linux, arch: arm64 }
   tag-pattern: "{{git.branch}}"     # a v* tag pushes that immutable version
   push: true
   dispatch: native
@@ -49,7 +50,7 @@ test:
 # sandbox.lux.financial demo stack (bankd-sandbox/bank-dash-sandbox) advance
 # together off the same two images.
 deploy:
-  cluster: do-sfo3-lux-k8s
+  cluster: lux-k8s
   namespace: lux-bank
   # Quoted to dodge YAML 1.1 boolean coercion of a bare `on:` key.
   "on": [main]
