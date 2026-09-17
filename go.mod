@@ -134,10 +134,10 @@ require (
 	github.com/x448/float16 v0.8.4 // indirect
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
 	github.com/zap-proto/fiber/v3 v3.2.1 // indirect
-	github.com/zap-proto/go v1.3.0 // indirect
+	github.com/zap-proto/go v1.8.3 // indirect
 	github.com/zap-proto/http v0.3.5 // indirect
 	github.com/zap-proto/mcp v1.0.5 // indirect
-	github.com/zap-proto/zip v1.36.8 // indirect
+	github.com/zap-proto/zip v1.36.50 // indirect
 	github.com/zeebo/blake3 v0.2.4 // indirect
 	go.uber.org/mock v0.6.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
