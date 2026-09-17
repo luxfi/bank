@@ -371,8 +371,7 @@ func handleCreateBeneficiary(app core.App) func(*core.RequestEvent) error {
 			// A hook that refuses says what kind of refusal it is — a frozen
 			// account is forbidden, not a malformed request — so its own answer
 			// is handed back rather than flattened into a 400.
-			var refused *router.ApiError
-			if errors.As(err, &refused) {
+			if refused, ok := errors.AsType[*router.ApiError](err); ok {
 				return refused
 			}
 			return apis.NewBadRequestError(err.Error(), nil)

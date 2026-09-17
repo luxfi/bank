@@ -119,7 +119,7 @@ func bech32Polymod(hrp string, values []int) uint32 {
 	step := func(v int) {
 		b := chk >> 25
 		chk = (chk&0x1ffffff)<<5 ^ uint32(v)
-		for i := 0; i < 5; i++ {
+		for i := range 5 {
 			if (b>>uint(i))&1 == 1 {
 				chk ^= gen[i]
 			}

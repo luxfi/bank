@@ -155,7 +155,7 @@ func chainIndex(app core.App, acct *core.Record) string {
 	// is refused and comes back here to take the next number. Without the
 	// retry a loser would keep the index it lost, and two customers would sign
 	// from one key, at one address, over one balance.
-	for attempt := 0; attempt < 16; attempt++ {
+	for range 16 {
 		next := int64(1)
 		if taken, _ := app.FindRecordsByFilter(collections.AccountCollectionName,
 			"chainIndex > 0", "-chainIndex", 1, 0, nil); len(taken) > 0 {

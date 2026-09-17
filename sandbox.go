@@ -185,7 +185,7 @@ func release(app core.App, rec *core.Record) error {
 // randDigits returns n cryptographically-random decimal digits.
 func randDigits(n int) string {
 	var b strings.Builder
-	for i := 0; i < n; i++ {
+	for range n {
 		d, _ := rand.Int(rand.Reader, big.NewInt(10))
 		b.WriteString(d.String())
 	}

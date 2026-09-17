@@ -8,6 +8,7 @@ import (
 	"math"
 	"net/http"
 	"os"
+	"slices"
 	"time"
 
 	"github.com/hanzoai/base/apis"
@@ -36,12 +37,7 @@ func movesTo(r *core.Record, to string) bool {
 }
 
 func validTransition(from, to string) bool {
-	for _, s := range allowedTransitions[from] {
-		if s == to {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(allowedTransitions[from], to)
 }
 
 // RegisterPaymentHooks attaches hooks for payment lifecycle:

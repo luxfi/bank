@@ -696,7 +696,7 @@ func TestRedUnreachableChainSerializesEveryRequest(t *testing.T) {
 	var wg sync.WaitGroup
 	began := time.Now()
 	took := make([]time.Duration, n)
-	for i := 0; i < n; i++ {
+	for i := range n {
 		wg.Add(1)
 		go func(i int) {
 			defer wg.Done()
@@ -945,7 +945,7 @@ func TestRedTreasuryKeyRecoverableFromOneCustomerKey(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for i := 0; i < 8; i++ {
+	for i := range 8 {
 		k, err := c.key(fmt.Sprint(i))
 		if err != nil {
 			t.Fatal(err)

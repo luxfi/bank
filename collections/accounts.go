@@ -1,6 +1,10 @@
 package collections
 
-import "github.com/hanzoai/base/core"
+import (
+	"slices"
+
+	"github.com/hanzoai/base/core"
+)
 
 const AccountCollectionName = "accounts"
 
@@ -180,10 +184,5 @@ func chainIndexUnique() string {
 }
 
 func hasIndex(indexes []string, want string) bool {
-	for _, got := range indexes {
-		if got == want {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(indexes, want)
 }

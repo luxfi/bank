@@ -1,7 +1,7 @@
 # Compile on the machine doing the building and emit for the target arch — the
 # binary is pure Go (CGO_ENABLED=0), so cross-compiling is exact and a
 # multi-arch build never pays to emulate the compiler.
-FROM --platform=$BUILDPLATFORM golang:1.26.5-alpine AS builder
+FROM --platform=$BUILDPLATFORM golang:1.27.1-alpine AS builder
 ENV GOTOOLCHAIN=auto
 
 RUN apk add --no-cache gcc musl-dev git

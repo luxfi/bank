@@ -66,7 +66,7 @@ func TestOpeningIsIdempotent(t *testing.T) {
 	app := newBankApp(t)
 	id, token := principalWithoutAccount(t, app, "twice@lux.financial")
 
-	for i := 0; i < 3; i++ {
+	for range 3 {
 		run(t, app, tests.ApiScenario{
 			Name:            "repeat overview",
 			Method:          http.MethodGet,

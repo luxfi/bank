@@ -16,9 +16,9 @@ import (
 // Reading the chain is the other half of the rule and stays off the interface:
 // ChainBackend takes an address, never a principal.
 func TestCustodianActsForAnAccount(t *testing.T) {
-	custody := reflect.TypeOf((*Custodian)(nil)).Elem()
-	app := reflect.TypeOf((*core.App)(nil)).Elem()
-	acct := reflect.TypeOf((*core.Record)(nil))
+	custody := reflect.TypeFor[Custodian]()
+	app := reflect.TypeFor[core.App]()
+	acct := reflect.TypeFor[*core.Record]()
 
 	// Name and Holds describe the custodian and act for nobody: who it is, and
 	// whether the addresses it names have a key behind them. Both are constant
@@ -27,8 +27,7 @@ func TestCustodianActsForAnAccount(t *testing.T) {
 	// a thing a deployment can be.
 	describes := map[string]bool{"Name": true, "Holds": true}
 
-	for i := 0; i < custody.NumMethod(); i++ {
-		m := custody.Method(i)
+	for m := range custody.Methods() {
 		if describes[m.Name] {
 			if m.Type.NumIn() != 0 {
 				t.Fatalf("Custodian.%s%v takes an argument — it describes the custodian and nothing else", m.Name, m.Type)
@@ -40,11 +39,10 @@ func TestCustodianActsForAnAccount(t *testing.T) {
 		}
 	}
 
-	chain := reflect.TypeOf((*ChainBackend)(nil)).Elem()
-	for i := 0; i < chain.NumMethod(); i++ {
-		m := chain.Method(i)
-		for j := 0; j < m.Type.NumIn(); j++ {
-			if m.Type.In(j) == acct || m.Type.In(j) == app {
+	chain := reflect.TypeFor[ChainBackend]()
+	for m := range chain.Methods() {
+		for in := range m.Type.Ins() {
+			if in == acct || in == app {
 				t.Fatalf("ChainBackend.%s takes an account — reading a chain needs no custody", m.Name)
 			}
 		}

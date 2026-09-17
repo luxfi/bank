@@ -19,7 +19,7 @@ COPY . .
 RUN pnpm build
 
 # ---- server build ----
-FROM --platform=$BUILDPLATFORM golang:1.26.5-alpine AS srv
+FROM --platform=$BUILDPLATFORM golang:1.27.1-alpine AS srv
 ENV GOTOOLCHAIN=auto
 WORKDIR /src
 COPY server/go.mod ./

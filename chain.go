@@ -138,7 +138,7 @@ func bech32Encode(hrp string, witver byte, program []byte) string {
 	data := append([]int{int(witver)}, convertBits(program, 8, 5, true)...)
 	// Checksum: polymod over hrp-expanded data + 6 zero symbols, XOR 1.
 	polymod := bech32Polymod(hrp, append(append([]int{}, data...), 0, 0, 0, 0, 0, 0)) ^ 1
-	for i := 0; i < 6; i++ {
+	for i := range 6 {
 		data = append(data, int((polymod>>uint(5*(5-i)))&31))
 	}
 	var b strings.Builder

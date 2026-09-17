@@ -3,6 +3,7 @@ package hooks
 import (
 	"log/slog"
 	"math"
+	"slices"
 	"time"
 
 	"github.com/hanzoai/base/core"
@@ -44,9 +45,9 @@ func CalculateFee(entityType, txType string, amount, monthlyVolume int64, rail .
 	}
 
 	// Apply volume discount.
-	for i := len(volumeDiscounts) - 1; i >= 0; i-- {
-		if monthlyVolume >= volumeDiscounts[i].threshold {
-			rateBP -= volumeDiscounts[i].discount
+	for _, volumeDiscount := range slices.Backward(volumeDiscounts) {
+		if monthlyVolume >= volumeDiscount.threshold {
+			rateBP -= volumeDiscount.discount
 			break
 		}
 	}

@@ -570,7 +570,7 @@ func revertReason(err error) error {
 	if err == nil {
 		return nil
 	}
-	var data interface{ ErrorData() interface{} }
+	var data interface{ ErrorData() any }
 	if !errors.As(err, &data) {
 		return err
 	}
