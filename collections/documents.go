@@ -44,10 +44,7 @@ func EnsureDocumentCollection(app core.App) error {
 		&core.AutodateField{Name: "updated", OnCreate: true, OnUpdate: true},
 	)
 
-	// Owner-scoped read, superuser-only mutations.
-	listRule := `account.owner = @request.auth.id`
-	c.ListRule = &listRule
-	c.ViewRule = &listRule
+	readable(c)
 
 	return app.Save(c)
 }
