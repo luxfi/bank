@@ -204,3 +204,23 @@ func TestLedgerRejectsOverdraw(t *testing.T) {
 		t.Error("expected overdraw to be rejected by the hold hook")
 	}
 }
+
+// Lux ID is the only way in. A password route beside it would be a second door
+// to a superuser token, one that answers a guesser as often as they ask.
+func TestNoPasswordLogin(t *testing.T) {
+	app := newBankApp(t)
+	for _, url := range []string{
+		"/v1/bank/login",
+		"/v1/collections/_superusers/auth-with-password",
+		"/v1/collections/users/auth-with-password",
+	} {
+		run(t, app, tests.ApiScenario{
+			Name:            url + " does not exist",
+			Method:          http.MethodPost,
+			URL:             url,
+			Body:            strings.NewReader(`{"email":"z@lux.financial","identity":"z@lux.financial","password":"guess"}`),
+			ExpectedStatus:  http.StatusNotFound,
+			ExpectedContent: []string{`"status":404`},
+		})
+	}
+}
