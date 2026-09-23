@@ -21,7 +21,9 @@ func RegisterRoutes(app core.App) {
 			})
 			// Sandbox-only password login → mints a superuser token.
 			if Sandbox() {
-				e.Router.POST("/v1/bank/login", handleSandboxLogin(app))
+				e.Router.POST("/v1/bank/login", handleSandboxLogin(app,
+					newThrottle(loginPerAddress, loginWindow),
+					newThrottle(loginPerAccount, loginWindow)))
 			}
 			e.Router.GET("/v1/bank/config", func(re *core.RequestEvent) error {
 				return re.JSON(http.StatusOK, map[string]any{

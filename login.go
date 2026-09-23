@@ -1,8 +1,11 @@
 package bank
 
 import (
+	"math"
 	"net/http"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/hanzoai/base/apis"
 	"github.com/hanzoai/base/core"
@@ -69,9 +72,19 @@ type loginRequest struct {
 	Password string `json:"password"`
 }
 
+// Password guesses are bounded twice: per client address, so one source cannot
+// spray many accounts, and per account, so many sources cannot share the
+// guessing of one. A correct password spends nothing, so the budgets can be
+// small without locking out the people who know it.
+const (
+	loginWindow     = 15 * time.Minute
+	loginPerAddress = 20
+	loginPerAccount = 5
+)
+
 // handleSandboxLogin verifies a sandbox credential and returns a superuser
 // token the SPA stores and sends as a Bearer token to bankd.
-func handleSandboxLogin(app core.App) func(*core.RequestEvent) error {
+func handleSandboxLogin(app core.App, address, account *throttle) func(*core.RequestEvent) error {
 	return func(e *core.RequestEvent) error {
 		var req loginRequest
 		if err := e.BindBody(&req); err != nil {
@@ -80,6 +93,20 @@ func handleSandboxLogin(app core.App) func(*core.RequestEvent) error {
 		email := strings.ToLower(strings.TrimSpace(req.Email))
 		if email == "" || req.Password == "" {
 			return apis.NewBadRequestError("email and password are required", nil)
+		}
+		if len(email) > 254 {
+			return apis.NewBadRequestError("invalid email", nil)
+		}
+
+		from := clientAddress(e.Request)
+		fromAt, wait := address.take(from)
+		if wait > 0 {
+			return refuse(e, wait)
+		}
+		emailAt, wait := account.take(email)
+		if wait > 0 {
+			address.give(from, fromAt)
+			return refuse(e, wait)
 		}
 
 		cred, err := app.FindFirstRecordByFilter(collections.CredentialCollectionName,
@@ -90,6 +117,8 @@ func handleSandboxLogin(app core.App) func(*core.RequestEvent) error {
 		if bcrypt.CompareHashAndPassword([]byte(cred.GetString("passwordHash")), []byte(req.Password)) != nil {
 			return apis.NewUnauthorizedError("invalid email or password", nil)
 		}
+		address.give(from, fromAt)
+		account.give(email, emailAt)
 
 		su, err := app.FindRecordById(core.CollectionNameSuperusers, cred.GetString("superuserId"))
 		if err != nil || su == nil {
@@ -105,4 +134,10 @@ func handleSandboxLogin(app core.App) func(*core.RequestEvent) error {
 			"user":  map[string]any{"id": su.Id, "email": su.Email()},
 		})
 	}
+}
+
+// refuse answers a caller whose attempts are spent, and says when to return.
+func refuse(e *core.RequestEvent, wait time.Duration) error {
+	e.Response.Header().Set("Retry-After", strconv.Itoa(int(math.Ceil(wait.Seconds()))))
+	return apis.NewTooManyRequestsError("too many sign-in attempts, try again later", nil)
 }
