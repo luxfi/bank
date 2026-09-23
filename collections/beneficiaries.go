@@ -15,10 +15,7 @@ func EnsureBeneficiaryCollection(app core.App) error {
 
 	c := core.NewBaseCollection(BeneficiaryCollectionName, BeneficiaryCollectionName)
 
-	// API rules: list/view scoped to account owner; mutations superuser only (nil).
-	beneRule := `account.owner = @request.auth.id`
-	c.ListRule = &beneRule
-	c.ViewRule = &beneRule
+	readable(c)
 
 	c.Fields.Add(
 		// Parent account.

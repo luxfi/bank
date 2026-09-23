@@ -18,10 +18,7 @@ func EnsureTransactionCollection(app core.App) error {
 
 	c := core.NewBaseCollection(TransactionCollectionName, TransactionCollectionName)
 
-	// API rules: list/view scoped to account owner (public in sandbox); mutations superuser only (nil).
-	txRule := readRule(`account.owner = @request.auth.id`)
-	c.ListRule = txRule
-	c.ViewRule = txRule
+	readable(c)
 
 	c.Fields.Add(
 		// Source account.
@@ -206,10 +203,7 @@ func EnsureSessionCollection(app core.App) error {
 
 	c := core.NewBaseCollection(SessionCollectionName, SessionCollectionName)
 
-	// API rules: list/view scoped to session owner; mutations superuser only (nil).
-	sessRule := `user = @request.auth.id`
-	c.ListRule = &sessRule
-	c.ViewRule = &sessRule
+	readable(c)
 
 	c.Fields.Add(
 		&core.RelationField{

@@ -100,19 +100,14 @@ func main() {
 				return err
 			}
 		}
+		if err := collections.EnforceReads(app); err != nil {
+			return err
+		}
 
-		// Allow public customer self-signup on the built-in users auth
-		// collection (createRule = "" → anyone). Identity is still Hanzo IAM
-		// (lux.id) via the platform plugin for SSO; this enables direct
-		// email/password registration for the consumer bank.
-		if users, err := app.FindCollectionByNameOrId("users"); err == nil {
-			anyone := ""
-			if users.CreateRule == nil || *users.CreateRule != anyone {
-				users.CreateRule = &anyone
-				if err := app.Save(users); err != nil {
-					app.Logger().Error("users: failed to open self-signup", "err", err)
-				}
-			}
+		// Lux ID is the only way in: a users record is made from an IAM
+		// identity by the platform plugin, never by an anonymous create.
+		if err := collections.CloseSignup(app); err != nil {
+			return err
 		}
 
 		// Sandbox: seed a fully-funded demo customer so admin/API views are
