@@ -23,6 +23,11 @@ func envOr(key, fallback string) string {
 func main() {
 	app := base.New()
 
+	// bankd answers HTTP and nothing else. Base's ZAP transport would serve every
+	// collection's records on :9999 to any caller that reaches the pod, with no
+	// identity at all.
+	app.OnServe().Unbind("__zapTransport__")
+
 	// ---- flags ----
 
 	var migrationsDir string
