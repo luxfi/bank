@@ -44,8 +44,8 @@ export const BRANDS: Record<BrandId, Brand> = {
   },
 }
 
-// The real bankd sandbox credential — the seeded superuser. Every brand's demo
-// login authenticates against this; the brand's demoEmail is display-only.
+// The Lux ID account the demo signs in as. Every brand shows it under its own
+// demoEmail and demoName.
 export const REAL_DEMO_EMAIL = 'z@lux.financial'
 
 const STORAGE_KEY = 'bank_brand'

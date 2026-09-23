@@ -2,30 +2,35 @@ package collections
 
 import "github.com/hanzoai/base/core"
 
+// CredentialCollectionName is the store behind the sandbox password login that
+// earlier releases served. Lux ID is the only way in now; nothing writes here.
 const CredentialCollectionName = "sandbox_credentials"
 
-// EnsureCredentialCollection creates the sandbox_credentials collection.
-//
-// Base's IAM-native rip removed local password auth, so the sandbox demo login
-// needs its own credential store. Passwords are ALWAYS stored bcrypt-hashed
-// (never plaintext); each row maps an email to a hash and the _superusers
-// record id whose token the login endpoint mints on success. Sandbox only.
-func EnsureCredentialCollection(app core.App) error {
-	_, err := app.FindCollectionByNameOrId(CredentialCollectionName)
-	if err == nil {
+// DropCredentials removes what the password login left in a database that
+// already exists: its credential rows, and every token it minted. Each row names
+// the _superusers record the login signed tokens for; a new token key voids them
+// all, including any a holder kept alive through auth-refresh. Run on every boot;
+// once the collection is gone it does nothing.
+func DropCredentials(app core.App) error {
+	col, err := app.FindCollectionByNameOrId(CredentialCollectionName)
+	if err != nil {
 		return nil
 	}
-
-	c := core.NewBaseCollection(CredentialCollectionName, CredentialCollectionName)
-	// All rules nil — superuser only; never exposed via the record API.
-
-	c.Fields.Add(
-		&core.TextField{Name: "email", Required: true},
-		&core.TextField{Name: "passwordHash", Required: true}, // bcrypt
-		&core.TextField{Name: "superuserId", Required: true},
-		&core.AutodateField{Name: "created", OnCreate: true},
-		&core.AutodateField{Name: "updated", OnCreate: true, OnUpdate: true},
-	)
-
-	return app.Save(c)
+	return app.RunInTransaction(func(tx core.App) error {
+		rows, err := tx.FindAllRecords(col)
+		if err != nil {
+			return err
+		}
+		for _, row := range rows {
+			su, err := tx.FindRecordById(core.CollectionNameSuperusers, row.GetString("superuserId"))
+			if err != nil {
+				continue
+			}
+			su.RefreshTokenKey()
+			if err := tx.SaveNoValidate(su); err != nil {
+				return err
+			}
+		}
+		return tx.Delete(col)
+	})
 }

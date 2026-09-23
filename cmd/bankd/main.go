@@ -88,7 +88,6 @@ func main() {
 			collections.EnsureWalletCollection,
 			collections.EnsureConversionCollection,
 			collections.EnsureCardCollection,
-			collections.EnsureCredentialCollection,
 		} {
 			if err := ensure(app); err != nil {
 				return err
@@ -104,11 +103,9 @@ func main() {
 			return err
 		}
 
-		// Sandbox: seed a fully-funded demo customer so admin/API views are
-		// alive out of the box (gated behind BANK_SANDBOX; default on).
-		bank.SeedSandbox(app)
-
-		return nil
+		// Lux ID is the only way in: drop what the retired password login
+		// left behind, and the tokens it minted with it.
+		return collections.DropCredentials(app)
 	})
 
 	// ---- hooks ----

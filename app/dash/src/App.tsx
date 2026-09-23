@@ -36,7 +36,7 @@ export function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/callback" element={<Callback />} />
+          <Route path="/auth/callback" element={<Callback />} />
           <Route
             path="/app"
             element={

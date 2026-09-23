@@ -170,36 +170,3 @@ func issueCardRecord(app core.App, accountID, holder, currency string) *core.Rec
 	}
 	return card
 }
-
-// SeedSandbox seeds the hero demo identity on boot (sandbox only):
-//   - a _superusers record (so the shared DB is writable/seedable and the
-//     demo login can mint a superuser token — the only local token bankd's
-//     external-auth mode accepts),
-//   - a bcrypt-hashed sandbox credential for that email (never plaintext),
-//   - a fully-funded customer account owned by the superuser id.
-//
-// The hero logs in at app.lux.financial with email + password (sandbox login),
-// landing on a populated dashboard. Real signups still use IAM (lux.id).
-func SeedSandbox(app core.App) {
-	if !Sandbox() {
-		return
-	}
-	email := DemoEmail()
-
-	su, err := ensureDemoSuperuser(app, email, DemoPassword())
-	if err != nil {
-		app.Logger().Warn("seed: demo superuser failed", "err", err)
-		return
-	}
-
-	if primaryAccount(app, su.Id) == nil {
-		if _, err := ProvisionCustomer(app, su, KYC{
-			Name: "Lux Demo", Country: "US", EntityType: "individual",
-			DOB: "1990-01-01", AddressLine: "1 Market St", City: "San Francisco", PostalCode: "94105",
-		}); err != nil {
-			app.Logger().Warn("seed: provisioning failed", "err", err)
-			return
-		}
-	}
-	app.Logger().Info("sandbox seed: hero customer ready", "email", email)
-}

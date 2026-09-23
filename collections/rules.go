@@ -20,7 +20,6 @@ var reads = map[string]*string{
 	WalletCollectionName:      rule(`account.owner = @request.auth.id`),
 	ConversionCollectionName:  rule(`account.owner = @request.auth.id`),
 	CardCollectionName:        rule(`account.owner = @request.auth.id`),
-	CredentialCollectionName:  nil,
 }
 
 func rule(s string) *string { return &s }

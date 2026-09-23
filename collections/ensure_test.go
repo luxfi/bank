@@ -24,7 +24,6 @@ var ensures = []struct {
 	{"audit", EnsureAuditCollection, AuditCollectionName},
 	{"session", EnsureSessionCollection, SessionCollectionName},
 	{"document", EnsureDocumentCollection, DocumentCollectionName},
-	{"credential", EnsureCredentialCollection, CredentialCollectionName},
 }
 
 func newApp(t *testing.T) *tests.TestApp {
