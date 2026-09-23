@@ -3,9 +3,10 @@
 // transparent proxy to lux.id, so discovery, authorize, token, and jwks all
 // resolve under this origin (no CORS, no hand-rolled OAuth).
 //
-// The IAM app is `lux-bank` (<org>-<app> = lux + bank; `bankd` is just the
-// daemon binary). Its redirect URI must be registered at lux.id as
-// `${origin}/callback`.
+// The client is `lux-financial`, the public PKCE client every browser surface of
+// Lux Financial signs in through (declared in luxfi/universe
+// infra/k8s/iam/provision.yaml). `lux-bank` is bankd's own service identity,
+// never a browser's.
 import type { IAMConfig } from '@hanzo/iam/browser'
 
 const origin = typeof window !== 'undefined' ? window.location.origin : 'https://lux.financial'
@@ -16,8 +17,8 @@ const origin = typeof window !== 'undefined' ? window.location.origin : 'https:/
 // answers with its HTML catch-all instead of a login screen.
 export const IAM_CONFIG: IAMConfig = {
   serverUrl: origin,
-  clientId: 'lux-bank',
-  redirectUri: `${origin}/callback`,
+  clientId: 'lux-financial',
+  redirectUri: `${origin}/auth/callback`,
   scope: 'openid profile email',
   // Discovery advertises lux.id token/userinfo (cross-origin → browser CORS).
   // Route those same-origin through bankd's /v1/iam proxy so no cross-origin
