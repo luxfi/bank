@@ -7,7 +7,6 @@ import (
 	"github.com/hanzoai/base"
 	"github.com/hanzoai/base/core"
 	"github.com/hanzoai/base/plugins/migratecmd"
-	"github.com/hanzoai/base/plugins/platform"
 	bank "github.com/luxfi/bank"
 	"github.com/luxfi/bank/collections"
 	"github.com/luxfi/bank/hooks"
@@ -50,21 +49,13 @@ func main() {
 		Dir:          migrationsDir,
 	})
 
-	// Hanzo Platform plugin — wires Lux IAM (lux.id) for OIDC SSO and
-	// activates per-principal SQLite isolation (one encrypted DB per org/user).
-	// Defaults pin the Lux brand; every value overridable via env.
-	platform.MustRegister(app, platform.PlatformConfig{
-		IAMEndpoint:            envOr("IAM_ENDPOINT", "https://lux.id"),
-		KMSEndpoint:            envOr("KMS_ENDPOINT", "https://kms.lux.network"),
-		IAMClientID:            envOr("IAM_CLIENT_ID", "lux-bank"),
-		IAMClientSecret:        os.Getenv("IAM_CLIENT_SECRET"),
-		IAMOrg:                 envOr("IAM_ORG", "lux"),
-		IAMApp:                 envOr("IAM_APP", "lux-bank"),
-		PrincipalIsolation:     envOr("PRINCIPAL_ISOLATION", "sqlite"),
-		PrincipalEncryptionKey: os.Getenv("PRINCIPAL_ENCRYPTION_KEY"),
-		OrgStorageEndpoint:     os.Getenv("ORG_STORAGE_ENDPOINT"),
-		OrgStorageBucket:       envOr("ORG_STORAGE_BUCKET", "orgs"),
-	})
+	// Lux ID is the only way in (identity.go): an access token lux.id issued to
+	// lux-financial for the lux org, and nothing else.
+	bank.Identity{
+		Issuer: envOr("IAM_ENDPOINT", "https://lux.id"),
+		Client: envOr("IAM_CLIENT_ID", "lux-financial"),
+		Org:    envOr("IAM_ORG", "lux"),
+	}.Mount(app)
 
 	// ---- collections ----
 
@@ -97,15 +88,9 @@ func main() {
 			return err
 		}
 
-		// Lux ID is the only way in: a users record is made from an IAM
-		// identity by the platform plugin, never by an anonymous create.
-		if err := collections.CloseSignup(app); err != nil {
-			return err
-		}
-
-		// Lux ID is the only way in: drop what the retired password login
-		// left behind, and the tokens it minted with it.
-		return collections.DropCredentials(app)
+		// Lux ID is the only way in: a users record stands for a Lux ID for
+		// one request, and is never made by an anonymous create.
+		return collections.CloseSignup(app)
 	})
 
 	// ---- hooks ----
